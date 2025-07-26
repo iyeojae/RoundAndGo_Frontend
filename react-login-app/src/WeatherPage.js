@@ -264,10 +264,11 @@ const WeatherPage = () => {
 // Styled Components
 const Container = styled.div`
   min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(135deg, #269962 0%, #2C8C7D 100%);
   color: white;
   font-family: 'Arial', sans-serif;
-  overflow-y: auto;
+  overflow: auto;
   padding-bottom: 2rem;
 `;
 

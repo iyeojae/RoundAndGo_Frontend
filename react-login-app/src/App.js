@@ -10,13 +10,14 @@ import JejuLocationPage from './JejuLocationPage';
 const AppContainer = styled.div`
   width: 100vw;
   min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(180deg, #269962 0%, #FFFFFF 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow-y: auto;
+  overflow: auto;
   padding: 20px;
   
   @media (max-width: 768px) {

@@ -157,10 +157,11 @@ const JejuLocationPage = () => {
 // 스타일 컴포넌트들
 const Container = styled.div`
   width: 100vw;
+  height: 100vh;
   min-height: 100vh;
   background: linear-gradient(180deg, #269962 0%, #FFFFFF 100%);
   position: relative;
-  overflow-y: auto;
+  overflow: auto;
   padding-bottom: 2rem;
 `;
 
