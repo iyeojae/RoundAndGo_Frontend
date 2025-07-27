@@ -21,7 +21,7 @@ function App() {
                 <Route path="/weather" element={<WeatherPage />} />
                 <Route path="/jeju-location" element={<JejuLocationPage />} />
                 <Route path="/first-main" element={<FirstMainPage />} />
-                <Route path="/main" element={<MainPage />} />f
+                <Route path="/main" element={<MainPage />} />
             </Routes>
         </div>
     </Router>
