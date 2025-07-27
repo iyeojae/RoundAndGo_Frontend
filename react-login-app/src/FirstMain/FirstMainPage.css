@@ -1,0 +1,169 @@
+/* FirstMainPage.css */
+
+.FirstMainPage {
+    background-image: linear-gradient(#2C8C7D 25%, #8BD3BA 45%, #269962 80%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+
+    min-width: 375px;
+    max-width: 440px;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.content {
+    text-align: center;
+    width: 100%;
+    min-width: 375px;
+    max-width: 440px;
+    box-sizing: border-box;
+}
+
+.First p {
+    padding-top: 103px;
+    font-size: 1.3rem;
+    line-height: 1.2;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.Map {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin: 120px auto;
+    box-sizing: content-box;
+}
+
+.Map img {
+    position: absolute;
+    top: 50px;
+    left: 21px;
+    width: 90%;
+    height: 266px;
+    z-index: 1;
+    display: block;
+}
+
+.map-region-button {
+    position: absolute;
+    min-width: 39px;
+    max-width: 42px;
+    height: 14px;
+    background-color: white;
+    border-radius: 25px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #2C8C7D;
+    font-size: 8px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 10;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.2s ease, background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* 선택된 버튼 */
+.map-region-button.selected {
+    background-color: #FFE500;
+}
+
+/* 선택된 버튼 색상이 유지 */
+.map-region-button.selected:hover {
+    background-color: #FFE500;
+}
+
+.Top3ForRegion {
+    width: 100%;
+    max-width: 380px;
+    height: 100px;
+    border-radius: 8px;
+    padding: 0;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.Top3ForRegion p {
+    margin: 0;
+
+    color: #333;
+}
+
+
+
+
+
+
+/* 여기서부터 Search.jsx에 대한 스타일링 */
+.SearchNResponse {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Search 입력 필드 컨테이너 스타일 */
+.Search {
+    width: 90%;
+    margin: 0 auto;
+    padding-bottom: 10px;
+    position: relative; /* button이 Search를 기준으로 오른쪽에 띄우기 위해서 */
+    display: flex;
+}
+
+.searchbtnimg {
+    color: transparent;
+    border: none;
+    position: absolute;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+}
+
+/* Search 입력 필드 스타일 */
+.Search input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 54px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.Search input::placeholder {
+    color: #999;
+}
+
+.Search input:focus {
+    border: 1.5px solid #c5ede4;
+    outline: none;
+    transition: border-color 0.5s ease;
+}
+
+.Response {
+    width: 85%;
+    margin: 0 auto;
+    min-height: 50px;
+    border-radius: 5px;
+    padding: 0;
+    text-align: right;
+    color: #555;
+    font-size: 0.9rem;
+}
