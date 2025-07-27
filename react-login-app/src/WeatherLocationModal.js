@@ -14,15 +14,15 @@ const WeatherLocationModal = ({ onClose, onLocationChange, currentLocation }) =>
           <ModalTitle>날씨 지역 변경</ModalTitle>
           <CloseButton onClick={onClose}>✕</CloseButton>
         </ModalHeader>
-        
+
         <LocationSearch>
           <SearchInput placeholder="지역을 검색하세요" />
         </LocationSearch>
-        
+
         <LocationList>
           {locations.map(location => (
-            <LocationOption 
-              key={location} 
+            <LocationOption
+              key={location}
               onClick={() => onLocationChange(location)}
             >
               <LocationOptionText>{location}</LocationOptionText>
@@ -155,4 +155,4 @@ const CheckIcon = styled.span`
   font-size: 16px;
 `;
 
-export default WeatherLocationModal; 
+export default WeatherLocationModal;

@@ -234,7 +234,7 @@ const BackIcon = styled.div`
   width: 16.31px;
   height: 15.06px;
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -245,7 +245,7 @@ const BackIcon = styled.div`
     background: #2D8779;
     transform: translateY(-50%);
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -291,14 +291,14 @@ function EmailLoginPage() {
           <Shape2 />
           <Shape3 />
         </BackgroundShapes>
-        
+
         <Overlay />
-        
+
         <LogoContainer>
           <Logo src="/images/logo-280a0a.png" alt="ROUND & GO Logo" />
           <Title>ROUND & GO</Title>
         </LogoContainer>
-        
+
         <FormContainer>
           <InputGroup>
             <InputLabel>아이디</InputLabel>
@@ -309,7 +309,7 @@ function EmailLoginPage() {
               placeholder="아이디를 입력하세요"
             />
           </InputGroup>
-          
+
           <InputGroup>
             <InputLabel>비밀번호</InputLabel>
             <Input
@@ -319,12 +319,12 @@ function EmailLoginPage() {
               placeholder="비밀번호를 입력하세요"
             />
           </InputGroup>
-          
+
           <LoginButton onClick={handleLogin}>
             로그인
           </LoginButton>
         </FormContainer>
-        
+
         <LinkContainer>
           <Link onClick={handleFindAccount}>
             아이디·비밀번호 찾기
@@ -333,7 +333,7 @@ function EmailLoginPage() {
             회원가입
           </BoldLink>
         </LinkContainer>
-        
+
         <BackButton onClick={handleBack}>
           <BackIcon />
         </BackButton>
@@ -342,4 +342,4 @@ function EmailLoginPage() {
   );
 }
 
-export default EmailLoginPage; 
+export default EmailLoginPage;

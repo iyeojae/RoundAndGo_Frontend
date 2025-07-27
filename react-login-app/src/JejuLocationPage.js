@@ -35,7 +35,7 @@ const JejuLocationPage = () => {
 
   const handleLocationSelect = (location) => {
     setSelectedLocation(location.name);
-    
+
     // 선택 피드백을 위한 애니메이션
     const selectedCard = document.querySelector(`[data-location="${location.id}"]`);
     if (selectedCard) {
@@ -44,13 +44,13 @@ const JejuLocationPage = () => {
         selectedCard.style.transform = 'scale(1)';
       }, 150);
     }
-    
+
     // 선택된 지역으로 날씨 데이터를 업데이트하고 날씨 페이지로 이동
     setTimeout(() => {
-      navigate('/weather', { 
-        state: { 
+      navigate('/weather', {
+        state: {
           selectedLocation: location.name
-        } 
+        }
       });
     }, 300);
   };
@@ -78,7 +78,7 @@ const JejuLocationPage = () => {
         <Shape2 />
         <Shape3 />
       </BackgroundShapes>
-      
+
       <Content>
         <Header>
           <BackButton onClick={handleBack}>
@@ -93,8 +93,8 @@ const JejuLocationPage = () => {
         <SearchSection>
           <SearchTitle>제주도 지역 검색</SearchTitle>
           <SearchForm onSubmit={handleSearchSubmit}>
-            <SearchInput 
-              placeholder="지역을 검색하세요" 
+            <SearchInput
+              placeholder="지역을 검색하세요"
               value={searchTerm}
               onChange={handleSearchChange}
             />
@@ -104,7 +104,7 @@ const JejuLocationPage = () => {
         <LocationGrid>
           {filteredLocations.length > 0 ? (
             filteredLocations.map((location) => (
-              <LocationCard 
+              <LocationCard
                 key={location.id}
                 onClick={() => handleLocationSelect(location)}
                 selected={selectedLocation === location.name}
@@ -125,7 +125,7 @@ const JejuLocationPage = () => {
             </NoResultsMessage>
           ) : (
             jejuLocations.map((location) => (
-              <LocationCard 
+              <LocationCard
                 key={location.id}
                 onClick={() => handleLocationSelect(location)}
                 selected={selectedLocation === location.name}
@@ -215,7 +215,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
-  
+
   @media (max-width: 768px) {
     padding: 15px;
   }
@@ -239,7 +239,7 @@ const BackButton = styled.button`
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.3);
   }
@@ -310,7 +310,7 @@ const SearchInput = styled.input`
   outline: none;
   font-size: 14px;
   color: #B2B2B2;
-  
+
   &::placeholder {
     color: #B2B2B2;
   }
@@ -321,11 +321,11 @@ const LocationGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 6px;
   margin-bottom: 30px;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
-  
+
   @media (max-width: 480px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -344,13 +344,13 @@ const LocationCard = styled.div`
   cursor: pointer;
   transition: all 0.3s ease, transform 0.15s ease;
   box-shadow: 0px 0px 4.8px rgba(16, 117, 54, 0.42);
-  
+
   &:hover {
     background: #F1FFF8;
     border-color: #2C8C7D;
     transform: translateY(-1px);
   }
-  
+
   ${props => props.selected && `
     background: #F1FFF8;
     border-color: #2C8C7D;
@@ -459,4 +459,4 @@ const NoResultsSubtext = styled.p`
   color: #888888;
 `;
 
-export default JejuLocationPage; 
+export default JejuLocationPage;

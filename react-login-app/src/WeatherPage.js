@@ -36,27 +36,27 @@ const WeatherPage = () => {
         setLoading(false);
         return;
       }
-      
+
       // 현재 날씨 데이터
       const currentResponse = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`
       );
-      
+
       if (!currentResponse.ok) {
         throw new Error('현재 날씨 데이터를 가져올 수 없습니다.');
       }
-      
+
       const currentData = await currentResponse.json();
 
       // 5일 예보 데이터
       const forecastResponse = await fetch(
         `https://api.openweathermap.org/data/2.5/forecast?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`
       );
-      
+
       if (!forecastResponse.ok) {
         throw new Error('예보 데이터를 가져올 수 없습니다.');
       }
-      
+
       const forecastData = await forecastResponse.json();
 
       setWeatherData(currentData);
@@ -106,19 +106,19 @@ const WeatherPage = () => {
 
   const getHourlyForecast = () => {
     if (!forecastData) return [];
-    
+
     const now = new Date();
     const hourlyData = [];
-    
+
     // 현재 시간부터 10시간 후까지의 데이터 추출
     for (let i = 0; i < 10; i++) {
       const targetTime = new Date(now.getTime() + i * 60 * 60 * 1000);
       const forecastItem = forecastData.list.find(item => {
         const itemTime = new Date(item.dt * 1000);
-        return itemTime.getHours() === targetTime.getHours() && 
+        return itemTime.getHours() === targetTime.getHours() &&
                itemTime.getDate() === targetTime.getDate();
       });
-      
+
       if (forecastItem) {
         hourlyData.push({
           time: targetTime.getHours() + '시',
@@ -128,14 +128,14 @@ const WeatherPage = () => {
         });
       }
     }
-    
+
     return hourlyData;
   };
 
   const formatDate = (date) => {
-    return date.toLocaleDateString('ko-KR', { 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('ko-KR', {
+      month: 'long',
+      day: 'numeric'
     });
   };
 
@@ -226,7 +226,7 @@ const WeatherPage = () => {
               달력보기
             </CalendarButton>
           </WeeklyHeader>
-          
+
           <CalendarPreview>
             <CalendarMonth>5월</CalendarMonth>
             <CalendarDays>
@@ -326,7 +326,7 @@ const MainContent = styled.main`
   max-width: 1200px;
   margin: 0 auto;
   min-height: calc(100vh - 110px);
-  
+
   @media (max-width: 768px) {
     padding: 1rem;
   }
@@ -339,7 +339,7 @@ const CurrentWeatherSection = styled.section`
   margin-bottom: 2rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  
+
   @media (max-width: 768px) {
     padding: 1.5rem;
   }
@@ -350,7 +350,7 @@ const WeatherHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 1rem;
@@ -399,7 +399,7 @@ const WeatherStats = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -434,7 +434,7 @@ const HourlyForecastSection = styled.section`
   margin-bottom: 2rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  
+
   @media (max-width: 768px) {
     padding: 1.5rem;
   }
@@ -454,11 +454,11 @@ const HourlyGrid = styled.div`
   gap: 1rem;
   max-width: 100%;
   overflow-x: auto;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: repeat(5, 1fr);
   }
-  
+
   @media (max-width: 480px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -501,7 +501,7 @@ const WeeklyForecastSection = styled.section`
   margin-bottom: 2rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  
+
   @media (max-width: 768px) {
     padding: 1.5rem;
   }
@@ -512,7 +512,7 @@ const WeeklyHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 1rem;
@@ -561,7 +561,7 @@ const CalendarDays = styled.div`
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
-  
+
   @media (max-width: 480px) {
     gap: 0.5rem;
   }
@@ -594,7 +594,7 @@ const ActionButtons = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 2rem;
-  
+
   @media (max-width: 480px) {
     flex-direction: column;
     align-items: center;
@@ -617,4 +617,4 @@ const ActionButton = styled.button`
   }
 `;
 
-export default WeatherPage; 
+export default WeatherPage;

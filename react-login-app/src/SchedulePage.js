@@ -130,7 +130,7 @@ const SchedulePage = () => {
       console.log('새로운 지역 선택됨:', location.state.selectedLocation);
       setSelectedLocation(location.state.selectedLocation);
       fetchWeatherData(location.state.selectedLocation);
-      
+
       // 날씨 섹션을 바로 보여주기
       if (location.state.showWeather) {
         setShowWeather(true);
@@ -165,7 +165,7 @@ const SchedulePage = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      
+
       // 스크롤이 페이지 하단에 가까워지면 힌트 숨김
       if (scrollTop + windowHeight >= documentHeight - 100) {
         setShowScrollHint(false);
@@ -185,7 +185,7 @@ const SchedulePage = () => {
     const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
-    
+
     const days = [];
     for (let i = 0; i < 42; i++) {
       const day = new Date(startDate);
@@ -244,7 +244,7 @@ const SchedulePage = () => {
       attendees: '',
       reminder: '1시간 전'
     };
-    
+
     setSchedules([...schedules, newSchedule]);
     setShowAddScheduleModal(false);
     setNewSchedule({
@@ -267,7 +267,7 @@ const SchedulePage = () => {
         setLoading(false);
         return;
       }
-      
+
       const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`);
       if (response.ok) {
         const data = await response.json();
@@ -283,10 +283,10 @@ const SchedulePage = () => {
   };
 
   const formatDate = (date) => {
-    return date.toLocaleDateString('ko-KR', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
@@ -351,14 +351,14 @@ const SchedulePage = () => {
               <Weekday>금</Weekday>
               <Weekday>토</Weekday>
             </WeekdayHeader>
-            
+
             <DaysGrid>
               {days.map((day, index) => {
                 const isCurrentMonth = day.getMonth() === currentDate.getMonth();
                 const isToday = day.toDateString() === new Date().toDateString();
                 const isSelected = day.toDateString() === selectedDate.toDateString();
                 const hasSchedule = hasScheduleOnDate(day);
-                
+
                 return (
                   <DayCell
                     key={index}
@@ -404,7 +404,7 @@ const SchedulePage = () => {
               <WeatherTitle>날씨 정보</WeatherTitle>
               <WeatherLocation>{selectedLocation}</WeatherLocation>
             </WeatherHeader>
-            
+
             {loading ? (
               <WeatherLoading>날씨 정보를 불러오는 중...</WeatherLoading>
             ) : weatherData ? (
@@ -556,7 +556,7 @@ const MainContent = styled.main`
   max-width: 1200px;
   margin: 0 auto;
   min-height: calc(100vh - 110px);
-  
+
   @media (max-width: 768px) {
     padding: 1rem;
   }
@@ -568,7 +568,7 @@ const CalendarSection = styled.section`
   padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  
+
   @media (max-width: 768px) {
     padding: 1.5rem;
   }
@@ -683,7 +683,7 @@ const CalendarActions = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 1rem;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
@@ -713,7 +713,7 @@ const WeatherSection = styled.section`
   margin-bottom: 2rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  
+
   @media (max-width: 768px) {
     padding: 1.5rem;
   }
@@ -916,4 +916,4 @@ const ScrollHintArrow = styled.span`
   animation: pulse 1.5s infinite;
 `;
 
-export default SchedulePage; 
+export default SchedulePage;
