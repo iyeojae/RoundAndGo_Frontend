@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-const LoginContainer = styled.div`
+const SignUpContainer = styled.div`
   width: 100vw;
   height: 100vh;
   background: linear-gradient(180deg, #269962 0%, #FFFFFF 100%);
@@ -15,7 +15,7 @@ const LoginContainer = styled.div`
   padding: 20px;
 `;
 
-const LoginFrame = styled.div`
+const SignUpFrame = styled.div`
   width: 440px;
   min-height: 956px;
   position: relative;
@@ -155,7 +155,7 @@ const Input = styled.input`
   }
 `;
 
-const LoginButton = styled.button`
+const SignUpButton = styled.button`
   width: 328px;
   height: 54px;
   background: transparent;
@@ -176,35 +176,6 @@ const LoginButton = styled.button`
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(45, 135, 121, 0.3);
   }
-`;
-
-const LinkContainer = styled.div`
-  position: absolute;
-  bottom: 103px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 328px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 2;
-`;
-
-const Link = styled.a`
-  font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 12px;
-  line-height: 1.25;
-  color: #92BEA9;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    color: #2D8779;
-  }
-`;
-
-const BoldLink = styled(Link)`
-  font-weight: 700;
 `;
 
 const BackButton = styled.button`
@@ -234,7 +205,6 @@ const BackIcon = styled.div`
   width: 16.31px;
   height: 15.06px;
   position: relative;
-  
   &::before {
     content: '';
     position: absolute;
@@ -245,7 +215,6 @@ const BackIcon = styled.div`
     background: #2D8779;
     transform: translateY(-50%);
   }
-  
   &::after {
     content: '';
     position: absolute;
@@ -259,15 +228,22 @@ const BackIcon = styled.div`
   }
 `;
 
-function EmailLoginPage() {
+function SignUpPage() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordCheck, setPasswordCheck] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+
   const [idError, setIdError] = useState(false);
   const [pwError, setPwError] = useState(false);
+  const [pwCheckError, setPwCheckError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // 예시: 아이디/비밀번호가 비어있거나 틀렸을 때(실제 로직에 맞게 수정)
+  const handleSignUp = () => {
     let hasError = false;
     if (!userId) {
       setIdError(true);
@@ -281,84 +257,106 @@ function EmailLoginPage() {
     } else {
       setPwError(false);
     }
+    if (!passwordCheck || password !== passwordCheck) {
+      setPwCheckError(true);
+      hasError = true;
+    } else {
+      setPwCheckError(false);
+    }
+    if (!name) {
+      setNameError(true);
+      hasError = true;
+    } else {
+      setNameError(false);
+    }
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      setEmailError(true);
+      hasError = true;
+    } else {
+      setEmailError(false);
+    }
     if (hasError) return;
-    // 로그인 로직 구현
-    console.log('로그인 시도:', { userId, password });
+    // 회원가입 로직 구현
+    alert('회원가입 완료!');
+    navigate('/');
   };
 
   const handleBack = () => {
     navigate('/');
   };
 
-  const handleFindAccount = () => {
-    console.log('아이디·비밀번호 찾기');
-    // 아이디·비밀번호 찾기 페이지로 이동
-  };
-
-  const handleSignUp = () => {
-    console.log('회원가입');
-    // 회원가입 페이지로 이동
-  };
-
   return (
-    <LoginContainer>
-      <LoginFrame>
+    <SignUpContainer>
+      <SignUpFrame>
         <BackgroundShapes>
           <Shape1 />
           <Shape2 />
           <Shape3 />
         </BackgroundShapes>
-        
         <Overlay />
-        
         <LogoContainer>
           <Logo src="/images/logo-280a0a.png" alt="ROUND & GO Logo" />
-          <Title>ROUND & GO</Title>
+          <Title>회원가입</Title>
         </LogoContainer>
-        
         <FormContainer>
           <InputGroup>
             <InputLabel>아이디</InputLabel>
             <Input
               type="text"
               value={userId}
-              onChange={(e) => setUserId(e.target.value)}
+              onChange={e => setUserId(e.target.value)}
               placeholder="아이디를 입력하세요"
               error={idError}
             />
           </InputGroup>
-          
           <InputGroup>
             <InputLabel>비밀번호</InputLabel>
             <Input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               placeholder="비밀번호를 입력하세요"
               error={pwError}
             />
           </InputGroup>
-          
-          <LoginButton onClick={handleLogin}>
-            로그인
-          </LoginButton>
+          <InputGroup>
+            <InputLabel>비밀번호 확인</InputLabel>
+            <Input
+              type="password"
+              value={passwordCheck}
+              onChange={e => setPasswordCheck(e.target.value)}
+              placeholder="비밀번호를 다시 입력하세요"
+              error={pwCheckError}
+            />
+          </InputGroup>
+          <InputGroup>
+            <InputLabel>이름</InputLabel>
+            <Input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="이름을 입력하세요"
+              error={nameError}
+            />
+          </InputGroup>
+          <InputGroup>
+            <InputLabel>이메일</InputLabel>
+            <Input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="이메일을 입력하세요"
+              error={emailError}
+            />
+          </InputGroup>
+          <SignUpButton onClick={handleSignUp}>회원가입</SignUpButton>
         </FormContainer>
-        
-        <LinkContainer>
-          <Link onClick={handleFindAccount}>
-            아이디·비밀번호 찾기
-          </Link>
-          <BoldLink onClick={handleSignUp}>
-            회원가입
-          </BoldLink>
-        </LinkContainer>
-        
         <BackButton onClick={handleBack}>
           <BackIcon />
         </BackButton>
-      </LoginFrame>
-    </LoginContainer>
+      </SignUpFrame>
+    </SignUpContainer>
   );
 }
 
-export default EmailLoginPage; 
+export default SignUpPage; 
