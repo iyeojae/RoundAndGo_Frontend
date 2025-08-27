@@ -28,6 +28,14 @@
 import React, { useEffect } from 'react';
 import { handleOAuth2Callback } from './oauth2KakaoConfig';
 
+// 🍪 쿠키에서 특정 값 가져오기 (디버깅용)
+const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+};
+
 /**
  * OAuth2Callback 리액트 컴포넌트
  * 
@@ -51,6 +59,17 @@ function OAuth2Callback() {
             const [name, value] = cookie.trim().split('=');
             console.log(`  ${name}: ${value ? value.substring(0, 20) + '...' : '(비어있음)'}`);
         });
+
+        // 🔍 OAuth2 세션 관련 쿠키 특별 확인
+        const sessionCookie = getCookie('JSESSIONID');
+        const oauthCookie = getCookie('oauth2_auth_request');
+        console.log('🔐 OAuth2 세션 쿠키 상태:');
+        console.log(`  JSESSIONID: ${sessionCookie ? '존재' : '없음'}`);
+        console.log(`  oauth2_auth_request: ${oauthCookie ? '존재' : '없음'}`);
+        
+        // 쿠키 도메인 확인
+        console.log('🌐 현재 도메인:', window.location.hostname);
+        console.log('🌐 현재 프로토콜:', window.location.protocol);
         
         // 💾 현재 로컬스토리지 상태 확인
         console.log('💾 로컬스토리지 현재 상태:', {
