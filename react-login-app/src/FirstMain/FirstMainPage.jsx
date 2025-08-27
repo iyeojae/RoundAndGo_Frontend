@@ -25,18 +25,18 @@ function FirstMainPage() {
   const [golfCourses, setGolfCourses] = useState([]);
   const [selectedRegionInfo, setSelectedRegionInfo] = useState(null);
 
-  // 제주도 지역 정보
+  // 제주도 지역 정보 (CSS 좌표에 맞게 조정)
   const regions = {
-    jeju: { name: '제주시', coordinates: { x: 350, y: 300 } },
-    seogwipo: { name: '서귀포시', coordinates: { x: 350, y: 400 } },
-    hallim: { name: '한림읍', coordinates: { x: 200, y: 250 } },
-    aewol: { name: '애월읍', coordinates: { x: 250, y: 200 } },
-    jocheon: { name: '조천읍', coordinates: { x: 400, y: 250 } },
-    gujwa: { name: '구좌읍', coordinates: { x: 500, y: 300 } },
-    seongsan: { name: '성산읍', coordinates: { x: 550, y: 350 } },
-    pyoseon: { name: '표선면', coordinates: { x: 500, y: 400 } },
-    namwon: { name: '남원읍', coordinates: { x: 400, y: 450 } },
-    daejeong: { name: '대정읍', coordinates: { x: 150, y: 400 } }
+    jeju: { name: '제주시', coordinates: { x: 200, y: 150 } },
+    seogwipo: { name: '서귀포시', coordinates: { x: 200, y: 220 } },
+    hallim: { name: '한림읍', coordinates: { x: 120, y: 130 } },
+    aewol: { name: '애월읍', coordinates: { x: 150, y: 100 } },
+    jocheon: { name: '조천읍', coordinates: { x: 230, y: 120 } },
+    gujwa: { name: '구좌읍', coordinates: { x: 280, y: 140 } },
+    seongsan: { name: '성산읍', coordinates: { x: 310, y: 170 } },
+    pyoseon: { name: '표선면', coordinates: { x: 280, y: 200 } },
+    namwon: { name: '남원읍', coordinates: { x: 230, y: 230 } },
+    daejeong: { name: '대정읍', coordinates: { x: 100, y: 200 } }
   };
 
   // 지역 클릭 핸들러
@@ -47,7 +47,7 @@ function FirstMainPage() {
 
     try {
       // 백엔드 API 호출로 해당 지역의 골프장 정보 가져오기
-      const res = await fetch(`https://roundandgo.onrender.com/api/golf-courses/search-by-address?address=${selectedRegionInfo.name}`);
+      const res = await fetch(`https://roundandgo.onrender.com/api/golf-courses/search-by-address?address=${regionInfo.name}`);
       const data = await res.json();
       setGolfCourses(data.slice(0, 3)); // 최대 3개만 표시
     } catch (error) {
@@ -57,58 +57,38 @@ function FirstMainPage() {
   };
 
   return (
-    <div className="first-main-container">
-      <div className="header">
-        <h1>아래 지도에서 원하는골프장을 선택해주세요</h1>
-      </div>
-      
-      <div className="map-container">
-        <img src={map_jeju} alt="제주도 지도" className="jeju-map" />
-        
-        {/* 지역 선택 버튼들 */}
-        {Object.entries(regions).map(([key, region]) => (
-          <button
-            key={key}
-            className={`region-button ${selectedRegion === key ? 'selected' : ''}`}
-            style={{
-              position: 'absolute',
-              left: region.coordinates.x,
-              top: region.coordinates.y,
-              transform: 'translate(-50%, -50%)'
-            }}
-            onClick={() => handleRegionClick(key)}
-          >
-            {region.name}
-          </button>
-        ))}
-      </div>
-
-      {/* 선택된 지역의 골프장 목록 */}
-      {selectedRegionInfo && (
-        <div className="golf-courses-section">
-          <h2>{selectedRegionInfo.name} 골프장</h2>
-          <div className="golf-courses-grid">
-            {golfCourses.length > 0 ? (
-              golfCourses.map((course, index) => (
-                <div key={index} className="golf-course-card">
-                  <img 
-                    src={course.imageUrl || '/images/default-golf.jpg'} 
-                    alt={course.name}
-                    className="golf-course-image"
-                  />
-                  <div className="golf-course-info">
-                    <h3>{course.name}</h3>
-                    <p>{course.address}</p>
-                    <p className="phone">{course.phone}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>해당 지역에 골프장 정보가 없습니다.</p>
-            )}
-          </div>
+    <div className="FirstMainPage">
+      <div className="content">
+        <div className="First">
+          <p>아래 지도에서 원하는<br />골프장을 선택해주세요</p>
         </div>
-      )}
+        
+        <div className="Map">
+          <img src={map_jeju} alt="제주도 지도" />
+          
+          {/* 지역 선택 버튼들 */}
+          {Object.entries(regions).map(([key, region]) => (
+            <button
+              key={key}
+              className={`map-region-button ${selectedRegion === key ? 'selected' : ''}`}
+              style={{
+                left: region.coordinates.x,
+                top: region.coordinates.y,
+              }}
+              onClick={() => handleRegionClick(key)}
+            >
+              {region.name}
+            </button>
+          ))}
+        </div>
+
+        {/* 선택된 지역의 골프장 목록 */}
+        {selectedRegionInfo && (
+          <div className="Top3ForRegion">
+            <p>{selectedRegionInfo.name} 인기 골프장 Top 3</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
