@@ -68,10 +68,8 @@ export const useKakaoLoginDetector = () => {
         console.log('✅ 카카오 로그인 정보 저장 완료!');
         console.log('📋 저장된 정보:', userInfo);
         
-        // 선택적으로 페이지 새로고침
-        if (window.confirm('로그인이 완료되었습니다. 페이지를 새로고침하시겠습니까?')) {
-          window.location.reload();
-        }
+        // UI 새로고침 없이 백그라운드에서 조용히 처리
+        // 다른 컴포넌트에서 필요할 때 localStorage에서 읽어서 사용
       }
     };
 
