@@ -71,16 +71,36 @@ export const oauth2KakaoApi = {
             console.log('🛠️ 개발 환경: 프록시를 통한 백엔드 연결');
             window.location.href = kakaoLoginUrl;
         } else {
-            // 🌐 프로덕션 환경: React Router 우회 필요
-            console.log('🚀 프로덕션 환경: React Router 우회 시작');
+            // 🌐 프로덕션 환경: React Router 강력 우회
+            console.log('🚀 프로덕션 환경: React Router 강력 우회 시작');
             
-            // React Router 완전 우회
+            // 🚨 방법 1: 즉시 페이지 완전 교체
+            console.log('💥 즉시 페이지 완전 교체');
             window.location.href = kakaoLoginUrl;
             
-            // 백업 리다이렉트
+            // 🚨 방법 2: 강제 페이지 새로고침 (백업)
             setTimeout(() => {
+                console.log('🔄 강제 새로고침 백업');
                 window.location.replace(kakaoLoginUrl);
             }, 100);
+            
+            // 🚨 방법 3: document.location 사용 (최종 백업)
+            setTimeout(() => {
+                console.log('🔄 document.location 최종 백업');
+                document.location.href = kakaoLoginUrl;
+            }, 200);
+            
+            // 🚨 방법 4: top.location 사용 (프레임 환경 대응)
+            try {
+                if (window.top) {
+                    setTimeout(() => {
+                        console.log('🔄 top.location 프레임 우회');
+                        window.top.location.href = kakaoLoginUrl;
+                    }, 300);
+                }
+            } catch (e) {
+                console.log('⚠️ top.location 접근 불가 (보안 제한)');
+            }
         }
     },
 
