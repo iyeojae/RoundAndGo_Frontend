@@ -23,7 +23,7 @@ function App() {
                 <Route path="/jeju-location" element={<JejuLocationPage />} />
                 <Route path="/first-main" element={<FirstMainPage />} />
                 <Route path="/main" element={<MainPage />} />
-                <Route path="/oauth/kakao" element={<OAuth2Callback />} />
+                <Route path="/login/oauth2/code/kakao" element={<OAuth2Callback />} />
             </Routes>
         </div>
     </Router>
