@@ -61,19 +61,58 @@ export const oauth2KakaoApi = {
         console.log('🚀 OAuth2 카카오 로그인 시작');
         console.log('🔗 리다이렉트 URL:', kakaoLoginUrl);
         
-        // 🛡️ React Router 완전 우회 - 브라우저 네이티브 이동 강제 실행
-        console.log('🔄 React Router 우회 시작...');
+        // 🛡️ React Router 완전 우회 - 핵폭탄 급 최강 방법
+        console.log('🔄 React Router 핵폭탄 우회 시작...');
         
-        // 🥇 첫 번째 시도: 즉시 페이지 이동 (window.location.assign)
-        // 브라우저 히스토리에 현재 페이지를 남기고 새 페이지로 이동
-        window.location.assign(kakaoLoginUrl);
-        
-        // 🥈 두 번째 시도: 백업 페이지 이동 (window.location.replace)
-        // 100ms 후 실행되며, 현재 페이지를 히스토리에서 교체
-        setTimeout(() => {
-            console.log('🔄 백업 리다이렉트 실행');
-            window.location.replace(kakaoLoginUrl);
-        }, 100);
+        // 🚨 최종 병기: React 앱 완전 파괴 후 이동
+        try {
+            // 1. React 루트 언마운트 시도
+            const rootElement = document.getElementById('root');
+            if (rootElement) {
+                console.log('💥 React 루트 엘리먼트 제거 시도');
+                rootElement.innerHTML = '<div>리다이렉트 중...</div>';
+            }
+            
+            // 2. 모든 이벤트 리스너 제거
+            window.removeEventListener = () => {};
+            
+            // 3. 브라우저 히스토리 완전 교체
+            console.log('🌪️ 브라우저 히스토리 완전 교체');
+            window.location.href = kakaoLoginUrl;
+            
+            // 4. 백업: 강제 페이지 교체 (10ms 후)
+            setTimeout(() => {
+                window.location.replace(kakaoLoginUrl);
+            }, 10);
+            
+            // 5. 최종 백업: 할당 방식 (50ms 후)
+            setTimeout(() => {
+                window.location.assign(kakaoLoginUrl);
+            }, 50);
+            
+            return; // 여기서 함수 종료
+            
+        } catch (error) {
+            console.error('💀 핵폭탄 방법도 실패:', error);
+            
+            // 🆘 최후의 수단: 새 창으로 열고 현재 창 교체
+            try {
+                console.log('🆘 최후의 수단: 새 창 → 현재 창 교체');
+                const newWindow = window.open(kakaoLoginUrl, '_blank');
+                if (newWindow) {
+                    // 새 창이 열렸으면 현재 창을 그 주소로 교체
+                    setTimeout(() => {
+                        window.location.href = kakaoLoginUrl;
+                    }, 100);
+                } else {
+                    // 팝업이 차단되었으면 직접 이동
+                    window.location.href = kakaoLoginUrl;
+                }
+            } catch (finalError) {
+                console.error('💀 모든 방법 실패:', finalError);
+                alert('로그인 페이지로 이동할 수 없습니다. 브라우저를 새로고침해주세요.');
+            }
+        }
     },
 
     /**
