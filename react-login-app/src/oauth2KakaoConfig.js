@@ -6,7 +6,7 @@
  */
 
 // 백엔드 서버 URL
-const BACKEND_BASE_URL = 'https://roundandgo.onrender.com';
+const BACKEND_BASE_URL = 'https://roundandgo.com';
 
 /**
  * OAuth2 카카오 로그인 관련 함수들
