@@ -23,16 +23,17 @@ export const oauth2KakaoApi = {
         console.log('🚀 OAuth2 카카오 로그인 시작');
         console.log('리다이렉트 URL:', kakaoLoginUrl);
         
-        // React Router 완전 우회 - 동적 링크 생성 및 클릭
-        const link = document.createElement('a');
-        link.href = kakaoLoginUrl;
-        link.target = '_self';
-        link.rel = 'noopener noreferrer';
+        // React Router 완전 우회 - 브라우저 네이티브 이동 강제 실행
+        // 1. 현재 React 앱 언마운트
+        console.log('🔄 React Router 우회 중...');
         
-        // 링크를 DOM에 추가하고 클릭
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // 2. 페이지 새로고침과 함께 이동
+        setTimeout(() => {
+            window.location.replace(kakaoLoginUrl);
+        }, 100);
+        
+        // 3. 즉시 페이지 교체 시도
+        window.location.assign(kakaoLoginUrl);
     },
 
     /**
@@ -172,4 +173,4 @@ export const handleOAuth2Callback = () => {
         alert('로그인에 실패했습니다: ' + error.message);
         window.location.href = '/';
     }
-};
+}
