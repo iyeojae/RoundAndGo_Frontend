@@ -192,11 +192,38 @@ const getCookie = (name) => {
  */
 export const handleOAuth2Callback = () => {
     try {
+        console.log('🔧 OAuth2 콜백 처리 시작 - authorization_request_not_found 진단');
+        
+        // 📋 현재 상황 체크
+        console.log('📋 콜백 페이지 도달 상황:');
+        console.log(`  현재 URL: ${window.location.href}`);
+        console.log(`  Referrer: ${document.referrer}`);
+        console.log(`  타임스탬프: ${new Date().toISOString()}`);
+        
         // 1️⃣ URL 파라미터에서 토큰 추출
         const urlParams = new URLSearchParams(window.location.search);
         let accessToken = urlParams.get('accessToken');
         let refreshToken = urlParams.get('refreshToken');
         const error = urlParams.get('error');
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        
+        console.log('🔍 URL 파라미터 상세 분석:');
+        console.log(`  accessToken: ${accessToken ? '존재 (' + accessToken.substring(0, 10) + '...)' : '없음'}`);
+        console.log(`  refreshToken: ${refreshToken ? '존재' : '없음'}`);
+        console.log(`  error: ${error || '없음'}`);
+        console.log(`  code: ${code ? '존재 (' + code.substring(0, 10) + '...)' : '❌ 없음 - 카카오 인증 실패'}`);
+        console.log(`  state: ${state || '없음'}`);
+        
+        // ⚠️ authorization_request_not_found 특별 진단
+        if (!code && !accessToken && !error) {
+            console.log('🚨 OAuth2 콜백 페이지에 도달했지만 파라미터가 없음!');
+            console.log('🚨 이는 다음 중 하나의 문제일 가능성:');
+            console.log('   1. React Router가 OAuth2 요청을 가로챘음');
+            console.log('   2. 세션 쿠키가 없어서 Spring Security가 요청을 거부함');
+            console.log('   3. 카카오 → Spring Security 리다이렉트 체인이 끊어짐');
+            console.log('   4. SameSite/Secure 쿠키 정책 문제');
+        }
 
         // 2️⃣ URL 파라미터에 없으면 쿠키에서 확인
         if (!accessToken) {

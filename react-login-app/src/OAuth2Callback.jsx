@@ -63,13 +63,42 @@ function OAuth2Callback() {
         // 🔍 OAuth2 세션 관련 쿠키 특별 확인
         const sessionCookie = getCookie('JSESSIONID');
         const oauthCookie = getCookie('oauth2_auth_request');
-        console.log('🔐 OAuth2 세션 쿠키 상태:');
-        console.log(`  JSESSIONID: ${sessionCookie ? '존재' : '없음'}`);
-        console.log(`  oauth2_auth_request: ${oauthCookie ? '존재' : '없음'}`);
+        const springSecurityCookie = getCookie('SPRING_SECURITY_CONTEXT');
         
-        // 쿠키 도메인 확인
-        console.log('🌐 현재 도메인:', window.location.hostname);
-        console.log('🌐 현재 프로토콜:', window.location.protocol);
+        console.log('🔐 OAuth2 세션 쿠키 상태 (authorization_request_not_found 디버깅):');
+        console.log(`  JSESSIONID: ${sessionCookie ? '존재 (' + sessionCookie.substring(0, 8) + '...)' : '❌ 없음 - 핵심 문제!'}`);
+        console.log(`  oauth2_auth_request: ${oauthCookie ? '존재' : '❌ 없음 - OAuth2 상태 손실!'}`);
+        console.log(`  SPRING_SECURITY_CONTEXT: ${springSecurityCookie ? '존재' : '없음'}`);
+        
+        // 🌐 환경 정보 상세 확인
+        console.log('🌐 브라우저 환경 분석:');
+        console.log(`  현재 도메인: ${window.location.hostname}`);
+        console.log(`  현재 프로토콜: ${window.location.protocol}`);
+        console.log(`  현재 포트: ${window.location.port || '기본 포트'}`);
+        console.log(`  전체 Origin: ${window.location.origin}`);
+        console.log(`  User Agent: ${navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Safari') ? 'Safari' : 'Other'}`);
+        
+        // 🍪 SameSite/Secure 쿠키 문제 진단
+        console.log('🍪 쿠키 정책 진단:');
+        console.log(`  HTTPS 사용: ${window.location.protocol === 'https:' ? '✅ Yes' : '❌ No - Secure 쿠키 차단'}`);
+        console.log(`  크로스 도메인: ${window.location.hostname !== 'roundandgo.onrender.com' ? '⚠️ Yes - SameSite 문제 가능' : '✅ No'}`);
+        
+        // 🔄 리다이렉트 체인 분석
+        console.log('🔄 OAuth2 리다이렉트 체인 분석:');
+        console.log(`  현재 URL: ${window.location.href}`);
+        console.log(`  Referrer: ${document.referrer || '없음'}`);
+        
+        // 📊 쿠키 속성 분석 (가능한 경우)
+        if (document.cookie) {
+            console.log('📊 모든 쿠키 상세 분석:');
+            const allCookies = document.cookie.split(';');
+            allCookies.forEach((cookie, index) => {
+                const [name, value] = cookie.trim().split('=');
+                console.log(`  ${index + 1}. ${name}: ${value ? value.substring(0, 20) + '...' : '(empty)'}`);
+            });
+        } else {
+            console.log('📊 ❌ 쿠키 완전 없음 - 심각한 세션 문제!');
+        }
         
         // 💾 현재 로컬스토리지 상태 확인
         console.log('💾 로컬스토리지 현재 상태:', {
