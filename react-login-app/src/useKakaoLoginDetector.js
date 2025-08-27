@@ -44,32 +44,12 @@ export const useKakaoLoginDetector = () => {
         
         console.log('🎉 카카오 로그인 성공 감지!');
         
-        // 사용자 정보 생성
-        const userInfo = {
-          type: 'kakao',
-          loginTime: new Date().toISOString(),
-          isOAuth2: true,
-          nickname: '카카오 사용자',
-          loginSuccess: true,
-          detectedBy: getDetectionReason(conditions)
-        };
-        
-        // 토큰 생성 (세션 기반이므로 가상 토큰)
-        const fakeToken = `kakao-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        
-        // 로컬스토리지에 저장
-        localStorage.setItem('authToken', fakeToken);
-        localStorage.setItem('user', JSON.stringify(userInfo));
+        // 🚀 백엔드에서 실제 JWT 토큰 요청
+        fetchRealJWTTokens();
         
         // 임시 기록 제거
         localStorage.removeItem('kakao-login-attempt');
         localStorage.removeItem('kakao-login-time');
-        
-        console.log('✅ 카카오 로그인 정보 저장 완료!');
-        console.log('📋 저장된 정보:', userInfo);
-        
-        // UI 새로고침 없이 백그라운드에서 조용히 처리
-        // 다른 컴포넌트에서 필요할 때 localStorage에서 읽어서 사용
       }
     };
 
@@ -100,6 +80,126 @@ function getDetectionReason(conditions) {
   if (conditions.hasLoginAttempt) return 'login-attempt';
   if (conditions.recentLoginClick) return 'recent-click';
   return 'unknown';
+}
+
+/**
+ * 백엔드에서 실제 JWT 토큰과 사용자 정보를 가져오는 함수
+ */
+async function fetchRealJWTTokens() {
+  try {
+    console.log('🔑 백엔드에서 실제 JWT 토큰 요청 중...');
+    
+    // 백엔드 사용자 정보 API 호출 (세션 쿠키로 인증)
+    const userResponse = await fetch('https://roundandgo.onrender.com/api/auth/user', {
+      method: 'GET',
+      credentials: 'include', // 쿠키 포함
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (userResponse.ok) {
+      const userData = await userResponse.json();
+      console.log('✅ 사용자 정보 받아옴:', userData);
+      
+      // JWT 토큰 발급 요청
+      const tokenResponse = await fetch('https://roundandgo.onrender.com/api/auth/token', {
+        method: 'POST',
+        credentials: 'include', // 쿠키 포함
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (tokenResponse.ok) {
+        const tokenData = await tokenResponse.json();
+        console.log('🎯 JWT 토큰 받아옴:', tokenData);
+        
+        // 실제 토큰 저장
+        if (tokenData.accessToken) {
+          localStorage.setItem('authToken', tokenData.accessToken);
+          console.log('✅ JWT AccessToken 저장:', tokenData.accessToken.substring(0, 20) + '...');
+        }
+        
+        if (tokenData.refreshToken) {
+          localStorage.setItem('refreshToken', tokenData.refreshToken);
+          console.log('✅ RefreshToken 저장:', tokenData.refreshToken.substring(0, 20) + '...');
+        }
+        
+        // 사용자 정보 저장
+        const userInfo = {
+          type: 'kakao',
+          loginTime: new Date().toISOString(),
+          isOAuth2: true,
+          nickname: userData.nickname || '카카오 사용자',
+          email: userData.email || null,
+          profileImage: userData.profileImage || null,
+          loginSuccess: true,
+          hasRealTokens: true
+        };
+        
+        localStorage.setItem('user', JSON.stringify(userInfo));
+        console.log('✅ 사용자 정보 저장 완료:', userInfo);
+        
+      } else {
+        console.log('⚠️ JWT 토큰 발급 실패, 세션 방식으로 대체');
+        fallbackToSessionAuth(userData);
+      }
+      
+    } else {
+      console.log('⚠️ 사용자 정보 가져오기 실패, 가상 정보로 대체');
+      fallbackToFakeAuth();
+    }
+    
+  } catch (error) {
+    console.error('❌ JWT 토큰 요청 실패:', error);
+    console.log('🔄 가상 토큰으로 대체');
+    fallbackToFakeAuth();
+  }
+}
+
+/**
+ * JWT 토큰 요청 실패 시 세션 방식으로 대체
+ */
+function fallbackToSessionAuth(userData) {
+  const userInfo = {
+    type: 'kakao',
+    loginTime: new Date().toISOString(),
+    isOAuth2: true,
+    nickname: userData?.nickname || '카카오 사용자',
+    email: userData?.email || null,
+    profileImage: userData?.profileImage || null,
+    loginSuccess: true,
+    hasRealTokens: false,
+    authType: 'session'
+  };
+  
+  const sessionToken = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  localStorage.setItem('authToken', sessionToken);
+  localStorage.setItem('user', JSON.stringify(userInfo));
+  
+  console.log('✅ 세션 기반 인증 저장 완료:', userInfo);
+}
+
+/**
+ * 모든 방법 실패 시 가상 인증으로 대체
+ */
+function fallbackToFakeAuth() {
+  const userInfo = {
+    type: 'kakao',
+    loginTime: new Date().toISOString(),
+    isOAuth2: true,
+    nickname: '카카오 사용자',
+    loginSuccess: true,
+    hasRealTokens: false,
+    authType: 'fallback'
+  };
+  
+  const fakeToken = `fallback-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  localStorage.setItem('authToken', fakeToken);
+  localStorage.setItem('user', JSON.stringify(userInfo));
+  
+  console.log('✅ 가상 인증 저장 완료:', userInfo);
 }
 
 /**
