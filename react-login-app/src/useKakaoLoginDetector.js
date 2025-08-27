@@ -147,14 +147,13 @@ async function fetchRealJWTTokens() {
       }
       
     } else {
-      console.log('⚠️ 사용자 정보 가져오기 실패, 가상 정보로 대체');
-      fallbackToFakeAuth();
+      console.log('⚠️ 사용자 정보 가져오기 실패 - 토큰 저장하지 않음');
     }
     
   } catch (error) {
     console.error('❌ JWT 토큰 요청 실패:', error);
-    console.log('🔄 가상 토큰으로 대체');
-    fallbackToFakeAuth();
+    console.log('🔄 세션 기반 인증으로 대체');
+    fallbackToSessionAuth(null);
   }
 }
 
@@ -181,26 +180,7 @@ function fallbackToSessionAuth(userData) {
   console.log('✅ 세션 기반 인증 저장 완료:', userInfo);
 }
 
-/**
- * 모든 방법 실패 시 가상 인증으로 대체
- */
-function fallbackToFakeAuth() {
-  const userInfo = {
-    type: 'kakao',
-    loginTime: new Date().toISOString(),
-    isOAuth2: true,
-    nickname: '카카오 사용자',
-    loginSuccess: true,
-    hasRealTokens: false,
-    authType: 'fallback'
-  };
-  
-  const fakeToken = `fallback-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  localStorage.setItem('authToken', fakeToken);
-  localStorage.setItem('user', JSON.stringify(userInfo));
-  
-  console.log('✅ 가상 인증 저장 완료:', userInfo);
-}
+
 
 /**
  * 카카오 로그인 버튼 클릭 시 호출할 함수
