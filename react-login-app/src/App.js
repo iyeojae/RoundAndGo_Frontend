@@ -9,6 +9,7 @@ import JejuLocationPage from './JejuLocationPage';
 import FirstMainPage from "./FirstMain/FirstMainPage";
 import MainPage from "./Main/MainPage";
 import HomePage from "./HomePage";
+import OAuth2Callback from "./OAuth2Callback";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/jeju-location" element={<JejuLocationPage />} />
                 <Route path="/first-main" element={<FirstMainPage />} />
                 <Route path="/main" element={<MainPage />} />
+                <Route path="/oauth/kakao" element={<OAuth2Callback />} />
             </Routes>
         </div>
     </Router>

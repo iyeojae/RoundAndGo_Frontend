@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
 import React from "react";
+import { oauth2KakaoApi } from "./oauth2KakaoConfig";
 
 const AppContainer = styled.div`
   min-width: 375px;
@@ -215,9 +216,40 @@ function HomePage() {
         navigate('/email-login');
     };
 
-    const handleKakaoLogin = () => {
-        console.log('카카오로 시작하기 클릭됨');
-        // 카카오 로그인 로직 구현
+    /**
+     * OAuth2 카카오 로그인 버튼 클릭 이벤트 핸들러
+     * 
+     * Spring Security OAuth2를 통한 간단한 카카오 로그인 프로세스:
+     * 1. 백엔드의 OAuth2 엔드포인트로 팝업 리다이렉트
+     * 2. 카카오 로그인 후 백엔드에서 JWT 토큰 생성
+     * 3. 콜백 페이지에서 토큰 수신 및 저장
+     * 4. 메인 페이지로 이동
+     */
+    const handleKakaoLogin = async () => {
+        try {
+            console.log('OAuth2 카카오로 시작하기 클릭됨');
+            
+            // 팝업 방식 OAuth2 카카오 로그인 실행
+            await oauth2KakaoApi.startLoginPopup();
+            
+            console.log('OAuth2 카카오 로그인 성공');
+            
+            // 로그인 성공 시 메인 페이지로 자동 이동
+            // JWT 토큰은 이미 localStorage에 저장됨
+            navigate('/main');
+            
+        } catch (error) {
+            console.error('OAuth2 카카오 로그인 실패:', error);
+            
+            // 에러 타입에 따른 적절한 사용자 메시지 표시
+            if (error.message.includes('사용자가 로그인을 취소')) {
+                // 사용자가 직접 취소한 경우 - 별도 알림 없음
+                console.log('사용자가 로그인을 취소했습니다');
+            } else {
+                // 기타 로그인 관련 에러
+                alert('카카오 로그인에 실패했습니다.\n잠시 후 다시 시도해주세요.\n\n에러: ' + error.message);
+            }
+        }
     };
 
     const handleSchedule = () => {
