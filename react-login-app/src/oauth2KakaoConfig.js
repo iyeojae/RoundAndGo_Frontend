@@ -23,10 +23,10 @@
 
 // 🌐 백엔드 서버 URL 설정
 // 개발 환경: 프록시를 통해 localhost:8080으로 자동 전달
-// 프로덕션: https://roundandgo.com
+// 프로덕션: https://roundandgo.onrender.com (실제 백엔드 서버)
 const BACKEND_BASE_URL = process.env.NODE_ENV === 'development' 
   ? '' // 개발 환경에서는 프록시 사용 (빈 문자열)
-  : 'https://roundandgo.com';
+  : 'https://roundandgo.onrender.com';
 
 /**
  * OAuth2 카카오 로그인 API 객체

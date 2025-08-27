@@ -1,1 +1,8 @@
+# OAuth2 경로는 백엔드로 전달 (React Router에서 제외)
+/oauth2/*  https://roundandgo.onrender.com/oauth2/:splat  302!
+
+# API 경로도 백엔드로 전달 (필요시)
+/api/*  https://roundandgo.onrender.com/api/:splat  302!
+
+# 나머지는 React SPA로 처리 (React Router fallback)
 /*    /index.html   200
