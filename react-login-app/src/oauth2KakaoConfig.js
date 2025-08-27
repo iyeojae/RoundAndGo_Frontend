@@ -23,8 +23,16 @@ export const oauth2KakaoApi = {
         console.log('🚀 OAuth2 카카오 로그인 시작');
         console.log('리다이렉트 URL:', kakaoLoginUrl);
         
-        // 현재 창에서 바로 이동
-        window.location.href = kakaoLoginUrl;
+        // React Router 완전 우회 - 동적 링크 생성 및 클릭
+        const link = document.createElement('a');
+        link.href = kakaoLoginUrl;
+        link.target = '_self';
+        link.rel = 'noopener noreferrer';
+        
+        // 링크를 DOM에 추가하고 클릭
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     },
 
     /**
