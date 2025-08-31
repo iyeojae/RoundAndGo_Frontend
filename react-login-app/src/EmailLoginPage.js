@@ -295,7 +295,7 @@ function EmailLoginPage() {
         <Overlay />
 
         <LogoContainer>
-          <Logo src="/images/logo-280a0a.png" alt="ROUND & GO Logo" />
+          <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="ROUND & GO Logo" />
           <Title>ROUND & GO</Title>
         </LogoContainer>
 

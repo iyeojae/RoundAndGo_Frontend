@@ -252,7 +252,7 @@ function HomePage() {
                 </BackgroundShapes>
 
                 <LogoContainer>
-                    <Logo src="/images/logo-280a0a.png" alt="ROUND & GO Logo" />
+                    <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="ROUND & GO Logo" />
                 </LogoContainer>
 
                 <Title style={{fontWeight: 'bolder'}}>ROUND & GO</Title>
@@ -263,7 +263,7 @@ function HomePage() {
                     </EmailButton>
 
                     <KakaoButton onClick={handleKakaoLogin}>
-                        <KakaoText src="/images/kakao-text-57a9c7.png" alt="카카오로 시작하기" />
+                        <KakaoText src={process.env.PUBLIC_URL + "/images/kakao-text-57a9c7.png"} alt="카카오로 시작하기" />
                     </KakaoButton>
 
                     <ScheduleButton onClick={handleSchedule}>
