@@ -95,15 +95,36 @@ function FirstMainPage() {
                 // 대안: URL 파라미터에서 토큰 찾기
                 if (currentParams.token || currentParams.accessToken) {
                     console.log('🔄 URL 파라미터에서 토큰 발견');
-                    const token = currentParams.token || currentParams.accessToken;
-                    localStorage.setItem('authToken', token);
+                    const accessToken = currentParams.accessToken || currentParams.token;
+                    const refreshToken = currentParams.refreshToken;
+                    
+                    // 토큰을 localStorage에 안전하게 저장
+                    localStorage.setItem('authToken', accessToken);
+                    if (refreshToken) {
+                        localStorage.setItem('refreshToken', refreshToken);
+                    }
                     localStorage.setItem('user', JSON.stringify({
                         type: 'kakao',
                         loginTime: new Date().toISOString(),
                         isOAuth2: true,
                         source: 'url-parameter'
                     }));
+                    
                     console.log('✅ URL 파라미터에서 localStorage로 토큰 저장 완료');
+                    
+                    // 🔒 보안 강화: URL에서 토큰 파라미터 제거 후 리다이렉트
+                    console.log('🔒 보안을 위해 URL에서 토큰 파라미터 제거 중...');
+                    
+                    // 깨끗한 URL로 브라우저 히스토리 업데이트 (새로고침 없이)
+                    const cleanUrl = window.location.origin + window.location.pathname;
+                    window.history.replaceState(null, '', cleanUrl);
+                    
+                    console.log('✅ URL 정리 완료 - 토큰이 더 이상 URL에 노출되지 않습니다');
+                    
+                    // 사용자에게 성공 알림
+                    setTimeout(() => {
+                        alert('카카오 로그인 성공!\n보안을 위해 URL이 정리되었습니다.');
+                    }, 500);
                 }
             }
 

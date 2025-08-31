@@ -9,6 +9,7 @@ import JejuLocationPage from './JejuLocationPage';
 import FirstMainPage from "./FirstMain/FirstMainPage";
 import MainPage from "./Main/MainPage";
 import HomePage from "./HomePage";
+import HomePageOld from "./HomePage_BACKUP";
 import OAuth2Callback from "./OAuth2Callback";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <div style={{minWidth: '375px', maxWidth: '440px', margin: '0 auto'}}>
             <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/old" element={<HomePageOld />} />
                 <Route path="/email-login" element={<EmailLoginPage />} />
                 <Route path="/schedule" element={<SchedulePage />} />
                 <Route path="/weather" element={<WeatherPage />} />
