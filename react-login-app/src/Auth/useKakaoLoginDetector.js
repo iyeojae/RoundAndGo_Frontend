@@ -120,11 +120,14 @@ const syncKakaoUserInfo = async () => {
       refreshToken = localStorage.getItem('emailRefreshToken');   // 이메일 로그인용
     }
     
-    console.log('🔑 localStorage에서 토큰 확인:', { 
-      accessToken: !!accessToken, 
-      refreshToken: !!refreshToken,
-      source: accessToken ? (localStorage.getItem('emailAccessToken') ? 'email' : 'kakao') : 'none'
-    });
+                console.log('🔑 localStorage에서 토큰 확인:', {
+              accessToken: !!accessToken,
+              refreshToken: !!refreshToken,
+              source: accessToken ? (localStorage.getItem('emailAccessToken') ? 'email' : 'kakao') : 'none',
+              accessTokenValue: accessToken ? accessToken.substring(0, 20) + '...' : 'undefined',
+              emailAccessToken: !!localStorage.getItem('emailAccessToken'),
+              emailAccessTokenValue: localStorage.getItem('emailAccessToken') ? localStorage.getItem('emailAccessToken').substring(0, 20) + '...' : 'undefined'
+            });
     
     if (!accessToken) {
       throw new Error('액세스 토큰이 없습니다. 다시 로그인해주세요.');
