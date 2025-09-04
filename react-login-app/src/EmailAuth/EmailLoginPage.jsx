@@ -67,13 +67,15 @@ function EmailLoginPage() {
         console.log('백엔드 응답 데이터:', data);
         
         // 백엔드 응답 형식에 맞춘 처리
-        if (data.data && data.data.accessToken && data.data.refreshToken) {
+        if (data.data && data.data.access_token && data.data.refresh_token) {
           // 토큰을 쿠키에 저장
           const domain = window.location.hostname === 'localhost' ? 'localhost' : '.roundandgo.com';
           const secure = window.location.protocol === 'https:';
           
-          document.cookie = `accessToken=${data.data.accessToken}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=3600`;
-          document.cookie = `refreshToken=${data.data.refreshToken}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=86400`;
+          document.cookie = `accessToken=${data.data.access_token}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=3600`;
+          document.cookie = `refreshToken=${data.data.refresh_token}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=86400`;
+          
+          console.log('쿠키 설정 완료:', document.cookie);
           
           alert(data.msg || '로그인 성공!');
           navigate('/main');
