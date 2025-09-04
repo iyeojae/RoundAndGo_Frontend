@@ -73,9 +73,9 @@ function EmailLoginPage() {
         console.log('data.access_token 값:', data.access_token);
         console.log('data.refresh_token 값:', data.refresh_token);
         
-        // 백엔드 응답 구조에 맞춰 토큰 추출
-        const accessToken = data.data?.access_token;
-        const refreshToken = data.data?.refresh_token;
+                      // 백엔드 응답 구조에 맞춰 토큰 추출 (실제 응답 구조 확인됨)
+              const accessToken = data.data.access_token;
+              const refreshToken = data.data.refresh_token;
         
         console.log('🔑 추출된 토큰:', { 
           accessToken: !!accessToken, 
