@@ -92,8 +92,27 @@ function FirstMainPage() {
                 console.log('❌ accessToken 쿠키를 찾을 수 없습니다');
                 console.log('🔍 사용 가능한 쿠키 목록:', Object.keys(currentCookies));
                 
-                // 대안: URL 파라미터에서 토큰 찾기
-                if (currentParams.token || currentParams.accessToken) {
+                // 대안 1: localStorage에서 이메일 로그인 토큰 확인
+                const emailAccessToken = localStorage.getItem('emailAccessToken');
+                if (emailAccessToken && emailAccessToken !== 'undefined') {
+                    console.log('🔄 localStorage에서 이메일 로그인 토큰 발견');
+                    
+                    // 이메일 로그인 토큰을 카카오 로그인용 키로도 저장 (useKakaoLoginDetector에서 사용)
+                    localStorage.setItem('accessToken', emailAccessToken);
+                    const emailRefreshToken = localStorage.getItem('emailRefreshToken');
+                    if (emailRefreshToken && emailRefreshToken !== 'undefined') {
+                        localStorage.setItem('refreshToken', emailRefreshToken);
+                    }
+                    
+                    console.log('✅ 이메일 로그인 토큰을 카카오 로그인용 키로 복사 완료');
+                    
+                    // 사용자에게 성공 알림
+                    setTimeout(() => {
+                        alert('이메일 로그인 토큰이 정상적으로 설정되었습니다!');
+                    }, 500);
+                }
+                // 대안 2: URL 파라미터에서 토큰 찾기 (카카오 로그인용)
+                else if (currentParams.token || currentParams.accessToken) {
                     console.log('🔄 URL 파라미터에서 토큰 발견');
                     const accessToken = currentParams.accessToken || currentParams.token;
                     const refreshToken = currentParams.refreshToken;
