@@ -110,11 +110,21 @@ const syncKakaoUserInfo = async () => {
     // 🎯 2단계: 백엔드 API로 사용자 정보 요청
     console.log('📡 백엔드에 카카오 사용자 정보 요청 중...');
     
-    // localStorage에서 토큰 가져오기
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
+    // localStorage에서 토큰 가져오기 (이메일 로그인과 카카오 로그인 모두 지원)
+    let accessToken = localStorage.getItem('accessToken');        // 카카오 로그인용
+    let refreshToken = localStorage.getItem('refreshToken');      // 카카오 로그인용
     
-    console.log('🔑 localStorage에서 토큰 확인:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
+    // 이메일 로그인 토큰이 있는지 확인
+    if (!accessToken) {
+      accessToken = localStorage.getItem('emailAccessToken');     // 이메일 로그인용
+      refreshToken = localStorage.getItem('emailRefreshToken');   // 이메일 로그인용
+    }
+    
+    console.log('🔑 localStorage에서 토큰 확인:', { 
+      accessToken: !!accessToken, 
+      refreshToken: !!refreshToken,
+      source: accessToken ? (localStorage.getItem('emailAccessToken') ? 'email' : 'kakao') : 'none'
+    });
     
     if (!accessToken) {
       throw new Error('액세스 토큰이 없습니다. 다시 로그인해주세요.');

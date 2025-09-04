@@ -63,16 +63,16 @@ function FirstMainPage() {
             console.log('📋 전체 쿠키 문자열:', document.cookie);
             console.log('🕒 현재 시간:', new Date().toISOString());
 
-            // 백엔드에서 설정한 쿠키 확인
-            if (currentCookies.accessToken) {
-                console.log('✅ accessToken 쿠키 발견!');
-                console.log('📄 토큰 내용 (처음 50자):', currentCookies.accessToken.substring(0, 50) + '...');
+                        // 백엔드에서 설정한 쿠키 확인 (백엔드 응답 변수명과 일치)
+            if (currentCookies.access_token) {
+                console.log('✅ access_token 쿠키 발견!');
+                console.log('📄 토큰 내용 (처음 50자):', currentCookies.access_token.substring(0, 50) + '...');
                 
-                                 // localStorage로 이동
-                 localStorage.setItem('accessToken', currentCookies.accessToken);
-                 if (currentCookies.refreshToken) {
-                     localStorage.setItem('refreshToken', currentCookies.refreshToken);
-                 }
+                // localStorage로 이동
+                localStorage.setItem('accessToken', currentCookies.access_token);
+                if (currentCookies.refresh_token) {
+                    localStorage.setItem('refreshToken', currentCookies.refresh_token);
+                }
                 localStorage.setItem('user', JSON.stringify({
                     type: 'kakao',
                     loginTime: new Date().toISOString(),

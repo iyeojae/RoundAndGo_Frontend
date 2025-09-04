@@ -76,28 +76,29 @@ function EmailLoginPage() {
         if (data.access_token && data.refresh_token) {
           // 토큰을 쿠키와 localStorage에 모두 저장
           try {
-            // 방법 1: 기본 쿠키 설정
-            document.cookie = `accessToken=${data.access_token}; path=/; max-age=3600`;
-            document.cookie = `refreshToken=${data.refresh_token}; path=/; max-age=86400`;
+            // 방법 1: 기본 쿠키 설정 (백엔드 응답 변수명과 일치)
+            document.cookie = `access_token=${data.access_token}; path=/; max-age=3600`;
+            document.cookie = `refresh_token=${data.refresh_token}; path=/; max-age=86400`;
             
             console.log('기본 쿠키 설정 완료:', document.cookie);
             
-            // 방법 2: 도메인별 쿠키 설정
+            // 방법 2: 도메인별 쿠키 설정 (백엔드 응답 변수명과 일치)
             if (window.location.hostname !== 'localhost') {
-              document.cookie = `accessToken=${data.access_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=3600`;
-              document.cookie = `refreshToken=${data.refresh_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=86400`;
+              document.cookie = `access_token=${data.access_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=3600`;
+              document.cookie = `refresh_token=${data.refresh_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=86400`;
               console.log('도메인별 쿠키 설정 완료:', document.cookie);
             }
             
-            // 방법 3: localStorage에도 저장 (useKakaoLoginDetector에서 사용)
-            localStorage.setItem('accessToken', data.access_token);
-            localStorage.setItem('refreshToken', data.refresh_token);
-            localStorage.setItem('user', JSON.stringify({
+            // 방법 3: localStorage에도 저장 (이메일 로그인용 키 이름 사용)
+            localStorage.setItem('emailAccessToken', data.access_token);
+            localStorage.setItem('emailRefreshToken', data.refresh_token);
+            localStorage.setItem('emailUser', JSON.stringify({
               type: 'email',
               loginTime: new Date().toISOString(),
               isOAuth2: false,
               source: 'email-login'
             }));
+            localStorage.setItem('emailIsLoggedIn', 'true');
             
             console.log('localStorage 토큰 저장 완료');
             
