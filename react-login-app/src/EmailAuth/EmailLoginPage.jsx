@@ -73,15 +73,26 @@ function EmailLoginPage() {
         console.log('data.access_token 값:', data.access_token);
         console.log('data.refresh_token 값:', data.refresh_token);
         
-                      // 백엔드 응답 구조에 맞춰 토큰 추출 (실제 응답 구조 확인됨)
+                                    // 백엔드 응답 구조에 맞춰 토큰 추출 (실제 응답 구조 확인됨)
               const accessToken = data.data.access_token;
               const refreshToken = data.data.refresh_token;
         
-        console.log('🔑 추출된 토큰:', { 
-          accessToken: !!accessToken, 
-          refreshToken: !!refreshToken,
-          accessTokenValue: accessToken ? accessToken.substring(0, 20) + '...' : 'undefined'
-        });
+              console.log('🔑 추출된 토큰:', { 
+                accessToken: !!accessToken, 
+                refreshToken: !!refreshToken,
+                accessTokenValue: accessToken ? accessToken.substring(0, 20) + '...' : 'undefined'
+              });
+              
+              // 🚨 토큰 추출 디버깅 추가
+              console.log('🚨 토큰 추출 상세 분석:', {
+                'data.data': !!data.data,
+                'data.data.access_token': !!data.data?.access_token,
+                'data.data.refresh_token': !!data.data?.refresh_token,
+                'accessToken 타입': typeof accessToken,
+                'accessToken 길이': accessToken ? accessToken.length : 0,
+                'refreshToken 타입': typeof refreshToken,
+                'refreshToken 길이': refreshToken ? refreshToken.length : 0
+              });
         
         if (accessToken && refreshToken) {
           // 토큰을 쿠키와 localStorage에 모두 저장
