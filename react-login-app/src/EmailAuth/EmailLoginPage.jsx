@@ -42,6 +42,11 @@ function EmailLoginPage() {
 
     try {
       // 실제 로그인 API 호출
+      console.log('로그인 요청 시작:', formData);
+      
+      // 백엔드 코드에 맞춘 이메일 로그인
+      console.log('백엔드 /api/auth/login 엔드포인트로 요청 시작');
+      
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -53,22 +58,31 @@ function EmailLoginPage() {
         })
       });
 
+      console.log('백엔드 응답:', response);
+
+      console.log('로그인 응답:', response);
+
       if (response.ok) {
         const data = await response.json();
-        console.log('로그인 성공:', data);
+        console.log('백엔드 응답 데이터:', data);
         
-        // 토큰을 쿠키에 저장
-        const domain = window.location.hostname === 'localhost' ? 'localhost' : '.roundandgo.com';
-        const secure = window.location.protocol === 'https:';
-        
-        document.cookie = `accessToken=${data.access_token}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=3600`;
-        document.cookie = `refreshToken=${data.refresh_token}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=86400`;
-        
-        alert('로그인 성공!');
-        navigate('/main');
+        // 백엔드 응답 형식에 맞춘 처리
+        if (data.data && data.data.accessToken && data.data.refreshToken) {
+          // 토큰을 쿠키에 저장
+          const domain = window.location.hostname === 'localhost' ? 'localhost' : '.roundandgo.com';
+          const secure = window.location.protocol === 'https:';
+          
+          document.cookie = `accessToken=${data.data.accessToken}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=3600`;
+          document.cookie = `refreshToken=${data.data.refreshToken}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=86400`;
+          
+          alert(data.msg || '로그인 성공!');
+          navigate('/main');
+        } else {
+          alert('토큰 정보를 받지 못했습니다. 다시 시도해주세요.');
+        }
       } else {
         const errorData = await response.json();
-        alert(errorData.message || '로그인에 실패했습니다. 다시 시도해주세요.');
+        alert(errorData.msg || '로그인에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
       console.error('로그인 오류:', error);
@@ -382,3 +396,4 @@ function EmailLoginPage() {
 }
 
 export default EmailLoginPage;
+
