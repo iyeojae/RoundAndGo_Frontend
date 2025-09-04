@@ -47,7 +47,12 @@ function EmailLoginPage() {
       // 백엔드 코드에 맞춘 이메일 로그인
       console.log('백엔드 /api/auth/login 엔드포인트로 요청 시작');
       
-      const response = await fetch('/api/auth/login', {
+             // 🚨 백엔드에서 /api/auth/login이 카카오로 리다이렉트되는 문제 발생
+       // 다른 엔드포인트 시도
+       console.log('🚨 /api/auth/login이 카카오로 리다이렉트되는 문제 발생');
+       console.log('🔄 다른 엔드포인트 시도 중...');
+       
+       const response = await fetch('/api/auth/email/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
