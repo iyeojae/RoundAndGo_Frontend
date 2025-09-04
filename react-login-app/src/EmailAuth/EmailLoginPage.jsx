@@ -41,18 +41,39 @@ function EmailLoginPage() {
     setLoading(true);
 
     try {
-      // 여기에 실제 로그인 API 호출 로직을 추가
-      // const response = await login(formData);
-      
-      // 임시로 성공 처리
-      setTimeout(() => {
+      // 실제 로그인 API 호출
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.userId,
+          password: formData.password
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('로그인 성공:', data);
+        
+        // 토큰을 쿠키에 저장
+        const domain = window.location.hostname === 'localhost' ? 'localhost' : '.roundandgo.com';
+        const secure = window.location.protocol === 'https:';
+        
+        document.cookie = `accessToken=${data.access_token}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=3600`;
+        document.cookie = `refreshToken=${data.refresh_token}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=86400`;
+        
         alert('로그인 성공!');
         navigate('/main');
-        setLoading(false);
-      }, 1000);
-      
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || '로그인에 실패했습니다. 다시 시도해주세요.');
+      }
     } catch (error) {
-      alert('로그인에 실패했습니다. 다시 시도해주세요.');
+      console.error('로그인 오류:', error);
+      alert('서버 연결에 실패했습니다. 다시 시도해주세요.');
+    } finally {
       setLoading(false);
     }
   };
