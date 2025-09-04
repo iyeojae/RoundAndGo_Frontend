@@ -68,19 +68,33 @@ function EmailLoginPage() {
         
         // 백엔드 응답 형식에 맞춘 처리 (실제 응답 구조 확인)
         console.log('백엔드 응답 구조:', data);
+        console.log('data.access_token 존재 여부:', !!data.access_token);
+        console.log('data.refresh_token 존재 여부:', !!data.refresh_token);
+        console.log('data.access_token 값:', data.access_token);
+        console.log('data.refresh_token 값:', data.refresh_token);
         
         if (data.access_token && data.refresh_token) {
-          // 토큰을 쿠키에 저장
-          const domain = window.location.hostname === 'localhost' ? 'localhost' : '.roundandgo.com';
-          const secure = window.location.protocol === 'https:';
-          
-          document.cookie = `accessToken=${data.access_token}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=3600`;
-          document.cookie = `refreshToken=${data.refresh_token}; path=/; domain=${domain}; ${secure ? 'secure;' : ''} samesite=strict; max-age=86400`;
-          
-          console.log('쿠키 설정 완료:', document.cookie);
-          
-          alert(data.msg || '로그인 성공!');
-          navigate('/main');
+          // 토큰을 쿠키에 저장 (간단한 방식으로 시도)
+          try {
+            // 방법 1: 기본 쿠키 설정
+            document.cookie = `accessToken=${data.access_token}; path=/; max-age=3600`;
+            document.cookie = `refreshToken=${data.refresh_token}; path=/; max-age=86400`;
+            
+            console.log('기본 쿠키 설정 완료:', document.cookie);
+            
+            // 방법 2: 도메인별 쿠키 설정
+            if (window.location.hostname !== 'localhost') {
+              document.cookie = `accessToken=${data.access_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=3600`;
+              document.cookie = `refreshToken=${data.refresh_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=86400`;
+              console.log('도메인별 쿠키 설정 완료:', document.cookie);
+            }
+            
+            alert(data.msg || '로그인 성공!');
+            navigate('/main');
+          } catch (cookieError) {
+            console.error('쿠키 설정 오류:', cookieError);
+            alert('쿠키 설정에 실패했습니다. 다시 시도해주세요.');
+          }
         } else {
           alert('토큰 정보를 받지 못했습니다. 다시 시도해주세요.');
         }
