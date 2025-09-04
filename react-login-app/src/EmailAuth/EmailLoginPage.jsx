@@ -47,12 +47,10 @@ function EmailLoginPage() {
       // 백엔드 코드에 맞춘 이메일 로그인
       console.log('백엔드 /api/auth/login 엔드포인트로 요청 시작');
       
-             // 🚨 백엔드에서 /api/auth/login이 카카오로 리다이렉트되는 문제 발생
-       // 다른 엔드포인트 시도
-       console.log('🚨 /api/auth/login이 카카오로 리다이렉트되는 문제 발생');
-       console.log('🔄 다른 엔드포인트 시도 중...');
+             // 백엔드 통합 로그인 엔드포인트 사용
+       console.log('백엔드 통합 /api/auth/login 엔드포인트로 요청 시작');
        
-       const response = await fetch('/api/auth/email/login', {
+       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,9 +76,9 @@ function EmailLoginPage() {
         console.log('data.access_token 값:', data.access_token);
         console.log('data.refresh_token 값:', data.refresh_token);
         
-                                    // 백엔드 응답 구조에 맞춰 토큰 추출 (실제 응답 구조 확인됨)
-              const accessToken = data.data.access_token;
-              const refreshToken = data.data.refresh_token;
+                                    // 백엔드 응답 구조에 맞춰 토큰 추출 (백엔드 코드 확인됨)
+              const accessToken = data.data.accessToken;
+              const refreshToken = data.data.refreshToken;
         
               console.log('🔑 추출된 토큰:', { 
                 accessToken: !!accessToken, 
