@@ -84,14 +84,14 @@ function FirstMainPage() {
                 
             }
             // 🎯 우선순위 2: 백엔드에서 설정한 쿠키 확인 (카카오 로그인용)
-            else if (currentCookies.access_token) {
-                console.log('✅ access_token 쿠키 발견!');
-                console.log('📄 토큰 내용 (처음 50자):', currentCookies.access_token.substring(0, 50) + '...');
+            else if (currentCookies.accessToken) {
+                console.log('✅ accessToken 쿠키 발견!');
+                console.log('📄 토큰 내용 (처음 50자):', currentCookies.accessToken.substring(0, 50) + '...');
                 
                 // localStorage로 이동
-                localStorage.setItem('accessToken', currentCookies.access_token);
-                if (currentCookies.refresh_token) {
-                    localStorage.setItem('refreshToken', currentCookies.refresh_token);
+                localStorage.setItem('accessToken', currentCookies.accessToken);
+                if (currentCookies.refreshToken) {
+                    localStorage.setItem('refreshToken', currentCookies.refreshToken);
                 }
                 localStorage.setItem('user', JSON.stringify({
                     type: 'kakao',
