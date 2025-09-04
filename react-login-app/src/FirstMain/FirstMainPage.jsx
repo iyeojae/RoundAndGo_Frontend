@@ -99,7 +99,7 @@ function FirstMainPage() {
                     const refreshToken = currentParams.refreshToken;
                     
                     // 토큰을 localStorage에 안전하게 저장
-                    localStorage.setItem('authToken', accessToken);
+                    localStorage.setItem('accessToken', accessToken);
                     if (refreshToken) {
                         localStorage.setItem('refreshToken', refreshToken);
                     }

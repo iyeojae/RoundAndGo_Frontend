@@ -110,12 +110,22 @@ const syncKakaoUserInfo = async () => {
     // 🎯 2단계: 백엔드 API로 사용자 정보 요청
     console.log('📡 백엔드에 카카오 사용자 정보 요청 중...');
     
+    // localStorage에서 토큰 가져오기
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    
+    console.log('🔑 localStorage에서 토큰 확인:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
+    
+    if (!accessToken) {
+      throw new Error('액세스 토큰이 없습니다. 다시 로그인해주세요.');
+    }
+    
     const response = await fetch('https://roundandgo.onrender.com/api/auth/user', {
       method: 'GET',
-      credentials: 'include',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`  // 토큰을 헤더에 포함
       }
     });
 
