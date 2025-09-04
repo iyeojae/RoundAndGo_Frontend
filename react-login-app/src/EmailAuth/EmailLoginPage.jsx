@@ -74,7 +74,7 @@ function EmailLoginPage() {
         console.log('data.refresh_token 값:', data.refresh_token);
         
         if (data.access_token && data.refresh_token) {
-          // 토큰을 쿠키에 저장 (간단한 방식으로 시도)
+          // 토큰을 쿠키와 localStorage에 모두 저장
           try {
             // 방법 1: 기본 쿠키 설정
             document.cookie = `accessToken=${data.access_token}; path=/; max-age=3600`;
@@ -88,6 +88,18 @@ function EmailLoginPage() {
               document.cookie = `refreshToken=${data.refresh_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=86400`;
               console.log('도메인별 쿠키 설정 완료:', document.cookie);
             }
+            
+            // 방법 3: localStorage에도 저장 (useKakaoLoginDetector에서 사용)
+            localStorage.setItem('accessToken', data.access_token);
+            localStorage.setItem('refreshToken', data.refresh_token);
+            localStorage.setItem('user', JSON.stringify({
+              type: 'email',
+              loginTime: new Date().toISOString(),
+              isOAuth2: false,
+              source: 'email-login'
+            }));
+            
+            console.log('localStorage 토큰 저장 완료');
             
             alert(data.msg || '로그인 성공!');
             navigate('/main');
