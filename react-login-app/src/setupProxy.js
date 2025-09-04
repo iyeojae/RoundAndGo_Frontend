@@ -29,4 +29,6 @@ module.exports = function(app) {
       }
     })
   );
+  
+  console.log('✅ 프록시 설정 로드됨 - Render 백엔드 서버로 프록시');
 };

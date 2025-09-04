@@ -145,7 +145,7 @@ const WeatherPage = () => {
     <Container>
       <Header>
         <LogoSection>
-          <Logo src="/images/logo-280a0a.png" alt="Logo" />
+          <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="Logo" />
           <LogoText>ROUND & GO</LogoText>
         </LogoSection>
         <NavSection>

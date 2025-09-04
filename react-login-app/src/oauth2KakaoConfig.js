@@ -22,11 +22,9 @@
  */
 
 // 🌐 백엔드 서버 URL 설정
-// 개발 환경: 프록시를 통해 localhost:8080으로 자동 전달
+// 개발 환경: 배포된 서버 사용
 // 프로덕션: https://roundandgo.onrender.com (실제 백엔드 서버)
-const BACKEND_BASE_URL = process.env.NODE_ENV === 'development' 
-  ? '' // 개발 환경에서는 프록시 사용 (빈 문자열)
-  : 'https://roundandgo.onrender.com';
+const BACKEND_BASE_URL = 'https://roundandgo.onrender.com';
 
 /**
  * OAuth2 카카오 로그인 API 객체
@@ -63,44 +61,35 @@ export const oauth2KakaoApi = {
         console.log('🚀 OAuth2 카카오 로그인 시작');
         console.log('🔗 리다이렉트 URL:', kakaoLoginUrl);
         
-        // 🎯 개발/프로덕션 환경별 최적화된 리다이렉트
-        console.log('🔄 카카오 로그인 페이지로 이동 시작...');
+        // 🔄 카카오 로그인 페이지로 이동
+        console.log('🚀 카카오 로그인 페이지로 이동 시작...');
         
-        if (process.env.NODE_ENV === 'development') {
-            // 🏠 개발 환경: 프록시를 통한 간단한 이동
-            console.log('🛠️ 개발 환경: 프록시를 통한 백엔드 연결');
-            window.location.href = kakaoLoginUrl;
-        } else {
-            // 🌐 프로덕션 환경: React Router 강력 우회
-            console.log('🚀 프로덕션 환경: React Router 강력 우회 시작');
-            
-            // 🚨 방법 1: 즉시 페이지 완전 교체
-            console.log('💥 즉시 페이지 완전 교체');
-            window.location.href = kakaoLoginUrl;
-            
-            // 🚨 방법 2: 강제 페이지 새로고침 (백업)
-            setTimeout(() => {
-                console.log('🔄 강제 새로고침 백업');
-                window.location.replace(kakaoLoginUrl);
-            }, 100);
-            
-            // 🚨 방법 3: document.location 사용 (최종 백업)
-            setTimeout(() => {
-                console.log('🔄 document.location 최종 백업');
-                document.location.href = kakaoLoginUrl;
-            }, 200);
-            
-            // 🚨 방법 4: top.location 사용 (프레임 환경 대응)
-            try {
-                if (window.top) {
-                    setTimeout(() => {
-                        console.log('🔄 top.location 프레임 우회');
-                        window.top.location.href = kakaoLoginUrl;
-                    }, 300);
-                }
-            } catch (e) {
-                console.log('⚠️ top.location 접근 불가 (보안 제한)');
+        // 🚨 방법 1: 즉시 페이지 완전 교체
+        console.log('💥 즉시 페이지 완전 교체');
+        window.location.href = kakaoLoginUrl;
+        
+        // 🚨 방법 2: 강제 페이지 새로고침 (백업)
+        setTimeout(() => {
+            console.log('🔄 강제 새로고침 백업');
+            window.location.replace(kakaoLoginUrl);
+        }, 100);
+        
+        // 🚨 방법 3: document.location 사용 (최종 백업)
+        setTimeout(() => {
+            console.log('🔄 document.location 최종 백업');
+            document.location.href = kakaoLoginUrl;
+        }, 200);
+        
+        // 🚨 방법 4: top.location 사용 (프레임 환경 대응)
+        try {
+            if (window.top) {
+                setTimeout(() => {
+                    console.log('🔄 top.location 프레임 우회');
+                    window.top.location.href = kakaoLoginUrl;
+                }, 300);
             }
+        } catch (e) {
+            console.log('⚠️ top.location 접근 불가 (보안 제한)');
         }
     },
 
@@ -253,7 +242,7 @@ export const handleOAuth2Callback = () => {
                 
                 // 메인 페이지로 이동
                 console.log('✅ 세션 기반 로그인 완료');
-                window.location.href = '/main';
+                window.location.href = '/first-main';
                 return;
             }
         }
@@ -268,7 +257,9 @@ export const handleOAuth2Callback = () => {
             
             // JWT 토큰 저장
             localStorage.setItem('authToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            if (refreshToken) {
+                localStorage.setItem('refreshToken', refreshToken);
+            }
             localStorage.setItem('user', JSON.stringify({
                 type: 'kakao',
                 loginTime: new Date().toISOString(),
@@ -286,8 +277,8 @@ export const handleOAuth2Callback = () => {
                 return;
             }
 
-            // 일반 모드에서는 메인 페이지로 이동
-            window.location.href = '/main';
+            // 일반 모드에서는 first-main 페이지로 이동
+            window.location.href = '/first-main';
             
         } else {
             throw new Error('토큰을 받지 못했습니다');
