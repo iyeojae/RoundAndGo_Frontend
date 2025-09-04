@@ -73,25 +73,35 @@ function EmailLoginPage() {
         console.log('data.access_token 값:', data.access_token);
         console.log('data.refresh_token 값:', data.refresh_token);
         
-        if (data.access_token && data.refresh_token) {
+        // 백엔드 응답 구조에 맞춰 토큰 추출
+        const accessToken = data.data?.access_token;
+        const refreshToken = data.data?.refresh_token;
+        
+        console.log('🔑 추출된 토큰:', { 
+          accessToken: !!accessToken, 
+          refreshToken: !!refreshToken,
+          accessTokenValue: accessToken ? accessToken.substring(0, 20) + '...' : 'undefined'
+        });
+        
+        if (accessToken && refreshToken) {
           // 토큰을 쿠키와 localStorage에 모두 저장
           try {
             // 방법 1: 기본 쿠키 설정 (백엔드 응답 변수명과 일치)
-            document.cookie = `access_token=${data.access_token}; path=/; max-age=3600`;
-            document.cookie = `refresh_token=${data.refresh_token}; path=/; max-age=86400`;
+            document.cookie = `access_token=${accessToken}; path=/; max-age=3600`;
+            document.cookie = `refresh_token=${refreshToken}; path=/; max-age=86400`;
             
             console.log('기본 쿠키 설정 완료:', document.cookie);
             
             // 방법 2: 도메인별 쿠키 설정 (백엔드 응답 변수명과 일치)
             if (window.location.hostname !== 'localhost') {
-              document.cookie = `access_token=${data.access_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=3600`;
-              document.cookie = `refresh_token=${data.refresh_token}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=86400`;
+              document.cookie = `access_token=${accessToken}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=3600`;
+              document.cookie = `refresh_token=${refreshToken}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=86400`;
               console.log('도메인별 쿠키 설정 완료:', document.cookie);
             }
             
             // 방법 3: localStorage에도 저장 (이메일 로그인용 키 이름 사용)
-            localStorage.setItem('emailAccessToken', data.access_token);
-            localStorage.setItem('emailRefreshToken', data.refresh_token);
+            localStorage.setItem('emailAccessToken', accessToken);
+            localStorage.setItem('emailRefreshToken', refreshToken);
             localStorage.setItem('emailUser', JSON.stringify({
               type: 'email',
               loginTime: new Date().toISOString(),
