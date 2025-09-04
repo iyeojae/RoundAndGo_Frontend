@@ -68,11 +68,11 @@ function FirstMainPage() {
                 console.log('✅ accessToken 쿠키 발견!');
                 console.log('📄 토큰 내용 (처음 50자):', currentCookies.accessToken.substring(0, 50) + '...');
                 
-                // localStorage로 이동
-                localStorage.setItem('authToken', currentCookies.accessToken);
-                if (currentCookies.refreshToken) {
-                    localStorage.setItem('refreshToken', currentCookies.refreshToken);
-                }
+                                 // localStorage로 이동
+                 localStorage.setItem('accessToken', currentCookies.accessToken);
+                 if (currentCookies.refreshToken) {
+                     localStorage.setItem('refreshToken', currentCookies.refreshToken);
+                 }
                 localStorage.setItem('user', JSON.stringify({
                     type: 'kakao',
                     loginTime: new Date().toISOString(),
