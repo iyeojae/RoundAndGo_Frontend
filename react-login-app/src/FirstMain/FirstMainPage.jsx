@@ -63,8 +63,28 @@ function FirstMainPage() {
             console.log('📋 전체 쿠키 문자열:', document.cookie);
             console.log('🕒 현재 시간:', new Date().toISOString());
 
-                        // 백엔드에서 설정한 쿠키 확인 (백엔드 응답 변수명과 일치)
-            if (currentCookies.access_token) {
+                        // 🎯 우선순위 1: localStorage에서 이메일 로그인 토큰 확인 (가장 먼저!)
+            const emailAccessToken = localStorage.getItem('emailAccessToken');
+            if (emailAccessToken && emailAccessToken !== 'undefined') {
+                console.log('🔄 localStorage에서 이메일 로그인 토큰 발견');
+                
+                // 이메일 로그인 토큰을 카카오 로그인용 키로도 저장 (useKakaoLoginDetector에서 사용)
+                localStorage.setItem('accessToken', emailAccessToken);
+                const emailRefreshToken = localStorage.getItem('emailRefreshToken');
+                if (emailRefreshToken && emailRefreshToken !== 'undefined') {
+                    localStorage.setItem('refreshToken', emailRefreshToken);
+                }
+                
+                console.log('✅ 이메일 로그인 토큰을 카카오 로그인용 키로 복사 완료');
+                
+                // 사용자에게 성공 알림
+                setTimeout(() => {
+                    alert('이메일 로그인 토큰이 정상적으로 설정되었습니다!');
+                }, 500);
+                
+            }
+            // 🎯 우선순위 2: 백엔드에서 설정한 쿠키 확인 (카카오 로그인용)
+            else if (currentCookies.access_token) {
                 console.log('✅ access_token 쿠키 발견!');
                 console.log('📄 토큰 내용 (처음 50자):', currentCookies.access_token.substring(0, 50) + '...');
                 
@@ -88,63 +108,50 @@ function FirstMainPage() {
                     alert('카카오 로그인 성공!\n토큰이 정상적으로 받아졌습니다.');
                 }, 1000);
                 
-            } else {
-                console.log('❌ accessToken 쿠키를 찾을 수 없습니다');
-                console.log('🔍 사용 가능한 쿠키 목록:', Object.keys(currentCookies));
+            }
+            // 🎯 우선순위 3: URL 파라미터에서 토큰 찾기 (카카오 로그인용)
+            else if (currentParams.token || currentParams.accessToken) {
+                console.log('🔄 URL 파라미터에서 토큰 발견');
+                const accessToken = currentParams.accessToken || currentParams.token;
+                const refreshToken = currentParams.refreshToken;
                 
-                // 대안 1: localStorage에서 이메일 로그인 토큰 확인
-                const emailAccessToken = localStorage.getItem('emailAccessToken');
-                if (emailAccessToken && emailAccessToken !== 'undefined') {
-                    console.log('🔄 localStorage에서 이메일 로그인 토큰 발견');
-                    
-                    // 이메일 로그인 토큰을 카카오 로그인용 키로도 저장 (useKakaoLoginDetector에서 사용)
-                    localStorage.setItem('accessToken', emailAccessToken);
-                    const emailRefreshToken = localStorage.getItem('emailRefreshToken');
-                    if (emailRefreshToken && emailRefreshToken !== 'undefined') {
-                        localStorage.setItem('refreshToken', emailRefreshToken);
-                    }
-                    
-                    console.log('✅ 이메일 로그인 토큰을 카카오 로그인용 키로 복사 완료');
-                    
-                    // 사용자에게 성공 알림
-                    setTimeout(() => {
-                        alert('이메일 로그인 토큰이 정상적으로 설정되었습니다!');
-                    }, 500);
+                // 토큰을 localStorage에 안전하게 저장
+                localStorage.setItem('accessToken', accessToken);
+                if (refreshToken) {
+                    localStorage.setItem('refreshToken', refreshToken);
                 }
-                // 대안 2: URL 파라미터에서 토큰 찾기 (카카오 로그인용)
-                else if (currentParams.token || currentParams.accessToken) {
-                    console.log('🔄 URL 파라미터에서 토큰 발견');
-                    const accessToken = currentParams.accessToken || currentParams.token;
-                    const refreshToken = currentParams.refreshToken;
-                    
-                    // 토큰을 localStorage에 안전하게 저장
-                    localStorage.setItem('accessToken', accessToken);
-                    if (refreshToken) {
-                        localStorage.setItem('refreshToken', refreshToken);
-                    }
-                    localStorage.setItem('user', JSON.stringify({
-                        type: 'kakao',
-                        loginTime: new Date().toISOString(),
-                        isOAuth2: true,
-                        source: 'url-parameter'
-                    }));
-                    
-                    console.log('✅ URL 파라미터에서 localStorage로 토큰 저장 완료');
-                    
-                    // 🔒 보안 강화: URL에서 토큰 파라미터 제거 후 리다이렉트
-                    console.log('🔒 보안을 위해 URL에서 토큰 파라미터 제거 중...');
-                    
-                    // 깨끗한 URL로 브라우저 히스토리 업데이트 (새로고침 없이)
-                    const cleanUrl = window.location.origin + window.location.pathname;
-                    window.history.replaceState(null, '', cleanUrl);
-                    
-                    console.log('✅ URL 정리 완료 - 토큰이 더 이상 URL에 노출되지 않습니다');
-                    
-                    // 사용자에게 성공 알림
-                    setTimeout(() => {
-                        alert('카카오 로그인 성공!\n보안을 위해 URL이 정리되었습니다.');
-                    }, 500);
-                }
+                localStorage.setItem('user', JSON.stringify({
+                    type: 'kakao',
+                    loginTime: new Date().toISOString(),
+                    isOAuth2: true,
+                    source: 'url-parameter'
+                }));
+                
+                console.log('✅ URL 파라미터에서 localStorage로 토큰 저장 완료');
+                
+                // 🔒 보안 강화: URL에서 토큰 파라미터 제거 후 리다이렉트
+                console.log('🔒 보안을 위해 URL에서 토큰 파라미터 제거 중...');
+                
+                // 깨끗한 URL로 브라우저 히스토리 업데이트 (새로고침 없이)
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState(null, '', cleanUrl);
+                
+                console.log('✅ URL 정리 완료 - 토큰이 더 이상 URL에 노출되지 않습니다');
+                
+                // 사용자에게 성공 알림
+                setTimeout(() => {
+                    alert('카카오 로그인 성공!\n보안을 위해 URL이 정리되었습니다.');
+                }, 500);
+            }
+            // 🎯 우선순위 4: 아무 토큰도 없는 경우
+            else {
+                console.log('❌ 모든 소스에서 토큰을 찾을 수 없습니다');
+                console.log('🔍 사용 가능한 쿠키 목록:', Object.keys(currentCookies));
+                console.log('🔍 localStorage 상태:', {
+                    emailAccessToken: !!localStorage.getItem('emailAccessToken'),
+                    accessToken: !!localStorage.getItem('accessToken'),
+                    emailIsLoggedIn: localStorage.getItem('emailIsLoggedIn')
+                });
             }
 
             // 모든 쿠키 상세 분석
