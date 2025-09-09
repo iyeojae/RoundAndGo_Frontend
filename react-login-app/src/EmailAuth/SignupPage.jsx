@@ -78,51 +78,68 @@ function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('📝 회원가입 폼 제출 시작');
 
     // 최종 검증
     if (!formData.userId || !formData.password || !formData.confirmPassword || !formData.email) {
+      console.log('❌ 필수 필드 누락');
       alert('모든 필드를 입력해주세요.');
       return;
     }
 
     if (!validateUserId(formData.userId)) {
+      console.log('❌ 아이디 검증 실패:', formData.userId);
       alert('아이디는 2자 이상 입력해주세요.');
       return;
     }
 
     if (!validatePassword(formData.password)) {
+      console.log('❌ 비밀번호 검증 실패');
       alert('비밀번호는 영문, 숫자, 특수문자가 모두 포함된 8자 이상이어야 합니다.');
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
+      console.log('❌ 비밀번호 확인 불일치');
       alert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
     if (!validateEmail(formData.email)) {
+      console.log('❌ 이메일 검증 실패:', formData.email);
       alert('올바른 이메일 주소를 입력해주세요.');
       return;
     }
+
+    console.log('✅ 폼 검증 통과, 회원가입 API 호출 시작');
+    console.log('📤 전송할 데이터:', {
+      userId: formData.userId,
+      email: formData.email,
+      password: '[HIDDEN]'
+    });
 
     setLoading(true);
 
     try {
       // Auth 폴더의 signupWithEmail 함수 사용
       const result = await signupWithEmail(formData);
+      console.log('📥 회원가입 API 응답:', result);
       
       if (result.success) {
+        console.log('✅ 회원가입 성공');
         setSignupCompleted(true);
         alert('회원가입이 완료되었습니다!');
       } else {
+        console.log('❌ 회원가입 실패:', result.error);
         alert('회원가입 실패: ' + result.error);
       }
       
     } catch (error) {
-      console.error('회원가입 오류:', error);
+      console.error('💥 회원가입 오류:', error);
       alert('회원가입 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
+      console.log('🏁 회원가입 처리 완료');
     }
   };
 

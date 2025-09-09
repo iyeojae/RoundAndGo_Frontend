@@ -314,6 +314,13 @@ export const loginWithEmail = async (email, password) => {
  * 회원가입 API 호출
  */
 const callSignupAPI = async (signupData) => {
+  console.log('🌐 회원가입 API 호출:', API_ENDPOINTS.SIGNUP);
+  console.log('📤 요청 데이터:', {
+    userId: signupData.userId,
+    email: signupData.email,
+    password: '[HIDDEN]'
+  });
+  
   const response = await fetch(API_ENDPOINTS.SIGNUP, {
     method: 'POST',
     headers: {
@@ -326,6 +333,7 @@ const callSignupAPI = async (signupData) => {
     })
   });
   
+  console.log('📡 HTTP 응답 상태:', response.status, response.statusText);
   return response;
 };
 
@@ -334,28 +342,32 @@ const callSignupAPI = async (signupData) => {
  */
 export const signupWithEmail = async (signupData) => {
   try {
-    console.log('회원가입 시도:', signupData.email);
+    console.log('🚀 회원가입 프로세스 시작');
+    console.log('👤 회원가입 시도 사용자:', signupData.email);
     
     // API 호출
     const response = await callSignupAPI(signupData);
-    console.log('백엔드 응답:', response);
     
     if (response.ok) {
       const data = await response.json();
-      console.log('백엔드 응답 데이터:', data);
-      console.log('✅ 회원가입 성공');
+      console.log('📥 회원가입 성공 응답 데이터:', data);
+      console.log('✅ 회원가입 완료');
       
       return { success: true, data: data };
     } else {
       const errorData = await response.json().catch(() => ({}));
       const errorMessage = errorData.message || `회원가입 실패: ${response.status}`;
-      console.log(`❌ 회원가입 실패: ${response.status} - ${errorMessage}`);
+      console.log(`❌ 회원가입 실패 - 상태: ${response.status}`);
+      console.log(`❌ 에러 메시지: ${errorMessage}`);
+      console.log(`❌ 에러 데이터:`, errorData);
       
       return { success: false, error: errorMessage };
     }
     
   } catch (error) {
-    console.error('회원가입 오류:', error);
+    console.error('💥 회원가입 API 호출 오류:', error);
+    console.error('💥 오류 타입:', error.name);
+    console.error('💥 오류 메시지:', error.message);
     return { success: false, error: error.message };
   }
 };
