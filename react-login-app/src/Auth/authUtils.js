@@ -99,6 +99,11 @@ export const getUserInfo = () => {
   // 🏠 1단계: 로컬스토리지에서 사용자 정보 확인
   let user = localStorage.getItem('user');
 
+  // 이메일 로그인 사용자 정보 키도 확인
+  if (!user) {
+    user = localStorage.getItem('emailUser');
+  }
+
   // 🍪 2단계: 로컬스토리지에 없으면 쿠키에서 확인
   if (!user) {
     user = getCookie('user') || getCookie('userInfo');
@@ -132,14 +137,19 @@ export const logout = async () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('emailUser');
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('email');
+    localStorage.removeItem('emailAccessToken');
+    localStorage.removeItem('emailRefreshToken');
 
-    // 쿠키에서도 인증 정보 제거
-    document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie = 'JWT=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie = 'JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    // 쿠키에서도 인증 정보 제거 (path와 domain 명확히 지정)
+    const cookieOptions = 'expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+    document.cookie = `authToken=; ${cookieOptions}`;
+    document.cookie = `accessToken=; ${cookieOptions}`;
+    document.cookie = `JWT=; ${cookieOptions}`;
+    document.cookie = `JSESSIONID=; ${cookieOptions}`;
 
     console.log('✅ 로그아웃 완료');
   } catch (error) {
@@ -158,7 +168,7 @@ export const getUserNickname = () => {
 
   // 📧 이메일 로그인인 경우
   if (userInfo.type === 'email') {
-    return userInfo.email || userInfo.userId || '이메일 사용자';
+    return userInfo.userInfo?.email || userInfo.userInfo?.userId || '이메일 사용자';
   }
 
   return '사용자';
@@ -200,13 +210,13 @@ const processLoginResponse = (data, email) => {
     throw new Error('토큰 정보를 받지 못했습니다.');
   }
 
-  // 토큰 저장
-  localStorage.setItem('emailAccessToken', accessToken);
+  // 토큰 저장 (authToken 키로 통일)
+  localStorage.setItem('authToken', accessToken);
   if (refreshToken) {
-    localStorage.setItem('emailRefreshToken', refreshToken);
+    localStorage.setItem('refreshToken', refreshToken);
   }
 
-  // 사용자 정보 저장
+  // 사용자 정보 저장 (emailUser 키 유지)
   localStorage.setItem('emailUser', JSON.stringify({
     type: 'email',
     loginTime: new Date().toISOString(),
@@ -222,7 +232,7 @@ const processLoginResponse = (data, email) => {
 /**
  * 이메일 로그인 메인 함수
  */
-export const loginWithEmail = async (email, password, navigate) => {
+export const loginWithEmail = async (email, password) => {
   try {
     console.log('이메일 로그인 시도:', email);
 
