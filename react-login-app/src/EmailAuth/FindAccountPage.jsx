@@ -315,6 +315,9 @@ function FindAccountPage() {
               return;
             }
             
+            console.log('🔍 아이디 찾기 확인 API 호출 시작');
+            console.log('📤 전송할 데이터:', { email: savedEmail });
+            
             const response = await fetch('https://roundandgo.onrender.com/api/auth/find-id/confirm', {
               method: 'POST',
               headers: {
@@ -323,20 +326,27 @@ function FindAccountPage() {
               body: JSON.stringify({ email: savedEmail })
             });
             
+            console.log('📡 API 응답 상태:', response.status, response.statusText);
+            
             if (response.ok) {
               const data = await response.json();
               // 아이디 조회 성공 시 결과 페이지로 이동
               setFoundId(data.userId || savedEmail); // 백엔드에서 userId 반환하거나 이메일 사용
               setStep('result');
             } else {
+              console.log('❌ API 호출 실패:', response.status);
               try {
                 const errorData = await response.json();
-                if (errorData.message.includes('인증')) {
+                console.log('❌ 에러 응답 데이터:', errorData);
+                if (errorData.message && errorData.message.includes('인증')) {
                   alert('이메일 인증이 완료되지 않았습니다. 메일함에서 인증을 완료해주세요.');
                 } else {
                   alert(errorData.message || '아이디 조회에 실패했습니다.');
                 }
               } catch (jsonError) {
+                console.error('❌ JSON 파싱 오류:', jsonError);
+                const responseText = await response.text();
+                console.log('❌ 응답 원문:', responseText);
                 alert('서버 응답을 처리할 수 없습니다.\n백엔드 서버 상태를 확인해주세요.');
               }
             }
