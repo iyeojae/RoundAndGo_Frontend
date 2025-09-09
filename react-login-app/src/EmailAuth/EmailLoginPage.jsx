@@ -44,7 +44,7 @@ function EmailLoginPage() {
       
       if (result.success) {
         alert('로그인 성공!');
-        navigate('/');
+        navigate('/first-main');
       } else {
         alert('로그인 실패: ' + result.error);
       }

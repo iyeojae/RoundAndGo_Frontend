@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import AddScheduleModal from './AddScheduleModal';
-import WeatherLocationModal from './WeatherLocationModal';
+import AddScheduleModal from '../AddScheduleModal';
+import WeatherLocationModal from '../WeatherLocationModal';
 import './SchedulePage.css';
 
 const SchedulePage = () => {

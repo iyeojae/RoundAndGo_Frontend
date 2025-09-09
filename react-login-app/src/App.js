@@ -11,7 +11,6 @@ import JejuLocationPage from './JejuLocationPage';
 import FirstMainPage from "./FirstMain/FirstMainPage";
 import MainPage from "./Main/MainPage";
 import HomePage from "./HomePage";
-import HomePageOld from "./HomePage_BACKUP";
 import OAuth2Callback from "./OAuth2Callback";
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
         <div>
             <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/old" element={<HomePageOld />} />
                 <Route path="/email-login" element={<EmailLoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/find-account" element={<FindAccountPage />} />
