@@ -39,7 +39,7 @@ function EmailLoginPage() {
     setErrors({});
 
     try {
-      // Auth 폴더의 loginWithEmail 함수 사용
+      // Auth 폴더의 loginWithEmail 함수 사용 (userId를 email로 전달)
       const result = await loginWithEmail(formData.userId, formData.password);
       
       if (result.success) {
