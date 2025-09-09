@@ -48,7 +48,7 @@ function EmailLoginPage() {
              // 백엔드 통합 로그인 엔드포인트 사용
        console.log('백엔드 통합 /api/auth/login 엔드포인트로 요청 시작');
        
-       const response = await fetch('/api/auth/login', {
+       const response = await fetch('https://roundandgo.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

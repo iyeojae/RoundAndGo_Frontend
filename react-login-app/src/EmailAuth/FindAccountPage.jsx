@@ -110,7 +110,7 @@ function FindAccountPage() {
         
         // 1단계: 이메일 입력 및 인증 메일 발송
         try {
-          const response = await fetch('/api/auth/find-id/request', {
+          const response = await fetch('https://roundandgo.onrender.com/api/auth/find-id/request', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -315,7 +315,7 @@ function FindAccountPage() {
               return;
             }
             
-            const response = await fetch('/api/auth/find-id/confirm', {
+            const response = await fetch('https://roundandgo.onrender.com/api/auth/find-id/confirm', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

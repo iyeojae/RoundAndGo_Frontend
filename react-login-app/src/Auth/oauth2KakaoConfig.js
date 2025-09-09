@@ -279,7 +279,7 @@ export const handleOAuth2Callback = () => {
                 
                 try {
                     // 백엔드 API로 사용자 정보 요청
-                    const response = await fetch('/api/user/me', {
+                    const response = await fetch('https://roundandgo.onrender.com/api/user/me', {
                         credentials: 'include'
                     });
                     
