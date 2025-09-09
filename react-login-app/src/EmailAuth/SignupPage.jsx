@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signupWithEmail } from '../Auth/authUtils';
 import './EmailAuth.css';
 
 function SignupPage() {
@@ -107,17 +108,20 @@ function SignupPage() {
     setLoading(true);
 
     try {
-      // 여기에 실제 회원가입 API 호출 로직을 추가
-      // const response = await signup(formData);
+      // Auth 폴더의 signupWithEmail 함수 사용
+      const result = await signupWithEmail(formData);
       
-      // 임시로 성공 처리
-      setTimeout(() => {
+      if (result.success) {
         setSignupCompleted(true);
-        setLoading(false);
-      }, 1000);
+        alert('회원가입이 완료되었습니다!');
+      } else {
+        alert('회원가입 실패: ' + result.error);
+      }
       
     } catch (error) {
-      alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+      console.error('회원가입 오류:', error);
+      alert('회원가입 중 오류가 발생했습니다.');
+    } finally {
       setLoading(false);
     }
   };

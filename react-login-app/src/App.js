@@ -5,7 +5,7 @@ import './App.css';
 import EmailLoginPage from './EmailAuth/EmailLoginPage';
 import SignupPage from './EmailAuth/SignupPage';
 import FindAccountPage from './EmailAuth/FindAccountPage';
-import SchedulePage from './SchedulePage';
+import SchedulePage from './Schedule/SchedulePage';
 import WeatherPage from './WeatherPage';
 import JejuLocationPage from './JejuLocationPage';
 import FirstMainPage from "./FirstMain/FirstMainPage";

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
 import React from "react";
-import { oauth2KakaoApi } from "./oauth2KakaoConfig";
-import { markKakaoLoginAttempt } from './useKakaoLoginDetector';
+import { oauth2KakaoApi } from "./Auth/oauth2KakaoConfig";
+import { markKakaoLoginAttempt } from './Auth/useKakaoLoginDetector';
 
 const AppContainer = styled.div`
   width: 100vw;

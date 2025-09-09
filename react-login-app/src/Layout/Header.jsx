@@ -1,7 +1,7 @@
 // Header.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import logo from '../Main/logo.svg'; // logo
-import { isLoggedIn, getUserNickname, getProfileImageUrl, logout } from '../authUtils';
+import { isLoggedIn, getUserNickname, getProfileImageUrl, logout } from '../Auth/authUtils';
 import { useNavigate } from 'react-router-dom';
 // 로고 -> o, 알림버튼 -> x
 

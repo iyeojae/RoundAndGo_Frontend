@@ -309,3 +309,53 @@ export const loginWithEmail = async (email, password) => {
     return { success: false, error: error.message };
   }
 };
+
+/**
+ * 회원가입 API 호출
+ */
+const callSignupAPI = async (signupData) => {
+  const response = await fetch(API_ENDPOINTS.SIGNUP, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userId: signupData.userId,
+      email: signupData.email,
+      password: signupData.password
+    })
+  });
+  
+  return response;
+};
+
+/**
+ * 회원가입 메인 함수
+ */
+export const signupWithEmail = async (signupData) => {
+  try {
+    console.log('회원가입 시도:', signupData.email);
+    
+    // API 호출
+    const response = await callSignupAPI(signupData);
+    console.log('백엔드 응답:', response);
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log('백엔드 응답 데이터:', data);
+      console.log('✅ 회원가입 성공');
+      
+      return { success: true, data: data };
+    } else {
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.message || `회원가입 실패: ${response.status}`;
+      console.log(`❌ 회원가입 실패: ${response.status} - ${errorMessage}`);
+      
+      return { success: false, error: errorMessage };
+    }
+    
+  } catch (error) {
+    console.error('회원가입 오류:', error);
+    return { success: false, error: error.message };
+  }
+};

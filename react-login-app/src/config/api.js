@@ -21,6 +21,7 @@ export const BACKEND_BASE_URL = isLocal
 export const API_ENDPOINTS = {
   // 인증 관련
   LOGIN: `${API_BASE_URL}/auth/login`,
+  SIGNUP: `${API_BASE_URL}/auth/signup`,
   USER_ME: `${API_BASE_URL}/user/me`,
   USER_INFO: `${API_BASE_URL}/auth/user`,
   TOKEN: `${API_BASE_URL}/auth/token`,

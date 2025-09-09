@@ -26,7 +26,7 @@
  * @version 2.0.0
  */
 import React, { useEffect } from 'react';
-import { handleOAuth2Callback } from './oauth2KakaoConfig';
+import { handleOAuth2Callback } from './Auth/oauth2KakaoConfig';
 
 // 🍪 쿠키에서 특정 값 가져오기 (디버깅용)
 const getCookie = (name) => {

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import './FirstMainPage.css';
-import { useKakaoLoginDetector } from '../useKakaoLoginDetector';
+import { useKakaoLoginDetector } from '../Auth/useKakaoLoginDetector';
 import MapImage from './map_jeju.svg';
 import GolfSearch from '../Search/Search.jsx'; // 검색 기능
 
