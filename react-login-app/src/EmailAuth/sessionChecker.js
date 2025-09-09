@@ -66,3 +66,4 @@ window.checkAndSyncEmailSession = async function() {
 // 자동 실행
 console.log('🎯 이메일 세션 체크 함수 준비 완료!');
 console.log('💡 실행하려면 콘솔에서 checkAndSyncEmailSession() 입력하세요!');
+
