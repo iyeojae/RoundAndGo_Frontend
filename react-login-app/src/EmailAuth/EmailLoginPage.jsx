@@ -53,7 +53,6 @@ function EmailLoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({
           userId: formData.userId,
           password: formData.password

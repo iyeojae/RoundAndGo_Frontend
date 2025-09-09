@@ -16,7 +16,6 @@ export const syncEmailUserFromSession = async () => {
     // 백엔드 API로 현재 사용자 정보 요청
     const response = await fetch('https://roundandgo.onrender.com/api/user/me', {
       method: 'GET',
-      credentials: 'include', // JSESSIONID 쿠키 포함
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'

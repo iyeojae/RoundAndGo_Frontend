@@ -1,0 +1,556 @@
+/* 일정관리 페이지 스타일 */
+.schedule-page {
+  background: linear-gradient(135deg, #269962 0%, #2C8C7D 100%);
+  color: white;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+}
+
+.schedule-logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.schedule-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.schedule-logo-text {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.schedule-page-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.schedule-weather-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* 날씨 카드 */
+.schedule-weather-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 0 0 20px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.schedule-weather-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.schedule-weather-date {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.schedule-weather-location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.schedule-weather-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.schedule-weather-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.schedule-weather-icon {
+  font-size: 32px;
+}
+
+.schedule-weather-temp {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.schedule-weather-desc {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.schedule-weather-range {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.schedule-weather-center {
+  text-align: center;
+}
+
+.schedule-weather-rain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.schedule-weather-rain-icon {
+  font-size: 20px;
+}
+
+.schedule-weather-rain-text {
+  font-size: 12px;
+}
+
+.schedule-weather-rain-percent {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.schedule-weather-right {
+  text-align: right;
+  font-size: 12px;
+}
+
+.schedule-weather-dust {
+  margin-bottom: 5px;
+}
+
+.schedule-weather-wind {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* 일별 날씨 예보 */
+.schedule-daily-weather {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 15px;
+  margin: 0 0 20px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow-x: auto;
+}
+
+.schedule-daily-list {
+  display: flex;
+  gap: 15px;
+}
+
+.schedule-daily-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.schedule-daily-date {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.schedule-daily-icon {
+  font-size: 20px;
+}
+
+.schedule-daily-temps {
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 캘린더 섹션 */
+.schedule-calendar-section {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 0 0 20px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.schedule-month-button {
+  background: transparent;
+  border: none;
+  color: #333;
+  height: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.schedule-month-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  text-align: center;
+  color: #333;
+}
+
+/* 캘린더 그리드 */
+.schedule-calendar-grid {
+  background: transparent;
+  padding: 0;
+}
+
+.schedule-weekday-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  margin-bottom: 10px;
+}
+
+.schedule-weekday {
+  text-align: center;
+  padding: 10px 5px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #666;
+}
+
+.schedule-weekday.weekend {
+  color: #ff6b6b;
+}
+
+.schedule-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+}
+
+.schedule-day {
+  aspect-ratio: 1;
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  min-height: 40px;
+  border-radius: 8px;
+  margin: 2px;
+  color: #333;
+}
+
+.schedule-day:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.schedule-day.other-month {
+  color: #ccc;
+}
+
+.schedule-day.today {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.schedule-day.selected {
+  background: #269962;
+  color: white;
+}
+
+.schedule-day-number {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: #333;
+}
+
+.schedule-day-events {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: 0 2px;
+}
+
+.schedule-event-dot {
+  height: 3px;
+  border-radius: 2px;
+  background: #ff6b6b;
+}
+
+/* 일정 섹션 */
+.schedule-section {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 0 0 20px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.schedule-section-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.schedule-count {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.schedule-add-button {
+  background: #269962;
+  border: none;
+  color: white;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.schedule-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.schedule-empty-icon {
+  height: 60px;
+  background: #f5f5f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #ccc;
+  margin-bottom: 15px;
+  padding: 0 20px;
+}
+
+.schedule-empty-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.schedule-empty-hint {
+  font-size: 12px;
+  color: #999;
+}
+
+.schedule-item {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 15px;
+  border-left: 4px solid #269962;
+  transition: all 0.3s ease;
+}
+
+.schedule-item:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+.schedule-item-time {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.schedule-item-content {
+  flex: 1;
+}
+
+.schedule-item-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.schedule-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.schedule-item-detail {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 날씨 섹션 */
+.schedule-weather-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.schedule-weather-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.schedule-weather-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.schedule-weather-location {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.schedule-weather-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.schedule-weather-icon {
+  font-size: 48px;
+}
+
+.schedule-weather-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.schedule-weather-temp {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.schedule-weather-description {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.schedule-weather-humidity,
+.schedule-weather-wind {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 스크롤 힌트 */
+.schedule-scroll-hint {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: bounce 2s infinite;
+}
+
+.schedule-scroll-hint-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.schedule-scroll-hint-arrow {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+/* 페이지 하단 여백 */
+.schedule-page {
+  padding-bottom: 20px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .schedule-page {
+    padding: 0;
+    padding-bottom: 20px;
+  }
+  
+  .schedule-header {
+    padding: 15px;
+  }
+  
+  .schedule-weather-card,
+  .schedule-daily-weather,
+  .schedule-calendar-section,
+  .schedule-section {
+    margin: 0 0 15px 0;
+  }
+}

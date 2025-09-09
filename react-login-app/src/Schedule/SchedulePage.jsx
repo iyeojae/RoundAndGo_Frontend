@@ -351,29 +351,6 @@ const SchedulePage = () => {
         )}
       </main>
 
-      {/* 하단 네비게이션 바 */}
-      <nav className="schedule-bottom-nav">
-        <div className="schedule-nav-item" onClick={() => navigate('/')}>
-          <div className="schedule-nav-icon">🏠</div>
-          <div className="schedule-nav-label">홈</div>
-        </div>
-        <div className="schedule-nav-item">
-          <div className="schedule-nav-icon">💬</div>
-          <div className="schedule-nav-label">커뮤니티</div>
-        </div>
-        <div className="schedule-nav-item">
-          <div className="schedule-nav-icon">🏔️</div>
-          <div className="schedule-nav-label">코스추천</div>
-        </div>
-        <div className="schedule-nav-item active">
-          <div className="schedule-nav-icon">📅</div>
-          <div className="schedule-nav-label">일정</div>
-        </div>
-        <div className="schedule-nav-item">
-          <div className="schedule-nav-icon">👤</div>
-          <div className="schedule-nav-label">마이페이지</div>
-        </div>
-      </nav>
 
       {showAddScheduleModal && (
         <AddScheduleModal
