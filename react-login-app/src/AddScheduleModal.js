@@ -60,7 +60,6 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule }) => {
           <HeaderBackground />
           <HeaderContent>
             <LogoSection>
-              <LogoImage src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="ROUND & GO" />
               <LogoText>ROUND & GO</LogoText>
             </LogoSection>
             <HeaderIcons>

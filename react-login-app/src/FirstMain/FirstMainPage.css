@@ -108,7 +108,6 @@
 /* 여기서부터 Search.jsx에 대한 스타일링 */
 .SearchNResponse {
     width: 100%;
-    max-width: 380px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -121,13 +120,14 @@
 /* Search 입력 필드 컨테이너 스타일 */
 .Search {
     width: 90%;
+    height: 45px;
     margin: 0 auto;
     padding-bottom: 10px;
     position: relative; /* button이 Search를 기준으로 오른쪽에 띄우기 위해서 */
     display: flex;
 }
 
-.searchbtnimg {
+.SearchBtnImg {
     color: transparent;
     border: none;
     position: absolute;
@@ -140,10 +140,10 @@
 /* Search 입력 필드 스타일 */
 .Search input {
     width: 100%;
-    padding: 10px;
+    padding: 10px 25px;
     border: 1px solid #ccc;
     border-radius: 54px;
-    font-size: 1rem;
+    font-size: 12px;
     box-sizing: border-box;
 }
 
@@ -166,4 +166,44 @@
     text-align: right;
     color: #555;
     font-size: 0.9rem;
+}
+
+.NoResponse {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.Warning {
+    margin-bottom: 25px;
+}
+
+.entire-cont {
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+    border-radius: 14px;
+    padding: 10px;
+}
+
+.msg-cont {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.msg-cont strong {
+    color: #797979;
+    font-size: 0.65rem;
+    font-weight: 400;
+}
+
+.msg-cont p {
+    color: #797979;
+    font-size: 0.65rem;
+    font-weight: 400;
+    margin: 3% auto;
 }

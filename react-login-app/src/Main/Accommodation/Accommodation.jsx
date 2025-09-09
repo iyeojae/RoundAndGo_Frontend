@@ -1,6 +1,9 @@
 // Accommodation.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import AccommodationList from '../../Common/Accommodation/AccommodationList.jsx';
+import { fetchAccommodations } from "../../Common/Accommodation/AccommodationAPI";
 import Replace from '../Replace.jpg';
 import arrow from "../arrow.svg";
 
@@ -63,6 +66,7 @@ function Accommodation() {
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('전체');
 
     const navigate = useNavigate();
+    const goTo = (path) => navigate(path);
 
     useEffect(() => {
         const fetchAllAccommodations = async () => {
@@ -114,19 +118,23 @@ function Accommodation() {
         });
     };
 
+    if (loading) return <p>로딩 중...</p>;
+    if (error) return <p style={{ color: 'red' }}>{error}</p>;
+
     return (
-        <div className="Accommodation" style={{width: '90%', margin: '0 auto'}}>
+        <div className="Accommodation" style={{ width: '90%', margin: '0 auto' }}>
+            {/* 간단한 Preview 버전 */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}>
-                <p className="IntroMent" style={{fontSize: '18px', fontWeight: '500'}}>
+                <p className="IntroMent" style={{ fontSize: '18px', fontWeight: '500' }}>
                     제주도의 인기 숙소를 만나보세요
                 </p>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    <p style={{fontSize: '10px', color: '#797979', marginRight: '5px'}}>더보기</p>
-                    <img style={{width: '4px', height: '10px'}} src={arrow} alt="더보기"/>
+                <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => goTo('/detail/main?tab=accommodation')}>
+                    <p style={{ fontSize: '10px', color: '#797979', marginRight: '5px' }}>더보기</p>
+                    <img style={{ width: '4px', height: '10px' }} src={arrow} alt="더보기" />
                 </div>
             </div>
 
@@ -138,14 +146,14 @@ function Accommodation() {
                     paddingBottom: '50px'
                 }}
             >
-                {!loading && !error && previewAccommodations.map(acc => {
+                {previewAccommodations.map(acc => {
                     const imageUrl = acc.firstimage || ReplaceImage;
                     const tags = getAccommodationTags(acc);
 
                     return (
                         <div
                             key={acc.contentid}
-                            style={{overflow: 'hidden', cursor: 'pointer'}}
+                            style={{ overflow: 'hidden', cursor: 'pointer' }}
                             onClick={() => navigateToDetailPage(acc.contentid)}
                         >
                             {imageUrl && (
@@ -160,18 +168,18 @@ function Accommodation() {
                                     }}
                                 />
                             )}
-                            <div style={{marginTop: '3px'}}>
-                                <h3 style={{fontSize: '12px', fontWeight: '550', margin: '0'}}>
+                            <div style={{ marginTop: '3px' }}>
+                                <h3 style={{ fontSize: '12px', fontWeight: '550', margin: '0' }}>
                                     {acc.title}
                                 </h3>
-                                <p style={{fontSize: '10px', color: '#797979', margin: '0'}}>
+                                <p style={{ fontSize: '10px', color: '#797979', margin: '0' }}>
                                     {acc.city || '지역 정보 없음'}
                                 </p>
-                                <div style={{marginTop: '3px', display: 'flex', flexWrap: 'wrap', gap: '4px'}}>
+                                <div style={{ marginTop: '3px', display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                                     {tags.map((tag, idx) => (
-                                        <span key={idx} style={{fontSize: '10px', color: '#269962'}}>
-                      {tag}
-                    </span>
+                                        <span key={idx} style={{ fontSize: '10px', color: '#269962' }}>
+                                            {tag}
+                                        </span>
                                     ))}
                                 </div>
                             </div>
@@ -179,9 +187,19 @@ function Accommodation() {
                     );
                 })}
             </div>
+
+            {/* 아래는 AccommodationList 컴포넌트를 활용한 방식 (선택사항) */}
+            <AccommodationList
+                title="제주도의 인기 숙소를 만나보세요"
+                accommodations={accommodations}
+                showMoreButton={true}
+                onMoreClick={() => goTo('/detail/main?tab=accommodation')}
+                limit={4}
+                navigateToDetailPage={navigateToDetailPage}
+                showFilterButtons={true}
+            />
         </div>
     );
 }
 
 export default Accommodation;
-

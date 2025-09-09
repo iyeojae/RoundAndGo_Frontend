@@ -30,34 +30,41 @@ const WeatherPage = () => {
   const fetchWeatherData = async (location) => {
     setLoading(true);
     try {
-      const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
-      if (!apiKey) {
-        console.error('OpenWeatherMap API 키가 설정되지 않았습니다.');
-        setLoading(false);
-        return;
-      }
+      const apiKey = '3e4972652ad8b596a707ef44ebb741bf';
+      console.log('🌤️ 날씨 API 호출 시작:', location);
+      console.log('🔑 API 키 사용:', apiKey.substring(0, 8) + '...');
 
       // 현재 날씨 데이터
-      const currentResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`
-      );
+      const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`;
+      console.log('📡 현재 날씨 API URL:', currentUrl);
+
+      const currentResponse = await fetch(currentUrl);
+      console.log('📡 현재 날씨 응답 상태:', currentResponse.status);
 
       if (!currentResponse.ok) {
+        const errorText = await currentResponse.text();
+        console.error('❌ 현재 날씨 API 오류:', errorText);
         throw new Error('현재 날씨 데이터를 가져올 수 없습니다.');
       }
 
       const currentData = await currentResponse.json();
+      console.log('✅ 현재 날씨 데이터:', currentData);
 
       // 5일 예보 데이터
-      const forecastResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`
-      );
+      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`;
+      console.log('📡 예보 API URL:', forecastUrl);
+
+      const forecastResponse = await fetch(forecastUrl);
+      console.log('📡 예보 응답 상태:', forecastResponse.status);
 
       if (!forecastResponse.ok) {
+        const errorText = await forecastResponse.text();
+        console.error('❌ 예보 API 오류:', errorText);
         throw new Error('예보 데이터를 가져올 수 없습니다.');
       }
 
       const forecastData = await forecastResponse.json();
+      console.log('✅ 예보 데이터:', forecastData);
 
       setWeatherData(currentData);
       setForecastData(forecastData);
@@ -116,7 +123,7 @@ const WeatherPage = () => {
       const forecastItem = forecastData.list.find(item => {
         const itemTime = new Date(item.dt * 1000);
         return itemTime.getHours() === targetTime.getHours() &&
-               itemTime.getDate() === targetTime.getDate();
+            itemTime.getDate() === targetTime.getDate();
       });
 
       if (forecastItem) {
@@ -142,122 +149,122 @@ const WeatherPage = () => {
   const hourlyForecast = getHourlyForecast();
 
   return (
-    <Container>
-      <Header>
-        <LogoSection>
-          <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="Logo" />
-          <LogoText>ROUND & GO</LogoText>
-        </LogoSection>
-        <NavSection>
-          <NavButton onClick={() => navigate('/')}>홈</NavButton>
-          <NavButton onClick={() => navigate('/jeju-location')}>지역선택</NavButton>
-          <NavButton onClick={() => navigate('/schedule')}>일정</NavButton>
-        </NavSection>
-      </Header>
+      <Container>
+        <Header>
+          <LogoSection>
+            <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="Logo" />
+            <LogoText>ROUND & GO</LogoText>
+          </LogoSection>
+          <NavSection>
+            <NavButton onClick={() => navigate('/')}>홈</NavButton>
+            <NavButton onClick={() => navigate('/jeju-location')}>지역선택</NavButton>
+            <NavButton onClick={() => navigate('/schedule')}>일정</NavButton>
+          </NavSection>
+        </Header>
 
-      <MainContent>
-        {/* 현재 날씨 섹션 */}
-        <CurrentWeatherSection>
-          <WeatherHeader>
-            <WeatherInfo>
-              <WeatherIcon>
-                {weatherData ? getWeatherIcon(weatherData.weather[0].icon) : '🌤️'}
-              </WeatherIcon>
-              <WeatherTemp>
-                {weatherData ? Math.round(weatherData.main.temp) : 20}°
-              </WeatherTemp>
-            </WeatherInfo>
-            <WeatherDetails>
-              <WeatherLocation>{selectedLocation}</WeatherLocation>
-              <WeatherDate>현재 {formatDate(new Date())}</WeatherDate>
-              <WeatherDescription>
-                {weatherData ? weatherData.weather[0].description : '구름'}
-              </WeatherDescription>
-            </WeatherDetails>
-          </WeatherHeader>
+        <MainContent>
+          {/* 현재 날씨 섹션 */}
+          <CurrentWeatherSection>
+            <WeatherHeader>
+              <WeatherInfo>
+                <WeatherIcon>
+                  {weatherData ? getWeatherIcon(weatherData.weather[0].icon) : '🌤️'}
+                </WeatherIcon>
+                <WeatherTemp>
+                  {weatherData ? Math.round(weatherData.main.temp) : 20}°
+                </WeatherTemp>
+              </WeatherInfo>
+              <WeatherDetails>
+                <WeatherLocation>{selectedLocation}</WeatherLocation>
+                <WeatherDate>현재 {formatDate(new Date())}</WeatherDate>
+                <WeatherDescription>
+                  {weatherData ? weatherData.weather[0].description : '구름'}
+                </WeatherDescription>
+              </WeatherDetails>
+            </WeatherHeader>
 
-          <WeatherStats>
-            <StatItem>
-              <StatLabel>최고</StatLabel>
-              <StatValue high>
-                {weatherData ? Math.round(weatherData.main.temp_max) : 20}°
-              </StatValue>
-            </StatItem>
-            <StatItem>
-              <StatLabel>최저</StatLabel>
-              <StatValue low>
-                {weatherData ? Math.round(weatherData.main.temp_min) : 17}°
-              </StatValue>
-            </StatItem>
-            <StatItem>
-              <StatLabel>습도</StatLabel>
-              <StatValue>
-                {weatherData ? weatherData.main.humidity : 65}%
-              </StatValue>
-            </StatItem>
-            <StatItem>
-              <StatLabel>풍속</StatLabel>
-              <StatValue>
-                {weatherData ? weatherData.wind.speed : 2.1} m/s
-              </StatValue>
-            </StatItem>
-          </WeatherStats>
-        </CurrentWeatherSection>
+            <WeatherStats>
+              <StatItem>
+                <StatLabel>최고</StatLabel>
+                <StatValue high>
+                  {weatherData ? Math.round(weatherData.main.temp_max) : 20}°
+                </StatValue>
+              </StatItem>
+              <StatItem>
+                <StatLabel>최저</StatLabel>
+                <StatValue low>
+                  {weatherData ? Math.round(weatherData.main.temp_min) : 17}°
+                </StatValue>
+              </StatItem>
+              <StatItem>
+                <StatLabel>습도</StatLabel>
+                <StatValue>
+                  {weatherData ? weatherData.main.humidity : 65}%
+                </StatValue>
+              </StatItem>
+              <StatItem>
+                <StatLabel>풍속</StatLabel>
+                <StatValue>
+                  {weatherData ? weatherData.wind.speed : 2.1} m/s
+                </StatValue>
+              </StatItem>
+            </WeatherStats>
+          </CurrentWeatherSection>
 
-        {/* 시간별 예보 섹션 */}
-        <HourlyForecastSection>
-          <SectionTitle>시간별 일기예보</SectionTitle>
-          <HourlyGrid>
-            {hourlyForecast.map((forecast, index) => (
-              <HourlyItem key={index}>
-                <HourlyTime>{forecast.time}</HourlyTime>
-                <HourlyIcon>{getWeatherIcon(forecast.icon)}</HourlyIcon>
-                <HourlyTemp>{forecast.temp}°</HourlyTemp>
-              </HourlyItem>
-            ))}
-          </HourlyGrid>
-        </HourlyForecastSection>
-
-        {/* 주간 예보 섹션 */}
-        <WeeklyForecastSection>
-          <WeeklyHeader>
-            <WeeklyTitle>주간예보</WeeklyTitle>
-            <CalendarButton onClick={() => navigate('/schedule')}>
-              달력보기
-            </CalendarButton>
-          </WeeklyHeader>
-
-          <CalendarPreview>
-            <CalendarMonth>5월</CalendarMonth>
-            <CalendarDays>
-              {[6, 7, 8, 16, 17].map((day, index) => (
-                <CalendarDay key={index} hasSchedule>
-                  {day}
-                </CalendarDay>
+          {/* 시간별 예보 섹션 */}
+          <HourlyForecastSection>
+            <SectionTitle>시간별 일기예보</SectionTitle>
+            <HourlyGrid>
+              {hourlyForecast.map((forecast, index) => (
+                  <HourlyItem key={index}>
+                    <HourlyTime>{forecast.time}</HourlyTime>
+                    <HourlyIcon>{getWeatherIcon(forecast.icon)}</HourlyIcon>
+                    <HourlyTemp>{forecast.temp}°</HourlyTemp>
+                  </HourlyItem>
               ))}
-            </CalendarDays>
-          </CalendarPreview>
-        </WeeklyForecastSection>
+            </HourlyGrid>
+          </HourlyForecastSection>
 
-        {/* 액션 버튼들 */}
-        <ActionButtons>
-          <ActionButton onClick={openWeatherLocationModal}>
-            지역 변경
-          </ActionButton>
-          <ActionButton onClick={() => navigate('/schedule')}>
-            일정으로 이동
-          </ActionButton>
-        </ActionButtons>
-      </MainContent>
+          {/* 주간 예보 섹션 */}
+          <WeeklyForecastSection>
+            <WeeklyHeader>
+              <WeeklyTitle>주간예보</WeeklyTitle>
+              <CalendarButton onClick={() => navigate('/schedule')}>
+                달력보기
+              </CalendarButton>
+            </WeeklyHeader>
 
-      {showWeatherLocationModal && (
-        <WeatherLocationModal
-          onClose={() => setShowWeatherLocationModal(false)}
-          onLocationChange={handleWeatherLocationChange}
-          currentLocation={selectedLocation}
-        />
-      )}
-    </Container>
+            <CalendarPreview>
+              <CalendarMonth>5월</CalendarMonth>
+              <CalendarDays>
+                {[6, 7, 8, 16, 17].map((day, index) => (
+                    <CalendarDay key={index} hasSchedule>
+                      {day}
+                    </CalendarDay>
+                ))}
+              </CalendarDays>
+            </CalendarPreview>
+          </WeeklyForecastSection>
+
+          {/* 액션 버튼들 */}
+          <ActionButtons>
+            <ActionButton onClick={openWeatherLocationModal}>
+              지역 변경
+            </ActionButton>
+            <ActionButton onClick={() => navigate('/schedule')}>
+              일정으로 이동
+            </ActionButton>
+          </ActionButtons>
+        </MainContent>
+
+        {showWeatherLocationModal && (
+            <WeatherLocationModal
+                onClose={() => setShowWeatherLocationModal(false)}
+                onLocationChange={handleWeatherLocationChange}
+                currentLocation={selectedLocation}
+            />
+        )}
+      </Container>
   );
 };
 

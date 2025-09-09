@@ -1,0 +1,58 @@
+.Tourism {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.IntroMent {
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+
+.IntroMent-sub {
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+    text-align: center;
+}
+
+.Scroll {
+    display: flex;
+    overflow-x: auto;
+    column-gap: 16px;
+    scrollbar-width: none;
+}
+
+
+
+
+/* DetailTourism */
+.TourismGrid {
+    width: 90%;
+    margin: 7% auto 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.1% 5%;
+}
+
+.gridImage {
+    width: 100%;
+    aspect-ratio: 192 / 144;
+    border-radius: 15px;
+}
+
+.TourismTitle {
+    font-size: 14px;
+    font-weight: 450;
+    margin: 1% 0;
+}
+
+.TourismAddress {
+    color: #595959;
+    font-size: 12px;
+    font-weight: 400;
+    margin: 1% 0;
+}

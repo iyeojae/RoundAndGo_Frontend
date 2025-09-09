@@ -145,7 +145,6 @@ const JejuLocationPage = () => {
 
         <LogoSection>
           <LogoContainer>
-            <LogoImage src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="ROUND & GO Logo" />
             <LogoText>ROUND & GO</LogoText>
           </LogoContainer>
         </LogoSection>
