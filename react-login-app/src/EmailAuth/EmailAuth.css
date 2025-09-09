@@ -14,12 +14,65 @@
   position: relative;
 }
 
+/* ===== 이메일 로그인 전용 배경 ===== */
+.email-login-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  position: relative;
+}
+
 .email-auth-content {
   width: 100%;
   max-width: 375px;
   position: relative;
   padding: 20px;
   margin: 0 auto;
+  z-index: 2;
+}
+
+/* styled-components 클래스 오버라이드 */
+.sc-cfLHZC.iLOEoS {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 메인 페이지와 동일한 배경 도형들 (투명도 적용) */
+.email-auth-shape-1 {
+  position: absolute;
+  width: 90%;
+  height: 380px;
+  left: 10%;
+  top: 15%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.6) 0%, rgba(155, 201, 179, 0.6) 100%);
+  border-radius: 190px 0 0 190px;
+  z-index: 1;
+}
+
+.email-auth-shape-2 {
+  position: absolute;
+  width: 90%;
+  height: 380px;
+  right: 10%;
+  top: 400px;
+  background: linear-gradient(270deg, rgba(42, 130, 88, 0.6) 0%, rgba(160, 203, 182, 0.6) 100%);
+  border-radius: 0 190px 190px 0;
+  z-index: 1;
+}
+
+.email-auth-shape-3 {
+  position: absolute;
+  width: 450px;
+  height: 100%;
+  right: 0;
+  bottom: 0%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(155, 201, 179, 0.6) 100%);
+  border-radius: 225px 225px 0 0;
+  z-index: 1;
 }
 
 /* ===== 뒤로가기 버튼 ===== */
@@ -58,11 +111,11 @@
 }
 
 .email-auth-title {
-  font-family: 'Julius Sans One', sans-serif;
-  font-weight: 400;
-  font-size: 22px;
-  line-height: 1.09;
-  color: #2C8C7D;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #333;
   text-align: center;
   margin: 12px 0 0 0;
 }
@@ -135,7 +188,7 @@
   display: block;
   color: #2D8779;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
   margin-bottom: 12px;
   text-align: left;
 }
@@ -146,10 +199,11 @@
   border: 2px solid #e9ecef;
   border-radius: 12px;
   font-size: 16px;
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
   color: #333;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  backdrop-filter: blur(10px);
 }
 
 .email-auth-input:focus {
@@ -240,12 +294,13 @@
 }
 
 .email-auth-submit-button:disabled {
-  background: #ccc;
-  border-color: #ccc;
-  color: #999;
+  background: transparent;
+  border-color: #2D8779;
+  color: #2D8779;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  opacity: 0.5;
 }
 
 /* ===== 결과 컨테이너 ===== */
@@ -397,9 +452,14 @@
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 12px;
   line-height: 1.25;
-  color: #92BEA9;
+  color: #2D8779;
   text-decoration: none;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
 }
 
 .email-auth-link:hover {
@@ -484,201 +544,3 @@
   }
 }
 
-/* ===== Mobile Login Page 스타일 (2번 사진과 동일) ===== */
-.mobile-login-page {
-  width: 100%;
-  min-height: 100vh;
-  background: #E8F5E8;
-  position: relative;
-  overflow: hidden;
-}
-
-.mobile-login-bg {
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-/* 곡선 흰색 도형들 */
-.mobile-login-curve-1 {
-  position: absolute;
-  top: -100px;
-  left: -100px;
-  width: 300px;
-  height: 300px;
-  background: white;
-  border-radius: 50%;
-  opacity: 0.9;
-  z-index: 1;
-}
-
-.mobile-login-curve-2 {
-  position: absolute;
-  top: 50px;
-  right: -50px;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 50%;
-  z-index: 1;
-}
-
-.mobile-login-curve-3 {
-  position: absolute;
-  bottom: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 250px;
-  height: 250px;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  z-index: 1;
-}
-
-.mobile-login-logo-container {
-  text-align: center;
-  margin-bottom: 40px;
-  z-index: 2;
-  position: relative;
-}
-
-.mobile-login-logo {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  margin: 0 auto 20px;
-}
-
-.mobile-login-title {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 28px;
-  color: #666;
-  margin: 0;
-  letter-spacing: 1px;
-}
-
-.mobile-login-form-container {
-  width: 100%;
-  max-width: 320px;
-  z-index: 2;
-  position: relative;
-}
-
-.mobile-login-input-group {
-  margin-bottom: 24px;
-}
-
-.mobile-login-label {
-  display: block;
-  color: #2D8779;
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 12px;
-  text-align: left;
-}
-
-.mobile-login-input {
-  width: 100%;
-  padding: 18px 20px;
-  border: 1px solid #E5E5E5;
-  border-radius: 12px;
-  font-size: 16px;
-  background: white;
-  color: #333;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.mobile-login-input:focus {
-  outline: none;
-  border-color: #2D8779;
-  box-shadow: 0 4px 12px rgba(45, 135, 121, 0.2);
-}
-
-.mobile-login-input::placeholder {
-  color: #999;
-}
-
-.mobile-login-error-message {
-  color: #e74c3c;
-  font-size: 12px;
-  margin-top: 8px;
-  text-align: left;
-}
-
-.mobile-login-submit-button {
-  width: 100%;
-  padding: 18px;
-  background: #2D8779;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 32px;
-  box-shadow: 0 4px 12px rgba(45, 135, 121, 0.3);
-}
-
-.mobile-login-submit-button:hover {
-  background: #1e7a50;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(45, 135, 121, 0.4);
-}
-
-.mobile-login-submit-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.mobile-login-footer-links {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 2;
-  position: relative;
-}
-
-.mobile-login-footer-link {
-  background: transparent;
-  border: none;
-  color: #666;
-  font-size: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.mobile-login-footer-link:hover {
-  color: #2D8779;
-}
-
-/* 모바일 반응형 */
-@media (max-width: 480px) {
-  .mobile-login-bg {
-    padding: 16px;
-  }
-  
-  .mobile-login-logo {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .mobile-login-title {
-    font-size: 24px;
-  }
-  
-  .mobile-login-form-container {
-    max-width: 280px;
-  }
-}

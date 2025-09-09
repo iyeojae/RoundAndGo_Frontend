@@ -11,8 +11,6 @@ function EmailLoginPage() {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false);
-  const [currentPage, setCurrentPage] = useState('login'); // 'login', 'idFind', 'passwordFind', 'result'
 
   const handleInputChange = (field) => (e) => {
     const value = e.target.value;
@@ -147,14 +145,6 @@ function EmailLoginPage() {
     }
   };
 
-  const handleBack = () => {
-    if (currentPage === 'login') {
-      navigate(-1);
-    } else {
-      setCurrentPage('login');
-    }
-  };
-
   const handleFindAccount = () => {
     navigate('/find-account');
   };
@@ -163,282 +153,82 @@ function EmailLoginPage() {
     navigate('/signup');
   };
 
-  const handleIdFind = () => {
-    setCurrentPage('idFind');
-  };
-
-  const handlePasswordFind = () => {
-    setCurrentPage('passwordFind');
-  };
-
-  const handleShowResult = () => {
-    setCurrentPage('result');
-  };
-
-  const handleBackToLogin = () => {
-    setCurrentPage('login');
-  };
-
-  // 아이디 찾기 페이지
-  if (currentPage === 'idFind') {
-    return (
-      <div className="mobile-login-page">
-        <div className="mobile-login-bg">
-          <div className="mobile-login-curve-1"></div>
-          <div className="mobile-login-curve-2"></div>
-          <div className="mobile-login-curve-3"></div>
-          
-          <div className="mobile-login-logo-container">
-            <img src="/images/logo-280a0a.png" alt="ROUND & GO Logo" className="mobile-login-logo" />
-            <h1 className="mobile-login-title">아이디 찾기</h1>
-          </div>
-
-          <div className="mobile-login-form-container">
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <p style={{ color: '#666', fontSize: '16px', lineHeight: '1.5' }}>
-                가입하신 이메일 주소를 입력해주세요.<br />
-                해당 이메일로 아이디를 발송해드립니다.
-              </p>
-            </div>
-
-            <div className="mobile-login-input-group">
-              <label className="mobile-login-label">이메일 주소</label>
-              <input
-                className="mobile-login-input"
-                type="email"
-                placeholder="이메일을 입력해주세요"
-              />
-            </div>
-
-            <button
-              className="mobile-login-submit-button"
-              onClick={handleShowResult}
-            >
-              아이디 찾기
-            </button>
-
-            <button
-              className="mobile-login-footer-link"
-              onClick={handleBack}
-              style={{ marginTop: '20px' }}
-            >
-              ← 로그인으로 돌아가기
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // 비밀번호 찾기 페이지
-  if (currentPage === 'passwordFind') {
-    return (
-      <div className="mobile-login-page">
-        <div className="mobile-login-bg">
-          <div className="mobile-login-curve-1"></div>
-          <div className="mobile-login-curve-2"></div>
-          <div className="mobile-login-curve-3"></div>
-          
-          <div className="mobile-login-logo-container">
-            <img src="/images/logo-280a0a.png" alt="ROUND & GO Logo" className="mobile-login-logo" />
-            <h1 className="mobile-login-title">비밀번호 찾기</h1>
-          </div>
-
-          <div className="mobile-login-form-container">
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <p style={{ color: '#666', fontSize: '16px', lineHeight: '1.5' }}>
-                가입하신 아이디와 이메일 주소를 입력해주세요.<br />
-                해당 이메일로 비밀번호 재설정 링크를 발송해드립니다.
-              </p>
-            </div>
-
-            <div className="mobile-login-input-group">
-              <label className="mobile-login-label">아이디</label>
-              <input
-                className="mobile-login-input"
-                type="text"
-                placeholder="아이디를 입력해주세요"
-              />
-            </div>
-
-            <div className="mobile-login-input-group">
-              <label className="mobile-login-label">이메일 주소</label>
-              <input
-                className="mobile-login-input"
-                type="email"
-                placeholder="이메일을 입력해주세요"
-              />
-            </div>
-
-            <button
-              className="mobile-login-submit-button"
-              onClick={handleShowResult}
-            >
-              비밀번호 찾기
-            </button>
-
-            <button
-              className="mobile-login-footer-link"
-              onClick={handleBack}
-              style={{ marginTop: '20px' }}
-            >
-              ← 로그인으로 돌아가기
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // 결과 페이지
-  if (currentPage === 'result') {
-    return (
-      <div className="mobile-login-page">
-        <div className="mobile-login-bg">
-          <div className="mobile-login-curve-1"></div>
-          <div className="mobile-login-curve-2"></div>
-          <div className="mobile-login-curve-3"></div>
-          
-          <div className="mobile-login-logo-container">
-            <img src="/images/logo-280a0a.png" alt="ROUND & GO Logo" className="mobile-login-logo" />
-            <h1 className="mobile-login-title">처리 완료</h1>
-          </div>
-
-          <div className="mobile-login-form-container">
-            <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                background: '#2D8779',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 20px',
-                fontSize: '40px',
-                color: 'white'
-              }}>
-                ✓
-              </div>
-              <h2 style={{ color: '#333', fontSize: '20px', marginBottom: '10px' }}>
-                이메일이 발송되었습니다
-              </h2>
-              <p style={{ color: '#666', fontSize: '16px', lineHeight: '1.5' }}>
-                입력하신 이메일 주소로<br />
-                관련 정보를 발송해드렸습니다.<br />
-                이메일을 확인해주세요.
-              </p>
-            </div>
-
-            <button
-              className="mobile-login-submit-button"
-              onClick={handleBackToLogin}
-            >
-              로그인으로 돌아가기
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // 메인 로그인 페이지
   return (
-    <div className="mobile-login-page">
-      {/* 민트 그린 배경 */}
-      <div className="mobile-login-bg">
-        {/* 곡선 흰색 도형들 */}
-        <div className="mobile-login-curve-1"></div>
-        <div className="mobile-login-curve-2"></div>
-        <div className="mobile-login-curve-3"></div>
-        
+    <div className="email-login-container">
+      <div className="email-auth-content">
+        {/* 뒤로가기 버튼 */}
+        <button 
+          className="email-auth-back-button" 
+          onClick={() => navigate(-1)}
+          type="button"
+        >
+          ←
+        </button>
+
         {/* 로고 및 제목 */}
-        <div className="mobile-login-logo-container">
+        <div className="email-auth-logo-container">
           <img 
             src="/images/logo-280a0a.png" 
             alt="ROUND & GO Logo" 
-            className="mobile-login-logo"
+            className="email-auth-logo"
           />
-          <h1 className="mobile-login-title">ROUND & GO</h1>
+          <h1 className="email-auth-title">ROUND & GO</h1>
         </div>
 
         {/* 로그인 폼 */}
-        <div className="mobile-login-form-container">
+        <div className="email-auth-form-container">
           <form onSubmit={handleSubmit}>
             {/* 아이디 입력 */}
-            <div className="mobile-login-input-group">
-              <label className="mobile-login-label">아이디</label>
+            <div className="email-auth-input-group">
+              <label className="email-auth-label">아이디</label>
               <input
-                className="mobile-login-input"
+                className="email-auth-input"
                 type="text"
                 value={formData.userId}
                 onChange={handleInputChange('userId')}
                 placeholder="아이디 또는 이메일을 입력해주세요"
               />
               {errors.userId && (
-                <div className="mobile-login-error-message">{errors.userId}</div>
+                <div className="email-auth-error-message">{errors.userId}</div>
               )}
             </div>
 
             {/* 비밀번호 입력 */}
-            <div className="mobile-login-input-group">
-              <label className="mobile-login-label">비밀번호</label>
+            <div className="email-auth-input-group">
+              <label className="email-auth-label">비밀번호</label>
               <input
-                className="mobile-login-input"
-                type={showPassword ? 'text' : 'password'}
+                className="email-auth-input"
+                type="password"
                 value={formData.password}
                 onChange={handleInputChange('password')}
                 placeholder="비밀번호를 입력해주세요"
               />
               {errors.password && (
-                <div className="mobile-login-error-message">{errors.password}</div>
+                <div className="email-auth-error-message">{errors.password}</div>
               )}
             </div>
 
             {/* 로그인 버튼 */}
             <button
               type="submit"
-              className="mobile-login-submit-button"
-              disabled={loading || !formData.userId || !formData.password}
+              className="email-auth-submit-button"
+              disabled={loading}
             >
               {loading ? '처리 중...' : '로그인'}
             </button>
           </form>
 
-          {/* 임시 테스트 버튼들 */}
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '10px', 
-            marginBottom: '20px',
-            width: '100%'
-          }}>
-            <button
-              className="mobile-login-submit-button"
-              onClick={handleIdFind}
-              style={{ background: '#4CAF50', marginBottom: '10px' }}
-            >
-              🧪 아이디 찾기 테스트
-            </button>
-            <button
-              className="mobile-login-submit-button"
-              onClick={handlePasswordFind}
-              style={{ background: '#FF9800', marginBottom: '10px' }}
-            >
-              🧪 비밀번호 찾기 테스트
-            </button>
-          </div>
-
           {/* 하단 링크 */}
-          <div className="mobile-login-footer-links">
+          <div className="email-auth-link-container">
             <button
-              className="mobile-login-footer-link"
+              className="email-auth-link"
               onClick={handleFindAccount}
             >
               아이디/비밀번호 찾기
             </button>
             <button
-              className="mobile-login-footer-link"
+              className="email-auth-link"
               onClick={handleSignup}
             >
               회원가입

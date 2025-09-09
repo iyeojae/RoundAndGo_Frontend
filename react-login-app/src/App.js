@@ -17,7 +17,7 @@ import OAuth2Callback from "./OAuth2Callback";
 function App() {
   return (
     <Router>
-        <div style={{minWidth: '375px', maxWidth: '440px', margin: '0 auto'}}>
+        <div>
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/old" element={<HomePageOld />} />
