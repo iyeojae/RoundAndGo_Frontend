@@ -113,9 +113,9 @@ function SignupPage() {
 
     console.log('✅ 폼 검증 통과, 회원가입 API 호출 시작');
     console.log('📤 전송할 데이터:', {
-      userId: formData.userId,
       email: formData.email,
-      password: '[HIDDEN]'
+      password: '[HIDDEN]',
+      nickname: formData.userId
     });
 
     setLoading(true);

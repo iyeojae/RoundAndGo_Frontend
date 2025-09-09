@@ -5,8 +5,7 @@
  * 인증과 관련된 모든 유틸리티 함수들을 제공합니다.
  * 
  * 지원하는 인증 방식:
- * 1. JWT 토큰 (로컬스토리지)
- * 2. JWT 토큰 (쿠키)
+ * 1. JWT 토큰 (로컬스토리지)한그ㄹ로로
  * 3. 세션 기반 인증 (JSESSIONID)
  * 
  * @author RoundAndGo Team
@@ -316,9 +315,9 @@ export const loginWithEmail = async (email, password) => {
 const callSignupAPI = async (signupData) => {
   console.log('🌐 회원가입 API 호출:', API_ENDPOINTS.SIGNUP);
   console.log('📤 요청 데이터:', {
-    userId: signupData.userId,
     email: signupData.email,
-    password: '[HIDDEN]'
+    password: '[HIDDEN]',
+    nickname: signupData.userId // userId를 nickname으로 매핑
   });
   
   const response = await fetch(API_ENDPOINTS.SIGNUP, {
@@ -327,9 +326,9 @@ const callSignupAPI = async (signupData) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      userId: signupData.userId,
       email: signupData.email,
-      password: signupData.password
+      password: signupData.password,
+      nickname: signupData.userId // userId를 nickname으로 전송
     })
   });
   
