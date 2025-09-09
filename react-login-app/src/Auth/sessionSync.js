@@ -5,6 +5,8 @@
  * 프론트엔드에서 세션 정보를 가져와 로컬스토리지에 저장
  */
 
+import { API_ENDPOINTS } from '../config/api';
+
 /**
  * API를 통한 현재 로그인 상태 확인 및 사용자 정보 동기화
  */
@@ -13,7 +15,7 @@ export const syncUserFromSession = async () => {
     console.log('🔄 세션 기반 사용자 정보 동기화 시도...');
     
     // 백엔드 API로 현재 사용자 정보 요청
-    const response = await fetch('https://roundandgo.onrender.com/api/user/me', {
+    const response = await fetch(API_ENDPOINTS.USER_ME, {
       method: 'GET',
       credentials: 'include', // JSESSIONID 쿠키 포함
       headers: {

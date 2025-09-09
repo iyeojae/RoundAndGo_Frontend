@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginWithEmail } from '../Auth/authUtils';
 import './EmailAuth.css';
 
 function EmailLoginPage() {
@@ -8,22 +9,20 @@ function EmailLoginPage() {
     userId: '',
     password: ''
   });
-
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const handleInputChange = (field) => (e) => {
-    const value = e.target.value;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [name]: value
     }));
-
-    // 에러 메시지 제거
-    if (errors[field]) {
+    // 입력 시 에러 메시지 제거
+    if (errors[name]) {
       setErrors(prev => ({
         ...prev,
-        [field]: ''
+        [name]: ''
       }));
     }
   };
@@ -37,109 +36,21 @@ function EmailLoginPage() {
     }
 
     setLoading(true);
+    setErrors({});
 
     try {
-      // 실제 로그인 API 호출
-      console.log('로그인 요청 시작:', formData);
+      // Auth 폴더의 loginWithEmail 함수 사용
+      const result = await loginWithEmail(formData.userId, formData.password);
       
-      // 백엔드 코드에 맞춘 이메일 로그인
-      console.log('백엔드 /api/auth/login 엔드포인트로 요청 시작');
-      
-             // 백엔드 통합 로그인 엔드포인트 사용
-       console.log('백엔드 통합 /api/auth/login 엔드포인트로 요청 시작');
-       
-       const response = await fetch('https://roundandgo.onrender.com/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: formData.userId,
-          password: formData.password
-        })
-      });
-
-      console.log('백엔드 응답:', response);
-
-      console.log('로그인 응답:', response);
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('백엔드 응답 데이터:', data);
-        
-        // 백엔드 응답 형식에 맞춘 처리 (실제 응답 구조 확인)
-        console.log('백엔드 응답 구조:', data);
-        console.log('data.access_token 존재 여부:', !!data.access_token);
-        console.log('data.refresh_token 존재 여부:', !!data.refresh_token);
-        console.log('data.access_token 값:', data.access_token);
-        console.log('data.refresh_token 값:', data.refresh_token);
-        
-                                    // 백엔드 응답 구조에 맞춰 토큰 추출 (백엔드 코드 확인됨)
-              const accessToken = data.data.accessToken;
-              const refreshToken = data.data.refreshToken;
-        
-              console.log('🔑 추출된 토큰:', { 
-                accessToken: !!accessToken, 
-                refreshToken: !!refreshToken,
-                accessTokenValue: accessToken ? accessToken.substring(0, 20) + '...' : 'undefined'
-              });
-              
-              // 🚨 토큰 추출 디버깅 추가
-              console.log('🚨 토큰 추출 상세 분석:', {
-                'data.data': !!data.data,
-                'data.data.access_token': !!data.data?.access_token,
-                'data.data.refresh_token': !!data.data?.refresh_token,
-                'accessToken 타입': typeof accessToken,
-                'accessToken 길이': accessToken ? accessToken.length : 0,
-                'refreshToken 타입': typeof refreshToken,
-                'refreshToken 길이': refreshToken ? refreshToken.length : 0
-              });
-        
-        if (accessToken && refreshToken) {
-          // 토큰을 쿠키와 localStorage에 모두 저장
-          try {
-            // 방법 1: 기본 쿠키 설정 (백엔드 응답 변수명과 일치)
-            document.cookie = `access_token=${accessToken}; path=/; max-age=3600`;
-            document.cookie = `refresh_token=${refreshToken}; path=/; max-age=86400`;
-            
-            console.log('기본 쿠키 설정 완료:', document.cookie);
-            
-            // 방법 2: 도메인별 쿠키 설정 (백엔드 응답 변수명과 일치)
-            if (window.location.hostname !== 'localhost') {
-              document.cookie = `access_token=${accessToken}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=3600`;
-              document.cookie = `refresh_token=${refreshToken}; path=/; domain=.roundandgo.com; secure; samesite=strict; max-age=86400`;
-              console.log('도메인별 쿠키 설정 완료:', document.cookie);
-            }
-            
-            // 방법 3: localStorage에도 저장 (이메일 로그인용 키 이름 사용)
-            localStorage.setItem('emailAccessToken', accessToken);
-            localStorage.setItem('emailRefreshToken', refreshToken);
-            localStorage.setItem('emailUser', JSON.stringify({
-              type: 'email',
-              loginTime: new Date().toISOString(),
-              isOAuth2: false,
-              source: 'email-login'
-            }));
-            localStorage.setItem('emailIsLoggedIn', 'true');
-            
-            console.log('localStorage 토큰 저장 완료');
-            
-            alert(data.msg || '로그인 성공!');
-            navigate('/main');
-          } catch (cookieError) {
-            console.error('쿠키 설정 오류:', cookieError);
-            alert('쿠키 설정에 실패했습니다. 다시 시도해주세요.');
-          }
-        } else {
-          alert('토큰 정보를 받지 못했습니다. 다시 시도해주세요.');
-        }
+      if (result.success) {
+        alert('로그인 성공!');
+        navigate('/');
       } else {
-        const errorData = await response.json();
-        alert(errorData.msg || '로그인에 실패했습니다. 다시 시도해주세요.');
+        alert('로그인 실패: ' + result.error);
       }
     } catch (error) {
       console.error('로그인 오류:', error);
-      alert('서버 연결에 실패했습니다. 다시 시도해주세요.');
+      alert('로그인 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -173,40 +84,41 @@ function EmailLoginPage() {
             alt="ROUND & GO Logo" 
             className="email-auth-logo"
           />
-          <h1 className="email-auth-title">ROUND & GO</h1>
+          <h1 className="email-auth-title">로그인</h1>
         </div>
 
         {/* 로그인 폼 */}
-        <div className="email-auth-form-container">
-          <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="email-auth-form">
             {/* 아이디 입력 */}
             <div className="email-auth-input-group">
-              <label className="email-auth-label">아이디</label>
+              <label htmlFor="userId" className="email-auth-label">아이디</label>
               <input
-                className="email-auth-input"
                 type="text"
+                id="userId"
+                name="userId"
                 value={formData.userId}
-                onChange={handleInputChange('userId')}
-                placeholder="아이디 또는 이메일을 입력해주세요"
+                onChange={handleInputChange}
+                className="email-auth-input"
+                placeholder="아이디를 입력하세요"
+                disabled={loading}
               />
-              {errors.userId && (
-                <div className="email-auth-error-message">{errors.userId}</div>
-              )}
+              {errors.userId && <span className="email-auth-error">{errors.userId}</span>}
             </div>
 
             {/* 비밀번호 입력 */}
             <div className="email-auth-input-group">
-              <label className="email-auth-label">비밀번호</label>
+              <label htmlFor="password" className="email-auth-label">비밀번호</label>
               <input
-                className="email-auth-input"
                 type="password"
+                id="password"
+                name="password"
                 value={formData.password}
-                onChange={handleInputChange('password')}
-                placeholder="비밀번호를 입력해주세요"
+                onChange={handleInputChange}
+                className="email-auth-input"
+                placeholder="비밀번호를 입력하세요"
+                disabled={loading}
               />
-              {errors.password && (
-                <div className="email-auth-error-message">{errors.password}</div>
-              )}
+              {errors.password && <span className="email-auth-error">{errors.password}</span>}
             </div>
 
             {/* 로그인 버튼 */}
@@ -215,31 +127,31 @@ function EmailLoginPage() {
               className="email-auth-submit-button"
               disabled={loading}
             >
-              {loading ? '처리 중...' : '로그인'}
+              {loading ? '로그인 중...' : '로그인'}
             </button>
           </form>
 
           {/* 하단 링크 */}
-          <div className="email-auth-link-container">
-            <button
-              className="email-auth-link"
+          <div className="email-auth-links">
+            <button 
+              type="button" 
+              className="email-auth-link-button"
               onClick={handleFindAccount}
             >
               아이디/비밀번호 찾기
             </button>
-            <button
-              className="email-auth-link"
+            <span className="email-auth-divider">|</span>
+            <button 
+              type="button" 
+              className="email-auth-link-button"
               onClick={handleSignup}
             >
               회원가입
             </button>
           </div>
         </div>
-      </div>
     </div>
   );
 }
 
 export default EmailLoginPage;
-
-

@@ -8,6 +8,11 @@
  * 1. React Router 완전 우회 - 브라우저 네이티브 리다이렉트 사용
  * 2. 다중 인증 방식 지원 (JWT 토큰, 쿠키, 세션)
  * 3. 팝업/현재창 로그인 모드 지원
+ */
+
+import { API_ENDPOINTS, BACKEND_BASE_URL } from '../config/api';
+
+/**
  * 4. 상세한 디버깅 및 에러 처리
  * 5. 자동 토큰 만료 감지 및 로그아웃
  * 
@@ -21,10 +26,8 @@
  * @since 2025-01-27
  */
 
-// 🌐 백엔드 서버 URL 설정 - 도메인 통일
-// 모든 환경에서 현재 도메인 사용하여 쿠키 공유 가능하게 함
-// Netlify가 /oauth2/* 요청을 백엔드로 프록시 처리
-const BACKEND_BASE_URL = ''; // 항상 현재 도메인 사용 (도메인 통일)
+// 🌐 백엔드 서버 URL 설정 - 환경에 따라 자동 설정
+// config/api.js에서 가져온 BACKEND_BASE_URL 사용
 
 /**
  * OAuth2 카카오 로그인 API 객체
@@ -279,7 +282,7 @@ export const handleOAuth2Callback = () => {
                 
                 try {
                     // 백엔드 API로 사용자 정보 요청
-                    const response = await fetch('https://roundandgo.onrender.com/api/user/me', {
+                    const response = await fetch(API_ENDPOINTS.USER_ME, {
                         credentials: 'include'
                     });
                     

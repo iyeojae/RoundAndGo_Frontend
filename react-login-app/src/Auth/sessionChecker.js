@@ -6,6 +6,8 @@
  * 로그인 상태를 프론트엔드와 동기화합니다
  */
 
+import { API_ENDPOINTS } from '../config/api';
+
 // 콘솔에서 실행할 함수
 window.checkAndSyncSession = async function() {
   console.log('🔄 세션 기반 로그인 상태 확인 및 동기화 시작...');
@@ -17,7 +19,7 @@ window.checkAndSyncSession = async function() {
     // 2. 백엔드 API로 사용자 정보 요청
     console.log('📡 백엔드에 사용자 정보 요청 중...');
     
-    const response = await fetch('https://roundandgo.onrender.com/api/user/me', {
+    const response = await fetch(API_ENDPOINTS.USER_ME, {
       method: 'GET',
       credentials: 'include', // JSESSIONID 쿠키 포함
       headers: {

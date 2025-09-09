@@ -13,6 +13,8 @@
  * @version 2.0.0
  */
 
+import { API_ENDPOINTS } from '../config/api';
+
 /**
  * 브라우저 쿠키에서 특정 값을 가져오는 헬퍼 함수
  * 
@@ -209,4 +211,82 @@ export const getUserNickname = () => {
 export const getProfileImageUrl = () => {
   // 현재는 기본 이미지만 지원
   return null;
+};
+
+/**
+ * 이메일 로그인 처리 함수
+ * 
+ * @param {string} userId - 사용자 ID
+ * @param {string} password - 비밀번호
+ * @returns {Promise<Object>} 로그인 결과
+ * 
+ * @example
+ * const result = await loginWithEmail('user@example.com', 'password123');
+ * if (result.success) {
+ *   console.log('로그인 성공');
+ * } else {
+ *   console.error('로그인 실패:', result.error);
+ * }
+ */
+export const loginWithEmail = async (userId, password) => {
+  try {
+    console.log('이메일 로그인 시도:', userId);
+    
+    // API 엔드포인트 사용
+    const endpoint = API_ENDPOINTS.LOGIN;
+    
+    console.log(`시도 중: ${endpoint}`);
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: userId,
+        password: password
+      })
+    });
+    
+    console.log('백엔드 응답:', response);
+    
+    if (response.ok) {
+      // 성공한 경우 처리
+      const data = await response.json();
+      console.log('백엔드 응답 데이터:', data);
+      
+      // 토큰 저장 및 로그인 처리
+      if (data.accessToken || data.data?.accessToken) {
+        const accessToken = data.accessToken || data.data.accessToken;
+        const refreshToken = data.refreshToken || data.data.refreshToken;
+        
+        localStorage.setItem('emailAccessToken', accessToken);
+        if (refreshToken) {
+          localStorage.setItem('emailRefreshToken', refreshToken);
+        }
+        
+        localStorage.setItem('emailUser', JSON.stringify({
+          type: 'email',
+          loginTime: new Date().toISOString(),
+          isOAuth2: false,
+          userInfo: data.user || { userId: userId }
+        }));
+        
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        console.log('✅ 이메일 로그인 성공');
+        return { success: true, data: data };
+      } else {
+        console.log('토큰이 응답에 포함되지 않음');
+        return { success: false, error: '토큰 정보를 받지 못했습니다.' };
+      }
+    } else {
+      console.log(`❌ 로그인 실패: ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      return { success: false, error: errorData.message || `로그인 실패: ${response.status}` };
+    }
+    
+  } catch (error) {
+    console.error('이메일 로그인 오류:', error);
+    return { success: false, error: error.message };
+  }
 };
