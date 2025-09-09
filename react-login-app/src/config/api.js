@@ -10,12 +10,12 @@ const isLocal = false; // 임시로 프로덕션 API 사용
 // API 기본 URL 설정
 export const API_BASE_URL = isLocal 
   ? 'http://localhost:8080/api'
-  : 'https://roundandgo.onrender.com/api';
+  : 'https://roundandgo.shop/api';
 
 // 백엔드 기본 URL 설정 (OAuth2 콜백용)
 export const BACKEND_BASE_URL = isLocal 
   ? 'http://localhost:8080'
-  : 'https://roundandgo.onrender.com';
+  : 'https://roundandgo.shop';
 
 // API 엔드포인트들
 export const API_ENDPOINTS = {

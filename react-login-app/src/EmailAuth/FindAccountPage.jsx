@@ -110,7 +110,7 @@ function FindAccountPage() {
         
         // 1단계: 이메일 입력 및 인증 메일 발송
         try {
-          const response = await fetch('https://roundandgo.onrender.com/api/auth/find-id/request', {
+          const response = await fetch('https://roundandgo.shop/api/auth/find-id/request', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -318,7 +318,7 @@ function FindAccountPage() {
             console.log('🔍 아이디 찾기 확인 API 호출 시작');
             console.log('📤 전송할 데이터:', { email: savedEmail });
             
-            const response = await fetch('https://roundandgo.onrender.com/api/auth/find-id/confirm', {
+            const response = await fetch('https://roundandgo.shop/api/auth/find-id/confirm', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

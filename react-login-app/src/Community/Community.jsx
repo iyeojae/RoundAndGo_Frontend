@@ -28,7 +28,7 @@ function CommunityBoard() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await axios.get('https://roundandgo.onrender.com/api/communities');
+                const res = await axios.get('https://roundandgo.shop/api/communities');
                 setPosts(res.data.data);
             } catch (error) {
                 console.error('게시글 불러오기 실패:', error);

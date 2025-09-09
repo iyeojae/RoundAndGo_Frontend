@@ -18,7 +18,7 @@ function CommunityWrite() {
     useEffect(() => {
         async function fetchPosts() {
             try {
-                const res = await axios.get('https://roundandgo.onrender.com/api/communities');
+                const res = await axios.get('https://roundandgo.shop/api/communities');
                 setPosts(res.data.data);
             } catch (error) {
                 console.error(error);
