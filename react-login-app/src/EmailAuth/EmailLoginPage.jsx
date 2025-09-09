@@ -135,15 +135,14 @@ function EmailLoginPage() {
           <div className="email-auth-links">
             <button 
               type="button" 
-              className="email-auth-link-button"
+              className="email-auth-link-button email-auth-link-left"
               onClick={handleFindAccount}
             >
               아이디/비밀번호 찾기
             </button>
-            <span className="email-auth-divider">|</span>
             <button 
               type="button" 
-              className="email-auth-link-button"
+              className="email-auth-link-button email-auth-link-right"
               onClick={handleSignup}
             >
               회원가입

@@ -283,7 +283,8 @@
   line-height: 1.25;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 20px;
+  margin: 20px auto 0;
+  display: block;
 }
 
 .email-auth-submit-button:hover {
@@ -439,7 +440,7 @@
 }
 
 /* ===== 링크 컨테이너 ===== */
-.email-auth-link-container {
+.email-auth-links {
   width: 100%;
   max-width: 360px;
   display: flex;
@@ -464,6 +465,35 @@
 
 .email-auth-link:hover {
   color: #2D8779;
+}
+
+/* ===== 링크 버튼 스타일 ===== */
+.email-auth-link-button {
+  font-family: 'Spoqa Han Sans Neo', sans-serif;
+  font-size: 12px;
+  line-height: 1.25;
+  color: #2D8779;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.email-auth-link-button:hover {
+  color: #1a5d4a;
+  text-decoration: underline;
+}
+
+.email-auth-link-left {
+  text-align: left;
+}
+
+.email-auth-link-right {
+  text-align: right;
 }
 
 /* ===== 결과 정보 박스 ===== */
