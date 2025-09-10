@@ -7,9 +7,9 @@ import './App.css';
 import EmailLoginPage from './EmailAuth/EmailLoginPage';
 import SignupPage from './EmailAuth/SignupPage';
 import FindAccountPage from './EmailAuth/FindAccountPage';
-import SchedulePage from './Schedule/SchedulePage';
+import SchedulePage from './Schedule&Weather/SchedulePage';
 import WeatherPage from './WeatherPage';
-import JejuLocationPage from './JejuLocationPage';
+import JejuLocationPage from './Schedule&Weather/JejuLocationPage';
 import HomePage from "./HomePage";
 import OAuth2Callback from "./OAuth2Callback";
 

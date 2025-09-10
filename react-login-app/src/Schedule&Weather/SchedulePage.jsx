@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import AddScheduleModal from '../AddScheduleModal';
+import AddScheduleModal from './AddScheduleModal.js';
 import WeatherLocationModal from '../WeatherLocationModal';
+import Header from '../Layout/Header';
+import Footer from '../Layout/Footer';
+import ScheduleIcon from './schedule-icon.svg';
 import './SchedulePage.css';
 
 const SchedulePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 4, 1)); // 5월로 설정
-  const [selectedDate, setSelectedDate] = useState(new Date(2025, 4, 6)); // 5월 6일 선택
+  const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜로 설정
+  const [selectedDate, setSelectedDate] = useState(new Date()); // 현재 날짜를 기본 선택
   const [schedules, setSchedules] = useState([
     {
       id: 1,
@@ -42,7 +45,6 @@ const SchedulePage = () => {
   const [selectedLocation, setSelectedLocation] = useState('제주도');
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showScrollHint, setShowScrollHint] = useState(false);
   const [newSchedule, setNewSchedule] = useState({
     title: '',
     time: '',
@@ -124,7 +126,8 @@ const SchedulePage = () => {
     const days = [];
     const today = new Date();
 
-    for (let i = 0; i < 42; i++) {
+    // 5줄만 표시 (35일)
+    for (let i = 0; i < 35; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
       
@@ -157,26 +160,18 @@ const SchedulePage = () => {
     return days;
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowScrollHint(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="schedule-page">
-      <header className="schedule-header">
-        <div className="schedule-logo-section">
-          <div className="schedule-logo">🏌️</div>
-          <h1 className="schedule-logo-text">ROUND & GO</h1>
+      <Header />
+      
+      <div className="schedule-content">
+        <div className="schedule-weather-toggle-container">
+          <h2 className="schedule-page-title">일정관리</h2>
+          <button className="schedule-weather-toggle" onClick={() => setShowWeather(!showWeather)}>
+            {showWeather ? '날씨 숨기기' : '날씨 보기'}
+          </button>
         </div>
-        <h2 className="schedule-page-title">일정 관리</h2>
-        <button className="schedule-weather-toggle" onClick={() => setShowWeather(!showWeather)}>
-          {showWeather ? '날씨 숨기기' : '날씨 보기'}
-        </button>
-      </header>
 
       <main>
         {showWeather && (
@@ -275,38 +270,16 @@ const SchedulePage = () => {
           </div>
         </section>
 
-        {showWeather && (
-          <section className="schedule-weather-section">
-            <div className="schedule-weather-header">
-              <h3 className="schedule-weather-title">날씨 정보</h3>
-              <p className="schedule-weather-location">{selectedLocation}</p>
-            </div>
-
-            {loading ? (
-              <p>날씨 정보를 불러오는 중...</p>
-            ) : weatherData ? (
-              <div className="schedule-weather-info">
-                <div className="schedule-weather-icon">
-                  {getWeatherIcon(weatherData.weather[0].icon)}
-                </div>
-                <div className="schedule-weather-details">
-                  <p className="schedule-weather-temp">{Math.round(weatherData.main.temp)}°C</p>
-                  <p className="schedule-weather-description">{weatherData.weather[0].description}</p>
-                  <p className="schedule-weather-humidity">습도: {weatherData.main.humidity}%</p>
-                  <p className="schedule-weather-wind">풍속: {weatherData.wind.speed}m/s</p>
-                </div>
-              </div>
-            ) : (
-              <p>날씨 정보를 불러올 수 없습니다.</p>
-            )}
-          </section>
-        )}
 
         <section className="schedule-section">
           <div className="schedule-section-header">
             <div>
-              <h3 className="schedule-section-title">2025년 8월 27일</h3>
-              <p className="schedule-count">총 {schedules.length}개의 일정</p>
+              <h3 className="schedule-section-title">
+                {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일
+              </h3>
+              <p className="schedule-count">
+                총 {schedules.filter(schedule => schedule.date === selectedDate.toISOString().split('T')[0]).length}개의 일정
+              </p>
             </div>
             <button className="schedule-add-button" onClick={() => setShowAddScheduleModal(true)}>
               +
@@ -314,43 +287,48 @@ const SchedulePage = () => {
           </div>
 
           <div className="schedule-list">
-            {schedules.length === 0 ? (
-              <div className="schedule-empty">
-                <div className="schedule-empty-icon">📅</div>
-                <div className="schedule-empty-text">등록된 일정이 없습니다</div>
-                <div className="schedule-empty-hint">우측상단 + 버튼으로 일정을 추가해보세요</div>
-              </div>
-            ) : (
-              schedules.map((schedule) => (
-                <div key={schedule.id} className="schedule-item" style={{ borderLeftColor: schedule.color }}>
-                  <p className="schedule-item-time">{schedule.time}</p>
-                  <div className="schedule-item-content">
-                    <h4 className="schedule-item-title">{schedule.title}</h4>
-                    <div className="schedule-item-details">
-                      <p className="schedule-item-detail">카테고리: {schedule.category}</p>
-                      {schedule.location && (
-                        <p className="schedule-item-detail">위치: {schedule.location}</p>
-                      )}
-                      {schedule.attendees && (
-                        <p className="schedule-item-detail">참석자: {schedule.attendees}</p>
-                      )}
-                      <p className="schedule-item-detail">알림: {schedule.reminder}</p>
-                    </div>
+            {(() => {
+              const selectedDateString = selectedDate.toISOString().split('T')[0];
+              const daySchedules = schedules.filter(schedule => schedule.date === selectedDateString);
+              
+              return daySchedules.length === 0 ? (
+                <div className="schedule-empty">
+                  <div className="schedule-empty-icon">
+                    <img src={ScheduleIcon} alt="일정 없음" />
+                  </div>
+                  <div className="schedule-empty-content">
+                    <div className="schedule-empty-text">등록된 일정이 없습니다</div>
+                    <div className="schedule-empty-hint">우측상단 + 버튼으로 일정을 추가해보세요</div>
                   </div>
                 </div>
-              ))
-            )}
+              ) : (
+                daySchedules.map((schedule) => (
+                  <div key={schedule.id} className="schedule-item" style={{ borderLeftColor: schedule.color }}>
+                    <p className="schedule-item-time">{schedule.time}</p>
+                    <div className="schedule-item-content">
+                      <h4 className="schedule-item-title">{schedule.title}</h4>
+                      <div className="schedule-item-details">
+                        <p className="schedule-item-detail">카테고리: {schedule.category}</p>
+                        {schedule.location && (
+                          <p className="schedule-item-detail">위치: {schedule.location}</p>
+                        )}
+                        {schedule.attendees && (
+                          <p className="schedule-item-detail">참석자: {schedule.attendees}</p>
+                        )}
+                        <p className="schedule-item-detail">알림: {schedule.reminder}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              );
+            })()}
           </div>
         </section>
 
-        {showScrollHint && (
-          <div className="schedule-scroll-hint">
-            <p className="schedule-scroll-hint-text">아래로 스크롤하여 더 많은 정보를 확인하세요</p>
-            <span className="schedule-scroll-hint-arrow">↓</span>
-          </div>
-        )}
       </main>
+      </div>
 
+      <Footer />
 
       {showAddScheduleModal && (
         <AddScheduleModal
@@ -358,6 +336,7 @@ const SchedulePage = () => {
           onAdd={handleAddSchedule}
           schedule={newSchedule}
           setSchedule={setNewSchedule}
+          selectedDate={selectedDate}
         />
       )}
 
