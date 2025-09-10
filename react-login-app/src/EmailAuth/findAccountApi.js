@@ -11,7 +11,6 @@ const API_BASE_URL = 'https://roundandgo.shop/api';
  */
 export const requestIdFindEmailVerification = async (email, retryCount = 0) => {
   const maxRetries = 2;
-  console.log(`[ID 찾기] 이메일 인증 요청 (${retryCount + 1}/${maxRetries + 1}) - ${email}`);
   
   try {
     const requestBody = { email };
@@ -26,11 +25,9 @@ export const requestIdFindEmailVerification = async (email, retryCount = 0) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[ID 찾기] HTTP ${response.status} 오류:`, errorText);
       
       // 500 에러이고 재시도 횟수가 남아있다면 재시도
       if (response.status === 500 && retryCount < maxRetries) {
-        console.log(`[ID 찾기] 500 오류, ${retryCount + 1}초 후 재시도...`);
         await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 1000));
         return requestIdFindEmailVerification(email, retryCount + 1);
       }
@@ -39,14 +36,10 @@ export const requestIdFindEmailVerification = async (email, retryCount = 0) => {
     }
 
     const result = await response.json();
-    console.log('[ID 찾기] 이메일 인증 요청 성공');
     return result;
   } catch (error) {
-    console.error('[ID 찾기] 이메일 인증 요청 실패:', error.message);
-    
     // 네트워크 오류이고 재시도 횟수가 남아있다면 재시도
     if (error.name === 'TypeError' && retryCount < maxRetries) {
-      console.log(`[ID 찾기] 네트워크 오류, ${retryCount + 1}초 후 재시도...`);
       await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 1000));
       return requestIdFindEmailVerification(email, retryCount + 1);
     }
@@ -107,18 +100,15 @@ export const confirmIdFind = async (email) => {
 };
 
 /**
- * 비밀번호 재설정을 위한 이메일 인증코드 발송 (아이디 + 이메일)
- * @param {string} userId - 사용자 아이디
+ * 비밀번호 재설정을 위한 이메일 인증코드 발송 (이메일만)
  * @param {string} email - 사용자 이메일
  * @returns {Promise} API 응답
  */
-export const sendEmailVerificationForPassword = async (userId, email) => {
-  console.log(`[비밀번호 찾기] 이메일 인증 요청 - ${userId} (${email})`);
-  
+export const sendEmailVerificationForPassword = async (email) => {
   try {
-    const requestBody = { userId, email };
+    const requestBody = { email };
     
-    const response = await fetch(`${API_BASE_URL}/auth/find-password/send-email`, {
+    const response = await fetch(`${API_BASE_URL}/auth/password-reset/request`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -128,15 +118,12 @@ export const sendEmailVerificationForPassword = async (userId, email) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[비밀번호 찾기] HTTP ${response.status} 오류:`, errorText);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
-    console.log('[비밀번호 찾기] 이메일 인증 요청 성공');
     return result;
   } catch (error) {
-    console.error('[비밀번호 찾기] 이메일 인증 요청 실패:', error.message);
     throw error;
   }
 };
@@ -149,8 +136,6 @@ export const sendEmailVerificationForPassword = async (userId, email) => {
  */
 export const findUserIdByEmail = async (email) => {
   try {
-    console.log(`[ID 찾기] 아이디 조회 - ${email}`);
-    
     const response = await fetch(`${API_BASE_URL}/auth/find-id/confirm`, {
       method: 'POST',
       headers: {
@@ -161,38 +146,31 @@ export const findUserIdByEmail = async (email) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[ID 찾기] HTTP ${response.status} 오류:`, errorText);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
-    console.log('[ID 찾기] 아이디 조회 성공');
     return result;
   } catch (error) {
-    console.error('[ID 찾기] 아이디 조회 실패:', error.message);
     throw error;
   }
 };
 
 /**
- * 아이디, 이메일, 인증코드로 비밀번호 재설정
- * @param {string} userId - 사용자 아이디
+ * 이메일과 새 비밀번호로 비밀번호 재설정
  * @param {string} email - 사용자 이메일
- * @param {string} verificationCode - 인증코드
  * @param {string} newPassword - 새 비밀번호
  * @returns {Promise} API 응답
  */
-export const resetPasswordByEmail = async (userId, email, verificationCode, newPassword) => {
+export const resetPasswordByEmail = async (email, newPassword) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    const response = await fetch(`${API_BASE_URL}/auth/password-reset/confirm`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ 
-        userId,
-        email, 
-        verificationCode,
+        email,
         newPassword 
       }),
     });
@@ -203,7 +181,6 @@ export const resetPasswordByEmail = async (userId, email, verificationCode, newP
 
     return await response.json();
   } catch (error) {
-    console.error('[비밀번호 찾기] 비밀번호 재설정 실패:', error.message);
     throw error;
   }
 };
@@ -235,7 +212,6 @@ export const verifyCode = async (type, target, verificationCode) => {
 
     return await response.json();
   } catch (error) {
-    console.error('[인증] 코드 검증 실패:', error.message);
     throw error;
   }
 };

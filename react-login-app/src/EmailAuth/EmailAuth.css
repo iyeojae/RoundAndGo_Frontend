@@ -184,6 +184,11 @@
   width: 100%;
 }
 
+.email-auth-password-confirm-group {
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
 .email-auth-label {
   display: block;
   color: #2D8779;

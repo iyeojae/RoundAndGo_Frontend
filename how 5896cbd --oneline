@@ -1,0 +1,10 @@
+[33m5164995[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m 도메인을 roundandgo.shop으로 변경 - CORS 오류 해결
+[33m2a7c08a[m 임시 merge
+[33m86b4164[m 이메일 로그인 페이지 UI 개선 - 링크 버튼 스타일 추가 (email-auth-link-button) - 가운데 구분선 제거하고 양쪽 배치로 변경 - 로그인 버튼 가운데 정렬 수정
+[33m01f1e38[m 아이디 찾기 API 디버깅 로그 추가 - find-id/confirm API 호출 시 상세한 로그 추가 - 요청 데이터와 응답 상태 로깅 - 에러 응답 데이터 상세 로깅으로 400 오류 원인 파악 가능
+[33me9a32be[m 컴파일 오류 수정 및 로그인 후 이동 경로 변경 - App.js에서 HomePage_BACKUP import 제거 - SchedulePage.jsx에서 AddScheduleModal, WeatherLocationModal import 경로 수정 - 이메일 로그인 성공 시 FirstMainPage로 이동하도록 변경
+[33m525e236[m 회원가입 API 요청 형식 수정 - userId를 nickname으로 변경하여 백엔드 API 형식에 맞춤 - 요청 body: {email, password, nickname} 형식으로 수정 - 로그 메시지도 올바른 필드명으로 업데이트
+[33m0ccb1c6[m Improve signup logging and remove temporary processing - Add detailed console logs for signup process - Remove any temporary signup handling - Enhanced error logging with emojis for better debugging
+[33m59926ff[m Add signup API functionality - Add signupWithEmail function to Auth/authUtils.js - Add SIGNUP endpoint to config/api.js - Update SignupPage.jsx to use real API calls
+[33mab2a452[m feat: 이메일 로그인 API 형식 수정 및 코드 구조 개선
+[33ma428227[m feat: Auth 폴더 통합 및 로컬/프로덕션 API 환경 설정

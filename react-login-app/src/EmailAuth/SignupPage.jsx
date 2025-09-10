@@ -6,10 +6,10 @@ import './EmailAuth.css';
 function SignupPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    userId: '',
+    email: '',
     password: '',
     confirmPassword: '',
-    email: ''
+    nickname: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -19,8 +19,8 @@ function SignupPage() {
   const [signupCompleted, setSignupCompleted] = useState(false);
 
   // 입력 검증 함수들
-  const validateUserId = (userId) => {
-    return userId.length >= 2;
+  const validateNickname = (nickname) => {
+    return nickname.length >= 2;
   };
 
   const validatePassword = (password) => {
@@ -45,11 +45,11 @@ function SignupPage() {
 
     // 실시간 검증
     const newErrors = { ...errors };
-    if (field === 'userId' && value) {
-      if (!validateUserId(value)) {
-        newErrors.userId = '아이디를 2자 이상 입력해주세요.';
+    if (field === 'nickname' && value) {
+      if (!validateNickname(value)) {
+        newErrors.nickname = '닉네임을 2자 이상 입력해주세요.';
       } else {
-        delete newErrors.userId;
+        delete newErrors.nickname;
       }
     }
     if (field === 'password' && value) {
@@ -78,68 +78,49 @@ function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('📝 회원가입 폼 제출 시작');
 
     // 최종 검증
-    if (!formData.userId || !formData.password || !formData.confirmPassword || !formData.email) {
-      console.log('❌ 필수 필드 누락');
+    if (!formData.email || !formData.password || !formData.confirmPassword || !formData.nickname) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
 
-    if (!validateUserId(formData.userId)) {
-      console.log('❌ 아이디 검증 실패:', formData.userId);
-      alert('아이디는 2자 이상 입력해주세요.');
+    if (!validateNickname(formData.nickname)) {
+      alert('닉네임은 2자 이상 입력해주세요.');
       return;
     }
 
     if (!validatePassword(formData.password)) {
-      console.log('❌ 비밀번호 검증 실패');
       alert('비밀번호는 영문, 숫자, 특수문자가 모두 포함된 8자 이상이어야 합니다.');
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      console.log('❌ 비밀번호 확인 불일치');
       alert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
     if (!validateEmail(formData.email)) {
-      console.log('❌ 이메일 검증 실패:', formData.email);
       alert('올바른 이메일 주소를 입력해주세요.');
       return;
     }
 
-    console.log('✅ 폼 검증 통과, 회원가입 API 호출 시작');
-    console.log('📤 전송할 데이터:', {
-      email: formData.email,
-      password: '[HIDDEN]',
-      nickname: formData.userId
-    });
-
     setLoading(true);
 
     try {
-      // Auth 폴더의 signupWithEmail 함수 사용
       const result = await signupWithEmail(formData);
-      console.log('📥 회원가입 API 응답:', result);
       
       if (result.success) {
-        console.log('✅ 회원가입 성공');
         setSignupCompleted(true);
         alert('회원가입이 완료되었습니다!');
       } else {
-        console.log('❌ 회원가입 실패:', result.error);
         alert('회원가입 실패: ' + result.error);
       }
       
     } catch (error) {
-      console.error('💥 회원가입 오류:', error);
       alert('회원가입 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
-      console.log('🏁 회원가입 처리 완료');
     }
   };
 
@@ -204,30 +185,30 @@ function SignupPage() {
         {/* 회원가입 폼 */}
         <div className="email-auth-form-container">
           <form onSubmit={handleSubmit}>
-            {/* 아이디 입력 */}
+            {/* 이메일 입력 */}
             <div className="email-auth-input-group">
-              <label className="email-auth-label">아이디</label>
+              <label className="email-auth-label">아이디(이메일)</label>
               <div className="email-auth-password-input-container">
                 <input
                   className="email-auth-input email-auth-password-input"
-                  type="text"
-                  value={formData.userId}
-                  onChange={handleInputChange('userId')}
-                  placeholder="아이디를 입력해주세요"
-                  style={{ borderColor: errors.userId ? '#e74c3c' : '#E5E5E5' }}
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange('email')}
+                  placeholder="이메일을 입력해주세요"
+                  style={{ borderColor: errors.email ? '#e74c3c' : '#E5E5E5' }}
                 />
-                {formData.userId && (
+                {formData.email && (
                   <button
                     type="button"
                     className="email-auth-password-toggle-button"
-                    onClick={() => clearField('userId')}
+                    onClick={() => clearField('email')}
                   >
                     ✕
                   </button>
                 )}
               </div>
-              {errors.userId && (
-                <div className="email-auth-error-message">{errors.userId}</div>
+              {errors.email && (
+                <div className="email-auth-error-message">{errors.email}</div>
               )}
             </div>
 
@@ -268,8 +249,7 @@ function SignupPage() {
             </div>
 
             {/* 비밀번호 확인 입력 */}
-            <div className="email-auth-input-group">
-              <label className="email-auth-label">비밀번호 확인</label>
+            <div className="email-auth-input-group email-auth-password-confirm-group">
               <div className="email-auth-password-input-container">
                 <input
                   className="email-auth-input email-auth-password-input"
@@ -303,30 +283,30 @@ function SignupPage() {
               )}
             </div>
 
-            {/* 이메일 입력 */}
+            {/* 닉네임 입력 */}
             <div className="email-auth-input-group">
-              <label className="email-auth-label">이메일</label>
+              <label className="email-auth-label">닉네임</label>
               <div className="email-auth-password-input-container">
                 <input
                   className="email-auth-input email-auth-password-input"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange('email')}
-                  placeholder="이메일을 입력해주세요"
-                  style={{ borderColor: errors.email ? '#e74c3c' : '#E5E5E5' }}
+                  type="text"
+                  value={formData.nickname}
+                  onChange={handleInputChange('nickname')}
+                  placeholder="닉네임을 입력해주세요"
+                  style={{ borderColor: errors.nickname ? '#e74c3c' : '#E5E5E5' }}
                 />
-                {formData.email && (
+                {formData.nickname && (
                   <button
                     type="button"
                     className="email-auth-password-toggle-button"
-                    onClick={() => clearField('email')}
+                    onClick={() => clearField('nickname')}
                   >
                     ✕
                   </button>
                 )}
               </div>
-              {errors.email && (
-                <div className="email-auth-error-message">{errors.email}</div>
+              {errors.nickname && (
+                <div className="email-auth-error-message">{errors.nickname}</div>
               )}
             </div>
 
