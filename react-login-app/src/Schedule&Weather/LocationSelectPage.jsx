@@ -23,7 +23,7 @@ const LocationSelectPage = ({ onLocationSelect, onBack }) => {
   const handleLocationSelect = async (location) => {
     try {
       // 최근 검색에 추가
-      await addToRecentLocations(location.id);
+      await addToRecentLocations(location);
     } catch (error) {
       console.error('최근 검색 추가 실패:', error);
     }
@@ -42,8 +42,8 @@ const LocationSelectPage = ({ onLocationSelect, onBack }) => {
           getPopularLocations(),
           getRecentLocations()
         ]);
-        setPopularLocations(popular);
-        setRecentLocations(recent);
+        setPopularLocations(popular.items || []);
+        setRecentLocations(recent.items || []);
       } catch (error) {
         console.error('초기 데이터 로딩 실패:', error);
       }
@@ -63,7 +63,7 @@ const LocationSelectPage = ({ onLocationSelect, onBack }) => {
     setIsLoading(true);
     try {
       const results = await searchLocations(query);
-      setSearchResults(results);
+      setSearchResults(results.items || []);
       setShowResults(true);
     } catch (error) {
       console.error('검색 실패:', error);

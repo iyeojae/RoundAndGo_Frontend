@@ -233,8 +233,15 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
     closeLocationSelect();
   };
 
+  const handleOverlayClick = (e) => {
+    // 오직 오버레이 자체를 클릭했을 때만 모달 닫기
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <ModalOverlay onClick={onClose}>
+    <ModalOverlay onClick={handleOverlayClick}>
       <GlobalDatePickerStyle />
       <ModalContent onClick={(e) => e.stopPropagation()}>
         {/* 헤더 */}
@@ -351,7 +358,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
               <TitleInput
                 type="text"
                 name="title"
-                value={schedule.title}
+                value={schedule.title || ''}
                 onChange={handleChange}
                 placeholder="일정 제목을 입력해주세요"
                 required
@@ -366,7 +373,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                   <DateInput
                     type="date"
                     name="startDate"
-                    value={schedule.startDate}
+                    value={schedule.startDate || ''}
                     onChange={handleChange}
                     required
                   />
@@ -387,7 +394,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                   <DateInput
                     type="date"
                     name="endDate"
-                    value={schedule.endDate}
+                    value={schedule.endDate || ''}
                     onChange={handleChange}
                     min={schedule.startDate}
                   />
@@ -428,16 +435,17 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
             {/* 장소 */}
             <LocationSection>
               <LocationLabel>장소</LocationLabel>
-              <LocationInputContainer onClick={openLocationSelect}>
-                <LocationInput
-                  type="text"
-                  name="location"
-                  value={schedule.location || ''}
-                  onChange={handleChange}
-                  placeholder="장소를 입력하세요"
-                  readOnly
-                />
-                <LocationIcon>
+              <LocationInputContainer onClick={(e) => {
+                e.stopPropagation();
+                openLocationSelect();
+              }}>
+                <LocationDisplay>
+                  {schedule.location || '장소를 입력하세요'}
+                </LocationDisplay>
+                <LocationIcon onClick={(e) => {
+                  e.stopPropagation();
+                  openLocationSelect();
+                }}>
                   <svg width="16" height="23" viewBox="0 0 16 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="7.82032" cy="8.3057" r="3.01859" stroke="#A7A7A7"/>
                     <path d="M7.8916 1.26831V0.768311H7.8916L7.8916 1.26831ZM15 8.37671H15.5V8.3767L15 8.37671ZM14.4473 11.1267L13.9863 10.9331L13.9778 10.9532L13.9712 10.974L14.4473 11.1267ZM7.8916 21.5007L7.60326 21.9092L7.86945 22.0971L8.14885 21.9295L7.8916 21.5007ZM1.33496 11.1257L1.8113 10.9737L1.80457 10.9526L1.79599 10.9322L1.33496 11.1257ZM0.783203 8.37671L0.283203 8.3767V8.37671H0.783203ZM7.8916 1.26831V1.76831C11.5413 1.76831 14.4999 4.72697 14.5 8.37672L15 8.37671L15.5 8.3767C15.4999 4.1747 12.0936 0.768311 7.8916 0.768311V1.26831ZM15 8.37671H14.5C14.5 9.28376 14.3165 10.1469 13.9863 10.9331L14.4473 11.1267L14.9083 11.3203C15.2887 10.4145 15.5 9.41991 15.5 8.37671H15ZM14.4473 11.1267L13.9712 10.974C13.1127 13.6502 11.8394 15.995 10.6134 17.7698C10.0007 18.6568 9.40283 19.3971 8.87911 19.962C8.34824 20.5346 7.91523 20.9035 7.63435 21.072L7.8916 21.5007L8.14885 21.9295C8.55081 21.6883 9.05976 21.238 9.61245 20.6418C10.1723 20.038 10.7996 19.2597 11.4362 18.3381C12.7088 16.4958 14.0304 14.0633 14.9234 11.2794L14.4473 11.1267ZM7.8916 21.5007L8.17994 21.0922C6.41729 19.848 4.9837 17.8371 3.90315 15.8495C2.82706 13.8701 2.12656 11.9617 1.8113 10.9737L1.33496 11.1257L0.858624 11.2777C1.18742 12.3081 1.91066 14.2781 3.02459 16.3271C4.13406 18.3679 5.65676 20.5352 7.60326 21.9092L7.8916 21.5007ZM1.33496 11.1257L1.79599 10.9322C1.46618 10.1465 1.2832 9.28349 1.2832 8.37671H0.783203H0.283203C0.283203 9.41922 0.493778 10.4136 0.873929 11.3193L1.33496 11.1257ZM0.783203 8.37671L1.2832 8.37672C1.28326 4.72701 4.2419 1.76836 7.89161 1.76831L7.8916 1.26831L7.8916 0.768311C3.68961 0.768363 0.283268 4.17473 0.283203 8.3767L0.783203 8.37671Z" fill="#A7A7A7"/>
@@ -524,7 +532,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
             
             <TimePickerFooter>
               <TimePickerButton onClick={closeTimePicker}>취소</TimePickerButton>
-              <TimePickerButton primary onClick={applyTime}>확인</TimePickerButton>
+              <TimePickerButton $primary onClick={applyTime}>확인</TimePickerButton>
             </TimePickerFooter>
           </TimePickerContent>
         </TimePickerOverlay>
@@ -914,25 +922,25 @@ const LocationInputContainer = styled.div`
   cursor: pointer;
 `;
 
-const LocationInput = styled.input`
+const LocationDisplay = styled.div`
   width: 100%;
   border: 1px solid #A7A7A7;
   border-radius: 12px;
   padding: 15px 50px 15px 20px;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 14px;
-  color: #050505;
+  color: ${props => props.children === '장소를 입력하세요' ? '#A7A7A7' : '#050505'};
   background: #FFFFFF;
   outline: none;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  cursor: pointer;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
 
-  &:focus {
+  &:hover {
     border-color: #269962;
-  }
-
-  &::placeholder {
-    color: #A7A7A7;
   }
 `;
 
@@ -944,7 +952,7 @@ const LocationIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  cursor: pointer;
   
   svg {
     width: 16px;
@@ -1136,7 +1144,7 @@ const TimePickerButton = styled.button`
     color: #269962;
   }
 
-  ${props => props.primary && `
+  ${props => props.$primary && `
     background: #269962;
     color: #FFFFFF;
     border-color: #269962;
