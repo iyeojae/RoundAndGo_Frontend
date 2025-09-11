@@ -3,20 +3,22 @@ import styled from 'styled-components';
 
 const WeatherLocationModal = ({ onClose, onLocationChange, currentLocation }) => {
   const locations = [
-    '서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종',
-    '제주시', '서귀포시', '춘천', '강릉', '청주', '전주', '포항', '창원'
+    '제주시', '서귀포시', '제주시 아라동', '제주시 연동', '제주시 노형동', 
+    '제주시 이도동', '제주시 삼도동', '제주시 용담동', '제주시 건입동',
+    '서귀포시 중문동', '서귀포시 대정읍', '서귀포시 남원읍', '서귀포시 성산읍',
+    '서귀포시 표선면', '서귀포시 안덕면', '서귀포시 대천동', '서귀포시 동홍동'
   ];
 
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
-          <ModalTitle>날씨 지역 변경</ModalTitle>
+          <ModalTitle>제주도 날씨 지역 변경</ModalTitle>
           <CloseButton onClick={onClose}>✕</CloseButton>
         </ModalHeader>
 
         <LocationSearch>
-          <SearchInput placeholder="지역을 검색하세요" />
+          <SearchInput placeholder="제주도 내 지역을 검색하세요" />
         </LocationSearch>
 
         <LocationList>
@@ -97,16 +99,20 @@ const CloseButton = styled.button`
 
 const LocationSearch = styled.div`
   margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
 `;
 
 const SearchInput = styled.input`
   width: 100%;
+  max-width: 300px;
   padding: 12px 16px;
   border: 2px solid #E5E5E5;
   border-radius: 10px;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 14px;
   transition: border-color 0.3s ease;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;

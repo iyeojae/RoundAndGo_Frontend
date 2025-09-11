@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import LocationSelectPage from './LocationSelectPage';
 import { getCategoryCSSColor } from './ScheduleAPI';
 
-// 달력 팝업 전역 스타일
+// 달력 팝업 전역 스타일 (AddScheduleModal과 동일)
 const GlobalDatePickerStyle = createGlobalStyle`
-  /* 달력 입력 필드 스타일링 */
   input[type="date"] {
     position: relative;
   }
-
   input[type="date"]::-webkit-calendar-picker-indicator {
     background: transparent;
     bottom: 0;
@@ -23,44 +20,29 @@ const GlobalDatePickerStyle = createGlobalStyle`
     top: 0;
     width: auto;
   }
-
-  /* 달력 팝업 크기 조정 */
   input[type="date"]::-webkit-datetime-edit {
     padding: 0;
   }
-
   input[type="date"]::-webkit-datetime-edit-fields-wrapper {
     padding: 0;
   }
-
   input[type="date"]::-webkit-datetime-edit-text {
     padding: 0 2px;
   }
-
   input[type="date"]::-webkit-datetime-edit-month-field,
   input[type="date"]::-webkit-datetime-edit-day-field,
   input[type="date"]::-webkit-datetime-edit-year-field {
     padding: 0 2px;
   }
-
-  /* 달력 팝업 자체 스타일링 (브라우저별 지원 제한적) */
-  input[type="date"]::-webkit-calendar-picker-indicator:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-
-  /* 달력 팝업 크기 및 위치 조정을 위한 추가 스타일 */
   .date-input-container {
     position: relative;
     display: flex;
     justify-content: flex-start;
   }
-
   .date-input-container input[type="date"] {
     width: 100%;
     text-align: left;
   }
-
-  /* 달력 팝업이 오른쪽에서 나오도록 강제 */
   input[type="date"]::-webkit-calendar-picker-indicator {
     right: 0;
     left: auto;
@@ -68,94 +50,82 @@ const GlobalDatePickerStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
   }
-
-  /* 달력 팝업 위치 조정 (브라우저별 지원 제한적) */
   input[type="date"]::-webkit-datetime-edit {
     text-align: left;
   }
-
-  /* 달력 팝업 자체 위치 조정 */
   input[type="date"]::-webkit-datetime-edit-fields-wrapper {
     text-align: left;
   }
-
-  /* 달력 팝업이 오른쪽에서 나타나도록 추가 스타일 */
   .date-input-container input[type="date"]:focus {
     outline: none;
   }
-
-  /* 달력 팝업 위치를 오른쪽으로 강제 */
   input[type="date"]::-webkit-calendar-picker-indicator:active {
     right: 0;
     left: auto;
   }
 `;
 
-const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate }) => {
-  const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState('골프');
-  const [isAllDay, setIsAllDay] = useState(false);
+const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
+  const [selectedCategory, setSelectedCategory] = useState(schedule?.category || '골프');
+  const [isAllDay, setIsAllDay] = useState(schedule?.isAllDay || false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [timePickerType, setTimePickerType] = useState('start'); // 'start' or 'end'
+  const [timePickerType, setTimePickerType] = useState('start');
   const [tempTime, setTempTime] = useState({ period: '오전', hour: '09', minute: '00' });
   const [showLocationSelect, setShowLocationSelect] = useState(false);
+  const [editSchedule, setEditSchedule] = useState({
+    title: schedule?.title || '',
+    startDate: schedule?.startDate || '',
+    endDate: schedule?.endDate || schedule?.startDate || '',
+    startTime: schedule?.startTime || '',
+    endTime: schedule?.endTime || '',
+    isAllDay: schedule?.isAllDay || false,
+    color: schedule?.color || '#E70012',
+    location: schedule?.location || ''
+  });
 
   const categories = [
-    { id: '기념일', label: '기념일' },
-    { id: '생일', label: '생일' },
+    { id: '골프', label: '골프' },
+    { id: '맛집', label: '맛집' },
+    { id: '숙소', label: '숙소' },
+    { id: '관광', label: '관광' },
     { id: '모임', label: '모임' },
-    { id: '회의', label: '회의' },
-    { id: '결혼', label: '결혼' },
-    { id: '할 일', label: '할 일' },
-    { id: '여행', label: '여행' }
+    { id: '기타', label: '기타' }
   ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (schedule.title && schedule.startDate) {
-      onAdd({
-        ...schedule,
+    if (editSchedule.title && editSchedule.startDate) {
+      onUpdate({
+        ...editSchedule,
         category: selectedCategory,
         isAllDay
       });
-      setSchedule({
-        title: '',
-        startDate: '',
-        endDate: '',
-        startTime: '',
-        endTime: '',
-        isAllDay: false,
-        color: '#E70012'
-      });
+    }
+  };
+
+  const handleDelete = () => {
+    if (window.confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+      onDelete();
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // 종료일이 시작일보다 이전인지 확인
-    if (name === 'endDate' && schedule.startDate && value < schedule.startDate) {
+    if (name === 'endDate' && editSchedule.startDate && value < editSchedule.startDate) {
       alert('종료일은 시작일보다 늦거나 같아야 합니다.');
       return;
     }
     
-    // 시작일이 종료일보다 늦은지 확인
-    if (name === 'startDate' && schedule.endDate && value > schedule.endDate) {
+    if (name === 'startDate' && editSchedule.endDate && value > editSchedule.endDate) {
       alert('시작일은 종료일보다 이르거나 같아야 합니다.');
       return;
     }
     
-    setSchedule(prev => ({
+    setEditSchedule(prev => ({
       ...prev,
       [name]: value
     }));
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-    return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}. ${days[date.getDay()]}`;
   };
 
   const formatTime = (timeString) => {
@@ -169,7 +139,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
 
   const openTimePicker = (type) => {
     setTimePickerType(type);
-    const currentTime = type === 'start' ? schedule.startTime : schedule.endTime;
+    const currentTime = type === 'start' ? editSchedule.startTime : editSchedule.endTime;
     if (currentTime) {
       const [hours, minutes] = currentTime.split(':');
       const hour = parseInt(hours);
@@ -196,12 +166,10 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
     const timeString = `${hour24.toString().padStart(2, '0')}:${tempTime.minute}`;
     
     if (timePickerType === 'start') {
-      setSchedule(prev => {
+      setEditSchedule(prev => {
         const newSchedule = { ...prev, startTime: timeString };
         
-        // 시작 시간이 변경되면 종료 시간이 시작 시간보다 이전이 되는지 확인
         if (prev.endTime && timeString >= prev.endTime) {
-          // 종료 시간을 시작 시간보다 1시간 늦게 자동 설정
           const [hours, minutes] = timeString.split(':');
           const endHour = (parseInt(hours) + 1) % 24;
           newSchedule.endTime = `${endHour.toString().padStart(2, '0')}:${minutes}`;
@@ -210,12 +178,11 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
         return newSchedule;
       });
     } else {
-      // 종료 시간이 시작 시간보다 이전인지 확인
-      if (schedule.startTime && timeString <= schedule.startTime) {
+      if (editSchedule.startTime && timeString <= editSchedule.startTime) {
         alert('종료 시간은 시작 시간보다 늦어야 합니다.');
         return;
       }
-      setSchedule(prev => ({ ...prev, endTime: timeString }));
+      setEditSchedule(prev => ({ ...prev, endTime: timeString }));
     }
     
     closeTimePicker();
@@ -230,12 +197,11 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
   };
 
   const handleLocationSelect = (location) => {
-    setSchedule(prev => ({ ...prev, location }));
+    setEditSchedule(prev => ({ ...prev, location }));
     closeLocationSelect();
   };
 
   const handleOverlayClick = (e) => {
-    // 오직 오버레이 자체를 클릭했을 때만 모달 닫기
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -245,19 +211,16 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
     <ModalOverlay onClick={handleOverlayClick}>
       <GlobalDatePickerStyle />
       <ModalContent onClick={(e) => e.stopPropagation()}>
-        {/* 헤더 */}
         <Header>
           <HeaderLeft>
-            <ModalTitle>일정 추가</ModalTitle>
-            <DateSubtitle>{selectedDate ? selectedDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</DateSubtitle>
+            <ModalTitle>일정 수정</ModalTitle>
+            <DateSubtitle>{schedule?.date ? new Date(schedule.date).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</DateSubtitle>
           </HeaderLeft>
           <CloseButton onClick={onClose}>취소</CloseButton>
         </Header>
 
-        {/* 모달 창 */}
         <ModalWindow>
           <Form>
-            {/* 카테고리 선택 */}
             <CategorySection>
               <CategoryLabel>카테고리 *</CategoryLabel>
               <CategoryGrid>
@@ -345,13 +308,8 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                 >
                   <CategoryIcon>
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M1 16.8V1.2C1 1.08954 1.08954 1 1.2 1H16.8C16.9105 1 17 1.08954 17 1.2V16.8C17 16.9105 16.9105 17 16.8 17H1.2C1.08954 17 1 16.9105 1 16.8Z" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M4.20001 5H7.40001" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M4.20001 9H7.40001" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M4.20001 13H7.40001" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M10.6 5H13.8" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M10.6 9H13.8" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
-                      <path d="M10.6 13H13.8" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
+                      <circle cx="9" cy="9" r="8" stroke="#6B7280" strokeWidth="2"/>
+                      <path d="M9 5V9M9 13H9.01" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
                     </svg>
                   </CategoryIcon>
                   <CategoryText>기타</CategoryText>
@@ -359,20 +317,18 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
               </CategoryGrid>
             </CategorySection>
 
-            {/* 일정 제목 */}
             <TitleSection>
               <TitleLabel>일정 제목 *</TitleLabel>
               <TitleInput
                 type="text"
                 name="title"
-                value={schedule.title || ''}
+                value={editSchedule.title || ''}
                 onChange={handleChange}
                 placeholder="일정 제목을 입력해주세요"
                 required
               />
             </TitleSection>
 
-            {/* 날짜 선택 */}
             <DateRowSection>
               <DateRow>
                 <DateLabel>시작일</DateLabel>
@@ -380,7 +336,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                   <DateInput
                     type="date"
                     name="startDate"
-                    value={schedule.startDate || ''}
+                    value={editSchedule.startDate || ''}
                     onChange={handleChange}
                     required
                   />
@@ -389,7 +345,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                     onClick={() => openTimePicker('start')}
                     disabled={isAllDay}
                   >
-                    {schedule.startTime ? formatTime(schedule.startTime) : '시간 선택'}
+                    {editSchedule.startTime ? formatTime(editSchedule.startTime) : '시간 선택'}
                   </TimeButton>
                 </div>
               </DateRow>
@@ -402,23 +358,21 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                   <DateInput
                     type="date"
                     name="endDate"
-                    value={schedule.endDate || ''}
+                    value={editSchedule.endDate || ''}
                     onChange={handleChange}
-                    min={schedule.startDate}
+                    min={editSchedule.startDate}
                   />
                   <TimeButton 
                     type="button"
                     onClick={() => openTimePicker('end')}
                     disabled={isAllDay}
                   >
-                    {schedule.endTime ? formatTime(schedule.endTime) : '시간 선택'}
+                    {editSchedule.endTime ? formatTime(editSchedule.endTime) : '시간 선택'}
                   </TimeButton>
                 </div>
               </DateRow>
             </DateRowSection>
 
-
-            {/* 하루종일 옵션 */}
             <AllDaySection>
               <AllDayLabel>하루 종일</AllDayLabel>
               <AllDayToggle
@@ -428,9 +382,8 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                   const checked = e.target.checked;
                   setIsAllDay(checked);
                   
-                  // 하루종일 체크 시 시간 초기화
                   if (checked) {
-                    setSchedule(prev => ({
+                    setEditSchedule(prev => ({
                       ...prev,
                       startTime: '',
                       endTime: ''
@@ -440,8 +393,6 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
               />
             </AllDaySection>
 
-
-            {/* 장소 */}
             <LocationSection>
               <LocationLabel>장소</LocationLabel>
               <LocationInputContainer onClick={(e) => {
@@ -449,7 +400,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                 openLocationSelect();
               }}>
                 <LocationDisplay>
-                  {schedule.location || '장소를 입력하세요'}
+                  {editSchedule.location || '장소를 입력하세요'}
                 </LocationDisplay>
                 <LocationIcon onClick={(e) => {
                   e.stopPropagation();
@@ -462,26 +413,27 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
                 </LocationIcon>
               </LocationInputContainer>
             </LocationSection>
-
           </Form>
         </ModalWindow>
 
-        {/* 하단 버튼 영역 */}
         <BottomButtonSection>
-          <AddButton 
+          <DeleteButton onClick={handleDelete}>
+            삭제
+          </DeleteButton>
+          <UpdateButton 
             type="button" 
             onClick={(e) => {
               e.preventDefault();
               handleSubmit(e);
             }}
-            disabled={!schedule.title || !schedule.startDate}
+            disabled={!editSchedule.title || !editSchedule.startDate}
           >
-            일정 추가
-          </AddButton>
+            수정
+          </UpdateButton>
         </BottomButtonSection>
       </ModalContent>
 
-      {/* 시간 선택 팝업 */}
+      {/* 시간 선택 팝업 (AddScheduleModal과 동일) */}
       {showTimePicker && (
         <TimePickerOverlay onClick={closeTimePicker}>
           <TimePickerContent onClick={(e) => e.stopPropagation()}>
@@ -560,7 +512,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
   );
 };
 
-// 스타일 컴포넌트들
+// 스타일 컴포넌트들 (AddScheduleModal과 동일하지만 일부 수정)
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -703,12 +655,6 @@ const DateRow = styled.div`
   }
 `;
 
-const DateSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`;
-
 const DateLabel = styled.label`
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 13px;
@@ -730,64 +676,6 @@ const DateInput = styled.input`
 
   &:focus {
     outline: none;
-  }
-`;
-
-const DateDisplay = styled.div`
-  font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 13px;
-  color: #050505;
-`;
-
-const TimeRowSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`;
-
-const TimeRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-
-  .time-input-container {
-    flex: 1;
-  }
-`;
-
-const TimeSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`;
-
-const TimeLabel = styled.label`
-  font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 13px;
-  color: #050505;
-`;
-
-const TimeInput = styled.input`
-  border: 1px solid #A7A7A7;
-  border-radius: 12px;
-  padding: 15px 20px;
-  font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 14px;
-  color: #050505;
-  background: #FFFFFF;
-  outline: none;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
-  width: 100%;
-  text-align: left;
-
-  &:focus {
-    border-color: #269962;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    background: #F5F5F5;
   }
 `;
 
@@ -853,6 +741,13 @@ const CategoryItem = styled.div`
   `}
 `;
 
+const CategoryText = styled.div`
+  font-family: 'Spoqa Han Sans Neo', sans-serif;
+  font-size: 12px;
+  color: #666666;
+  text-align: center;
+`;
+
 const CategoryIcon = styled.div`
   font-size: 24px;
   margin-bottom: 8px;
@@ -867,13 +762,6 @@ const CategoryIcon = styled.div`
     max-width: 22px;
     max-height: 20px;
   }
-`;
-
-const CategoryText = styled.div`
-  font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 12px;
-  color: #666666;
-  text-align: center;
 `;
 
 const TitleSection = styled.div`
@@ -969,7 +857,6 @@ const LocationIcon = styled.div`
   }
 `;
 
-
 const BottomButtonSection = styled.div`
   position: absolute;
   bottom: 0;
@@ -978,10 +865,31 @@ const BottomButtonSection = styled.div`
   padding: 20px;
   background: #FFFFFF;
   border-top: 1px solid #E5E5E5;
+  display: flex;
+  gap: 10px;
 `;
 
-const AddButton = styled.button`
-  width: 100%;
+const DeleteButton = styled.button`
+  flex: 1;
+  padding: 15px;
+  border: 1px solid #EF4444;
+  border-radius: 27px;
+  background: #FFFFFF;
+  color: #EF4444;
+  font-family: 'Spoqa Han Sans Neo', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #EF4444;
+    color: #FFFFFF;
+  }
+`;
+
+const UpdateButton = styled.button`
+  flex: 2;
   padding: 15px;
   border: 1px solid #269962;
   border-radius: 27px;
@@ -1005,7 +913,7 @@ const AddButton = styled.button`
   }
 `;
 
-// 시간 선택 관련 스타일 컴포넌트들
+// 시간 선택 관련 스타일 컴포넌트들 (AddScheduleModal과 동일)
 const TimeButton = styled.button`
   border: none;
   border-left: 1px solid #E5E5E5;
@@ -1175,4 +1083,4 @@ const LocationSelectOverlay = styled.div`
   z-index: 3000;
 `;
 
-export default AddScheduleModal; 
+export default EditScheduleModal;

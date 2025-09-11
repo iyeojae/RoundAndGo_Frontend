@@ -6,6 +6,8 @@
   position: relative;
   min-height: 100vh;
   padding-bottom: 100px; /* Footer 공간 확보 */
+  /* 일정이 많을 때 자동으로 늘어나도록 설정 */
+  height: auto;
 }
 
 .schedule-page::after {
@@ -403,10 +405,11 @@
   width: calc(100% - 80px);
   max-width: 500px;
   min-width: 300px;
-  aspect-ratio: 1;
+  /* aspect-ratio: 1; 제거 - 정사각형 제한 해제 */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start; /* space-between에서 flex-start로 변경 */
+  min-height: 200px; /* 최소 높이 설정 */
 }
 
 .schedule-section-header {
@@ -454,10 +457,10 @@
 .schedule-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px; /* gap을 줄여서 일정 간격 최적화 */
   flex: 1;
-  overflow-y: auto;
-  min-height: 0;
+  /* overflow-y: auto; 제거 - 자동으로 늘어나도록 */
+  /* min-height: 0; 제거 - 최소 높이 제한 해제 */
 }
 
 .schedule-empty {
@@ -524,6 +527,11 @@
   border-left: 4px solid #269962;
   transition: all 0.3s ease;
   flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 8px; /* 일정 간격 추가 */
 }
 
 .schedule-item:hover {
@@ -559,6 +567,26 @@
   font-size: clamp(10px, 2vw, 12px);
   color: #666;
   line-height: 1.3;
+}
+
+.schedule-edit-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+
+.schedule-edit-button:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
 }
 
 

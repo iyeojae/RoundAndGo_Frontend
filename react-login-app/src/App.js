@@ -8,7 +8,6 @@ import EmailLoginPage from './EmailAuth/EmailLoginPage';
 import SignupPage from './EmailAuth/SignupPage';
 import FindAccountPage from './EmailAuth/FindAccountPage';
 import SchedulePage from './Schedule&Weather/SchedulePage';
-import WeatherPage from './WeatherPage';
 import JejuLocationPage from './Schedule&Weather/JejuLocationPage';
 import HomePage from "./HomePage";
 import OAuth2Callback from "./OAuth2Callback";
@@ -31,7 +30,6 @@ function App() {
                     <Route path="/signup" element={<SignupPage />} />
                     <Route path="/find-account" element={<FindAccountPage />} />
                     <Route path="/schedule" element={<SchedulePage />} />
-                    <Route path="/weather" element={<WeatherPage />} />
                     <Route path="/jeju-location" element={<JejuLocationPage />} />
                     <Route path="/login/oauth2/code/kakao" element={<OAuth2Callback />} />
 

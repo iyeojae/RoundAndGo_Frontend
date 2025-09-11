@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import WeatherLocationModal from './WeatherLocationModal';
+import { WEATHER_CONFIG, isApiKeyValid, getApiKeyMessage } from './config/weather';
 
 const WeatherPage = () => {
   const navigate = useNavigate();
@@ -30,41 +31,36 @@ const WeatherPage = () => {
   const fetchWeatherData = async (location) => {
     setLoading(true);
     try {
-      const apiKey = '3e4972652ad8b596a707ef44ebb741bf';
-      console.log('🌤️ 날씨 API 호출 시작:', location);
-      console.log('🔑 API 키 사용:', apiKey.substring(0, 8) + '...');
+      // API 키 유효성 검사
+      if (!isApiKeyValid()) {
+        console.warn('OpenWeatherMap API 키가 설정되지 않았습니다.');
+        setWeatherData(null);
+        setForecastData(null);
+        setLoading(false);
+        return;
+      }
 
       // 현재 날씨 데이터
-      const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`;
-      console.log('📡 현재 날씨 API URL:', currentUrl);
-
-      const currentResponse = await fetch(currentUrl);
-      console.log('📡 현재 날씨 응답 상태:', currentResponse.status);
+      const currentResponse = await fetch(
+        `${WEATHER_CONFIG.BASE_URL}/weather?q=${location},KR&appid=${WEATHER_CONFIG.API_KEY}&units=${WEATHER_CONFIG.UNITS}&lang=${WEATHER_CONFIG.LANG}`
+      );
 
       if (!currentResponse.ok) {
-        const errorText = await currentResponse.text();
-        console.error('❌ 현재 날씨 API 오류:', errorText);
         throw new Error('현재 날씨 데이터를 가져올 수 없습니다.');
       }
 
       const currentData = await currentResponse.json();
-      console.log('✅ 현재 날씨 데이터:', currentData);
 
       // 5일 예보 데이터
-      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${location},KR&appid=${apiKey}&units=metric&lang=kr`;
-      console.log('📡 예보 API URL:', forecastUrl);
-
-      const forecastResponse = await fetch(forecastUrl);
-      console.log('📡 예보 응답 상태:', forecastResponse.status);
+      const forecastResponse = await fetch(
+        `${WEATHER_CONFIG.BASE_URL}/forecast?q=${location},KR&appid=${WEATHER_CONFIG.API_KEY}&units=${WEATHER_CONFIG.UNITS}&lang=${WEATHER_CONFIG.LANG}`
+      );
 
       if (!forecastResponse.ok) {
-        const errorText = await forecastResponse.text();
-        console.error('❌ 예보 API 오류:', errorText);
         throw new Error('예보 데이터를 가져올 수 없습니다.');
       }
 
       const forecastData = await forecastResponse.json();
-      console.log('✅ 예보 데이터:', forecastData);
 
       setWeatherData(currentData);
       setForecastData(forecastData);
@@ -123,7 +119,7 @@ const WeatherPage = () => {
       const forecastItem = forecastData.list.find(item => {
         const itemTime = new Date(item.dt * 1000);
         return itemTime.getHours() === targetTime.getHours() &&
-            itemTime.getDate() === targetTime.getDate();
+               itemTime.getDate() === targetTime.getDate();
       });
 
       if (forecastItem) {
@@ -147,38 +143,56 @@ const WeatherPage = () => {
   };
 
   const hourlyForecast = getHourlyForecast();
+  const apiKeyMessage = getApiKeyMessage();
 
   return (
-      <Container>
-        <Header>
-          <LogoSection>
-            <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="Logo" />
-            <LogoText>ROUND & GO</LogoText>
-          </LogoSection>
-          <NavSection>
-            <NavButton onClick={() => navigate('/')}>홈</NavButton>
-            <NavButton onClick={() => navigate('/jeju-location')}>지역선택</NavButton>
-            <NavButton onClick={() => navigate('/schedule')}>일정</NavButton>
-          </NavSection>
-        </Header>
+    <Container>
+      <Header>
+        <LogoSection>
+          <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="Logo" />
+          <LogoText>ROUND & GO</LogoText>
+        </LogoSection>
+        <NavSection>
+          <NavButton onClick={() => navigate('/')}>홈</NavButton>
+          <NavButton onClick={() => navigate('/jeju-location')}>지역선택</NavButton>
+          <NavButton onClick={() => navigate('/schedule')}>일정</NavButton>
+        </NavSection>
+      </Header>
 
-        <MainContent>
-          {/* 현재 날씨 섹션 */}
+      <MainContent>
+        {/* API 키 설정 안내 */}
+        {apiKeyMessage && (
+          <ApiKeyNotice>
+            <NoticeHeader>
+              <NoticeIcon>⚠️</NoticeIcon>
+              <NoticeTitle>{apiKeyMessage.title}</NoticeTitle>
+            </NoticeHeader>
+            <NoticeMessage>{apiKeyMessage.message}</NoticeMessage>
+            <NoticeSteps>
+              {apiKeyMessage.steps.map((step, index) => (
+                <NoticeStep key={index}>{step}</NoticeStep>
+              ))}
+            </NoticeSteps>
+          </ApiKeyNotice>
+        )}
+
+        {/* 현재 날씨 섹션 */}
+        {weatherData ? (
           <CurrentWeatherSection>
             <WeatherHeader>
               <WeatherInfo>
                 <WeatherIcon>
-                  {weatherData ? getWeatherIcon(weatherData.weather[0].icon) : '🌤️'}
+                  {getWeatherIcon(weatherData.weather[0].icon)}
                 </WeatherIcon>
                 <WeatherTemp>
-                  {weatherData ? Math.round(weatherData.main.temp) : 20}°
+                  {Math.round(weatherData.main.temp)}°
                 </WeatherTemp>
               </WeatherInfo>
               <WeatherDetails>
                 <WeatherLocation>{selectedLocation}</WeatherLocation>
                 <WeatherDate>현재 {formatDate(new Date())}</WeatherDate>
                 <WeatherDescription>
-                  {weatherData ? weatherData.weather[0].description : '구름'}
+                  {weatherData.weather[0].description}
                 </WeatherDescription>
               </WeatherDetails>
             </WeatherHeader>
@@ -187,84 +201,127 @@ const WeatherPage = () => {
               <StatItem>
                 <StatLabel>최고</StatLabel>
                 <StatValue high>
-                  {weatherData ? Math.round(weatherData.main.temp_max) : 20}°
+                  {Math.round(weatherData.main.temp_max)}°
                 </StatValue>
               </StatItem>
               <StatItem>
                 <StatLabel>최저</StatLabel>
                 <StatValue low>
-                  {weatherData ? Math.round(weatherData.main.temp_min) : 17}°
+                  {Math.round(weatherData.main.temp_min)}°
                 </StatValue>
               </StatItem>
               <StatItem>
                 <StatLabel>습도</StatLabel>
                 <StatValue>
-                  {weatherData ? weatherData.main.humidity : 65}%
+                  {weatherData.main.humidity}%
                 </StatValue>
               </StatItem>
               <StatItem>
                 <StatLabel>풍속</StatLabel>
                 <StatValue>
-                  {weatherData ? weatherData.wind.speed : 2.1} m/s
+                  {weatherData.wind.speed} m/s
                 </StatValue>
               </StatItem>
             </WeatherStats>
           </CurrentWeatherSection>
-
-          {/* 시간별 예보 섹션 */}
-          <HourlyForecastSection>
-            <SectionTitle>시간별 일기예보</SectionTitle>
-            <HourlyGrid>
-              {hourlyForecast.map((forecast, index) => (
-                  <HourlyItem key={index}>
-                    <HourlyTime>{forecast.time}</HourlyTime>
-                    <HourlyIcon>{getWeatherIcon(forecast.icon)}</HourlyIcon>
-                    <HourlyTemp>{forecast.temp}°</HourlyTemp>
-                  </HourlyItem>
-              ))}
-            </HourlyGrid>
-          </HourlyForecastSection>
-
-          {/* 주간 예보 섹션 */}
-          <WeeklyForecastSection>
-            <WeeklyHeader>
-              <WeeklyTitle>주간예보</WeeklyTitle>
-              <CalendarButton onClick={() => navigate('/schedule')}>
-                달력보기
-              </CalendarButton>
-            </WeeklyHeader>
-
-            <CalendarPreview>
-              <CalendarMonth>5월</CalendarMonth>
-              <CalendarDays>
-                {[6, 7, 8, 16, 17].map((day, index) => (
-                    <CalendarDay key={index} hasSchedule>
-                      {day}
-                    </CalendarDay>
-                ))}
-              </CalendarDays>
-            </CalendarPreview>
-          </WeeklyForecastSection>
-
-          {/* 액션 버튼들 */}
-          <ActionButtons>
-            <ActionButton onClick={openWeatherLocationModal}>
-              지역 변경
-            </ActionButton>
-            <ActionButton onClick={() => navigate('/schedule')}>
-              일정으로 이동
-            </ActionButton>
-          </ActionButtons>
-        </MainContent>
-
-        {showWeatherLocationModal && (
-            <WeatherLocationModal
-                onClose={() => setShowWeatherLocationModal(false)}
-                onLocationChange={handleWeatherLocationChange}
-                currentLocation={selectedLocation}
-            />
+        ) : (
+          <CurrentWeatherSection>
+            <WeatherHeader>
+              <WeatherInfo>
+                <WeatherIcon>❌</WeatherIcon>
+                <WeatherTemp>--°</WeatherTemp>
+              </WeatherInfo>
+              <WeatherDetails>
+                <WeatherLocation>{selectedLocation}</WeatherLocation>
+                <WeatherDate>현재 {formatDate(new Date())}</WeatherDate>
+                <WeatherDescription>
+                  날씨 데이터를 불러올 수 없습니다
+                </WeatherDescription>
+              </WeatherDetails>
+            </WeatherHeader>
+            <WeatherStats>
+              <StatItem>
+                <StatLabel>최고</StatLabel>
+                <StatValue>--°</StatValue>
+              </StatItem>
+              <StatItem>
+                <StatLabel>최저</StatLabel>
+                <StatValue>--°</StatValue>
+              </StatItem>
+              <StatItem>
+                <StatLabel>습도</StatLabel>
+                <StatValue>--%</StatValue>
+              </StatItem>
+              <StatItem>
+                <StatLabel>풍속</StatLabel>
+                <StatValue>-- m/s</StatValue>
+              </StatItem>
+            </WeatherStats>
+          </CurrentWeatherSection>
         )}
-      </Container>
+
+        {/* 시간별 예보 섹션 */}
+        <HourlyForecastSection>
+          <SectionTitle>시간별 일기예보</SectionTitle>
+          <HourlyGrid>
+            {hourlyForecast.length > 0 ? (
+              hourlyForecast.map((forecast, index) => (
+                <HourlyItem key={index}>
+                  <HourlyTime>{forecast.time}</HourlyTime>
+                  <HourlyIcon>{getWeatherIcon(forecast.icon)}</HourlyIcon>
+                  <HourlyTemp>{forecast.temp}°</HourlyTemp>
+                </HourlyItem>
+              ))
+            ) : (
+              <HourlyItem>
+                <HourlyTime>--</HourlyTime>
+                <HourlyIcon>❌</HourlyIcon>
+                <HourlyTemp>--°</HourlyTemp>
+              </HourlyItem>
+            )}
+          </HourlyGrid>
+        </HourlyForecastSection>
+
+        {/* 주간 예보 섹션 */}
+        <WeeklyForecastSection>
+          <WeeklyHeader>
+            <WeeklyTitle>주간예보</WeeklyTitle>
+            <CalendarButton onClick={() => navigate('/schedule')}>
+              달력보기
+            </CalendarButton>
+          </WeeklyHeader>
+
+          <CalendarPreview>
+            <CalendarMonth>5월</CalendarMonth>
+            <CalendarDays>
+              {[6, 7, 8, 16, 17].map((day, index) => (
+                <CalendarDay key={index} hasSchedule>
+                  {day}
+                </CalendarDay>
+              ))}
+            </CalendarDays>
+          </CalendarPreview>
+        </WeeklyForecastSection>
+
+        {/* 액션 버튼들 */}
+        <ActionButtons>
+          <ActionButton onClick={openWeatherLocationModal}>
+            지역 변경
+          </ActionButton>
+          <ActionButton onClick={() => navigate('/schedule')}>
+            일정으로 이동
+          </ActionButton>
+        </ActionButtons>
+      </MainContent>
+
+      {showWeatherLocationModal && (
+        <WeatherLocationModal
+          onClose={() => setShowWeatherLocationModal(false)}
+          onLocationChange={handleWeatherLocationChange}
+          currentLocation={selectedLocation}
+        />
+      )}
+    </Container>
   );
 };
 
@@ -337,6 +394,50 @@ const MainContent = styled.main`
   @media (max-width: 768px) {
     padding: 1rem;
   }
+`;
+
+const ApiKeyNotice = styled.div`
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.5);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+`;
+
+const NoticeHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+const NoticeIcon = styled.span`
+  font-size: 1.5rem;
+`;
+
+const NoticeTitle = styled.h3`
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  color: #ffc107;
+`;
+
+const NoticeMessage = styled.p`
+  font-size: 1rem;
+  margin: 0 0 1rem 0;
+  opacity: 0.9;
+`;
+
+const NoticeSteps = styled.ol`
+  margin: 0;
+  padding-left: 1.5rem;
+`;
+
+const NoticeStep = styled.li`
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
 `;
 
 const CurrentWeatherSection = styled.section`

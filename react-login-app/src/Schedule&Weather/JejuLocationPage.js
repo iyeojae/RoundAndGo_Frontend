@@ -45,18 +45,14 @@ const JejuLocationPage = () => {
       }, 150);
     }
 
-    // 선택된 지역으로 날씨 데이터를 업데이트하고 날씨 페이지로 이동
+    // 선택된 지역으로 스케줄 페이지로 이동
     setTimeout(() => {
-      navigate('/weather', {
-        state: {
-          selectedLocation: location.name
-        }
-      });
+      navigate('/schedule');
     }, 300);
   };
 
   const handleBack = () => {
-    navigate('/weather');
+    navigate('/schedule');
   };
 
   const handleSearchChange = (e) => {
