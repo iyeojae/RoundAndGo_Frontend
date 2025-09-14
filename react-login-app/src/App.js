@@ -19,6 +19,8 @@ import DetailMorePage from './Detail/Accommodation/MoreAccommodation.jsx'; // �
 import CommunityMainPage from './Community/Community.jsx'; // 커뮤니티
 import CommunityEntirePage from './Community/CommunityEntire.jsx'; // 커뮤니티 전체보기
 import CommunityWritePage from './Community/CommunityWrite.jsx'; // 커뮤니티 쓰기
+import CourseRecommendation from './Course/CourseRecommendation'; // 코스 추천
+import CourseMain from './Course/CourseMain'; // 코스 추천 메인
 
 function App() {
     return (
@@ -40,6 +42,8 @@ function App() {
                     <Route path="/community" elemet={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
                     <Route path="/community/entire" elemet={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
                     <Route path="/communiyt/write" elemet={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
+                    <Route path="/course/recommendation" element={<CourseRecommendation />} /> {/* 코스 추천 */}
+                    <Route path="/course/*" element={<CourseMain />} /> {/* 코스 추천 3단계 */}
                 </Routes>
             </div>
         </Router>
