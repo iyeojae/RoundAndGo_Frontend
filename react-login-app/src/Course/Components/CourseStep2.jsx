@@ -136,9 +136,8 @@ const CourseStep2 = () => {
       // 당일치기 여부 확인
       const isSameDay = step1Data.selectedPeriod === 'day';
       
-      // API 엔드포인트 결정 (환경에 따라 분기)
-      const isDevelopment = process.env.NODE_ENV === 'development';
-      const baseUrl = isDevelopment ? '' : 'https://roundandgo.shop';
+      // API 엔드포인트 결정 (항상 https://roundandgo.shop 사용)
+      const baseUrl = 'https://roundandgo.shop';
       
       const apiEndpoint = isSameDay 
         ? `${baseUrl}/api/courses/recommendation/ai`
