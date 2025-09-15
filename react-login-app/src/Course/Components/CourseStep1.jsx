@@ -282,18 +282,12 @@ const CourseStep1 = () => {
         <div className="golf-time-section">
           <div className="section-header">
             <h3 className="section-title">골프 치는 시간</h3>
-            <p className="section-description">
-              {selectedPeriod === 'day' && '당일치기: 1개 시간 입력'}
-              {selectedPeriod === '1night' && '1박 2일: 2개 시간 입력'}
-              {selectedPeriod === '2night' && '2박 3일: 3개 시간 입력'}
-              {selectedPeriod === '3night' && '3박 4일: 4개 시간 입력'}
-            </p>
           </div>
           
           {golfTimes.map((time, index) => (
             <div key={index} className="golf-time-input">
               <div className="golf-time-label">
-                {selectedPeriod === 'day' ? '골프 시간' : `${index + 1}일차 골프 시간`}
+                {selectedPeriod === 'day' ? '골프 시간' : `${index + 1}일차`}
               </div>
               {time === '' ? (
                 <div 
@@ -322,14 +316,6 @@ const CourseStep1 = () => {
                     </svg>
                   </span>
                 </div>
-              )}
-              {golfTimes.length > 1 && (
-                <button 
-                  className="remove-time-btn"
-                  onClick={() => removeGolfTime(index)}
-                >
-                  ✕
-                </button>
               )}
             </div>
           ))}
