@@ -819,7 +819,7 @@ const CourseStep3 = () => {
               <div className="itinerary-item">
               {/* 위치 정보 */}
               <div className="location-info">
-                <div className="location-icon">
+                <div className="location-icon" style={{ backgroundColor: getIconColorByType(location.type) }}>
                   <span className="icon-number">{index + 1}</span>
                   <span className="icon-symbol">{location.icon}</span>
                 </div>
