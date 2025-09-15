@@ -44,7 +44,7 @@ function GolfSearch() {
 
         try {
             const response = await fetch(
-                `https://roundandgo.shop/api/golf-courses/search?name=${encodeURIComponent(searchTerm)}`
+                `https://api.roundandgo.com/api/golf-courses/search?name=${encodeURIComponent(searchTerm)}`
             );
 
             if (!response.ok) {

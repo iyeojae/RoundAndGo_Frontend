@@ -2,7 +2,7 @@
  * 아이디/비밀번호 찾기 API 서비스
  */
 
-const API_BASE_URL = 'https://roundandgo.shop/api';
+const API_BASE_URL = 'https://api.roundandgo.com/api';
 
 /**
  * 1단계: 아이디 찾기 이메일 인증 요청

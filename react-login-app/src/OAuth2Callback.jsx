@@ -81,7 +81,7 @@ function OAuth2Callback() {
         // 🍪 SameSite/Secure 쿠키 문제 진단
         console.log('🍪 쿠키 정책 진단:');
         console.log(`  HTTPS 사용: ${window.location.protocol === 'https:' ? '✅ Yes' : '❌ No - Secure 쿠키 차단'}`);
-        console.log(`  크로스 도메인: ${window.location.hostname !== 'roundandgo.shop' ? '⚠️ Yes - SameSite 문제 가능' : '✅ No'}`);
+        console.log(`  크로스 도메인: ${window.location.hostname !== 'api.roundandgo.com' ? '⚠️ Yes - SameSite 문제 가능' : '✅ No'}`);
         
         // 🔄 리다이렉트 체인 분석
         console.log('🔄 OAuth2 리다이렉트 체인 분석:');

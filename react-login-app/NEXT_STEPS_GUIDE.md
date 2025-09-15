@@ -50,7 +50,7 @@ export const mockKakaoApi = {
 export const API_CONFIG = {
     baseUrl: process.env.NODE_ENV === 'development' 
         ? 'http://localhost:8000'  // 로컬 개발 서버
-        : 'https://roundandgo.onrender.com', // 운영 서버
+        : 'https://api.roundandgo.com', // 운영 서버
     useMockApi: process.env.REACT_APP_USE_MOCK_API === 'true'
 };
 ```

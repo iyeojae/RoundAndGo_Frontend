@@ -35,7 +35,7 @@ function RestaurantList({
                 const cities = ['제주시', '서귀포시'];
                 const responses = await Promise.all(
                     cities.map(city =>
-                        fetch(`https://roundandgo.shop/api/tour-infos/restaurants?province=제주특별자치도&city=${city}`)
+                        fetch(`https://api.roundandgo.com/api/tour-infos/restaurants?province=제주특별자치도&city=${city}`)
                             .then(res => res.ok ? res.json() : Promise.reject(`API 에러: ${city}`))
                             .then(data => data.map(item => ({
                                 ...item,

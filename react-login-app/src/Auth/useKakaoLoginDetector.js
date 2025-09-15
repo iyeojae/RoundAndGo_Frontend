@@ -133,7 +133,7 @@ const syncKakaoUserInfo = async () => {
       throw new Error('액세스 토큰이 없습니다. 다시 로그인해주세요.');
     }
     
-    const response = await fetch('https://roundandgo.shop/api/auth/user', {
+    const response = await fetch('https://api.roundandgo.com/api/auth/user', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

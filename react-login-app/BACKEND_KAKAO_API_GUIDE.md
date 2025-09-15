@@ -1,6 +1,6 @@
 # 백엔드 카카오 로그인 API 구현 가이드
 
-카카오 로그인이 백엔드 API 방식으로 변경되었습니다. 백엔드 서버(`https://roundandgo.onrender.com`)에 다음 API 엔드포인트들을 구현해야 합니다.
+카카오 로그인이 백엔드 API 방식으로 변경되었습니다. 백엔드 서버(`https://api.roundandgo.com`)에 다음 API 엔드포인트들을 구현해야 합니다.
 
 ## 필요한 백엔드 API 엔드포인트
 

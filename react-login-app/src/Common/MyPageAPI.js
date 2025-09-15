@@ -1,7 +1,7 @@
 // MyPageAPI.js
 import axios from 'axios';
 
-const BASE_URL = 'https://roundandgo.shop/api';
+const BASE_URL = 'https://api.roundandgo.com/api';
 
 export const getUserInfo = async () => {
     const res = await axios.get(`${BASE_URL}/auth/user`, {

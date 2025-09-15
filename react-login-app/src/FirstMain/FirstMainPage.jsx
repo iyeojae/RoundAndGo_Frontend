@@ -49,7 +49,7 @@ function FirstMainPage() {
         if (selectedRegionInfo) {
             const fetchGolfCourses = async () => {
                 try {
-                    const res = await fetch(`https://roundandgo.shop/api/golf-courses/search-by-address?address=${selectedRegionInfo.name}`);
+                    const res = await fetch(`https://api.roundandgo.com/api/golf-courses/search-by-address?address=${selectedRegionInfo.name}`);
                     const result = await res.json();
 
                     if (Array.isArray(result.data)) {

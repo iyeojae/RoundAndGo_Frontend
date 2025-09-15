@@ -1,11 +1,11 @@
 # OAuth2 경로는 백엔드로 전달 (React Router에서 제외)
-/oauth2/*  https://roundandgo.onrender.com/oauth2/:splat  302!
+/oauth2/*  https://api.roundandgo.com/oauth2/:splat  302!
 
 # Spring Security OAuth2 기본 콜백 경로도 백엔드로 전달
-/login/oauth2/code/*  https://roundandgo.onrender.com/login/oauth2/code/:splat  302!
+/login/oauth2/code/*  https://api.roundandgo.com/login/oauth2/code/:splat  302!
 
 # API 경로도 백엔드로 전달 (필요시)
-/api/*  https://roundandgo.onrender.com/api/:splat  302!
+/api/*  https://api.roundandgo.com/api/:splat  302!
 
 # 나머지는 React SPA로 처리 (React Router fallback)
 /*    /index.html   200

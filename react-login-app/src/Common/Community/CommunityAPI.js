@@ -3,7 +3,7 @@ import axios from 'axios';
 // GET 인기글 정보
 export const fetchPopularPosts = async () => {
     try {
-        const response = await axios.get('https://roundandgo.shop/api/communities/popular');
+        const response = await axios.get('https://api.roundandgo.com/api/communities/popular');
         if (response.status === 200) {
             return response.data.data;
         } else {
@@ -17,7 +17,7 @@ export const fetchPopularPosts = async () => {
 // GET 카테고리별 글 목록
 export const fetchCategories = async (label) => {
     try {
-        const response = await axios.get(`https://roundandgo.shop/api/posts/category?category=${label}`);
+        const response = await axios.get(`https://api.roundandgo.com/api/posts/category?category=${label}`);
         if (response.status === 200) {
             return response.data.data;
         } else {
@@ -31,7 +31,7 @@ export const fetchCategories = async (label) => {
 // GET 최신글
 export const fetchPostsLatest = async () => {
     try {
-        const response = await axios.get('https://roundandgo.shop/api/posts');
+        const response = await axios.get('https://api.roundandgo.com/api/posts');
         if (response.status === 200) {
             return response.data.data;
         } else {
@@ -45,7 +45,7 @@ export const fetchPostsLatest = async () => {
 // GET 게시글 상세 정보
 export const fetchPostDetail = async (postId) => {
     try {
-        const response = await axios.get(`https://roundandgo.shop/api/posts/${postId}`);  // 게시글 단건 상세
+        const response = await axios.get(`https://api.roundandgo.com/api/posts/${postId}`);  // 게시글 단건 상세
         return response.data;
     } catch (error) {
         console.error('게시글 상세 정보 가져오기 실패:', error);
@@ -71,7 +71,7 @@ export const PostingBoard = async (accessToken, title, content, category, images
         };
         formData.append('post', JSON.stringify(textData)); // post라는 이름의 data로 하나로 보내
         const response = await axios.post(
-            'https://roundandgo.shop/api/posts',
+            'https://api.roundandgo.com/api/posts',
             formData,
             {
                 headers: {
@@ -92,7 +92,7 @@ export const PostingBoard = async (accessToken, title, content, category, images
 export const deletePost = async (postId, accessToken) => {
     try {
         const response = await axios.delete(
-            `https://roundandgo.shop/api/posts/${postId}`,
+            `https://api.roundandgo.com/api/posts/${postId}`,
             {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -141,7 +141,7 @@ export const updatePostWithImages = async (token, postId, title, content, catego
 // GET 좋아요 수
 export const fetchLikeCount = async (postId) => {
     try {
-        const response = await axios.get(`https://roundandgo.shop/api/posts/likeCount/${postId}`);
+        const response = await axios.get(`https://api.roundandgo.com/api/posts/likeCount/${postId}`);
         // 응답이 성공적일 경우
         if (response.status === 200) {
             return response.data;
@@ -158,7 +158,7 @@ export const fetchLikeCount = async (postId) => {
 export const toggleLike = async (postId, accessToken) => {
     try {
         const response = await axios.post(
-            `https://roundandgo.shop/api/posts/${postId}/like`,
+            `https://api.roundandgo.com/api/posts/${postId}/like`,
             null,
             {
                 headers: {
@@ -183,7 +183,7 @@ export const fetchComments = async (communityId) => {
         throw new Error("게시글 ID가 필요합니다.");
     }
     try {
-        const response = await axios.get(`https://roundandgo.shop/api/comments/post/${communityId}`);
+        const response = await axios.get(`https://api.roundandgo.com/api/comments/post/${communityId}`);
         // 응답이 성공적일 경우
         if (response.status === 200) {
             const comments = Array.isArray(response.data.data) ? response.data.data : []; // data
@@ -203,7 +203,7 @@ export const fetchComments = async (communityId) => {
 export const postComment = async (communityId, content, accessToken, parentCommentId = null)  => {
     try {
         const response = await axios.post(
-            'https://roundandgo.shop/api/comments', // 댓글 작성 API 경로
+            'https://api.roundandgo.com/api/comments', // 댓글 작성 API 경로
             {
                 content,           // 댓글 내용
                 communityId: communityId, // 게시글 ID
@@ -229,7 +229,7 @@ export const postComment = async (communityId, content, accessToken, parentComme
 export const updateComment = async (commentId, content, communityId, accessToken, parentCommentId = null) => {
     try {
         const response = await axios.put(
-            `https://roundandgo.shop/api/comments/${commentId}`,
+            `https://api.roundandgo.com/api/comments/${commentId}`,
             {
                 content,
                 communityId,
@@ -253,7 +253,7 @@ export const updateComment = async (commentId, content, communityId, accessToken
 export const deleteComment = async (commentId, accessToken) => {
     try {
         const response = await axios.delete(
-            `https://roundandgo.shop/api/comments/${commentId}`,
+            `https://api.roundandgo.com/api/comments/${commentId}`,
             {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
