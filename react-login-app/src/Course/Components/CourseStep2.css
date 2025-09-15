@@ -1,0 +1,394 @@
+/* CourseStep2 스타일 */
+.course-step2-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-bottom: 80px; /* Footer 높이만큼 하단 패딩 */
+}
+
+/* 네비게이션 헤더 */
+.step-header {
+  background: white;
+  padding: 16px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+/* 진행 단계 표시 */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.step-circle.active {
+  background: #2C8C7D;
+  color: white;
+}
+
+.step-circle.completed {
+  background: #4CAF50;
+  color: white;
+}
+
+.step-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.step-label.active {
+  color: #2C8C7D;
+  font-weight: 600;
+}
+
+.step-label.completed {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background: #e0e0e0;
+  margin: 0;
+  align-self: flex-start;
+  margin-top: 20px;
+}
+
+.step-line.completed {
+  background: #4CAF50;
+}
+
+/* 메인 콘텐츠 */
+.step-content {
+  padding: 0 20px;
+}
+
+/* 안내 섹션 */
+.instruction-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.instruction-icon {
+  margin-bottom: 20px;
+}
+
+.style-icon {
+  width: 80px;
+  height: 80px;
+  background: #2C8C7D;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin: 0 auto;
+}
+
+.instruction-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.instruction-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* 스타일 선택 섹션 */
+.style-selection-section {
+  margin-bottom: 40px;
+}
+
+.style-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.style-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 140px;
+}
+
+.style-card:hover {
+  border-color: #2C8C7D;
+  box-shadow: 0 4px 12px rgba(44, 140, 125, 0.15);
+}
+
+.style-card.selected {
+  border-color: #2C8C7D;
+  background: #f0f8f7;
+  box-shadow: 0 4px 12px rgba(44, 140, 125, 0.2);
+}
+
+.style-icon-container {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.style-card.selected .style-icon-container {
+  transform: scale(1.1);
+}
+
+.style-icon-text {
+  font-size: 24px;
+}
+
+.style-content {
+  text-align: center;
+}
+
+.style-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.style-card.selected .style-title {
+  color: #2C8C7D;
+}
+
+.style-description {
+  font-size: 10px;
+  color: #666;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* 다음 버튼 컨테이너 */
+.next-button-container {
+  max-width: 320px;
+  margin: 50px auto 0 auto;
+  padding-bottom: 30px;
+}
+
+.next-btn {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f5f5f5;
+  color: #999;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.next-btn.active {
+  background: #2C8C7D;
+  color: white;
+  border-color: #2C8C7D;
+}
+
+.next-btn:disabled {
+  cursor: not-allowed;
+}
+
+/* 하단 네비게이션 */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0 8px 0;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.nav-label {
+  font-size: 10px;
+  color: #666;
+}
+
+.nav-item.active .nav-icon {
+  color: #2C8C7D;
+}
+
+.nav-item.active .nav-label {
+  color: #2C8C7D;
+  font-weight: 600;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .header-content {
+    margin-bottom: 16px;
+    max-width: 280px;
+  }
+  
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .step-line {
+    width: 40px;
+    margin: 0;
+    align-self: flex-start;
+    margin-top: 16px;
+  }
+  
+  .step-label {
+    font-size: 10px;
+  }
+  
+  .instruction-title {
+    font-size: 18px;
+  }
+  
+  .instruction-section {
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .style-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+  }
+  
+  .style-grid {
+    gap: 12px;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  
+  .style-card {
+    padding: 20px 16px;
+    min-height: 120px;
+  }
+  
+  .style-icon-container {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 12px;
+  }
+  
+  .style-icon-text {
+    font-size: 20px;
+  }
+  
+  .style-title {
+    font-size: 14px;
+  }
+  
+  .style-description {
+    font-size: 9px;
+  }
+  
+  .next-button-container {
+    max-width: 280px;
+    margin: 40px auto 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .style-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  
+  .style-card {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .style-icon-container {
+    margin-right: 16px;
+    margin-bottom: 0;
+  }
+  
+  .style-content {
+    text-align: left;
+    flex: 1;
+  }
+}

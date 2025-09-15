@@ -58,8 +58,8 @@ export const oauth2KakaoApi = {
      * // 사용자가 카카오 로그인 페이지로 이동됨
      */
     startLogin: () => {
-        // 🎯 Spring Security OAuth2 카카오 로그인 엔드포인트 URL 생성
-        const kakaoLoginUrl = `${BACKEND_BASE_URL}/oauth2/authorization/kakao`;
+        // 🎯 Spring Security OAuth2 카카오 로그인 엔드포인트 URL 생성 (HTTPS 강제)
+        const kakaoLoginUrl = `https://roundandgo.shop/oauth2/authorization/kakao`;
         
         console.log('🚀 OAuth2 카카오 로그인 시작');
         console.log('🔗 리다이렉트 URL:', kakaoLoginUrl);
@@ -111,7 +111,7 @@ export const oauth2KakaoApi = {
      */
     startLoginPopup: () => {
         return new Promise((resolve, reject) => {
-            const kakaoLoginUrl = `${BACKEND_BASE_URL}/oauth2/authorization/kakao`;
+            const kakaoLoginUrl = `https://roundandgo.shop/oauth2/authorization/kakao`;
             
             console.log('🚀 OAuth2 카카오 로그인 팝업 시작');
             

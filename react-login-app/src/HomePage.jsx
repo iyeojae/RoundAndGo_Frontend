@@ -467,6 +467,31 @@ const ScheduleButton = styled(BaseButton)`
   }
 `;
 
+const CourseButton = styled(BaseButton)`
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+  color: #FFFFFF;
+
+  &:hover {
+    background: linear-gradient(135deg, #FF5252 0%, #FF7979 100%);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+`;
+
 const KakaoIcon = styled.img`
   width: 49px;
   height: 38px;
@@ -531,6 +556,11 @@ function HomePage() {
         navigate('/schedule');
     };
 
+    const handleCourseRecommendation = () => {
+        // 3단계 코스 추천으로 이동
+        navigate('/course/step1');
+    };
+
     return (
         <AppContainer>
             <LoginFrame>
@@ -562,6 +592,10 @@ function HomePage() {
                     <ScheduleButton onClick={handleSchedule}>
                         일정관리 바로가기
                     </ScheduleButton>
+
+                    <CourseButton onClick={handleCourseRecommendation}>
+                        🏌️ 코스추천 테스트
+                    </CourseButton>
                 </ButtonContainer>
 
                 <BottomShapeContainer>

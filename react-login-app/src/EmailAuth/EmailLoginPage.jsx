@@ -52,7 +52,6 @@ function EmailLoginPage() {
         alert('로그인 실패: ' + result.error);
       }
     } catch (error) {
-      console.error('로그인 오류:', error);
       alert('로그인 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
@@ -152,7 +151,7 @@ function EmailLoginPage() {
                 onClick={handleFindAccount}
                 type="button"
             >
-              아이디/비밀번호 찾기
+              비밀번호 찾기
             </button>
             <button
                 className="email-auth-link-button email-auth-link-right"

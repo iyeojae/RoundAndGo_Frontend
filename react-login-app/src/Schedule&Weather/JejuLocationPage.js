@@ -45,18 +45,14 @@ const JejuLocationPage = () => {
       }, 150);
     }
 
-    // 선택된 지역으로 날씨 데이터를 업데이트하고 날씨 페이지로 이동
+    // 선택된 지역으로 스케줄 페이지로 이동
     setTimeout(() => {
-      navigate('/weather', {
-        state: {
-          selectedLocation: location.name
-        }
-      });
+      navigate('/schedule');
     }, 300);
   };
 
   const handleBack = () => {
-    navigate('/weather');
+    navigate('/schedule');
   };
 
   const handleSearchChange = (e) => {
@@ -245,7 +241,7 @@ const BackButton = styled.button`
 `;
 
 const BackIcon = styled.span`
-  color: #2C8C7D;
+  color: #2D8779;
   font-size: 20px;
   font-weight: bold;
 `;
@@ -294,7 +290,7 @@ const SearchForm = styled.form`
   width: 100%;
   height: 45px;
   background: #FFFFFF;
-  border: 0.3px solid #269962;
+  border: 0.3px solid #2D8779;
   border-radius: 42px;
   padding: 0 20px;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
@@ -334,7 +330,7 @@ const LocationCard = styled.div`
   flex: 1;
   height: 25px;
   background: #FFFFFF;
-  border: 0.3px solid #269962;
+  border: 0.3px solid #2D8779;
   border-radius: 21px;
   display: flex;
   align-items: center;
@@ -346,13 +342,13 @@ const LocationCard = styled.div`
 
   &:hover {
     background: #F1FFF8;
-    border-color: #2C8C7D;
+    border-color: #2D8779;
     transform: translateY(-1px);
   }
 
   ${props => props.selected && `
     background: #F1FFF8;
-    border-color: #2C8C7D;
+    border-color: #2D8779;
     box-shadow: 0px 2px 8px rgba(16, 117, 54, 0.6);
   `}
 `;
@@ -367,7 +363,7 @@ const LocationName = styled.span`
   font-weight: 400;
   font-size: 12px;
   line-height: 1.25;
-  color: #2C8C7D;
+  color: #2D8779;
 `;
 
 const CheckIcon = styled.div`
@@ -387,8 +383,8 @@ const CheckIcon = styled.div`
 const CheckVector = styled.div`
   width: 7.59px;
   height: 7.59px;
-  border-right: 1px solid #2C8C7D;
-  border-bottom: 1px solid #2C8C7D;
+  border-right: 1px solid #2D8779;
+  border-bottom: 1px solid #2D8779;
   transform: rotate(45deg);
 `;
 

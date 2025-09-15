@@ -35,6 +35,10 @@ export const API_ENDPOINTS = {
   
   // 관광 정보
   TOUR_INFOS_RESTAURANTS: `${API_BASE_URL}/tour-infos/restaurants`,
+  
+  // 스케줄 관련
+  SCHEDULES: `${API_BASE_URL}/schedules`,
+  SCHEDULE_BY_ID: (id) => `${API_BASE_URL}/schedules/${id}`,
 };
 
 // 환경 정보 로깅

@@ -2,29 +2,23 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EmailAuth.css';
 import { 
-  requestIdFindEmailVerification, 
   sendEmailVerificationForPassword,
-  findUserIdByEmail,
   resetPasswordByEmail,
   getErrorMessage 
 } from './findAccountApi';
 
 function FindAccountPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('id');
   const [step, setStep] = useState('input');
   
   const [formData, setFormData] = useState({
     email: '',
-    userId: '',
-    verificationCode: '',
     newPassword: '',
     confirmPassword: '',
     showPassword: false,
     showConfirmPassword: false
   });
   
-  const [foundId, setFoundId] = useState('');
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [errors, setErrors] = useState({});
@@ -34,9 +28,6 @@ function FindAccountPage() {
     return emailRegex.test(email);
   };
 
-  const validateUserId = (userId) => {
-    return userId.length >= 4 && userId.length <= 20;
-  };
 
   const validatePassword = (password) => {
     return password.length >= 8;
@@ -72,13 +63,6 @@ function FindAccountPage() {
         delete newErrors.email;
       }
     }
-    if (field === 'userId' && value) {
-      if (!validateUserId(value)) {
-        newErrors.userId = '아이디는 4자 이상 20자 이하로 입력해주세요.';
-      } else {
-        delete newErrors.userId;
-      }
-    }
     if (field === 'newPassword' && value) {
       if (!validatePassword(value)) {
         newErrors.newPassword = '비밀번호는 8자 이상이어야 합니다.';
@@ -98,84 +82,17 @@ function FindAccountPage() {
 
   const handleSendVerification = async () => {
     try {
-      if (activeTab === 'id') {
-        if (!formData.email) {
-          alert('이메일 주소를 입력해주세요.');
-          return;
-        }
-        if (!validateEmail(formData.email)) {
-          alert('올바른 이메일 주소 형식을 입력해주세요.');
-          return;
-        }
-        
-        // 1단계: 이메일 입력 및 인증 메일 발송
-        try {
-          const response = await fetch('https://roundandgo.shop/api/auth/find-id/request', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: formData.email })
-          });
-          
-          if (response.ok) {
-            // 성공 시 이메일을 로컬 스토리지에 저장
-            localStorage.setItem('findIdEmail', formData.email);
-            alert(`${formData.email}로 인증메일이 발송되었습니다.`);
-            setStep('emailSent');
-          } else {
-            // 응답을 먼저 텍스트로 받아서 확인
-            const responseText = await response.text();
-            console.log('API 응답 원문:', responseText);
-            
-            try {
-              const errorData = JSON.parse(responseText);
-              alert(errorData.message || '인증메일 발송에 실패했습니다.');
-            } catch (jsonError) {
-              // JSON 파싱 실패 시 (예: Proxy error 등)
-              console.error('JSON 파싱 오류:', jsonError);
-              console.error('응답 원문:', responseText);
-              
-              if (responseText.includes('Proxy error')) {
-                alert('백엔드 서버 연결에 실패했습니다.\n\n1. 백엔드 서버가 실행 중인지 확인해주세요\n2. 프록시 설정을 확인해주세요');
-              } else {
-                alert(`서버 응답을 처리할 수 없습니다.\n응답: ${responseText.substring(0, 100)}...`);
-              }
-            }
-          }
-        } catch (error) {
-          console.error('API 호출 오류:', error);
-          
-          // 백엔드 서버 연결 실패 시 더 명확한 메시지
-          if (error.message.includes('Proxy error') || error.message.includes('ECONNREFUSED')) {
-            alert('백엔드 서버에 연결할 수 없습니다.\n\n1. 백엔드 서버가 실행 중인지 확인해주세요\n2. 프록시 설정을 확인해주세요');
-          } else if (error.message.includes('SyntaxError')) {
-            alert('서버 응답을 처리할 수 없습니다.\n백엔드 서버 상태를 확인해주세요.');
-          } else {
-            alert('서버 연결에 실패했습니다. 다시 시도해주세요.');
-          }
-        }
-      } else {
-        if (!formData.userId) {
-          alert('아이디를 입력해주세요.');
-          return;
-        }
-        if (!formData.email) {
-          alert('이메일 주소를 입력해주세요.');
-          return;
-        }
-        if (!validateUserId(formData.userId)) {
-          alert('아이디는 4자 이상 20자 이하로 입력해주세요.');
-          return;
-        }
-        if (!validateEmail(formData.email)) {
-          alert('올바른 이메일 주소 형식을 입력해주세요.');
-          return;
-        }
-        const result = await sendEmailVerificationForPassword(formData.userId, formData.email);
-        alert(`${formData.email}로 인증메일이 발송되었습니다.`);
-        setStep('emailSent');
+      if (!formData.email) {
+        alert('이메일 주소를 입력해주세요.');
+        return;
       }
+      if (!validateEmail(formData.email)) {
+        alert('올바른 이메일 주소 형식을 입력해주세요.');
+        return;
+      }
+      const result = await sendEmailVerificationForPassword(formData.email);
+      alert(`${formData.email}로 인증메일이 발송되었습니다.`);
+      setStep('emailSent');
     } catch (error) {
       let errorMessage = '이메일 인증 요청에 실패했습니다.';
       
@@ -212,11 +129,21 @@ function FindAccountPage() {
 
     setLoading(true);
     try {
-      await resetPasswordByEmail(formData.userId, formData.email, '', formData.newPassword);
+      await resetPasswordByEmail(formData.email, formData.newPassword);
       alert('비밀번호가 성공적으로 변경되었습니다.');
       navigate('/email-login');
     } catch (error) {
-      alert(getErrorMessage(error));
+      // 백엔드에서 인증 상태를 검증하므로, 인증되지 않은 경우 에러 메시지 표시
+      if (error.message.includes('401') || error.message.includes('403')) {
+        alert('이메일 인증이 완료되지 않았습니다.\n\n메일함에서 인증 링크를 클릭하여 인증을 완료해주세요.');
+        // 인증되지 않은 경우 입력 단계로 돌아가기
+        setStep('input');
+      } else if (error.message.includes('404')) {
+        alert('인증 정보를 찾을 수 없습니다.\n\n다시 이메일 인증을 요청해주세요.');
+        setStep('input');
+      } else {
+        alert(getErrorMessage(error));
+      }
     } finally {
       setLoading(false);
     }
@@ -226,41 +153,16 @@ function FindAccountPage() {
     setStep('input');
     setFormData({
       email: '',
-      userId: '',
       newPassword: '',
       confirmPassword: '',
       showPassword: false,
       showConfirmPassword: false
     });
-    setFoundId('');
   };
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    resetForm();
-  };
 
   const renderInputStep = () => (
     <>
-      {activeTab === 'password' && (
-        <div className="email-auth-input-group">
-          <label className="email-auth-label">아이디</label>
-          <input
-            className="email-auth-input"
-            type="text"
-            placeholder="아이디를 입력하세요"
-            value={formData.userId}
-            onChange={handleInputChange('userId')}
-            style={{ 
-              borderColor: errors.userId ? '#e74c3c' : '#E5E5E5' 
-            }}
-          />
-          {errors.userId && (
-            <div className="email-auth-error-message">{errors.userId}</div>
-          )}
-        </div>
-      )}
-
       <div className="email-auth-input-group">
         <label className="email-auth-label">이메일</label>
         <input
@@ -281,7 +183,7 @@ function FindAccountPage() {
       <button 
         className="email-auth-submit-button"
         onClick={handleSubmit}
-        disabled={loading || !formData.email || (activeTab === 'password' && !formData.userId)}
+        disabled={loading || !formData.email}
       >
         {loading ? '처리 중...' : '인증메일 받기'}
       </button>
@@ -295,7 +197,7 @@ function FindAccountPage() {
       </div>
       
       <h2 className="email-auth-email-sent-title">
-        {activeTab === 'id' ? '아이디 찾기' : '비밀번호 찾기'} 인증메일이 발송되었습니다
+        비밀번호 찾기 인증메일이 발송되었습니다
       </h2>
       
       <p className="email-auth-email-sent-message">메일함에서 인증메일을 확인하시기 바랍니다.</p>
@@ -305,163 +207,18 @@ function FindAccountPage() {
         재발송
       </button>
       
-      <button className="email-auth-confirm-button" onClick={async () => {
-        if (activeTab === 'id') {
-          // 3단계: 사이트에서 확인버튼 클릭으로 아이디 조회
-          try {
-            const savedEmail = localStorage.getItem('findIdEmail');
-            if (!savedEmail) {
-              alert('이메일 정보를 찾을 수 없습니다. 다시 시도해주세요.');
-              return;
-            }
-            
-            console.log('🔍 아이디 찾기 확인 API 호출 시작');
-            console.log('📤 전송할 데이터:', { email: savedEmail });
-            
-            const response = await fetch('https://roundandgo.shop/api/auth/find-id/confirm', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ email: savedEmail })
-            });
-            
-            console.log('📡 API 응답 상태:', response.status, response.statusText);
-            
-            if (response.ok) {
-              const data = await response.json();
-              // 아이디 조회 성공 시 결과 페이지로 이동
-              setFoundId(data.userId || savedEmail); // 백엔드에서 userId 반환하거나 이메일 사용
-              setStep('result');
-            } else {
-              console.log('❌ API 호출 실패:', response.status);
-              try {
-                const errorData = await response.json();
-                console.log('❌ 에러 응답 데이터:', errorData);
-                if (errorData.message && errorData.message.includes('인증')) {
-                  alert('이메일 인증이 완료되지 않았습니다. 메일함에서 인증을 완료해주세요.');
-                } else {
-                  alert(errorData.message || '아이디 조회에 실패했습니다.');
-                }
-              } catch (jsonError) {
-                console.error('❌ JSON 파싱 오류:', jsonError);
-                const responseText = await response.text();
-                console.log('❌ 응답 원문:', responseText);
-                alert('서버 응답을 처리할 수 없습니다.\n백엔드 서버 상태를 확인해주세요.');
-              }
-            }
-          } catch (error) {
-            console.error('아이디 조회 API 호출 오류:', error);
-            alert('서버 연결에 실패했습니다. 다시 시도해주세요.');
-          }
-        } else {
-          setStep('passwordChange');
-        }
+      <button className="email-auth-confirm-button" onClick={() => {
+        // 백엔드에서 비밀번호 재설정 API 호출 시 인증 상태를 검증하므로
+        // 프론트엔드에서는 바로 비밀번호 변경 단계로 이동
+        // 실제 인증 검증은 백엔드에서 수행됨
+        setStep('passwordChange');
       }}>
         확인
       </button>
     </div>
   );
 
-  const renderVerifyStep = () => (
-    <>
-      <div className="email-auth-input-group">
-        <label className="email-auth-label">인증코드</label>
-        <div className="email-auth-verification-container">
-          <input
-            className="email-auth-input email-auth-verification-input"
-            type="text"
-            placeholder="6자리 인증코드"
-            value={formData.verificationCode}
-            onChange={handleInputChange('verificationCode')}
-            maxLength={6}
-          />
-          <button 
-            className="email-auth-verification-button"
-            onClick={handleSendVerification}
-            disabled={loading || countdown > 0}
-          >
-            {countdown > 0 ? `${Math.floor(countdown / 60)}:${(countdown % 60).toString().padStart(2, '0')}` : '재발송'}
-          </button>
-        </div>
-      </div>
 
-      {activeTab === 'password' && (
-        <>
-          <div className="email-auth-input-group">
-            <label className="email-auth-label">새 비밀번호</label>
-            <div className="email-auth-password-input-container">
-              <input
-                className="email-auth-input email-auth-password-input"
-                type={formData.showPassword ? 'text' : 'password'}
-                placeholder="8자 이상의 새 비밀번호"
-                value={formData.newPassword}
-                onChange={handleInputChange('newPassword')}
-                style={{ borderColor: errors.newPassword ? '#e74c3c' : '#E5E5E5' }}
-              />
-              <button 
-                className="email-auth-password-toggle-button"
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, showPassword: !prev.showPassword }))}
-              >
-                {formData.showPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
-            </div>
-            {errors.newPassword && <div className="email-auth-error-message">{errors.newPassword}</div>}
-          </div>
-
-          <div className="email-auth-input-group">
-            <label className="email-auth-label">비밀번호 확인</label>
-            <div className="email-auth-password-input-container">
-              <input
-                className="email-auth-input email-auth-password-input"
-                type={formData.showConfirmPassword ? 'text' : 'password'}
-                placeholder="비밀번호를 다시 입력하세요"
-                value={formData.confirmPassword}
-                onChange={handleInputChange('confirmPassword')}
-                style={{ borderColor: errors.confirmPassword ? '#e74c3c' : '#E5E5E5' }}
-              />
-              <button 
-                className="email-auth-password-toggle-button"
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, showConfirmPassword: !prev.showConfirmPassword }))}
-              >
-                {formData.showConfirmPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
-            </div>
-            {errors.confirmPassword && <div className="email-auth-error-message">{errors.confirmPassword}</div>}
-          </div>
-        </>
-      )}
-
-      <button 
-        className="email-auth-submit-button"
-        onClick={handleSubmit}
-        disabled={loading || !formData.verificationCode || 
-                 (activeTab === 'password' && (!formData.newPassword || !formData.confirmPassword || 
-                  formData.newPassword !== formData.confirmPassword))}
-      >
-        {loading ? '처리 중...' : (activeTab === 'id' ? '아이디 찾기' : '비밀번호 재설정')}
-      </button>
-    </>
-  );
-
-  const renderResultStep = () => (
-    <div className="email-auth-result-container">
-      <p className="email-auth-result-message">
-        입력하신 정보와 일치하는 아이디입니다.
-      </p>
-      
-      <div className="email-auth-result-info-box">
-        <div className="email-auth-result-info-line">아이디: {foundId || '찾을 수 없음'}</div>
-        <div className="email-auth-result-info-line">이메일: {formData.email}</div>
-      </div>
-
-      <button className="email-auth-action-button" onClick={() => navigate('/email-login')}>
-        로그인 하러가기
-      </button>
-    </div>
-  );
 
   const renderPasswordChangeStep = () => (
     <>
@@ -547,26 +304,16 @@ function FindAccountPage() {
 
         <div className="email-auth-tab-container">
           <button
-            className={`email-auth-tab ${activeTab === 'id' ? 'active' : ''}`}
-            onClick={() => handleTabChange('id')}
+            className="email-auth-tab active"
             disabled={step !== 'input'}
           >
-            아이디 찾기
-          </button>
-          <button
-            className={`email-auth-tab ${activeTab === 'password' ? 'active' : ''}`}
-            onClick={() => handleTabChange('password')}
-            disabled={step !== 'input'}
-          >
-            비밀번호 변경
+            비밀번호 찾기
           </button>
         </div>
 
         <div className="email-auth-form-container">
           {step === 'input' && renderInputStep()}
-          {step === 'verify' && renderVerifyStep()}
           {step === 'emailSent' && renderEmailSentStep()}
-          {step === 'result' && renderResultStep()}
           {step === 'passwordChange' && renderPasswordChangeStep()}
         </div>
       </div>

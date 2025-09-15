@@ -1,0 +1,934 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '../../Layout/Header';
+import Footer from '../../Layout/Footer';
+import './CourseStep3.css';
+
+const CourseStep3 = () => {
+  const navigate = useNavigate();
+  
+  // 상태 관리
+  const [selectedDay, setSelectedDay] = useState(() => {
+    // CourseStep1에서 선택한 기간에 따라 초기값 설정
+    const step1Data = JSON.parse(sessionStorage.getItem('courseStep1') || '{}');
+    const selectedPeriod = step1Data.selectedPeriod;
+    
+    if (selectedPeriod === 'day') {
+      return 0; // 당일치기
+    } else {
+      return 1; // 1일차부터 시작
+    }
+  });
+  const [loading, setLoading] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showTransportInfo, setShowTransportInfo] = useState(false);
+  const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
+  const [courseData, setCourseData] = useState({
+    day0: [ // 당일치기
+     ],
+    day1: [ // 1일차
+     ],
+    day2: [ // 2일차
+     ]
+  });
+  
+  // 지도 관련
+  const mapRef = useRef(null);
+  const mapInstance = useRef(null);
+
+  // 교통수단별 평균 속도 (km/h)
+  const TRANSPORT_SPEEDS = {
+    walking: 5,
+    car: 40,
+    transit: 25
+  };
+
+  // 두 좌표 간 거리(km)와 시간(분) 계산 함수
+  const calculateDistanceAndTime = (lat1, lng1, lat2, lng2, mode) => {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    
+    const time = (distance / TRANSPORT_SPEEDS[mode]) * 60;
+    
+    return {
+      distance: distance.toFixed(1),
+      time: Math.round(time)
+    };
+  };
+
+  // 다음 목적지까지의 교통수단별 정보 계산
+  const getNextDestinationInfo = () => {
+    const currentDayData = selectedDay === 0 ? courseData.day0 : 
+                          selectedDay === 1 ? courseData.day1 : courseData.day2;
+    
+    if (currentLocationIndex >= currentDayData.length - 1) {
+      return null; // 마지막 장소인 경우
+    }
+
+    const currentLocation = currentDayData[currentLocationIndex];
+    const nextLocation = currentDayData[currentLocationIndex + 1];
+
+    const distance = calculateDistanceAndTime(
+      currentLocation.coordinates.lat,
+      currentLocation.coordinates.lng,
+      nextLocation.coordinates.lat,
+      nextLocation.coordinates.lng,
+      'car'
+    ).distance;
+
+    return {
+      distance: distance,
+      nextLocation: nextLocation,
+      transportModes: [
+        {
+          mode: 'walking',
+          label: '도보',
+          icon: (
+            <svg width="9" height="13" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4.75" cy="2" r="1.5" stroke="#A228D7"/>
+              <path d="M5 4.86963C5 6.92845 3.29222 10.2226 1 11.8696" stroke="#A228D7" stroke-linecap="round"/>
+              <path d="M4 8.86963C4.4 9.15534 6 10.1553 6 11.8696" stroke="#A228D7" stroke-linecap="round"/>
+              <path d="M5 6.00443C5.42857 6.52121 6.97143 7.73004 8 5.86963" stroke="#A228D7" stroke-linecap="round"/>
+              <path d="M4.25 5.99991C3.25 5.49976 1.75 5.5 1.25 6.50001" stroke="#A228D7" stroke-linecap="round"/>
+            </svg>
+          ),
+          color: '#9333EA',
+          time: calculateDistanceAndTime(
+            currentLocation.coordinates.lat,
+            currentLocation.coordinates.lng,
+            nextLocation.coordinates.lat,
+            nextLocation.coordinates.lng,
+            'walking'
+          ).time
+        },
+        {
+          mode: 'car',
+          label: '자차',
+          icon: (
+            <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.89575 9.66667V4.30359C2.89575 4.26848 2.90499 4.23399 2.92255 4.20359L4.71441 1.1C4.75013 1.03812 4.81616 1 4.88761 1H10.3636C10.4351 1 10.5011 1.03812 10.5368 1.1L12.3287 4.20359C12.3462 4.23399 12.3555 4.26848 12.3555 4.30359V9.66667" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M3.40747 8.70361L12.0741 8.70361" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M5.50073 6.77783H6.0424" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M9.46924 6.77783H10.0109" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M3.40747 4.85156H12.0741" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M12.375 4.25H14" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M1 4.25H2.625" stroke="#0AC03B" stroke-linecap="round"/>
+            </svg>
+          ),
+          color: '#269962',
+          time: calculateDistanceAndTime(
+            currentLocation.coordinates.lat,
+            currentLocation.coordinates.lng,
+            nextLocation.coordinates.lat,
+            nextLocation.coordinates.lng,
+            'car'
+          ).time
+        },
+        {
+          mode: 'transit',
+          label: '대중교통',
+          icon: (
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.84619 0.5H8.15381C8.98224 0.5 9.65381 1.17157 9.65381 2V7.96191H1.34619V2C1.34619 1.17157 2.01777 0.5 2.84619 0.5Z" stroke="#4540DA"/>
+              <rect x="0.846191" y="5.07715" width="9.30769" height="3.38462" fill="#4540DA"/>
+              <rect x="1.69238" y="0.846191" width="7.61538" height="1.69231" fill="#4540DA"/>
+              <rect x="0.846191" y="6.76953" width="1.69231" height="3.38462" rx="0.846154" fill="#4540DA"/>
+              <rect x="8.46143" y="6.76953" width="1.69231" height="3.38462" rx="0.846154" fill="#4540DA"/>
+              <rect x="1.69238" y="5.92334" width="1.69231" height="1.69231" rx="0.846154" fill="white"/>
+              <rect x="7.61548" y="5.92334" width="1.69231" height="1.69231" rx="0.846154" fill="white"/>
+              <path d="M10.1538 3.38477C10.6211 3.38477 11 3.7636 11 4.23092V5.92323C11 6.39054 10.6211 6.76938 10.1538 6.76938V3.38477Z" fill="#4540DA"/>
+              <path d="M0 4.23092C0 3.7636 0.378836 3.38477 0.846154 3.38477V6.76938C0.378836 6.76938 0 6.39055 0 5.92323V4.23092Z" fill="#4540DA"/>
+              <path d="M3.80762 1.26953H7.19223" stroke="white" stroke-linecap="round"/>
+            </svg>
+          ),
+          color: '#2563EB',
+          time: calculateDistanceAndTime(
+            currentLocation.coordinates.lat,
+            currentLocation.coordinates.lng,
+            nextLocation.coordinates.lat,
+            nextLocation.coordinates.lng,
+            'transit'
+          ).time
+        }
+      ]
+    };
+  };
+  
+
+
+
+  // 카카오지도 초기화
+  const initKakaoMap = () => {
+    console.log('initKakaoMap 호출됨');
+    console.log('window.kakao:', window.kakao);
+    console.log('mapRef.current:', mapRef.current);
+    
+    // DOM 요소가 준비되지 않은 경우 재시도
+    if (!mapRef.current) {
+      console.log('mapRef가 준비되지 않음, 0.5초 후 재시도');
+      setTimeout(() => {
+        initKakaoMap();
+      }, 500);
+      return;
+    }
+    
+    if (window.kakao && window.kakao.maps && mapRef.current) {
+      console.log('지도 초기화 시작');
+      const container = mapRef.current;
+      
+      // 실제 코스 데이터에서 마커 위치 생성
+      const dayKey = selectedDay === 0 ? 'day0' : `day${selectedDay}`;
+      const currentDayData = courseData[dayKey] || [];
+      const positions = currentDayData.map((item, index) => ({
+        lat: item.coordinates.lat,
+        lng: item.coordinates.lng,
+        title: item.name,
+        category: item.type === '골프장' ? '골프' : 
+                 item.type === '맛집' ? '맛집' :
+                 item.type === '뭔가 멋진 숙소' ? '숙소' :
+                 item.type === '뭔가 재밌는 관광지' ? '관광' :
+                 item.type === '관광지' ? '관광' :
+                 item.type === '모임' ? '모임' : '기타',
+        id: item.id
+      }));
+
+      // 카테고리별 색상 매핑
+      const categoryColors = {
+        '골프': '#269962',
+        '관광': '#9333EA',
+        '모임': '#EF4444',
+        '맛집': '#EA580C',
+        '숙소': '#2563EB',
+        '기타': '#6B7280'
+      };
+      
+      // 모든 마커가 보이도록 지도 초기화
+      const bounds = new window.kakao.maps.LatLngBounds();
+      positions.forEach(pos => {
+        bounds.extend(new window.kakao.maps.LatLng(pos.lat, pos.lng));
+      });
+      
+      // 중심점 계산 (수동으로 계산)
+      const centerLat = positions.reduce((sum, pos) => sum + pos.lat, 0) / positions.length;
+      const centerLng = positions.reduce((sum, pos) => sum + pos.lng, 0) / positions.length;
+      
+      const options = {
+        center: new window.kakao.maps.LatLng(centerLat, centerLng),
+        level: 8 // 모든 마커가 잘 보이는 레벨
+      };
+      
+      mapInstance.current = new window.kakao.maps.Map(container, options);
+      console.log('지도 초기화 완료:', mapInstance.current);
+      
+      // 지도 범위를 모든 마커가 보이도록 조정 (레벨 유지)
+      mapInstance.current.setBounds(bounds, 50); // 50px 여백 추가로 더 여유롭게
+      
+      // 커스텀 마커 생성 함수
+      const createCustomMarker = (position, number, color) => {
+        const markerContent = `
+          <div style="
+            position: relative;
+            width: 30px;
+            height: 30px;
+            background: ${color};
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            cursor: pointer;
+          ">
+            ${number}
+          </div>
+        `;
+        
+        return new window.kakao.maps.CustomOverlay({
+          position: position,
+          content: markerContent,
+          yAnchor: 0.5,
+          xAnchor: 0.5
+        });
+      };
+
+      // 마커 추가
+      const markers = [];
+      console.log('마커 생성 시작, 총 위치 수:', positions.length);
+      
+      positions.forEach((pos, index) => {
+        console.log(`마커 ${index + 1} 생성:`, pos);
+        const position = new window.kakao.maps.LatLng(pos.lat, pos.lng);
+        const color = categoryColors[pos.category] || '#6B7280';
+        const marker = createCustomMarker(position, index + 1, color);
+        
+        marker.setMap(mapInstance.current);
+        markers.push(marker);
+        console.log(`마커 ${index + 1} 지도에 추가 완료`);
+        
+        // 인포윈도우 추가
+        const infowindow = new window.kakao.maps.InfoWindow({
+          content: `<div style="padding:8px; font-size:12px; font-weight:bold;">${index + 1}. ${pos.title}</div>`
+        });
+        
+        // 커스텀 오버레이 클릭 이벤트
+        const markerElement = marker.getContent();
+        if (markerElement && markerElement.addEventListener) {
+          markerElement.addEventListener('click', () => {
+            infowindow.open(mapInstance.current, marker);
+          });
+        } else {
+          // 대안: 카카오맵 이벤트 리스너 사용
+          window.kakao.maps.event.addListener(marker, 'click', () => {
+            infowindow.open(mapInstance.current, marker);
+          });
+        }
+      });
+      
+      console.log('총 마커 수:', markers.length);
+      
+      // 마커들을 순서대로 점선으로 연결
+      const linePath = positions.map(pos => 
+        new window.kakao.maps.LatLng(pos.lat, pos.lng)
+      );
+      
+      const polyline = new window.kakao.maps.Polyline({
+        path: linePath,
+        strokeWeight: 3,
+        strokeColor: '#A0A0A0',
+        strokeOpacity: 0.8,
+        strokeStyle: 'dash' // 점선 스타일
+      });
+      
+      polyline.setMap(mapInstance.current);
+    }
+  };
+
+  // 카카오맵 스크립트 동적 로드
+  useEffect(() => {
+    const loadKakaoMapScript = () => {
+      return new Promise((resolve, reject) => {
+        if (window.kakao && window.kakao.maps) {
+          resolve();
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=ad66696f1e438be81ff958f80c7ced41&autoload=false';
+        script.async = true;
+        
+        script.onload = () => {
+          console.log('카카오맵 스크립트 로드 완료');
+          window.kakao.maps.load(() => {
+            console.log('카카오맵 API 로드 완료');
+            resolve();
+          });
+        };
+        
+        script.onerror = () => {
+          reject(new Error('카카오맵 스크립트 로드 실패'));
+        };
+        
+        document.head.appendChild(script);
+      });
+    };
+
+    const initializeMap = async () => {
+      try {
+        await loadKakaoMapScript();
+        console.log('지도 초기화 시작');
+        initKakaoMap();
+      } catch (error) {
+        console.error('지도 초기화 실패:', error);
+      }
+    };
+
+    const step1Data = sessionStorage.getItem('courseStep1');
+    const step2Data = sessionStorage.getItem('courseStep2');
+    
+    if (!step1Data || !step2Data) {
+      // 이전 단계 데이터가 없으면 1단계로 이동
+      navigate('/course/step1');
+      return;
+    }
+
+    // 코스 데이터 로드 시뮬레이션
+    loadCourseData();
+    
+    // 카카오지도 초기화
+    setTimeout(() => {
+      initializeMap();
+    }, 100);
+  }, [navigate]);
+
+  // 선택된 날짜가 변경될 때 마커 업데이트
+  useEffect(() => {
+    const dayKey = selectedDay === 0 ? 'day0' : `day${selectedDay}`;
+    if (mapInstance.current && courseData[dayKey]) {
+      // 기존 마커들 제거
+      mapInstance.current.relayout();
+      
+      // 새로운 마커들 생성
+      setTimeout(() => {
+        initKakaoMap();
+      }, 100);
+    }
+  }, [selectedDay, courseData]);
+
+  // 맵 크기 변경 시 카카오맵 리사이즈 및 스크롤 조정
+  useEffect(() => {
+    if (mapInstance.current) {
+      // 약간의 지연을 두어 CSS 애니메이션이 완료된 후 리사이즈
+      setTimeout(() => {
+        mapInstance.current.relayout();
+        
+        // 현재 선택된 날짜의 실제 데이터로 지도 범위 재조정
+        const dayKey = selectedDay === 0 ? 'day0' : `day${selectedDay}`;
+        const currentDayData = courseData[dayKey] || [];
+        if (currentDayData.length > 0) {
+          const bounds = new window.kakao.maps.LatLngBounds();
+          currentDayData.forEach(item => {
+            bounds.extend(new window.kakao.maps.LatLng(item.coordinates.lat, item.coordinates.lng));
+          });
+          mapInstance.current.setBounds(bounds, 50);
+        }
+      }, 300);
+    }
+    
+    // 모달이 열릴 때 스크롤을 지도 섹션으로 이동
+    if (showDetails) {
+      setTimeout(() => {
+        const mapSection = document.querySelector('.map-section');
+        if (mapSection) {
+          mapSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+        }
+      }, 100);
+    }
+  }, [showDetails]);
+
+  // 코스 데이터 로드
+  // 타입별 아이콘 반환 함수
+  const getIconByType = (type) => {
+    const icons = {
+      'restaurant': (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="9" fill="#EA580C"/>
+          <path d="M26.0342 8.00146C26.0515 8.00206 26.0688 8.0029 26.0859 8.00439C26.1087 8.00633 26.131 8.00975 26.1533 8.01318C26.1624 8.0146 26.1716 8.01542 26.1807 8.01709C26.1875 8.01834 26.1944 8.0196 26.2012 8.021L26.2676 8.0376H26.2695C26.3244 8.05292 26.3771 8.07316 26.4277 8.09717C26.4396 8.10278 26.4513 8.10868 26.4629 8.11475C26.4762 8.12173 26.489 8.12965 26.502 8.13721C26.5147 8.14461 26.5276 8.1517 26.54 8.15967C26.5554 8.16956 26.5702 8.18022 26.585 8.19092C26.5984 8.20059 26.6121 8.20987 26.625 8.22021C26.6354 8.2286 26.6452 8.2378 26.6553 8.24658C26.6685 8.25805 26.6817 8.26955 26.6943 8.28174C26.7034 8.29054 26.7119 8.29994 26.7207 8.30908C26.7365 8.32551 26.7519 8.34229 26.7666 8.35986C26.7733 8.36786 26.7797 8.37607 26.7861 8.38428C26.7964 8.39742 26.8067 8.41059 26.8164 8.42432C26.8288 8.44179 26.8403 8.45975 26.8516 8.47803C26.8581 8.48872 26.8649 8.49926 26.8711 8.51025C26.9289 8.61271 26.9677 8.72637 26.9863 8.84717C26.9885 8.86091 26.9916 8.87445 26.9932 8.88818C26.9949 8.90337 26.9951 8.9187 26.9961 8.93408C26.9974 8.95336 26.9989 8.97251 26.999 8.9917C26.999 8.99463 27 8.99755 27 9.00049V26.5005C27 27.0528 26.5523 27.5005 26 27.5005C25.4477 27.5005 25 27.0528 25 26.5005V21.5005H24C22.8954 21.5005 22 20.6051 22 19.5005V16.0005C22 11.0509 24.0456 8.65641 25.6045 8.08057C25.6574 8.05778 25.7133 8.04127 25.7705 8.02783C25.7754 8.02667 25.7802 8.02501 25.7852 8.02393C25.8054 8.01949 25.826 8.01637 25.8467 8.01318C25.8604 8.01104 25.874 8.00791 25.8877 8.00635C25.9029 8.00465 25.9182 8.00443 25.9336 8.00342C25.9489 8.00239 25.9642 8.00081 25.9795 8.00049H26C26.0114 8.00049 26.0228 8.00108 26.0342 8.00146ZM25 11.3101C24.4734 12.2338 24 13.7122 24 16.0005V19.5005H25V11.3101Z" fill="white"/>
+          <path d="M17.8984 8C18.4507 8 18.8983 8.44781 18.8984 9V13.5879C18.8984 14.6925 18.003 15.5879 16.8984 15.5879H15.4492V26C15.4492 26.5523 15.0015 27 14.4492 27C13.8971 26.9998 13.4492 26.5521 13.4492 26V15.5879H12C10.8956 15.5877 10 14.6924 10 13.5879V9C10.0001 8.4479 10.4479 8.00015 11 8C11.5522 8 11.9999 8.44781 12 9V13.5879H13.4492V9C13.4494 8.44797 13.8972 8.00023 14.4492 8C15.0014 8 15.4491 8.44783 15.4492 9V13.5879H16.8984V9C16.8985 8.44801 17.3465 8.00032 17.8984 8Z" fill="white"/>
+        </svg>
+      ),
+      'tour': (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="9" fill="#9333EA"/>
+          <mask id="path-2-inside-1_1007_656" fill="white">
+            <path d="M24.2107 10.4707C24.2107 11.023 24.6584 11.4707 25.2107 11.4707H28.8113C29.3636 11.4707 29.8113 11.9184 29.8113 12.4707V25.4707C29.8113 26.023 29.3636 26.4707 28.8113 26.4707H8.41089C7.8586 26.4707 7.41089 26.023 7.41089 25.4707V12.4707C7.41089 11.9184 7.8586 11.4707 8.41089 11.4707H12.0115C12.5638 11.4707 13.0115 11.023 13.0115 10.4707V9.4707C13.0115 8.91842 13.4592 8.4707 14.0115 8.4707H23.2107C23.763 8.4707 24.2107 8.91842 24.2107 9.4707V10.4707Z"/>
+          </mask>
+          <path d="M25.2107 11.4707V13.4707H28.8113V11.4707V9.4707H25.2107V11.4707ZM29.8113 12.4707H27.8113V25.4707H29.8113H31.8113V12.4707H29.8113ZM28.8113 26.4707V24.4707H8.41089V26.4707V28.4707H28.8113V26.4707ZM7.41089 25.4707H9.41089V12.4707H7.41089H5.41089V25.4707H7.41089ZM8.41089 11.4707V13.4707H12.0115V11.4707V9.4707H8.41089V11.4707ZM13.0115 10.4707H15.0115V9.4707H13.0115H11.0115V10.4707H13.0115ZM14.0115 8.4707V10.4707H23.2107V8.4707V6.4707H14.0115V8.4707ZM24.2107 9.4707H22.2107V10.4707H24.2107H26.2107V9.4707H24.2107ZM23.2107 8.4707V10.4707C22.6584 10.4707 22.2107 10.023 22.2107 9.4707H24.2107H26.2107C26.2107 7.81385 24.8675 6.4707 23.2107 6.4707V8.4707ZM13.0115 9.4707H15.0115C15.0115 10.023 14.5638 10.4707 14.0115 10.4707V8.4707V6.4707C12.3546 6.4707 11.0115 7.81385 11.0115 9.4707H13.0115ZM12.0115 11.4707V13.4707C13.6683 13.4707 15.0115 12.1276 15.0115 10.4707H13.0115H11.0115C11.0115 9.91842 11.4592 9.4707 12.0115 9.4707V11.4707ZM7.41089 12.4707H9.41089C9.41089 13.023 8.96317 13.4707 8.41089 13.4707V11.4707V9.4707C6.75403 9.4707 5.41089 10.8138 5.41089 12.4707H7.41089ZM8.41089 26.4707V24.4707C8.96317 24.4707 9.41089 24.9184 9.41089 25.4707H7.41089H5.41089C5.41089 27.1276 6.75404 28.4707 8.41089 28.4707V26.4707ZM29.8113 25.4707H27.8113C27.8113 24.9184 28.259 24.4707 28.8113 24.4707V26.4707V28.4707C30.4681 28.4707 31.8113 27.1276 31.8113 25.4707H29.8113ZM28.8113 11.4707V13.4707C28.259 13.4707 27.8113 13.023 27.8113 12.4707H29.8113H31.8113C31.8113 10.8138 30.4681 9.4707 28.8113 9.4707V11.4707ZM25.2107 11.4707V9.4707C25.763 9.4707 26.2107 9.91842 26.2107 10.4707H24.2107H22.2107C22.2107 12.1276 23.5538 13.4707 25.2107 13.4707V11.4707Z" fill="white" mask="url(#path-2-inside-1_1007_656)"/>
+        </svg>
+      ),
+      'accommodation': (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="9" fill="#2563EB"/>
+          <path d="M8 26.5H27.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M10 26.5V10C10 9.44772 10.4477 9 11 9H21.5C22.0523 9 22.5 9.44772 22.5 10V14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <rect x="17" y="16" width="10" height="11" rx="1" fill="white"/>
+          <rect x="13" y="12" width="2" height="2" fill="white"/>
+          <rect x="13" y="17" width="2" height="2" fill="white"/>
+          <rect x="13" y="22" width="2" height="2" fill="white"/>
+          <rect x="21" y="22" width="2" height="2" fill="#2563EB"/>
+          <rect x="21" y="18" width="2" height="2" fill="#2563EB"/>
+        </svg>
+      ),
+      'golf': (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="9" fill="#269962"/>
+          <mask id="path-2-inside-1_1007_659" fill="white">
+            <path d="M18.4805 8C21.6142 8 24.3926 9.52041 26.1187 11.8638C26.2605 12.0562 26.2336 12.3221 26.0646 12.4911L21.2051 17.3515C21.0098 17.5468 21.0098 17.8633 21.2051 18.0586L25.8688 22.7224C26.0424 22.8959 26.0654 23.1706 25.913 23.363C24.1765 25.5543 21.4935 26.9609 18.4805 26.9609C13.2445 26.9607 9 22.7165 9 17.4805C9 12.2445 13.2445 8.00025 18.4805 8Z"/>
+          </mask>
+          <path d="M18.4805 8V6H18.4804L18.4805 8ZM18.4805 26.9609L18.4804 28.9609H18.4805V26.9609ZM9 17.4805H7H9ZM25.8688 22.7224L27.2831 21.3081L25.8688 22.7224ZM21.2051 17.3515L22.6194 18.7656V18.7656L21.2051 17.3515ZM26.1187 11.8638L24.5084 13.0499L26.1187 11.8638ZM26.0646 12.4911L24.6503 11.077L26.0646 12.4911ZM18.4805 8V10C20.9517 10 23.143 11.1962 24.5084 13.0499L26.1187 11.8638L27.729 10.6776C25.6422 7.8446 22.2767 6 18.4805 6V8ZM26.0646 12.4911L24.6503 11.077L19.7907 15.9374L21.2051 17.3515L22.6194 18.7656L27.479 13.9052L26.0646 12.4911ZM21.2051 18.0586L19.7909 19.4728L24.4546 24.1366L25.8688 22.7224L27.2831 21.3081L22.6193 16.6444L21.2051 18.0586ZM25.913 23.363L24.3455 22.1208C22.9715 23.8547 20.856 24.9609 18.4805 24.9609V26.9609V28.9609C22.131 28.9609 25.3816 27.2538 27.4805 24.6051L25.913 23.363ZM18.4805 26.9609L18.4806 24.9609C14.349 24.9607 11 21.6118 11 17.4805H9H7C7 23.8212 12.14 28.9606 18.4804 28.9609L18.4805 26.9609ZM9 17.4805H11C11 13.3491 14.349 10.0002 18.4806 10L18.4805 8L18.4804 6C12.14 6.0003 7 11.1398 7 17.4805H9ZM25.8688 22.7224L24.4546 24.1366C23.9498 23.6318 23.8328 22.7678 24.3455 22.1208L25.913 23.363L27.4805 24.6051C28.298 23.5735 28.1349 22.16 27.2831 21.3081L25.8688 22.7224ZM21.2051 17.3515L19.7907 15.9374C18.8145 16.9138 18.8146 18.4966 19.7909 19.4728L21.2051 18.0586L22.6193 16.6444C23.205 17.2301 23.2051 18.1798 22.6194 18.7656L21.2051 17.3515ZM26.1187 11.8638L24.5084 13.0499C24.0324 12.4038 24.1582 11.5691 24.6503 11.077L26.0646 12.4911L27.479 13.9052C28.3089 13.0751 28.4885 11.7086 27.729 10.6776L26.1187 11.8638Z" fill="white" mask="url(#path-2-inside-1_1007_659)"/>
+          <circle cx="17.3555" cy="13.4805" r="0.5" fill="#269962" stroke="white"/>
+        </svg>
+      )
+    };
+    return icons[type] || icons['tour'];
+  };
+
+  // 타입별 아이콘 색상 반환 함수
+  const getIconColorByType = (type) => {
+    const colors = {
+      'restaurant': '#FF9800',
+      'tour': '#9C27B0',
+      'accommodation': '#2196F3',
+      'golf': '#4CAF50'
+    };
+    return colors[type] || '#666666';
+  };
+
+  const loadCourseData = async () => {
+    setLoading(true);
+    
+    try {
+      // sessionStorage에서 API 응답 데이터 가져오기
+      const recommendationData = sessionStorage.getItem('courseRecommendation');
+      
+      if (recommendationData) {
+        const data = JSON.parse(recommendationData);
+        console.log('API 응답 데이터:', data);
+        
+        // CourseRecommendationResponseDto 배열을 day별로 분류
+        const newCourseData = {
+          day0: [], // 당일치기
+          day1: [], // 1일차
+          day2: [], // 2일차
+          day3: [], // 3일차
+          day4: []  // 4일차
+        };
+        
+        // API 응답 데이터를 day별로 분류
+        if (Array.isArray(data)) {
+          data.forEach((course) => {
+            const dayNumber = course.dayNumber;
+            const dayKey = dayNumber === 0 ? 'day0' : `day${dayNumber}`;
+            
+            if (newCourseData[dayKey] && course.recommendedPlaces) {
+              // RecommendedPlaceDto를 프론트엔드 형식으로 변환
+              newCourseData[dayKey] = course.recommendedPlaces.map((place, index) => ({
+                id: `${course.id}_${index}`,
+                name: place.name,
+                type: place.type,
+                address: place.address,
+                icon: getIconByType(place.type),
+                iconColor: getIconColorByType(place.type),
+                image: place.imageUrl || '/images/default-place.jpg',
+                coordinates: { 
+                  lat: parseFloat(place.mapy), 
+                  lng: parseFloat(place.mapx) 
+                },
+                visitOrder: index + 1,
+                distance: place.distanceKm ? `${place.distanceKm.toFixed(1)} km` : '정보없음',
+                aiReason: place.aiReason || null // AI 추천 이유 (AI 추천시만 존재)
+              }));
+            }
+          });
+        }
+        
+        setCourseData(newCourseData);
+      } else {
+        console.log('API 응답 데이터가 없습니다.');
+      }
+    } catch (error) {
+      console.error('코스 데이터 로드 중 오류:', error);
+    }
+    
+    setLoading(false);
+  };
+
+  // 위치보기 클릭
+  const handleLocationClick = (location) => {
+    if (location.coordinates) {
+      const { lat, lng } = location.coordinates;
+      window.open(`https://map.naver.com/v5/directions/-/${lat},${lng}/transit`, '_blank');
+    }
+  };
+
+  // 전화걸기 클릭
+  const handleCallClick = (location) => {
+    if (location.phone) {
+      window.location.href = `tel:${location.phone}`;
+    }
+  };
+
+  // 길찾기 클릭
+  const handleDirectionsClick = (location) => {
+    if (location.coordinates) {
+      const { lat, lng } = location.coordinates;
+      window.open(`https://map.naver.com/v5/directions/-/${lat},${lng}/car`, '_blank');
+    }
+  };
+
+  // 편집 버튼 클릭
+  const handleEditClick = () => {
+    // 편집 모드로 이동하거나 모달 열기
+    console.log('편집 모드');
+  };
+
+  // 다시 추천 버튼 클릭
+  const handleRerollClick = () => {
+    loadCourseData();
+  };
+
+  // 이 코스로 여행하기 클릭
+  const handleTravelClick = () => {
+    navigate('/schedule', { 
+      state: { 
+        courseData: courseData,
+        fromCourseRecommendation: true
+      } 
+    });
+  };
+
+  // 뒤로가기
+  const handleBack = () => {
+    navigate('/course/step2');
+  };
+
+  // 네이버지도로 길찾기
+  const openNaverMap = () => {
+    const nextInfo = getNextDestinationInfo();
+    if (!nextInfo) return;
+    
+    const currentDayData = selectedDay === 0 ? courseData.day0 : 
+                          selectedDay === 1 ? courseData.day1 : courseData.day2;
+    
+    const currentLocation = currentDayData[currentLocationIndex];
+    const nextLocation = nextInfo.nextLocation;
+    
+    const webUrl = `https://map.naver.com/v5/directions/${currentLocation.coordinates.lat},${currentLocation.coordinates.lng},${encodeURIComponent(currentLocation.name)}/${nextLocation.coordinates.lat},${nextLocation.coordinates.lng},${encodeURIComponent(nextLocation.name)}`;
+    
+    window.open(webUrl, '_blank');
+  };
+
+  const currentDayData = selectedDay === 0 ? courseData.day0 : 
+                        selectedDay === 1 ? courseData.day1 : courseData.day2;
+
+  if (loading) {
+    return (
+      <div className="course-step3-page">
+        <Header />
+        
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <h2>최적의 코스를 찾고 있어요</h2>
+          <p>AI가 당신만의 맞춤 코스를 추천하고 있습니다...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`course-step3-page ${showDetails ? 'modal-open' : ''}`}>
+      <Header />
+
+      {/* 네비게이션 헤더 */}
+      <div className="step-header">
+        <div className="header-content">
+          <button className="back-btn" onClick={handleBack}>
+            ←
+          </button>
+          <h1 className="step-title">맞춤 코스 설정</h1>
+        </div>
+        
+        {/* 진행 단계 표시 */}
+        <div className="step-indicator">
+          <div className="step-item completed">
+            <div className="step-circle completed">1</div>
+            <span className="step-label completed">기간 설정</span>
+          </div>
+          <div className="step-line completed"></div>
+          <div className="step-item completed">
+            <div className="step-circle completed">2</div>
+            <span className="step-label completed">스타일 설정</span>
+          </div>
+          <div className="step-line completed"></div>
+          <div className="step-item active">
+            <div className="step-circle active">3</div>
+            <span className="step-label active">코스 추천</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 지도 섹션 */}
+      <div className={`map-section ${showDetails ? 'modal-open' : ''}`}>
+        <div ref={mapRef} className="kakao-map" style={{ width: '100%', height: '100%' }}></div>
+        </div>
+
+
+      {/* 코스 상세 모달 (통합) */}
+      <div className={`course-modal ${showDetails ? 'show' : ''}`}>
+        {/* 드래그 헤더 */}
+        <div 
+          className="course-details-header"
+          onClick={() => setShowDetails(!showDetails)}
+        >
+          <div className="drag-handle"></div>
+      </div>
+
+      {/* 코스 상세 정보 */}
+      <div className="course-details">
+        {/* 일차 탭 */}
+        <div className="day-tabs">
+          {(() => {
+            const step1Data = JSON.parse(sessionStorage.getItem('courseStep1') || '{}');
+            const selectedPeriod = step1Data.selectedPeriod;
+            const tabs = [];
+            
+            if (selectedPeriod === 'day') {
+              // 당일치기
+              tabs.push(
+                <button 
+                  key={0}
+                  className={`day-tab ${selectedDay === 0 ? 'active' : ''}`}
+                  onClick={() => setSelectedDay(0)}
+                >
+                  당일치기
+                </button>
+              );
+            } else if (selectedPeriod === '1night') {
+              // 1박 2일
+              tabs.push(
+          <button 
+                  key={1}
+            className={`day-tab ${selectedDay === 1 ? 'active' : ''}`}
+            onClick={() => setSelectedDay(1)}
+          >
+            1일차
+          </button>
+              );
+              tabs.push(
+            <button 
+                  key={2}
+              className={`day-tab ${selectedDay === 2 ? 'active' : ''}`}
+              onClick={() => setSelectedDay(2)}
+            >
+              2일차
+            </button>
+              );
+            } else if (selectedPeriod === '2night') {
+              // 2박 3일
+              for (let i = 1; i <= 3; i++) {
+                tabs.push(
+                  <button 
+                    key={i}
+                    className={`day-tab ${selectedDay === i ? 'active' : ''}`}
+                    onClick={() => setSelectedDay(i)}
+                  >
+                    {i}일차
+                  </button>
+                );
+              }
+            } else if (selectedPeriod === '3night') {
+              // 3박 4일
+              for (let i = 1; i <= 4; i++) {
+                tabs.push(
+                  <button 
+                    key={i}
+                    className={`day-tab ${selectedDay === i ? 'active' : ''}`}
+                    onClick={() => setSelectedDay(i)}
+                  >
+                    {i}일차
+                  </button>
+                );
+              }
+            }
+            
+            return tabs;
+          })()}
+        </div>
+
+        {/* 액션 버튼 */}
+        <div className="action-buttons">
+          <button className="action-btn edit-btn" onClick={handleEditClick}>
+            <span className="btn-icon">✏️</span>
+            편집
+          </button>
+          <button className="action-btn reroll-btn" onClick={handleRerollClick}>
+            <span className="btn-icon">🔄</span>
+            다시 추천
+          </button>
+        </div>
+
+        {/* 일정 목록 */}
+        <div className="itinerary-list">
+          {currentDayData.map((location, index) => (
+            <React.Fragment key={location.id}>
+              <div className="itinerary-item">
+              {/* 위치 정보 */}
+              <div className="location-info">
+                <div className="location-icon">
+                  <span className="icon-number">{index + 1}</span>
+                  <span className="icon-symbol">{location.icon}</span>
+                </div>
+                
+                <div className="location-details">
+                  <h3 className="location-name">{location.name}</h3>
+                  <p className="location-type">{location.type}</p>
+                  <p className="location-address">{location.address}</p>
+                  
+                  <div className="location-actions">
+                    <button 
+                      className="action-btn location-btn"
+                      onClick={() => handleLocationClick(location)}
+                    >
+                      <span className="action-icon">📍</span>
+                      위치보기
+                    </button>
+                    <button 
+                      className="action-btn call-btn"
+                      onClick={() => handleCallClick(location)}
+                    >
+                      <span className="action-icon">📞</span>
+                      전화
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="location-image">
+                  <div className="image-placeholder">{location.icon}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 다음 목적지까지 정보 (마지막 항목 제외) */}
+              {index < currentDayData.length - 1 && (
+                <div className="transport-info-between">
+                  <div className="transport-info-header">
+                    <div className="transport-info-title">
+                      <span className="transport-icon">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10.1631 4.76856L6.45905 6.58329L6.30575 6.65925L6.22979 6.81254L4.41438 10.5173L0.965164 1.31866L10.1631 4.76856Z" stroke="#177DF6"/>
+                        </svg>
+                      </span>
+                      <span>다음 목적지까지</span>
+                    </div>
+                    <div className="transport-distance">
+                      {calculateDistanceAndTime(
+                        location.coordinates.lat,
+                        location.coordinates.lng,
+                        currentDayData[index + 1].coordinates.lat,
+                        currentDayData[index + 1].coordinates.lng,
+                        'car'
+                      ).distance} km
+                    </div>
+                  </div>
+                  
+                  <div className="transport-modes">
+                    {[
+                      {
+                        mode: 'walking',
+                        label: '도보',
+                        icon: (
+            <svg width="9" height="13" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="4.75" cy="2" r="1.5" stroke="#A228D7"/>
+              <path d="M5 4.86963C5 6.92845 3.29222 10.2226 1 11.8696" stroke="#A228D7" stroke-linecap="round"/>
+              <path d="M4 8.86963C4.4 9.15534 6 10.1553 6 11.8696" stroke="#A228D7" stroke-linecap="round"/>
+              <path d="M5 6.00443C5.42857 6.52121 6.97143 7.73004 8 5.86963" stroke="#A228D7" stroke-linecap="round"/>
+              <path d="M4.25 5.99991C3.25 5.49976 1.75 5.5 1.25 6.50001" stroke="#A228D7" stroke-linecap="round"/>
+            </svg>
+          ),
+                        color: '#9333EA',
+                        time: calculateDistanceAndTime(
+                          location.coordinates.lat,
+                          location.coordinates.lng,
+                          currentDayData[index + 1].coordinates.lat,
+                          currentDayData[index + 1].coordinates.lng,
+                          'walking'
+                        ).time
+                      },
+                      {
+                        mode: 'car',
+                        label: '자차',
+                        icon: (
+            <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.89575 9.66667V4.30359C2.89575 4.26848 2.90499 4.23399 2.92255 4.20359L4.71441 1.1C4.75013 1.03812 4.81616 1 4.88761 1H10.3636C10.4351 1 10.5011 1.03812 10.5368 1.1L12.3287 4.20359C12.3462 4.23399 12.3555 4.26848 12.3555 4.30359V9.66667" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M3.40747 8.70361L12.0741 8.70361" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M5.50073 6.77783H6.0424" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M9.46924 6.77783H10.0109" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M3.40747 4.85156H12.0741" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M12.375 4.25H14" stroke="#0AC03B" stroke-linecap="round"/>
+              <path d="M1 4.25H2.625" stroke="#0AC03B" stroke-linecap="round"/>
+            </svg>
+          ),
+                        color: '#269962',
+                        time: calculateDistanceAndTime(
+                          location.coordinates.lat,
+                          location.coordinates.lng,
+                          currentDayData[index + 1].coordinates.lat,
+                          currentDayData[index + 1].coordinates.lng,
+                          'car'
+                        ).time
+                      },
+                      {
+                        mode: 'transit',
+                        label: '대중교통',
+                        icon: (
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.84619 0.5H8.15381C8.98224 0.5 9.65381 1.17157 9.65381 2V7.96191H1.34619V2C1.34619 1.17157 2.01777 0.5 2.84619 0.5Z" stroke="#4540DA"/>
+              <rect x="0.846191" y="5.07715" width="9.30769" height="3.38462" fill="#4540DA"/>
+              <rect x="1.69238" y="0.846191" width="7.61538" height="1.69231" fill="#4540DA"/>
+              <rect x="0.846191" y="6.76953" width="1.69231" height="3.38462" rx="0.846154" fill="#4540DA"/>
+              <rect x="8.46143" y="6.76953" width="1.69231" height="3.38462" rx="0.846154" fill="#4540DA"/>
+              <rect x="1.69238" y="5.92334" width="1.69231" height="1.69231" rx="0.846154" fill="white"/>
+              <rect x="7.61548" y="5.92334" width="1.69231" height="1.69231" rx="0.846154" fill="white"/>
+              <path d="M10.1538 3.38477C10.6211 3.38477 11 3.7636 11 4.23092V5.92323C11 6.39054 10.6211 6.76938 10.1538 6.76938V3.38477Z" fill="#4540DA"/>
+              <path d="M0 4.23092C0 3.7636 0.378836 3.38477 0.846154 3.38477V6.76938C0.378836 6.76938 0 6.39055 0 5.92323V4.23092Z" fill="#4540DA"/>
+              <path d="M3.80762 1.26953H7.19223" stroke="white" stroke-linecap="round"/>
+            </svg>
+          ),
+                        color: '#2563EB',
+                        time: calculateDistanceAndTime(
+                          location.coordinates.lat,
+                          location.coordinates.lng,
+                          currentDayData[index + 1].coordinates.lat,
+                          currentDayData[index + 1].coordinates.lng,
+                          'transit'
+                        ).time
+                      }
+                    ].map((transport, transportIndex) => (
+                      <div key={transportIndex} className="transport-mode-card">
+                        <div className="transport-mode-label">
+                          <div className="transport-mode-icon" style={{ color: transport.color }}>
+                            {transport.icon}
+                          </div>
+                          <div>{transport.label}</div>
+                        </div>
+                        <div className="transport-mode-time">{transport.time}분</div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button 
+                    className="transport-route-button" 
+                    onClick={() => {
+                      const currentLocation = location;
+                      const nextLocation = currentDayData[index + 1];
+                      const webUrl = `https://map.naver.com/v5/directions/${currentLocation.coordinates.lat},${currentLocation.coordinates.lng},${encodeURIComponent(currentLocation.name)}/${nextLocation.coordinates.lat},${nextLocation.coordinates.lng},${encodeURIComponent(nextLocation.name)}`;
+                      window.open(webUrl, '_blank');
+                    }}
+                  >
+                    길찾기
+                  </button>
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* 여행 시작 버튼 */}
+        <div className="travel-button-container">
+          <button className="travel-btn" onClick={handleTravelClick}>
+            이 코스로 여행하기
+          </button>
+        </div>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default CourseStep3;

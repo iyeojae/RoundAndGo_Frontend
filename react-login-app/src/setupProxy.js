@@ -6,7 +6,7 @@ module.exports = function(app) {
     createProxyMiddleware({
       target: 'https://roundandgo.shop',
       changeOrigin: true,
-      secure: false, // HTTPS 인증서 검증 비활성화
+      secure: true, // HTTPS 인증서 검증 활성화
       pathRewrite: {
         '^/api': '/api', // 경로 그대로 유지
       },

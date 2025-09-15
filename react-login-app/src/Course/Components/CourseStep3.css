@@ -1,0 +1,885 @@
+/* CourseStep3 스타일 */
+.course-step3-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-bottom: 80px; /* Footer 높이만큼 하단 패딩 */
+}
+
+.course-step3-page.modal-open {
+  padding-bottom: calc(50vh + 80px); /* 모달 높이 + Footer 높이 */
+  scroll-behavior: smooth;
+}
+
+/* 네비게이션 헤더 */
+.step-header {
+  background: white;
+  padding: 16px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+/* 진행 단계 표시 */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.step-circle.active {
+  background: #2C8C7D;
+  color: white;
+}
+
+.step-circle.completed {
+  background: #4CAF50;
+  color: white;
+}
+
+.step-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.step-label.active {
+  color: #2C8C7D;
+  font-weight: 600;
+}
+
+.step-label.completed {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background: #e0e0e0;
+  margin: 0;
+  align-self: flex-start;
+  margin-top: 20px;
+}
+
+.step-line.completed {
+  background: #4CAF50;
+}
+
+/* 지도 섹션 */
+.map-section {
+  margin: 0;
+  height: 70vh; /* 기본 지도 높이 */
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+  transition: height 0.3s ease-in-out;
+  z-index: 1;
+  position: relative;
+  margin-bottom: 80px; /* 하단 여백 */
+}
+
+/* 모달이 열렸을 때 지도 높이 조절 */
+.map-section.modal-open {
+  height: calc(100vh - 50vh); /* 모달 높이만큼 지도 높이 감소 */
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-marker {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #2C8C7D;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-text {
+  font-size: 16px;
+  color: #2C8C7D;
+  font-weight: 600;
+}
+
+
+.map-section {
+  position: relative;
+}
+
+
+.kakao-map {
+  border-radius: 0;
+  overflow: hidden;
+  transition: border-radius 0.3s ease-in-out;
+}
+
+/* 카카오맵 마커가 모달에 가려지지 않도록 z-index 설정 */
+.kakao-map img[src*="marker"] {
+  z-index: 1001 !important;
+  position: relative;
+}
+
+.map-section.modal-open .kakao-map {
+  border-radius: 0;
+}
+
+/* 코스 상세 모달 (통합) */
+.course-modal {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(calc(100% - 50px)); /* 헤더 높이만큼 위로 */
+  transition: all 0.3s ease-in-out;
+  z-index: 500; /* 지도보다 낮게 설정 */
+  max-height: 50vh;
+}
+
+.course-modal.show {
+  transform: translateY(0);
+}
+
+/* 코스 상세 정보 */
+.course-details {
+  background: white;
+  border-radius: 0 0 20px 20px;
+  padding: 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  max-height: calc(50vh - 50px); /* 헤더 높이 제외 */
+}
+
+/* 드래그 헤더 */
+.course-details-header {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1001;
+}
+
+.course-details-header:hover {
+  background: #f8f9fa;
+}
+
+.drag-handle {
+  width: 50px;
+  height: 5px;
+  background: #adb5bd;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.course-details-header:hover .drag-handle {
+  background: #6c757d;
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+
+/* 일차 탭 */
+.day-tabs {
+  display: flex;
+  margin-bottom: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.day-tab {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #177DF6;
+  background: transparent;
+  color: #177DF6;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.day-tab.active {
+  background: #177DF6;
+  color: white;
+  box-shadow: 0 2px 8px rgba(23, 125, 246, 0.3);
+}
+
+/* 액션 버튼 */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.edit-btn {
+  color: #2196F3;
+  border-color: #2196F3;
+}
+
+.edit-btn:hover {
+  background: #e3f2fd;
+}
+
+.reroll-btn {
+  color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.reroll-btn:hover {
+  background: #e8f5e8;
+}
+
+.btn-icon {
+  font-size: 16px;
+}
+
+/* 장소 사이 교통수단 정보 */
+.transport-info-between {
+  background: #E7F2FF;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 16px 0 16px auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 350px;
+  height: 172px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 장소들을 이어주는 세로 점선 */
+.transport-info-between::before {
+  content: '';
+  position: absolute;
+  left: -35px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #A0A0A0 0px,
+    #A0A0A0 8px,
+    transparent 8px,
+    transparent 16px
+  );
+  z-index: 1;
+}
+
+.transport-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.transport-info-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.transport-icon {
+  font-size: 18px;
+}
+
+.transport-distance {
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+}
+
+.transport-modes {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 0;
+  width: 100%;
+  justify-content: center;
+}
+
+.transport-mode-card {
+  width: 90px;
+  height: 71px;
+  background: white;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transport-mode-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.transport-mode-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.transport-mode-label {
+  width: 77px;
+  height: 20px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.transport-mode-time {
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+}
+
+.transport-route-button {
+  width: 309px;
+  height: 42px;
+  background: #2563EB;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 4px auto 0 auto;
+  display: block;
+}
+
+.transport-route-button:hover {
+  background: #1d4ed8;
+}
+
+
+
+/* 일정 목록 */
+.itinerary-list {
+  margin-bottom: 20px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 반응형 너비 조정 */
+@media (max-width: 1024px) {
+  .itinerary-list {
+    max-width: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .itinerary-list {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .itinerary-list {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 360px) {
+  .itinerary-list {
+    max-width: 300px;
+  }
+}
+
+.itinerary-item {
+  margin: 24px 0;
+  height: 117px;
+  width: 400px;
+  margin-left: auto;
+}
+
+.location-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.location-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  flex-shrink: 0;
+  position: relative;
+  align-self: center;
+}
+
+.icon-number {
+  font-size: 12px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: white;
+  color: #333;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.icon-symbol {
+  font-size: 24px;
+}
+
+.location-details {
+  flex: 1;
+}
+
+.location-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 4px 0;
+}
+
+.location-type {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 4px 0;
+}
+
+.location-address {
+  font-size: 12px;
+  color: #999;
+  margin: 0 0 12px 0;
+}
+
+.location-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.location-btn,
+.call-btn {
+  padding: 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.location-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-color: #1976d2;
+}
+
+.location-btn:hover {
+  background: #bbdefb;
+}
+
+.call-btn {
+  background: #e8f5e8;
+  color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.call-btn:hover {
+  background: #c8e6c9;
+}
+
+.action-icon {
+  font-size: 12px;
+}
+
+.location-image {
+  width: 82px;
+  height: 82px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+
+.image-placeholder {
+  font-size: 32px;
+  color: #ccc;
+}
+
+/* 다음 목적지까지 정보 */
+.travel-info {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-left: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.travel-distance {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.travel-times {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.directions-btn {
+  padding: 8px 16px;
+  background: #2C8C7D;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.directions-btn:hover {
+  background: #1e6b5e;
+}
+
+/* 여행 시작 버튼 */
+.travel-button-container {
+  margin-top: 50px;
+  padding-bottom: 30px;
+}
+
+.travel-btn {
+  width: 100%;
+  padding: 16px;
+  background: #2C8C7D;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.travel-btn:hover {
+  background: #1e6b5e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(44, 140, 125, 0.3);
+}
+
+/* 로딩 상태 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 40px 20px;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2C8C7D;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container h2 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.loading-container p {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 하단 네비게이션 */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0 8px 0;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.nav-label {
+  font-size: 10px;
+  color: #666;
+}
+
+.nav-item.active .nav-icon {
+  color: #2C8C7D;
+}
+
+.nav-item.active .nav-label {
+  color: #2C8C7D;
+  font-weight: 600;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .header-content {
+    margin-bottom: 16px;
+    max-width: 280px;
+  }
+  
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .step-line {
+    width: 40px;
+    margin: 0;
+    align-self: flex-start;
+    margin-top: 16px;
+  }
+  
+  .step-label {
+    font-size: 10px;
+  }
+  
+  .map-section {
+    height: 70vh; /* 모바일 기본 지도 높이 */
+    margin: 0;
+    margin-bottom: 70px; /* 모바일 하단 여백 */
+  }
+  
+  .map-section.modal-open {
+    height: calc(100vh - 45vh); /* 모바일 모달 높이만큼 지도 높이 감소 */
+    margin: 0;
+  }
+  
+  .course-modal {
+    max-height: 45vh;
+  }
+  
+  .course-details {
+    padding: 16px;
+    max-height: calc(45vh - 45px); /* 모바일 헤더 높이 제외 */
+  }
+  
+  .course-details-header {
+    height: 45px;
+  }
+  
+  .drag-handle {
+    width: 45px;
+    height: 4px;
+  }
+  
+  .course-step3-page.modal-open {
+    padding-bottom: calc(45vh + 70px); /* 모바일 모달 높이 + Footer 높이 */
+  }
+  
+  
+  
+  .location-info {
+    gap: 12px;
+  }
+  
+  .location-icon {
+    width: 50px;
+    height: 50px;
+    align-self: center;
+  }
+  
+  .icon-symbol {
+    font-size: 20px;
+  }
+  
+  .location-image {
+    width: 82px;
+    height: 82px;
+  }
+  
+  .image-placeholder {
+    font-size: 24px;
+  }
+  
+  .travel-info {
+    margin-left: 62px;
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .travel-times {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .location-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .location-actions {
+    justify-content: center;
+  }
+  
+  .travel-info {
+    margin-left: 0;
+    text-align: center;
+  }
+  
+  .travel-times {
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+  }
+}

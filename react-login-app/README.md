@@ -2,6 +2,25 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## API 설정
+
+### Tourapi API 키 설정
+장소 검색 기능을 사용하려면 Tourapi API 키가 필요합니다.
+
+1. [공공데이터포털](https://data.go.kr)에서 회원가입
+2. "한국관광공사_관광정보서비스" 검색
+3. API 키 발급 신청
+4. 프로젝트 루트에 `.env` 파일 생성 후 다음 내용 추가:
+
+```
+REACT_APP_TOURAPI_KEY=발급받은_API_키
+```
+
+### 기존 API 키들
+```
+REACT_APP_OPENWEATHER_API_KEY=your_openweather_api_key_here
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
