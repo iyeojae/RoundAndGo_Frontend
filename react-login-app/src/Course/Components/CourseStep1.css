@@ -179,6 +179,13 @@
   width: 100%;
 }
 
+.golf-time-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
 .time-input {
   width: 100%;
   padding: 16px;

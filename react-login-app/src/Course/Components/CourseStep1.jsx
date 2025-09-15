@@ -31,16 +31,34 @@ const CourseStep1 = () => {
     { id: '3night', title: '3박 4일', subtitle: '여유로운 여행', days: 4 }
   ];
 
-  // 골프 시간 추가
-  const addGolfTime = () => {
-    const newTime = '';
-    setGolfTimes([...golfTimes, newTime]);
+  // 여행 기간에 따른 골프 시간 개수 설정
+  const getGolfTimeCount = (period) => {
+    switch (period) {
+      case 'day': return 1;      // 당일치기: 1개
+      case '1night': return 2;   // 1박 2일: 2개
+      case '2night': return 3;   // 2박 3일: 3개
+      case '3night': return 4;   // 3박 4일: 4개
+      default: return 1;
+    }
   };
 
-  // 골프 시간 제거
-  const removeGolfTime = (index) => {
-    if (golfTimes.length > 1) {
-      setGolfTimes(golfTimes.filter((_, i) => i !== index));
+  // 여행 기간 변경 시 골프 시간 개수 조정
+  const handlePeriodChange = (period) => {
+    setSelectedPeriod(period);
+    const requiredCount = getGolfTimeCount(period);
+    const currentCount = golfTimes.length;
+    
+    if (currentCount < requiredCount) {
+      // 부족한 개수만큼 빈 시간 추가
+      const newTimes = [...golfTimes];
+      for (let i = currentCount; i < requiredCount; i++) {
+        newTimes.push('');
+      }
+      setGolfTimes(newTimes);
+    } else if (currentCount > requiredCount) {
+      // 초과하는 개수만큼 제거 (뒤에서부터)
+      const newTimes = golfTimes.slice(0, requiredCount);
+      setGolfTimes(newTimes);
     }
   };
 
@@ -53,15 +71,17 @@ const CourseStep1 = () => {
 
   // 모든 필드가 입력되었는지 확인
   const isAllFieldsFilled = () => {
-    const hasGolfTimes = golfTimes.some(time => time !== '');
+    const requiredCount = getGolfTimeCount(selectedPeriod);
+    const hasAllGolfTimes = golfTimes.length === requiredCount && 
+                           golfTimes.every(time => time !== '');
     const hasSelectedPeriod = selectedPeriod !== '';
     
     // 1박 2일 이상 선택 시 날짜도 확인
     if (selectedPeriod !== 'day') {
-      return hasGolfTimes && hasSelectedPeriod && departureDate && arrivalDate;
+      return hasAllGolfTimes && hasSelectedPeriod && departureDate && arrivalDate;
     }
     
-    return hasGolfTimes && hasSelectedPeriod;
+    return hasAllGolfTimes && hasSelectedPeriod;
   };
 
   // 다음 단계로 이동
@@ -262,10 +282,19 @@ const CourseStep1 = () => {
         <div className="golf-time-section">
           <div className="section-header">
             <h3 className="section-title">골프 치는 시간</h3>
+            <p className="section-description">
+              {selectedPeriod === 'day' && '당일치기: 1개 시간 입력'}
+              {selectedPeriod === '1night' && '1박 2일: 2개 시간 입력'}
+              {selectedPeriod === '2night' && '2박 3일: 3개 시간 입력'}
+              {selectedPeriod === '3night' && '3박 4일: 4개 시간 입력'}
+            </p>
           </div>
           
           {golfTimes.map((time, index) => (
             <div key={index} className="golf-time-input">
+              <div className="golf-time-label">
+                {selectedPeriod === 'day' ? '골프 시간' : `${index + 1}일차 골프 시간`}
+              </div>
               {time === '' ? (
                 <div 
                   className="time-input time-placeholder"
@@ -305,10 +334,6 @@ const CourseStep1 = () => {
             </div>
           ))}
 
-          <button className="add-time-btn" onClick={addGolfTime}>
-            <span className="plus-icon">+</span>
-            골프 치는 시간 추가하기
-          </button>
         </div>
 
         {/* 여행기간 섹션 */}
@@ -321,7 +346,7 @@ const CourseStep1 = () => {
               <button
                 key={option.id}
                 className={`period-card ${selectedPeriod === option.id ? 'selected' : ''}`}
-                onClick={() => setSelectedPeriod(option.id)}
+                onClick={() => handlePeriodChange(option.id)}
               >
                 <div className="period-content">
                   <div className="period-title">{option.title}</div>
