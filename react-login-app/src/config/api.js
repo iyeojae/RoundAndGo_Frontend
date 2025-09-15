@@ -4,7 +4,7 @@
  */
 
 // 환경 감지 (로컬 백엔드 서버가 실행되지 않을 때는 프로덕션 사용)
-const isLocal = false; // 임시로 프로덕션 API 사용
+const isLocal = true; // 임시로 로컬 API 사용 (SSL 인증서 문제 해결 전까지)
 // const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
 // API 기본 URL 설정
