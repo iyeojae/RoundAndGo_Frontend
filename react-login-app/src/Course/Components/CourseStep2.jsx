@@ -135,10 +135,10 @@ const CourseStep2 = () => {
       // 당일치기 여부 확인
       const isSameDay = step1Data.selectedPeriod === 'day';
       
-      // API 엔드포인트 결정 (Render 도메인 직접 호출)
+      // API 엔드포인트 결정 (HTTP로 변경)
       const apiEndpoint = isSameDay 
-        ? 'https://roundandgo.onrender.com/api/courses/recommendation/ai'
-        : 'https://roundandgo.onrender.com/api/courses/recommendation/ai/multi-day';
+        ? 'http://roundandgo.onrender.com/api/courses/recommendation/ai'
+        : 'http://roundandgo.onrender.com/api/courses/recommendation/ai/multi-day';
       
       // API 요청 데이터 구성 (백엔드 엔티티 구조에 맞춤)
       const requestData = {
