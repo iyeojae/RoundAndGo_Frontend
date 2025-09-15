@@ -140,27 +140,21 @@ const CourseStep2 = () => {
       const baseUrl = isDevelopment ? '' : 'https://roundandgo.shop';
       
       const apiEndpoint = isSameDay 
-        ? `${baseUrl}/api/courses/recommendation/ai`
-        : `${baseUrl}/api/courses/recommendation/ai/multi-day`;
+        ? `${baseUrl}/api/courses/recommendation`
+        : `${baseUrl}/api/courses/recommendation/multi-day`;
       
-      // API 요청 데이터 구성 (백엔드 엔티티 구조에 맞춤)
-      const requestData = {
-        // 코스 기본 정보
-        courseName: `${step1Data.selectedPeriod === 'day' ? '당일치기' : step1Data.travelDays + '일'} ${step2Data.selectedStyle} 코스`,
-        description: `${step1Data.selectedPeriod === 'day' ? '당일치기' : step1Data.travelDays + '일'} ${step2Data.selectedStyle} 여행 코스`,
-        courseType: step2Data.selectedStyle, // 'premium', 'value', 'resort', 'emotional'
-        
-        // 여행 기간 정보
+      // API 요청 데이터 구성 (실제 API 스펙에 맞춤)
+      const requestData = isSameDay ? {
+        // 단일 코스 추천 (당일치기)
+        golfCourseId: 1, // 기본 골프장 ID (실제로는 사용자 선택에 따라)
+        teeOffTime: step1Data.golfTimes?.[0] || "09:00", // 첫 번째 골프 시간
+        courseType: step2Data.selectedStyle // 'premium', 'value', 'resort', 'emotional'
+      } : {
+        // 다일차 코스 추천
+        golfCourseIds: [1, 2], // 골프장 ID 목록 (실제로는 사용자 선택에 따라)
         startDate: step1Data.departureDate,
-        travelDays: step1Data.travelDays, // 1, 2, 3, 4
-        
-        // 골프 시간 정보
-        golfTimes: step1Data.golfTimes, // 골프 시간 배열
-        
-        // 추가 메타데이터
-        isSameDay: isSameDay,
-        period: step1Data.selectedPeriod, // 'day', '1night', '2night', '3night'
-        arrivalDate: step1Data.arrivalDate
+        travelDays: step1Data.travelDays,
+        teeOffTimes: step1Data.golfTimes || ["09:00", "09:30"] // 각 일차별 티오프 시간
       };
       
       console.log('API 요청 데이터:', {
@@ -176,6 +170,7 @@ const CourseStep2 = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}` // 실제 토큰 또는 더미 토큰
         },
         body: JSON.stringify(requestData)
       });
@@ -189,9 +184,9 @@ const CourseStep2 = () => {
       
       // 결과를 sessionStorage에 저장
       sessionStorage.setItem('courseRecommendation', JSON.stringify(result));
-      
-      // 3단계로 이동
-      navigate('/course/step3');
+    
+    // 3단계로 이동
+    navigate('/course/step3');
       
     } catch (error) {
       console.error('API 호출 중 오류:', error);
