@@ -133,7 +133,6 @@ const CourseStep2 = () => {
     sessionStorage.setItem('courseStep2', JSON.stringify(step2Data));
     
     try {
-      // 당일치기 여부 확인
       const isSameDay = step1Data.selectedPeriod === 'day';
       
       // API 엔드포인트 결정 (항상 https://roundandgo.shop 사용)
