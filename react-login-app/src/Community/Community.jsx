@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../Layout/Header.jsx';
+import Footer from '../Layout/Footer.jsx';
 import DivContent from '../Common/Community/DivContent.jsx';
+import'./Community.css';
 
-import ActiveHeart from './ActiveHeartIcon.svg';
-import Heart from './HeartIcon.svg';
-import Watch from './WatchIcon.svg';
 import BlackArrow from './BlackArrow.svg';
 import Comment from './CommentIcon.svg';
-
-const CATEGORY_MAP = {
-    QUESTION: '질문글',
-    REVIEW: '후기글',
-    FREE_TALK: '자유글',
-    // 최신글 / 정보글 / 인기글
-};
+import NewBoard from './NewBoardIcon.svg';
+import { fetchCategories, fetchPostsLatest, fetchComments } from "../Common/Community/CommunityAPI";
+import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS.js';
+import Popular from "../Common/Community/Popular";
+import WriteButton from './WriteNewBoard.jsx';
+import Toast from '../Common/Community/Toast.jsx';
 
 function CommunityBoard() {
     const navigate = useNavigate();
@@ -24,12 +21,88 @@ function CommunityBoard() {
     };
 
     const [posts, setPosts] = useState([]);
+    const [latestPosts, setLatestPosts] = useState([]);
+    const [categorizedPosts, setCategorizedPosts] = useState([]);
+    const [commentCounts, setCommentCounts] = useState({});
+
+    const [showToast, setShowToast] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.deleted) {
+            setShowToast(true);
+
+            // 브라우저 히스토리 초기화 (새로고침 시 재표시 방지)
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
+
+
+    // 댓글 수 || 댓글 목록
+    const fetchCommentCount = async (postId) => {
+        try {
+            const { totalCount } = await fetchComments(postId);
+            return totalCount;
+        } catch (err) {
+            console.error(`댓글 수 가져오기 실패 (postId: ${postId})`, err);
+            return 0;
+        }
+    };
+
+    useEffect(() => {
+        const loadCommentCounts = async () => {
+            const counts = {};
+
+            // 최신글 댓글 수
+            await Promise.all(
+                latestPosts.map(async (post) => {
+                    const count = await fetchCommentCount(post.id);
+                    counts[post.id] = count;
+                })
+            );
+
+            // 카테고리별 게시글 댓글 수
+            await Promise.all(
+                categorizedPosts.flat().map(async (post) => {
+                    if (!(post.id in counts)) { // 중복 요청 방지
+                        const count = await fetchCommentCount(post.id);
+                        counts[post.id] = count;
+                    }
+                })
+            );
+
+            setCommentCounts(counts);
+        };
+
+        if (latestPosts.length > 0 || categorizedPosts.length > 0) {
+            loadCommentCounts();
+        }
+    }, [latestPosts, categorizedPosts]);
+
+    // 오늘 날짜와 비교해서 최신글 필터링
+    const isToday = (createdAt) => {
+        const [year, month, day] = createdAt;
+        const postDate = new Date(year, month - 1, day); // month는 0부터 시작하므로 -1
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // 오늘 00:00으로 설정
+        return postDate.getTime() === today.getTime(); // 오늘 날짜와 비교
+    };
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await axios.get('https://roundandgo.shop/api/communities');
-                setPosts(res.data.data);
+                // 최신글
+                const latestData = await fetchPostsLatest();
+                const filteredLatestPosts = latestData.filter(post => isToday(post.createdAt)); // 최신글만 필터링
+                setLatestPosts(filteredLatestPosts); // 최신글 상태
+
+                // 최신글을 제외 카테고리
+                const categoryData = await Promise.all(
+                    TAB_LABELS.filter(({ key }) => key !== 'LATEST')
+                        .map(({ label }) => fetchCategories(label))
+                        );
+                setCategorizedPosts(categoryData);
+
             } catch (error) {
                 console.error('게시글 불러오기 실패:', error);
             }
@@ -38,123 +111,125 @@ function CommunityBoard() {
         fetchPosts();
     }, []);
 
-    const categorizedPosts = Object.entries(CATEGORY_MAP).map(([key, label]) => {
-        const filtered = posts.filter(
-            p => p.category?.toUpperCase() === key // 대소문자 문제 해결
-        ).slice(0, 3); // 최대 3개까지만 가져오기
-
-        return { label, key, items: filtered };
-    });
+    // GoToDetailCommunity
+    const goToPostDetail = (postId) => {
+        navigate(`/community/detail/${postId}`);
+    };
 
     return (
-        <div className="community">
-            <Header/>
-            <DivContent/>
+        <main>
+            <div className="community">
+                <Header/>
+                <div style={{backgroundColor: '#F8F8F8', width: '100%',}}>
+                    <div>
+                        <DivContent/>
 
-            {/* 인기글 들어갈 자리 . . . */}
+                        {/*<Popular/>*/}
+                        {/* 인기글 */}
 
-            <div>
-                <span style={{
-                    position: 'absolute',
-                    minWidth: '375px',
-                    maxWidth: '440px',
-                    width: '100%',
-                    margin: '0 auto',
-                    height: '6px',
-                    backgroundColor: '#dfdfdf',
-                }}></span>
-            </div>
-
-            <div className="CommunityContainer">
-                {categorizedPosts.map(({key, label, items}) => (
-                    <div key={key} className="community-section">
-                        <div className="section-header" style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginBottom: '3px',
-                            width: '90%',
-                            margin: '0 auto'
-                        }}>
-                            <h4 style={{fontSize: '14px', fontWeight: '500'}}>{label}</h4>
-                            <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기' style={{width: '6px', height: '10px'}}/>
+                        <div style={{marginTop: '7%'}}>
+                        <span style={{
+                            position: 'absolute',
+                            minWidth: '375px',
+                            maxWidth: '440px',
+                            width: '100%',
+                            margin: '0 auto',
+                            height: '6px',
+                            backgroundColor: '#dfdfdf',
+                        }}></span>
                         </div>
-                        <ul className="post-list"
-                            style={{width: '90%', margin: '0 auto', listStyle: 'none', padding: '0'}}>
-                            {items.length === 0 && <li className="no-post">게시글이 없습니다</li>}
-                            {items.map((post) => (
-                                <li key={post.id} className="post-item" style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}>
-                                    <div className="post-title"
-                                         style={{
-                                             fontSize: '12px',
-                                             fontWeight: '400',
-                                             margin: '1px 0'
-                                         }}>{post.title}</div>
-                                    {/*<div className="post-content">{post.content}</div>*/}
-                                    <div className="comment-count"
-                                         style={{display: 'flex', flexDirection: 'row', gap: '5px', margin: '1px 0'}}>
-                                        <img src={Comment} alt='댓글 아이콘' style={{
-                                            width: '15px',
-                                            height: '15px',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            margin: '1px 0'
-                                        }}/>
-                                        <p style={{
-                                            margin: '1px 0',
-                                            fontSize: '12px',
-                                            color: '#797979',
-                                            fontWeight: '400'
-                                        }}>0</p> {/* TODO : 카운트해서 숫자 변경되게 바꾸기 */}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-
-                        <span
-                            style={{
-                                display: 'block',
-                                height: '2px',
-                                width: '100%',
-                                backgroundColor: '#dfdfdf',
-                                marginTop: '10px',
-                                borderRadius: '3px',
-                            }}
-                        />
                     </div>
-                ))}
 
-                {/* TODO : 버튼 위치 고정하기 */}
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}>
-                    <button className="write-button" style={{
-                        color: '#fff',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: '3px',
-                        padding: '0.3% 6%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        border: 'none',
-                        backgroundColor: '#269962',
-                        borderRadius: '38px',
-                        boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.7)',
-                    }}>
-                        <span style={{fontSize: '32px', margin: '0', padding: '0'}}>+</span>
-                        <p style={{fontSize: '14px', margin: '0', padding: '0'}}>새 글 쓰기</p>
-                    </button>
+                    <div className="CommunityContainer">
+                        {/* 최신글 섹션 */}
+                        <div className="community-section">
+                            <div className="section-header">
+                                <h4>최신글</h4>
+                                <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
+                            </div>
+                            <ul className="post-list">
+                                {latestPosts.length === 0 && <li className="no-post">최신글이 없습니다</li>}
+                                {latestPosts.map((post) => (
+                                    <li key={post.id} className="post-item" onClick={() => goToPostDetail(post.id)}>
+                                        <div className="post-title">
+                                            <img src={NewBoard} alt='최신글'/>
+                                            <p>{post.title}</p>
+                                        </div>
+                                        <div className="comment-count">
+                                            <img src={Comment} alt='댓글 아이콘'/>
+                                            <p>{commentCounts[post.id] ?? 0}</p>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <span
+                                style={{
+                                    display: 'block',
+                                    height: '2px',
+                                    width: '100%',
+                                    backgroundColor: '#dfdfdf',
+                                    marginTop: '10px',
+                                    borderRadius: '3px',
+                                }}
+                            />
+                        </div>
+
+                        {/* 카테고리별 게시글 섹션 */}
+                        {categorizedPosts.length > 0 && categorizedPosts.map((categoryPosts, idx) => {
+                            const {label} = TAB_LABELS[idx + 1];  // '최신글' 제외
+                            const postsInCategory = categoryPosts.slice(0, 3); // 최대 3개
+
+                            return (
+                                <div key={label} className="community-section">
+                                    <div className="section-header">
+                                        <h4>{label}</h4>
+                                        <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
+                                    </div>
+                                    <ul className="post-list">
+                                        {postsInCategory.length === 0 && <li className="no-post">게시글이 없습니다</li>}
+                                        {postsInCategory.map((post) => (
+                                            <li key={post.id} className="post-item"
+                                                onClick={() => goToPostDetail(post.id)}>
+                                                <div className="post-title"><p>{post.title}</p></div>
+                                                <div className="comment-count">
+                                                    <img src={Comment} alt='댓글 아이콘'/>
+                                                    <p>{commentCounts[post.id] ?? 0}</p>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    {/* 마지막 index 아닐 때만 visible */}
+                                    {idx !== categorizedPosts.length - 1 && (
+                                        <span
+                                            style={{
+                                                display: 'block',
+                                                height: '2px',
+                                                width: '100%',
+                                                backgroundColor: '#dfdfdf',
+                                                marginTop: '10px',
+                                                borderRadius: '3px',
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                            );
+                        })}
+
+                        {showToast && (
+                            <Toast
+                                message="게시글이 정상적으로 삭제되었습니다."
+                                duration={3000}
+                                onClose={() => setShowToast(false)}
+                            />
+                        )}
+                        <WriteButton/>
+                    </div>
                 </div>
+                <Footer/>
             </div>
-        </div>
+        </main>
     );
 }
 

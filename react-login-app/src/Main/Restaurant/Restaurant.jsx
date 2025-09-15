@@ -16,6 +16,7 @@ function Restaurant() {
             onMoreClick={() => goTo('/detail/main?tab=restaurant')}
             maxPreview={4}
             showOverlay={true}
+            showCity={false}
             showAddress={false}
         />
     );

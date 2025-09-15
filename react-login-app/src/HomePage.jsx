@@ -1,11 +1,14 @@
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
 import React from "react";
-import { oauth2KakaoApi } from "./Auth/oauth2KakaoConfig";
-import { markKakaoLoginAttempt } from './Auth/useKakaoLoginDetector';
+import { oauth2KakaoApi } from './Auth/oauth2KakaoConfig.js';
+import { markKakaoLoginAttempt } from './Auth/useKakaoLoginDetector.js';
 
 const AppContainer = styled.div`
-  width: 100vw;
+  width: 100%;
+    min-width: 375px;
+    max-width: 440px;
+    margin: 0 auto;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -15,22 +18,23 @@ const AppContainer = styled.div`
   top: 0;
   left: 0;
   overflow: hidden;
-  padding: 0;            <LoginFrame>
-                <LogoSection>
-                    <BackgroundShapes>
-                        <Shape1 />
-                        <Shape2 />
-                        <Shape3 />
-                        <Shape4 />
-                    </BackgroundShapes>
-
-                    <LogoContent>
-                        <LogoContainer>
-                            <Logo src="/images/logo-280a0a.png" alt="RoundAndGo 로고" />
-                        </LogoContainer>
-                        <Title>RoundAndGo</Title>
-                    </LogoContent>
-                </LogoSection> background: linear-gradient(180deg, #269962 0%, #FFFFFF 100%);
+  padding: 0;
+//<LoginFrame>
+//                <LogoSection>
+//                    <BackgroundShapes>
+//                        <Shape1 />
+//                        <Shape2 />
+//                        <Shape3 />
+//                        <Shape4 />
+//                    </BackgroundShapes>
+//
+//                    <LogoContent>
+//                        <LogoContainer>
+//                            <Logo src="/images/logo-280a0a.png" alt="RoundAndGo 로고" />
+//                        </LogoContainer>
+//                        <Title>RoundAndGo</Title>
+//                    </LogoContent>
+//                </LogoSection> background: linear-gradient(180deg, #269962 0%, #FFFFFF 100%);
 `;
 
 const VersionToggle = styled.div`
@@ -73,7 +77,7 @@ const VersionButton = styled.button`
 `;
 
 const LoginFrame = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   position: relative;
   background: linear-gradient(180deg, #52B788 0%, #B7E4C7 50%, #D8F3DC 100%);
@@ -529,15 +533,6 @@ function HomePage() {
 
     return (
         <AppContainer>
-            <VersionToggle>
-                <VersionButton onClick={() => navigate('/old')}>
-                    이전 버전
-                </VersionButton>
-                <VersionButton style={{background: '#2D8779', color: 'white'}}>
-                    새 버전
-                </VersionButton>
-            </VersionToggle>
-
             <LoginFrame>
                 <LogoSection>
                     <BackgroundShapes>

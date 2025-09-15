@@ -1,0 +1,157 @@
+.CommunityContainer {
+
+    margin-top: 13%;
+}
+
+.section-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    margin: 3% auto;
+}
+
+.section-header h4 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.section-header img {
+    width: 6px;
+    height: 10px;
+}
+
+.post-list {
+    width: 90%;
+    margin: 0 auto;
+    list-style: none;
+    padding: 0;
+}
+
+.no-post {
+    font-size: 0.8rem;
+}
+
+.post-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2% 0;
+}
+
+.post-title {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-title img {
+    width: 14px;
+    aspect-ratio: 1 / 1;
+    margin: 0;
+}
+
+.post-title p {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.comment-count {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.comment-count img {
+    width: 15px;
+    height: 15px;
+    justify-content: center;
+    align-items: center;
+    margin: 1px 0;
+}
+
+.comment-count p {
+    margin: 1px 0;
+    font-size: 12px;
+    color: #797979;
+    font-weight: 400;
+}
+
+.WriteBtn {
+    position: fixed;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: 100%;
+}
+
+
+.write-button {
+    width: fit-content;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+    padding: 0.3% 5%;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: #269962;
+    border-radius: 38px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+.write-button span {
+    font-size: 32px;
+    font-weight: lighter;
+    margin: 0;
+    padding: 0;
+}
+
+.write-button p {
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20%; /* 원하는 위치: 아래에서 20% */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(67, 67, 67, 0.7);
+    color: #fff;
+    padding: 5% 13%;
+    border-radius: 6px;
+    font-size: 11px;
+    z-index: 10;
+    animation: fadeInOut 1.5s ease-in-out forwards;
+    width: auto;
+    text-align: center;
+    white-space: nowrap;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translate(-50%, 0px);
+    }
+    90% {
+        opacity: 1;
+        transform: translate(-50%, 0px);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+}

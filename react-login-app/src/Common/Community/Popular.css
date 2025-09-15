@@ -1,0 +1,94 @@
+.popular-posts {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.TabMsg {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.TabMsg p {
+    font-size: 18px;
+    font-weight: 450;
+    margin: 0;
+}
+
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.content-container h3 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.content-container p {
+    font-size: 11px;
+    font-weight: 450;
+    color: #797979;
+    margin: 0;
+    text-align: center;
+}
+
+.content-container img {
+    width: 24px;
+    height: 24px;
+}
+
+.btn-container {
+    display: flex;
+    align-items: center;
+    font-size: 9px;
+    color: #797979;
+}
+
+.heart,
+.watch {
+    display: flex;
+    align-items: center;
+    margin-right: 13px;
+}
+
+.heart img,
+.watch img {
+    width: 14px;
+    height: 14px;
+    margin-right: 3px;
+}
+
+.PopularSwiper {
+    margin: 0 auto; /* 가운데 정렬 */
+    overflow: hidden;
+}
+
+.popular-slide {
+    width: 100%;
+    aspect-ratio: 398 / 73 ;
+    background: #fff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    padding: 15px;
+    box-sizing: border-box; /* 패딩을 너비 계산에 포함 */
+}
+
+.PopularSwiper .swiper-pagination-bullet {
+    background: rgb(188, 188, 188, 1) !important; /* 비활성화된 dot 색상 */
+    width: 5px !important;
+    height: 5px !important;
+    margin: 0 2px !important;
+    opacity: 1 !important;
+}
+
+.PopularSwiper .swiper-pagination-bullet-active {
+    background: rgba(38, 153, 98, 1) !important; /* 활성화된 dot 색상 */
+    width: 5px !important;
+    height: 5px !important;
+    margin: 0 2px !important;
+    opacity: 1 !important;
+}

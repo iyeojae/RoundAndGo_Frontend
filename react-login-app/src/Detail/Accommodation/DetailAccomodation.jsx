@@ -18,7 +18,6 @@ function DetailAccommodation() {
 
             try {
                 const items = await fetchAccommodations();  // fetchAccommodations 함수 호출
-                console.log("Fetched accommodations:", items);
                 setAccommodations(items);
             } catch (err) {
                 setError(`숙소 데이터를 불러오는 데 실패했습니다: ${err.message}`);
@@ -46,7 +45,7 @@ function DetailAccommodation() {
                 <AccommodationList
                     title="제주도 숙소"
                     accommodations={accommodations}
-                    navigateToDetailPage={(item) => navigateToMorePage(item.contentid)}
+                    navigateToDetailPage={(contentid) => navigateToMorePage(contentid)}
                     showMoreButton={false}
                     limit={null}
                     showFilterButtons={true}

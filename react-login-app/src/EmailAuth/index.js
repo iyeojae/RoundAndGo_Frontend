@@ -12,7 +12,7 @@ export {
 } from './authUtils';
 
 // 이메일 세션 관리
-export { syncEmailUserFromSession, autoSyncEmailOnLoad } from './sessionSync';
+export { syncEmailUserFromSession, autoSyncEmailOnLoad } from '../Auth/sessionSync';
 
 // 이메일 API 서비스들
 export * from './findAccountApi';

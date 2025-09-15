@@ -10,7 +10,6 @@ function RestaurantList({
                             showMoreButton = false,
                             onMoreClick,
                             maxPreview = null,
-                            onRestaurantClick = (res) => alert(`Restaurant ID: ${res.id}`),
                             showCategoryFilter = true,
                             customCategoryList = ['전체', '한식', '양식', '일식', '중식', '이색 음식점', '카페', '클럽'],
                             showOverlay = false,
@@ -65,9 +64,9 @@ function RestaurantList({
     const previewRestaurants = maxPreview ? filteredRestaurants.slice(0, maxPreview) : filteredRestaurants;
 
     return (
-        <div className="RestaurantList" style={{width: '90%', margin: '0 auto', paddingTop: '20px'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <p className="IntroMent" style={{fontSize: '18px', fontWeight: '500', color: '#000'}}>
+        <div className="RestaurantList" style={{width: '90%', margin: '0 auto', paddingTop: '10%'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2%'}}>
+                <p className="IntroMent" style={{fontSize: '18px', fontWeight: '500', color: '#000', padding: '0', margin: '0'}}>
                     {title}
                 </p>
                 {showMoreButton && (
@@ -86,21 +85,17 @@ function RestaurantList({
             {showCategoryFilter && (
                 <div
                     style={{
+                        overflowX: 'scroll',
                         marginBottom: '20px',
-                        overflowX: 'auto',
-                        whiteSpace: 'nowrap',
-                        paddingBottom: '5px',
-                        scrollbarWidth: 'none',
-                        msOverflowStyle: 'none',
+                        WebkitOverflowScrolling: 'touch',
                     }}
                     className="scroll-hidden"
                 >
                     <div
                         style={{
                             display: 'flex',
-                            overflowX: 'auto',
-                            columnGap: '10px',
-                            padding: '10px 0'
+                            flexWrap: 'nowrap',
+                            gap: '10px',
                         }}
                     >
                         {customCategoryList.map((cat) => (
@@ -132,33 +127,24 @@ function RestaurantList({
             >
                 {previewRestaurants.map((res) => (
                     <div
-                        key={res.id}
+                        key={res.id || res.contentid}
                         className={`${eachofrestaurantClassName}`}
-                        onClick={() => onRestaurantClick(res)}
+                        onClick={() => {
+                            const query = encodeURIComponent(res.title);
+                            const url = `https://map.naver.com/v5/search/${query}`;
+                            window.open(url, '_blank'); // 새 탭으로 열기
+                        }}
                     >
-                        <img className={`${imageClassName}`} // RestImg || DetailRestImg
+                        <img
+                            className={`${imageClassName}`}
                             src={res.firstimage || NoImage}
-                            alt={res.name}
+                            alt={res.title}
                         />
-                        {showOverlay && (
-                            <div className='overlay'/>
-                        )}
-                        <div className={`${commentClassName}`} style={{marginTop: '3px'}}> {/* Rest || DetailRest */}
-                            {showTitle && (
-                                <h3>
-                                    {res.title}
-                                </h3>
-                            )}
-                            {showCity && (
-                                <p>
-                                    {res.city}
-                                </p>
-                            )}
-                            {showAddress && (
-                                <p>
-                                    {res.addr1 + res.addr2}
-                                </p>
-                            )}
+                        {showOverlay && <div className="overlay" />}
+                        <div className={`${commentClassName}`}>
+                            {showTitle && <h3>{res.title}</h3>}
+                            {showCity && <p>{res.city}</p>}
+                            {showAddress && <p>{res.addr1 + res.addr2}</p>}
                         </div>
                     </div>
                 ))}

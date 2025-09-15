@@ -1,0 +1,222 @@
+.form-wrap {
+    width: 90%;
+    margin: 0 auto;
+}
+
+#section-cont {
+    display: flex;
+    flex-direction: column;
+    padding: 3% 0;
+}
+
+.form-wrap div label {
+    font-size: 14px;
+    font-weight: 400;
+    color: #9a9a9a;
+    margin-bottom: 3px;
+}
+.form-wrap div input {
+    width: 100%;
+    aspect-ratio: 10 / 1;
+}
+
+.form-wrap div textarea {
+    width: 100%;
+    aspect-ratio: 400 / 258;
+    resize: none;
+}
+
+.form-wrap input:focus,
+.form-wrap textarea:focus {
+    outline: none;
+    border: 1px solid #269962;
+}
+
+.form-wrap div input,
+.form-wrap div textarea {
+    box-sizing: border-box;
+    border: 1px solid #9a9a9a;
+    border-radius: 0.5rem;
+    padding: 0 3%;
+    background: #fff;
+    color: #9a9a9a;
+    font-size: 12px;
+    font-weight: 350;
+    font-family: inherit;
+}
+
+.category-select {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.category-select button {
+    padding: 6px 12px;
+    border-radius: 21px;
+    border: 1px solid #9A9A9A;
+    color: #9a9a9a;
+    background-color: white;
+    font-size: 12px;
+    white-space: nowrap;
+    width: auto;
+    flex-shrink: 0;
+}
+
+/* 선택된 버튼 스타일 */
+.category-select button.active {
+    background-color: #269962;
+    color: white;
+    border-color: #269962;
+}
+
+.image-upload-container {
+    display: flex;
+    gap: 5px;
+}
+
+.image-label {
+    position: relative;
+    width: 100px;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.image-label::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px dashed #9a9a9a;
+    border-radius: 8px;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.image-preview-multiple {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.image-preview {
+    position: relative;
+    width: 100px;
+    display: flex;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    margin: 0;
+    padding: 0;
+}
+
+.image-preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: 0;
+    padding: 0;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.6);
+    border: none;
+    color: white;
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    line-height: 18px;
+    padding: 0;
+    text-align: center;
+}
+
+.SubmitBtn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: 1px solid #9C9C9C;
+    border-radius: 27px;
+    color: #9C9C9C;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 2% 0;
+}
+
+.SubmitBtn:active {
+    background-color: #269962;
+    color: white;
+}
+
+.row-cont,
+.mage-preview-multiple {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.btn-wrap {
+    padding: 15% 0 7% 0;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-3px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.2s ease;
+}
+
+.input-error {
+    border: 1px solid red !important;
+    color: red;
+    animation: shake 0.2s ease;
+}
+
+.input-error::placeholder {
+    color: red;
+    opacity: 1;
+}
+
+
+
+/* 카테고리 에러 시 */
+.category-select.error button {
+    border: 1px solid red;
+    color: red;
+    animation: shake 0.2s ease;
+}
+
+
+
+.input-error {
+    border: 1px solid red;
+}
+
+.shake {
+    animation: shake 0.3s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}

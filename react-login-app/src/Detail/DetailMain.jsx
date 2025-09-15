@@ -20,16 +20,18 @@ function DetailMain() {
     }, [searchParams]);
 
     return (
-        <div className="DetailMain" style={{ width: '100%', backgroundColor: '#F8F8F8' }}>
-            <Header />
-            <DetailNavbar activeTab={activeTab} onTabChange={setActiveTab} />
+        <main>
+            <div className="DetailMain" style={{width: '100%', backgroundColor: '#F8F8F8'}}>
+                <Header/>
+                <DetailNavbar activeTab={activeTab} onTabChange={setActiveTab}/>
 
-            <div>
-                {activeTab === 'accommodation' && <DetailAccommodation />}
-                {activeTab === 'restaurant' && <DetailRestaurant />}
-                {activeTab === 'tourism' && <DetailTourism />}
+                <div>
+                    {activeTab === 'accommodation' && <DetailAccommodation/>}
+                    {activeTab === 'restaurant' && <DetailRestaurant/>}
+                    {activeTab === 'tourism' && <DetailTourism/>}
+                </div>
             </div>
-        </div>
+        </main>
     );
 }
 

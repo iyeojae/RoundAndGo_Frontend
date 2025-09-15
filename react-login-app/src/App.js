@@ -13,18 +13,21 @@ import JejuLocationPage from './JejuLocationPage';
 import HomePage from "./HomePage";
 import OAuth2Callback from "./OAuth2Callback";
 
-import FirstMainPage from "./FirstMain/FirstMainPage"; // 첫 메인
-import MainPage from "./Main/MainPage"; // 첫 메인
+import FirstMainPage from "./FirstMain/FirstMainPage.jsx"; // 첫 메인
+import MainPage from "./Main/MainPage.jsx"; // 첫 메인
 import DetailMainPage from './Detail/DetailMain.jsx'; // 첫 메인
 import DetailMorePage from './Detail/Accommodation/MoreAccommodation.jsx'; // 첫 메인
 import CommunityMainPage from './Community/Community.jsx'; // 커뮤니티
 import CommunityEntirePage from './Community/CommunityEntire.jsx'; // 커뮤니티 전체보기
-import CommunityWritePage from './Community/CommunityWrite.jsx'; // 커뮤니티 쓰기
+import CommunityDetailPage from './Community/CommunityDetail.jsx'; // 커뮤니티 단일 게시글 상세보기
+import CommunityWritePage from './Community/CommunityWrite.jsx'; // 커뮤니티 작성 페이지
+import CommunityEditPage from './Community/CommunityEdit.jsx'; // 커뮤니티 수정 페이지
+import MyPage from './MyPage/MyPage.jsx';
 
 function App() {
     return (
         <Router>
-            <div>
+            <main>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/email-login" element={<EmailLoginPage />} />
@@ -37,13 +40,16 @@ function App() {
 
                     <Route path="/first-main" element={<FirstMainPage />} /> {/* 첫 메인 페이지 */}
                     <Route path="/main" element={<MainPage />} /> {/* 메인 페이지 */}
-                    <Route path="/detail/main/:" element={<DetailMainPage />} /> {/* 상세 페이지 */}
-                    <Route path="/detail/main/more" elemet={<DetailMorePage/>}/> {/*상세페이지 더보기 - 숙박 */}
-                    <Route path="/community" elemet={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
-                    <Route path="/community/entire" elemet={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
-                    <Route path="/communiyt/write" elemet={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
+                    <Route path="/detail/main" element={<DetailMainPage />} /> {/* 상세 페이지 */}
+                    <Route path="/detail/main/more" element={<DetailMorePage/>}/> {/*상세페이지 더보기 - 숙박 */}
+                    <Route path="/community" element={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
+                    <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
+                    <Route path="/community/detail/:postId" element={<CommunityDetailPage/>}/> {/* 커뮤니티 - 단일 게시글 상세보기  */}
+                    <Route path="/community/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
+                    <Route path="/community/edit/:postId" element={<CommunityEditPage/>}/> {/* 커뮤니티 - 글수정 */}
+                    <Route path="/mypage" element={<MyPage/>}/> {/* 마이페이지 */}
                 </Routes>
-            </div>
+            </main>
         </Router>
     );
 }

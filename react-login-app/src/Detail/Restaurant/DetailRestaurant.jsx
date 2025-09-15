@@ -14,7 +14,6 @@ function DetailRestaurant() {
             <RestaurantList
                 title="제주도 음식점"
                 showMoreButton={false}
-                onMoreClick={() => goTo('/detail/main?tab=restaurant')}
                 showCity={false}
                 gridClassName={'DetailRestGrid'}
                 eachofrestaurantClassName={'DetailRestrestaurant'}

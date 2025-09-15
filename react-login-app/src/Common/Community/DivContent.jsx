@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Popular from '../../Common/Community/Popular.jsx';
 
 function TabButtons() {
     const [activeTab, setActiveTab] = useState('written');
@@ -61,7 +62,8 @@ function TabButtons() {
                 댓글 단 글
             </button>
         </div>
-    );
+)
+    ;
 }
 
 export default TabButtons;

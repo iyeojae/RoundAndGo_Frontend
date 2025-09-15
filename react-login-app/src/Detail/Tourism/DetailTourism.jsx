@@ -26,26 +26,37 @@ function DetailTourism() {
     }, []);
 
     return (
-        <div className="DetailTourism">
+        <div className="DetailTourism" style={{marginTop: '13%'}}>
             {loading && <p>불러오는 중입니다...</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <p style={{color: 'red'}}>{error}</p>}
 
-            {/* TourismMain 컴포넌트에 데이터 전달 */}
+            {/* 컴포넌트에 데이터 전달 */}
             <TourismMain
                 title='제주도에 오면 꼭 가봐야되는'
                 subtitle='인기 관광지 모음'
+                mentClassName={'IntroMentDetail'}
             />
 
-            {/* 그리드 레이아웃으로 관광지 표시 */}
+            {/* 관광지 표시 */}
             <div className="TourismGrid">
                 {tourismList.map((item, index) => (
-                    <div key={index} className="TourismItem">
+                    <div
+                        key={index}
+                        className="TourismItem"
+                        style={{cursor: 'pointer'}}
+                        onClick={() => {
+                            const query = encodeURIComponent(item.title);
+                            const url = `https://map.naver.com/v5/search/${query}`;
+                            window.open(url, '_blank');
+                        }}
+                    >
                         <img className="gridImage" src={item.imageUrl || NoImage} alt={item.title}/>
                         <h3 className="TourismTitle">{item.title}</h3>
                         <p className="TourismAddress">{item.address}</p>
                     </div>
                 ))}
             </div>
+
         </div>
     );
 }

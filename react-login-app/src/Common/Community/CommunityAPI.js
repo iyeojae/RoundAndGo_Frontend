@@ -1,0 +1,268 @@
+import axios from 'axios';
+
+// GET 인기글 정보
+export const fetchPopularPosts = async () => {
+    try {
+        const response = await axios.get('https://roundandgo.shop/api/communities/popular');
+        if (response.status === 200) {
+            return response.data.data;
+        } else {
+            throw new Error("데이터를 불러오는데 실패했습니다.");
+        }
+    } catch (err) {
+        throw new Error(err.message || "인기글을 불러오는데 실패했습니다.");
+    }
+};
+
+// GET 카테고리별 글 목록
+export const fetchCategories = async (label) => {
+    try {
+        const response = await axios.get(`https://roundandgo.shop/api/posts/category?category=${label}`);
+        if (response.status === 200) {
+            return response.data.data;
+        } else {
+            throw new Error("데이터를 불러오는데 실패했습니다.");
+        }
+    } catch (err) {
+        throw new Error(err.message || "카테고리별 게시글 데이터를 불러오는데 실패했습니다.");
+    }
+};
+
+// GET 최신글
+export const fetchPostsLatest = async () => {
+    try {
+        const response = await axios.get('https://roundandgo.shop/api/posts');
+        if (response.status === 200) {
+            return response.data.data;
+        } else {
+            throw new Error("최신글 불러오는데 실패했습니다.");
+        }
+    } catch (err) {
+        throw new Error(err.message || "최신글 데이터를 불러오는데 실패했습니다.");
+    }
+};
+
+// GET 게시글 상세 정보
+export const fetchPostDetail = async (postId) => {
+    try {
+        const response = await axios.get(`https://roundandgo.shop/api/posts/${postId}`);  // 게시글 단건 상세
+        return response.data;
+    } catch (error) {
+        console.error('게시글 상세 정보 가져오기 실패:', error);
+        throw new Error('게시글 상세 정보를 가져오는데 실패했습니다.');
+    }
+};
+
+// POST 게시글 작성
+export const PostingBoard = async (accessToken, title, content, category, images) => {
+    try {
+        const formData = new FormData();
+        // 이미지가 있을 때 개별적으로 추가
+        if (images && images.length > 0) {
+            images.forEach((image) => {
+                formData.append('images', image); // f iles
+            });
+        }
+        // 텍스트 묶음
+        const textData = {
+            title: title,
+            content: content,
+            category: category,
+        };
+        formData.append('post', JSON.stringify(textData)); // post라는 이름의 data로 하나로 보내
+        const response = await axios.post(
+            'https://roundandgo.shop/api/posts',
+            formData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('게시글 작성 실패:', error);
+        console.error('서버 응답:', error.response?.data);
+        throw new Error('게시글 작성에 실패했습니다.');
+    }
+};
+
+// DELETE 게시글 삭제 API
+export const deletePost = async (postId, accessToken) => {
+    try {
+        const response = await axios.delete(
+            `https://roundandgo.shop/api/posts/${postId}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('게시글 삭제 실패:', error);
+        throw new Error('게시글 삭제에 실패했습니다.');
+    }
+};
+
+// PUT 게시글 수정 (이미지 포함)
+export const updatePostWithImages = async (token, postId, title, content, category, keepImageIds, images) => {
+    const formData = new FormData();
+
+    const postData = {
+        title,
+        content,
+        category,
+        keepImageIds
+    };
+
+    formData.append("post", new Blob([JSON.stringify(postData)], { type: "application/json" }));
+
+    if (images && images.length > 0) {
+        images.forEach((file) => formData.append("images", file));
+    }
+
+    const res = await fetch(`/api/posts/${postId}/with-images`, {
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: formData
+    });
+
+    if (!res.ok) throw new Error("게시글 수정 실패");
+    return res.json();
+};
+
+
+// ----------------------------------------------------------------------
+
+// GET 좋아요 수
+export const fetchLikeCount = async (postId) => {
+    try {
+        const response = await axios.get(`https://roundandgo.shop/api/posts/likeCount/${postId}`);
+        // 응답이 성공적일 경우
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            throw new Error("좋아요 수를 불러오는데 실패했습니다.");
+        }
+    } catch (err) {
+        console.error('좋아요 수 가져오기 실패:', err);
+        throw new Error(err.message || "좋아요 수를 불러오는데 실패했습니다.");
+    }
+};
+
+// POST 좋아요 버튼
+export const toggleLike = async (postId, accessToken) => {
+    try {
+        const response = await axios.post(
+            `https://roundandgo.shop/api/posts/${postId}/like`,
+            null,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 인증 필요
+                }
+            }
+        );
+        // 응답이 성공적일 경우
+        return response.data;
+    } catch (error) {
+        console.error('좋아요 토글 실패:', error);
+        throw new Error('좋아요 처리에 실패했습니다.');
+    }
+};
+
+// ----------------------------------------------------------------------
+
+// GET 댓글 목록을 가져오는 함수
+export const fetchComments = async (communityId) => {
+    if (!communityId) {
+        console.error("댓글 목록을 가져오는데 필요한 게시글 ID가 없습니다.");
+        throw new Error("게시글 ID가 필요합니다.");
+    }
+    try {
+        const response = await axios.get(`https://roundandgo.shop/api/comments/post/${communityId}`);
+        // 응답이 성공적일 경우
+        if (response.status === 200) {
+            const comments = Array.isArray(response.data.data) ? response.data.data : []; // data
+            const totalCount = comments.length; // total comments, each of postId
+
+            return { comments, totalCount }// 댓글 목록  | 댓글 수 반환
+        } else {
+            throw new Error("댓글 목록을 불러오는데 실패했습니다.");
+        }
+    } catch (error) {
+        console.error('댓글 목록 가져오기 실패:', error);
+        throw new Error('댓글 목록을 가져오는데 실패했습니다.');
+    }
+};
+
+// POST 댓글 작성 api
+export const postComment = async (communityId, content, accessToken, parentCommentId = null)  => {
+    try {
+        const response = await axios.post(
+            'https://roundandgo.shop/api/comments', // 댓글 작성 API 경로
+            {
+                content,           // 댓글 내용
+                communityId: communityId, // 게시글 ID
+                parentCommentId: parentCommentId, // 부모 댓글 ID (없으면 null, 답글일 경우 부모 댓글 ID)
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // Bearer {accessToken} 추가
+                    'Content-Type': 'application/json',  // JSON 형식
+                },
+            }
+        );
+
+        // if 성공
+        return response.data;
+    } catch (error) {
+        console.error('댓글 작성 실패:', error);
+        throw new Error('댓글 작성에 실패했습니다.');
+    }
+};
+
+// PUT 댓글 수정 API
+export const updateComment = async (commentId, content, communityId, accessToken, parentCommentId = null) => {
+    try {
+        const response = await axios.put(
+            `https://roundandgo.shop/api/comments/${commentId}`,
+            {
+                content,
+                communityId,
+                parentCommentId, // 대댓글이면 부모 ID, 아니면 null
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('댓글 수정 실패:', error);
+        throw new Error('댓글 수정에 실패했습니다.');
+    }
+};
+
+// DELETE 댓글 삭제 API
+export const deleteComment = async (commentId, accessToken) => {
+    try {
+        const response = await axios.delete(
+            `https://roundandgo.shop/api/comments/${commentId}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('댓글 삭제 실패:', error);
+        throw new Error('댓글 삭제에 실패했습니다.');
+    }
+};

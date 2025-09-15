@@ -1,107 +1,56 @@
 // Header.jsx
-import React, { useState, useEffect, useCallback } from 'react';
-import logo from '../Main/logo.svg'; // logo
-import { isLoggedIn, getUserNickname, getProfileImageUrl, logout } from '../Auth/authUtils';
+import React, { useState, useEffect } from 'react';
+import Logo from '../Main/logo.svg'; // logo
+import GreenLogo from '../Image/Layout/Header/greenlogo.svg';
+import ArrowBtn from '../Common/WhiteArrow.svg';
 import { useNavigate } from 'react-router-dom';
 
-// 로고 -> o, 알림버튼 -> x
+import './Layout.css';
 
-function Header() {
+function Header({
+                    NoActLogo = Logo,
+                    ActLogo= GreenLogo,
+                    TitleText = "ROUND & GO",
+                    versionClassName = 'LogoVer',
+                    WhiteArrow= ArrowBtn,
+                    showLogo = true,
+                    showArrow = false,
+                }) {
     const navigate = useNavigate();
-    const [userInfo, setUserInfo] = useState(null);
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    const handleScroll = () => {
+        setIsScrolled(window.scrollY > 0); // 스크롤이 0 이상일 때 true
+    };
 
     useEffect(() => {
-        // 로그인 상태 확인
-        if (isLoggedIn()) {
-            setUserInfo({
-                nickname: getUserNickname(),
-                profileImage: getProfileImageUrl()
-            });
-        } else {
-            // 로그인되지 않은 상태라면 홈페이지로 리다이렉트
-            navigate('/');
-        }
-    }, [navigate]);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll); // 클린업
+    }, []);
 
-    const handleLogout = async () => {
-        if (window.confirm('로그아웃 하시겠습니까?')) {
-            try {
-                await logout();
-                navigate('/');
-            } catch (error) {
-                console.error('로그아웃 처리 에러:', error);
-                // 에러가 발생해도 홈페이지로 이동
-                navigate('/');
-            }
-        }
+    const goTo = (path) => {
+        navigate(path);
     };
+
 
     return (
         <div className="Header" style={{
-            height: '60px',
-            width: '100%',
-            backgroundImage: 'linear-gradient(#269962 0%, #2C8C7D 100%)',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center'
+            background: isScrolled
+                ? 'linear-gradient(180deg, rgba(51, 188, 123, 0.79) 3%, rgba(104, 194, 151, 0.490385) 40%, rgba(255, 255, 255, 0) 100%)'
+                : '#269962',
+            color: isScrolled ? '#2C8C7D' : '#fff',
+            transition: 'background 0.5s, color 0.5s'
         }}>
-            <div className="Header_logo" style={{display: 'flex', flexDirection: 'row', gap: '5px'}}>
-                <img src={logo} alt="logo"
-                     style={{width: '26px', height: '25px', margin: 'auto 0', paddingLeft: '19px'}}/>
-                <p style={{
-                    color: 'white',
-                    fontSize: '10px',
-                    height: '10px',
-                    fontWeight: '550',
-                    padding: '0',
-                    margin: 'auto 0'
-                }}>ROUND & GO</p>
-            </div>
+            <div className="Header_logo">
+                <div className={versionClassName}> {/* ArrowVer, LogoVer */}
+                    {showArrow && (<img className='ArrowImg' onClick={() => navigate(-1)} src={WhiteArrow} alt='arrow'/>)}
+                    {showLogo && (<img className='LogoImg' onClick={() => goTo('/main')} src={isScrolled ? ActLogo : NoActLogo} alt="logo"/>)}
 
-            {userInfo && (
-                <div className="Header_user" style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: '8px',
-                    paddingRight: '19px'
-                }}>
-                    {userInfo.profileImage && (
-                        <img
-                            src={userInfo.profileImage}
-                            alt="프로필"
-                            style={{
-                                width: '30px',
-                                height: '30px',
-                                borderRadius: '50%',
-                                border: '1px solid rgba(255, 255, 255, 0.3)'
-                            }}
-                        />
-                    )}
-                    <span style={{
-                        color: 'white',
-                        fontSize: '12px',
-                        fontWeight: '500'
-                    }}>
-                        {userInfo.nickname}님
-                    </span>
-                    <button
-                        onClick={handleLogout}
-                        style={{
-                            background: 'rgba(255, 255, 255, 0.2)',
-                            border: '1px solid rgba(255, 255, 255, 0.3)',
-                            borderRadius: '12px',
-                            color: 'white',
-                            fontSize: '10px',
-                            padding: '4px 8px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        로그아웃
-                    </button>
+                    <div className='text'>
+                        <p>{TitleText}</p>
+                    </div>
                 </div>
-            )}
+            </div>
         </div>
     );
 }

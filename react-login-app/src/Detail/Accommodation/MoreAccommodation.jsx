@@ -4,82 +4,134 @@ import { getAccommodationDetail, getAccommodationImages, getAccommodationInfo } 
 
 function MoreAccommodation() {
     const location = useLocation();
-    console.log(location);
-    const { contentid } = location.state;  // 이전 페이지에서 전달된 contentid 가져오기
+    const { contentid } = location.state || {};
 
-    const [accommodationDetail, setAccommodationDetail] = useState(null);
-    const [accommodationImages, setAccommodationImages] = useState([]);
-    const [accommodationInfo, setAccommodationInfo] = useState([]);
+    const [detail, setDetail] = useState(null);
+    const [images, setImages] = useState([]);
+    const [info, setInfo] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showAllFacilities, setShowAllFacilities] = useState(false);
 
-    // 숙소 상세 정보, 이미지, 부대시설 및 서비스 데이터를 가져오는 함수
     useEffect(() => {
-        const fetchAccommodationData = async () => {
+        const fetchData = async () => {
             setLoading(true);
-            setError(null);
-
             try {
-                const [detail, images, info] = await Promise.all([
-                    getAccommodationDetail(contentid),  // 숙소 상세 정보
-                    getAccommodationImages(contentid),  // 숙소 이미지
-                    getAccommodationInfo(contentid)     // 숙소 부대시설
+                const [detailData, imageData, infoData] = await Promise.all([
+                    getAccommodationDetail(contentid),
+                    getAccommodationImages(contentid),
+                    getAccommodationInfo(contentid),
                 ]);
-
-                setAccommodationDetail(detail);
-                setAccommodationImages(images);
-                setAccommodationInfo(info);
+                setDetail(detailData);
+                setImages(imageData);
+                setInfo(infoData);
             } catch (err) {
                 setError("숙소 정보를 불러오는 데 실패했습니다.");
             } finally {
                 setLoading(false);
             }
         };
+        fetchData();
+    }, [contentid]);
 
-        fetchAccommodationData();
-    }, [contentid]);  // contentid가 변경될 때마다 다시 실행
+    const copyAddress = () => {
+        navigator.clipboard.writeText(detail?.addr1 || '');
+        alert("주소가 복사되었습니다.");
+    };
+
+    const facilityMap = {
+        tv: "TV",
+        pc: "PC",
+        internet: "인터넷",
+        refrigerator: "냉장고",
+        sofa: "소파",
+        table: "테이블",
+        hairdryer: "드라이기",
+        bath: "욕조",
+        bathfacility: "목욕시설",
+        aircondition: "에어컨"
+    };
+
+    const extractFacilities = () => {
+        const facilities = info?.[0]?.facilities || {};
+        return Object.entries(facilities)
+            .filter(([_, val]) => val)
+            .map(([key]) => facilityMap[key]);
+    };
+
+    const visibleFacilities = extractFacilities().slice(0, 6);
+    const allFacilities = extractFacilities();
 
     if (loading) return <p>로딩 중...</p>;
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
     return (
         <div className="MoreAccommodation">
-            {accommodationDetail && (
-                <div>
-                    <h2>{accommodationDetail.title}</h2>
-                    <p>{accommodationDetail.overview}</p>
-                    <p>주소: {accommodationDetail.addr1}</p>
-                    {accommodationDetail.firstimage && (
-                        <img src={accommodationDetail.firstimage} alt={accommodationDetail.title} width="300" />
-                    )}
+            {/* 대표 이미지 */}
+            {detail?.firstimage && (
+                <img src={detail.firstimage} alt={detail.title} style={{ width: '100%', height: '300px', objectFit: 'cover' }} />
+            )}
+
+            {/* 해시태그 (샘플) */}
+            <div className="hashtags" style={{ marginTop: '10px' }}>
+                <span>#힐링</span> <span>#자연</span> <span>#가족여행</span>
+            </div>
+
+            {/* 제목 */}
+            <h2>{detail?.title}</h2>
+
+            {/* 추가 이미지 */}
+            {images.length > 0 && (
+                <div className="images-scroll" style={{ display: 'flex', overflowX: 'scroll' }}>
+                    {images.map((img, i) => (
+                        <img key={i} src={img.originimgurl} alt={`추가 이미지 ${i + 1}`} style={{ width: '150px', marginRight: '10px' }} />
+                    ))}
                 </div>
             )}
 
-            {accommodationImages.length > 0 && (
-                <div>
-                    <h3>추가 이미지</h3>
-                    <div>
-                        {accommodationImages.map((image, index) => (
-                            <img key={index} src={image.originimgurl} alt={`이미지 ${index + 1}`} width="150" style={{ marginRight: '10px' }} />
-                        ))}
-                    </div>
-                </div>
-            )}
+            {/* 부대시설 */}
+            <div style={{ marginTop: '20px' }}>
+                <h3>서비스 및 부대시설</h3>
+                <ul>
+                    {(showAllFacilities ? allFacilities : visibleFacilities).map((f, i) => (
+                        <li key={i}>{f}</li>
+                    ))}
+                </ul>
+                {allFacilities.length > 6 && (
+                    <button onClick={() => setShowAllFacilities(!showAllFacilities)}>
+                        {showAllFacilities ? "접기" : "더보기"}
+                    </button>
+                )}
+            </div>
 
-            {accommodationInfo.length > 0 && (
-                <div>
-                    <h3>부대시설 및 서비스</h3>
-                    <ul>
-                        {accommodationInfo.map((item, index) => (
-                            <li key={index}>
-                                <strong>{item.roomtitle}</strong>: {item.subfacility}<br />
-                                <em>{item.roomtype}</em><br />
-                                <small>{item.refundregulation}</small>
-                            </li>
-                        ))}
-                    </ul>
+            {/* 장소 (지도는 샘플) */}
+            <div style={{ marginTop: '20px' }}>
+                <h3>장소</h3>
+                <p>{detail?.addr1}</p>
+                <button onClick={copyAddress}>주소 복사</button>
+                {/* 지도 샘플: 카카오/네이버 지도 iframe 또는 API로 구현 가능 */}
+                <div style={{ width: '100%', height: '200px', background: '#eee', marginTop: '10px' }}>
+                    <p style={{ padding: '70px', textAlign: 'center' }}>지도 들어갈 자리</p>
                 </div>
-            )}
+            </div>
+
+            {/* 숙소 소개 */}
+            <div style={{ marginTop: '20px' }}>
+                <h3>숙소 소개</h3>
+                <p>{detail?.overview || "소개가 없습니다."}</p>
+            </div>
+
+            {/* 자세히 보러가기 */}
+            <div style={{ marginTop: '20px' }}>
+                <button
+                    onClick={() => {
+                        // 예: 외부 상세 페이지가 있을 경우 열기
+                        alert("자세히 보러가기 기능은 아직 미정입니다.");
+                    }}
+                >
+                    자세히 보러가기
+                </button>
+            </div>
         </div>
     );
 }
