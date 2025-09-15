@@ -52,7 +52,9 @@ const GlobalDatePickerStyle = createGlobalStyle`
   .date-input-container {
     position: relative;
     display: flex;
-    justify-content: flex-start;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
   }
 
   .date-input-container input[type="date"] {
@@ -101,31 +103,56 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
   const [showLocationSelect, setShowLocationSelect] = useState(false);
 
   const categories = [
-    { id: '기념일', label: '기념일' },
-    { id: '생일', label: '생일' },
+    { id: '골프', label: '골프' },
+    { id: '관광', label: '관광' },
     { id: '모임', label: '모임' },
-    { id: '회의', label: '회의' },
-    { id: '결혼', label: '결혼' },
-    { id: '할 일', label: '할 일' },
-    { id: '여행', label: '여행' }
+    { id: '맛집', label: '맛집' },
+    { id: '숙소', label: '숙소' },
+    { id: '기타', label: '기타' }
   ];
+
+  const resetModal = () => {
+    setSchedule({
+      title: '',
+      startDate: '',
+      endDate: '',
+      startTime: '',
+      endTime: '',
+      location: '',
+      isAllDay: false,
+      color: '#E70012'
+    });
+    setSelectedCategory('골프');
+    setIsAllDay(false);
+    setShowTimePicker(false);
+    setTempTime({ period: '오전', hour: '09', minute: '00' });
+    setShowLocationSelect(false);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (schedule.title && schedule.startDate) {
+    console.log('일정 추가 시도:', {
+      title: schedule.title,
+      startDate: schedule.startDate,
+      category: selectedCategory,
+      location: schedule.location,
+      isAllDay
+    });
+    
+    if (schedule.title && schedule.startDate && selectedCategory && schedule.location) {
       onAdd({
         ...schedule,
         category: selectedCategory,
         isAllDay
       });
-      setSchedule({
-        title: '',
-        startDate: '',
-        endDate: '',
-        startTime: '',
-        endTime: '',
-        isAllDay: false,
-        color: '#E70012'
+      resetModal();
+      onClose();
+    } else {
+      console.log('필수 필드 누락:', {
+        title: !!schedule.title,
+        startDate: !!schedule.startDate,
+        category: !!selectedCategory,
+        location: !!schedule.location
       });
     }
   };
@@ -237,6 +264,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
   const handleOverlayClick = (e) => {
     // 오직 오버레이 자체를 클릭했을 때만 모달 닫기
     if (e.target === e.currentTarget) {
+      resetModal();
       onClose();
     }
   };
@@ -251,7 +279,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
             <ModalTitle>일정 추가</ModalTitle>
             <DateSubtitle>{selectedDate ? selectedDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</DateSubtitle>
           </HeaderLeft>
-          <CloseButton onClick={onClose}>취소</CloseButton>
+          <CloseButton onClick={() => { resetModal(); onClose(); }}>취소</CloseButton>
         </Header>
 
         {/* 모달 창 */}
@@ -474,7 +502,7 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
               e.preventDefault();
               handleSubmit(e);
             }}
-            disabled={!schedule.title || !schedule.startDate}
+            disabled={!schedule.title || !schedule.startDate || !selectedCategory || !schedule.location || (!isAllDay && (!schedule.startTime || !schedule.endTime))}
           >
             일정 추가
           </AddButton>

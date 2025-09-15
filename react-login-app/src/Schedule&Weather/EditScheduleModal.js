@@ -37,7 +37,9 @@ const GlobalDatePickerStyle = createGlobalStyle`
   .date-input-container {
     position: relative;
     display: flex;
-    justify-content: flex-start;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
   }
   .date-input-container input[type="date"] {
     width: 100%;
@@ -94,11 +96,26 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (editSchedule.title && editSchedule.startDate) {
+    console.log('일정 수정 시도:', {
+      title: editSchedule.title,
+      startDate: editSchedule.startDate,
+      category: selectedCategory,
+      location: editSchedule.location,
+      isAllDay
+    });
+    
+    if (editSchedule.title && editSchedule.startDate && selectedCategory && editSchedule.location) {
       onUpdate({
         ...editSchedule,
         category: selectedCategory,
         isAllDay
+      });
+    } else {
+      console.log('필수 필드 누락:', {
+        title: !!editSchedule.title,
+        startDate: !!editSchedule.startDate,
+        category: !!selectedCategory,
+        location: !!editSchedule.location
       });
     }
   };
@@ -426,7 +443,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
               e.preventDefault();
               handleSubmit(e);
             }}
-            disabled={!editSchedule.title || !editSchedule.startDate}
+            disabled={!editSchedule.title || !editSchedule.startDate || !selectedCategory || !editSchedule.location || (!isAllDay && (!editSchedule.startTime || !editSchedule.endTime))}
           >
             수정
           </UpdateButton>

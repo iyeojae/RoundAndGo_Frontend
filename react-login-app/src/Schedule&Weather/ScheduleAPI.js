@@ -478,11 +478,11 @@ export const transformScheduleForAPI = (schedule) => {
 // 카테고리별 색상 매핑 함수 (Enum 값)
 export const getCategoryColor = (category) => {
   const categoryColorMap = {
-    '골프': 'RED',
+    '골프': 'GREEN',
     '맛집': 'ORANGE', 
     '숙소': 'BLUE',
-    '관광': 'GREEN',
-    '모임': 'PURPLE',
+    '관광': 'PURPLE',
+    '모임': 'RED',
     '기타': 'BLACK'
   };
   
@@ -492,11 +492,11 @@ export const getCategoryColor = (category) => {
 // 카테고리별 CSS 색상 매핑 함수 (프론트엔드 표시용)
 export const getCategoryCSSColor = (category) => {
   const categoryCSSColorMap = {
-    '골프': '#E70012',    // 빨간색
+    '골프': '#4CAF50',    // 초록색
     '맛집': '#FF8C00',    // 주황색
     '숙소': '#2196F3',    // 파란색
-    '관광': '#4CAF50',    // 초록색
-    '모임': '#9C27B0',    // 보라색
+    '관광': '#9C27B0',    // 보라색
+    '모임': '#E70012',    // 빨간색
     '기타': '#424242'     // 검은색
   };
   

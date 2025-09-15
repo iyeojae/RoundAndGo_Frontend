@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
-import WeatherLocationModal from './WeatherLocationModal';
-import { WEATHER_CONFIG, isApiKeyValid, getApiKeyMessage } from './config/weather';
+import WeatherLocationModal from '../WeatherLocationModal';
+import { WEATHER_CONFIG, isApiKeyValid, getApiKeyMessage } from '../config/weather';
 
 const WeatherPage = () => {
   const navigate = useNavigate();
@@ -313,7 +313,7 @@ const WeatherPage = () => {
           </ActionButton>
         </ActionButtons>
       </MainContent>
-
+러랜치 서 
       {showWeatherLocationModal && (
         <WeatherLocationModal
           onClose={() => setShowWeatherLocationModal(false)}

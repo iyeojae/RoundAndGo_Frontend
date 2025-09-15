@@ -12,6 +12,7 @@ const CourseStep1 = () => {
   const [golfTimes, setGolfTimes] = useState(['']); // 기본 골프 시간
   const [departureDate, setDepartureDate] = useState('');
   const [arrivalDate, setArrivalDate] = useState('');
+  const [currentStep, setCurrentStep] = useState(1); // 현재 단계
   
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -182,19 +183,19 @@ const CourseStep1 = () => {
         
         {/* 진행 단계 표시 */}
         <div className="step-indicator">
-          <div className="step-item active">
-            <div className="step-circle active">1</div>
-            <span className="step-label active">기간 설정</span>
+          <div className={`step-item ${currentStep >= 1 ? 'active' : ''}`}>
+            <div className={`step-circle ${currentStep > 1 ? 'completed' : currentStep === 1 ? 'active' : ''}`}>1</div>
+            <span className={`step-label ${currentStep >= 1 ? 'active' : ''}`}>기간 설정</span>
           </div>
           <div className="step-line"></div>
-          <div className="step-item">
-            <div className="step-circle">2</div>
-            <span className="step-label">스타일 설정</span>
+          <div className={`step-item ${currentStep >= 2 ? 'active' : ''}`}>
+            <div className={`step-circle ${currentStep > 2 ? 'completed' : currentStep === 2 ? 'active' : ''}`}>2</div>
+            <span className={`step-label ${currentStep >= 2 ? 'active' : ''}`}>스타일 설정</span>
           </div>
           <div className="step-line"></div>
-          <div className="step-item">
-            <div className="step-circle">3</div>
-            <span className="step-label">코스 추천</span>
+          <div className={`step-item ${currentStep >= 3 ? 'active' : ''}`}>
+            <div className={`step-circle ${currentStep > 3 ? 'completed' : currentStep === 3 ? 'active' : ''}`}>3</div>
+            <span className={`step-label ${currentStep >= 3 ? 'active' : ''}`}>코스 추천</span>
           </div>
         </div>
       </div>
@@ -233,45 +234,29 @@ const CourseStep1 = () => {
         <div className="input-sections-container">
           {/* 날짜 선택 섹션 */}
           <div className="date-selection-section">
-          <div className="date-grid">
-            <div className="date-input-container">
-              <label className="date-label">출발 날짜</label>
-              <div className="date-input-wrapper">
+            <div className="date-grid">
+              <div className="date-input-container">
+                <label className="date-label">출발 날짜</label>
                 <input
                   type="date"
                   className="date-input"
-                  data-type="departure"
                   value={departureDate}
                   onChange={(e) => setDepartureDate(e.target.value)}
                 />
-                {!departureDate && (
-                  <span className="date-placeholder" onClick={() => document.querySelector('.date-input[data-type="departure"]')?.showPicker()}>
-                    날짜 선택
-                  </span>
-                )}
               </div>
-            </div>
-            <div className="date-separator">-</div>
-            <div className="date-input-container">
-              <label className="date-label">도착 날짜</label>
-              <div className="date-input-wrapper">
+              <div className="date-separator">-</div>
+              <div className="date-input-container">
+                <label className="date-label">도착 날짜</label>
                 <input
                   type="date"
                   className="date-input"
-                  data-type="arrival"
                   value={arrivalDate}
                   onChange={(e) => setArrivalDate(e.target.value)}
                   min={departureDate}
                 />
-                {!arrivalDate && (
-                  <span className="date-placeholder" onClick={() => document.querySelector('.date-input[data-type="arrival"]')?.showPicker()}>
-                    날짜 선택
-                  </span>
-                )}
               </div>
             </div>
           </div>
-        </div>
 
         {/* 골프 치는 시간 섹션 */}
         <div className="golf-time-section">
@@ -346,32 +331,6 @@ const CourseStep1 = () => {
             ))}
           </div>
           
-          {/* 날짜 선택 섹션 */}
-          {selectedPeriod && selectedPeriod !== 'day' && (
-            <div className="date-selection-section">
-              <div className="date-grid">
-                <div className="date-input-container">
-                  <label className="date-label">출발날짜</label>
-                  <input
-                    type="date"
-                    className="date-input"
-                    value={departureDate}
-                    onChange={(e) => setDepartureDate(e.target.value)}
-                  />
-                </div>
-                <div className="date-input-container">
-                  <label className="date-label">도착날짜</label>
-                  <input
-                    type="date"
-                    className="date-input"
-                    value={arrivalDate}
-                    onChange={(e) => setArrivalDate(e.target.value)}
-                    min={departureDate}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
         </div>
         </div>
 
@@ -405,47 +364,12 @@ const CourseStep1 = () => {
 
             <div className="time-picker">
               <div className="time-column period-column">
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미X
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미Y
-                </div>
                 {['오전', '오후'].map((period) => (
                   <div
                     key={period}
                     className={`time-option ${tempTime.period === period ? 'selected' : ''}`}
                     onClick={() => {
+                      console.log('Period clicked:', period);
                       setTempTime({...tempTime, period});
                       scrollToSelected(0);
                     }}
@@ -453,99 +377,9 @@ const CourseStep1 = () => {
                     {period}
                   </div>
                 ))}
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미W
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미V
-                </div>
               </div>
 
               <div className="time-column">
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미1
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미2
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미3
-                </div>
                 {Array.from({length: 12}, (_, i) => {
                   const hour = (i + 1).toString();
                   return (
@@ -553,6 +387,7 @@ const CourseStep1 = () => {
                       key={hour}
                       className={`time-option ${tempTime.hour === hour ? 'selected' : ''}`}
                       onClick={() => {
+                        console.log('Hour clicked:', hour);
                         setTempTime({...tempTime, hour});
                         scrollToSelected(1);
                       }}
@@ -561,122 +396,15 @@ const CourseStep1 = () => {
                     </div>
                   );
                 })}
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미4
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미5
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미6
-                </div>
               </div>
 
               <div className="time-column">
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미A
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미B
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미C
-                </div>
                 {['00', '10', '20', '30', '40', '50'].map((minute) => (
                   <div
                     key={minute}
                     className={`time-option ${tempTime.minute === minute ? 'selected' : ''}`}
                     onClick={() => {
+                      console.log('Minute clicked:', minute);
                       setTempTime({...tempTime, minute});
                       scrollToSelected(2);
                     }}
@@ -684,60 +412,6 @@ const CourseStep1 = () => {
                     {minute}분
                   </div>
                 ))}
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미D
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미E
-                </div>
-                <div 
-                  className="dummy-time-option"
-                  style={{
-                    height: '150px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                    opacity: 1,
-                    background: 'rgba(255, 0, 0, 0.2)',
-                    border: '1px dashed red',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'red',
-                    fontSize: '12px'
-                  }}
-                >
-                  더미F
-                </div>
               </div>
             </div>
 

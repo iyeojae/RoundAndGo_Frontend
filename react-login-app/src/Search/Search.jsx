@@ -33,6 +33,7 @@ function GolfSearch() {
                 throw new Error(errorData.message || '골프장 정보를 불러오는데 실패했습니다.');
             }
 
+            
             const data = await response.json();
 
             if (Array.isArray(data.data)) {
