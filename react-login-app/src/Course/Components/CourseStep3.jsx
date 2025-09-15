@@ -519,7 +519,8 @@ const CourseStep3 = () => {
                   lng: parseFloat(place.mapx) 
                 },
                 visitOrder: index + 1,
-                distance: place.distanceKm ? `${place.distanceKm.toFixed(1)} km` : '정보없음'
+                distance: place.distanceKm ? `${place.distanceKm.toFixed(1)} km` : '정보없음',
+                aiReason: place.aiReason || null // AI 추천 이유 (AI 추천시만 존재)
               }));
             }
           });

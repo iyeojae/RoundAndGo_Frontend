@@ -108,6 +108,7 @@ const CourseStep2 = () => {
     }
   ];
 
+
   // 컴포넌트 마운트 시 이전 단계 데이터 확인
   useEffect(() => {
     const step1Data = sessionStorage.getItem('courseStep1');
@@ -140,17 +141,25 @@ const CourseStep2 = () => {
       const baseUrl = isDevelopment ? '' : 'https://roundandgo.shop';
       
       const apiEndpoint = isSameDay 
-        ? `${baseUrl}/api/courses/recommendation`
-        : `${baseUrl}/api/courses/recommendation/multi-day`;
+        ? `${baseUrl}/api/courses/recommendation/ai`
+        : `${baseUrl}/api/courses/recommendation/ai/multi-day`;
       
       let response;
       
       if (isSameDay) {
         // 당일치기: Query 파라미터로 전송
+        const courseTypeMapping = {
+          'premium': 'luxury',
+          'value': 'value', 
+          'resort': 'resort',
+          'emotional': 'theme'
+        };
+        
         const queryParams = new URLSearchParams({
           golfCourseId: step1Data.golfCourseIds?.[0] || 1, // 첫 번째 골프장 ID
           teeOffTime: step1Data.golfTimes?.[0] || "09:00", // 첫 번째 골프 시간
-          courseType: step2Data.selectedStyle // 'premium', 'value', 'resort', 'emotional'
+          courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury', // API 명세에 맞게 매핑
+          userPreferences: "맛집 위주로, 바다 전망 좋은 숙소" // 사용자 선호도 (추후 사용자 입력으로 변경 가능)
         });
         
         console.log('당일치기 API 요청:', {
@@ -168,12 +177,25 @@ const CourseStep2 = () => {
         });
       } else {
         // 다일차: Body로 CourseRecommendationRequestDto 전송
+        const courseTypeMapping = {
+          'premium': 'luxury',
+          'value': 'value', 
+          'resort': 'resort',
+          'emotional': 'theme'
+        };
+        
         const requestData = {
           golfCourseIds: step1Data.golfCourseIds || [1, 2], // 골프장 ID 목록
           startDate: step1Data.departureDate,
           travelDays: step1Data.travelDays,
-          teeOffTimes: step1Data.golfTimes || ["09:00", "09:30"] // 각 일차별 티오프 시간
+          teeOffTimes: step1Data.golfTimes || ["09:00", "09:30"], // 각 일차별 티오프 시간
+          courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury' // API 명세에 맞게 매핑
         };
+        
+        // 다일차 AI 추천용 Query 파라미터
+        const queryParams = new URLSearchParams({
+          userPreferences: "전통 한식 위주, 온천 숙소 선호, 자연 경관 중시" // 사용자 선호도
+        });
         
         console.log('다일차 API 요청:', {
           endpoint: apiEndpoint,
@@ -182,7 +204,7 @@ const CourseStep2 = () => {
           step2Data: step2Data
         });
         
-        response = await fetch(apiEndpoint, {
+        response = await fetch(`${apiEndpoint}?${queryParams}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
