@@ -159,7 +159,7 @@ const CourseStep2 = () => {
           golfCourseId: step1Data.golfCourseIds?.[0] || 1, // 첫 번째 골프장 ID
           teeOffTime: step1Data.golfTimes?.[0] || "09:00", // 첫 번째 골프 시간
           courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury', // API 명세에 맞게 매핑
-          userPreferences: "맛집 위주로, 바다 전망 좋은 숙소" // 사용자 선호도 (추후 사용자 입력으로 변경 가능)
+          userPreferences: "맛집 위주로, 바다 전망 좋은 숙소" // AI 개인화 추천
         });
         
         console.log('당일치기 API 요청:', {
@@ -194,7 +194,7 @@ const CourseStep2 = () => {
         
         // 다일차 AI 추천용 Query 파라미터
         const queryParams = new URLSearchParams({
-          userPreferences: "전통 한식 위주, 온천 숙소 선호, 자연 경관 중시" // 사용자 선호도
+          userPreferences: "전통 한식 위주, 온천 숙소 선호, 자연 경관 중시" // AI 개인화 추천
         });
         
         console.log('다일차 API 요청:', {
