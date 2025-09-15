@@ -143,37 +143,54 @@ const CourseStep2 = () => {
         ? `${baseUrl}/api/courses/recommendation`
         : `${baseUrl}/api/courses/recommendation/multi-day`;
       
-      // API 요청 데이터 구성 (실제 API 스펙에 맞춤)
-      const requestData = isSameDay ? {
-        // 단일 코스 추천 (당일치기)
-        golfCourseId: 1, // 기본 골프장 ID (실제로는 사용자 선택에 따라)
-        teeOffTime: step1Data.golfTimes?.[0] || "09:00", // 첫 번째 골프 시간
-        courseType: step2Data.selectedStyle // 'premium', 'value', 'resort', 'emotional'
-      } : {
-        // 다일차 코스 추천
-        golfCourseIds: [1, 2], // 골프장 ID 목록 (실제로는 사용자 선택에 따라)
-        startDate: step1Data.departureDate,
-        travelDays: step1Data.travelDays,
-        teeOffTimes: step1Data.golfTimes || ["09:00", "09:30"] // 각 일차별 티오프 시간
-      };
+      let response;
       
-      console.log('API 요청 데이터:', {
-        endpoint: apiEndpoint,
-        requestData: requestData,
-        isSameDay: isSameDay,
-        step1Data: step1Data,
-        step2Data: step2Data
-      });
-      
-      // API 호출
-      const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}` // 실제 토큰 또는 더미 토큰
-        },
-        body: JSON.stringify(requestData)
-      });
+      if (isSameDay) {
+        // 당일치기: Query 파라미터로 전송
+        const queryParams = new URLSearchParams({
+          golfCourseId: step1Data.golfCourseIds?.[0] || 1, // 첫 번째 골프장 ID
+          teeOffTime: step1Data.golfTimes?.[0] || "09:00", // 첫 번째 골프 시간
+          courseType: step2Data.selectedStyle // 'premium', 'value', 'resort', 'emotional'
+        });
+        
+        console.log('당일치기 API 요청:', {
+          endpoint: `${apiEndpoint}?${queryParams}`,
+          queryParams: Object.fromEntries(queryParams),
+          step1Data: step1Data,
+          step2Data: step2Data
+        });
+        
+        response = await fetch(`${apiEndpoint}?${queryParams}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+          }
+        });
+      } else {
+        // 다일차: Body로 CourseRecommendationRequestDto 전송
+        const requestData = {
+          golfCourseIds: step1Data.golfCourseIds || [1, 2], // 골프장 ID 목록
+          startDate: step1Data.departureDate,
+          travelDays: step1Data.travelDays,
+          teeOffTimes: step1Data.golfTimes || ["09:00", "09:30"] // 각 일차별 티오프 시간
+        };
+        
+        console.log('다일차 API 요청:', {
+          endpoint: apiEndpoint,
+          requestData: requestData,
+          step1Data: step1Data,
+          step2Data: step2Data
+        });
+        
+        response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+          },
+          body: JSON.stringify(requestData)
+        });
+      }
       
       if (!response.ok) {
         throw new Error(`API 요청 실패: ${response.status}`);
