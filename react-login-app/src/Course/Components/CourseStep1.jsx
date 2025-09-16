@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../Layout/Header';
 import Footer from '../../Layout/Footer';
@@ -11,8 +11,15 @@ const CourseStep1 = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('day');
   const [golfTimes, setGolfTimes] = useState(['']); // 기본 골프 시간
   const [departureDate, setDepartureDate] = useState('');
-  const [arrivalDate, setArrivalDate] = useState('');
   const [currentStep, setCurrentStep] = useState(1); // 현재 단계
+  
+  // 골프장 선택 상태 관리
+  const [selectedGolfCourses, setSelectedGolfCourses] = useState([]); // 선택된 골프장들
+  const [golfCourseSearchResults, setGolfCourseSearchResults] = useState([]); // 검색 결과
+  const [searchTerm, setSearchTerm] = useState(''); // 검색어
+  const [isSearching, setIsSearching] = useState(false); // 검색 중 상태
+  const [showSearchResults, setShowSearchResults] = useState(false); // 검색 결과 표시 여부
+  const [currentSearchIndex, setCurrentSearchIndex] = useState(0); // 현재 검색 중인 골프 시간 인덱스
   
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,6 +30,41 @@ const CourseStep1 = () => {
     minute: '00'
   });
   
+  // 골프장 검색 모달 상태
+  const [isGolfCourseModalOpen, setIsGolfCourseModalOpen] = useState(false);
+  const [currentGolfCourseIndex, setCurrentGolfCourseIndex] = useState(0);
+
+  // 컴포넌트 마운트 시 기본 골프장으로만 초기화
+  useEffect(() => {
+    // 항상 기본 골프장으로 초기화 (이전 데이터 무시)
+    const initializeWithDefaultGolfCourse = async () => {
+      const localGolfCourseId = localStorage.getItem('selectedGolfCourseId');
+      if (localGolfCourseId) {
+        const defaultGolfCourse = await fetchGolfCourseById(localGolfCourseId);
+        if (defaultGolfCourse) {
+          setSelectedGolfCourses([defaultGolfCourse]);
+        }
+      }
+    };
+    initializeWithDefaultGolfCourse();
+  }, []);
+
+  // 골프장 ID로 골프장 정보를 가져오는 함수
+  const fetchGolfCourseById = async (golfCourseId) => {
+    try {
+      const response = await fetch(`https://api.roundandgo.com/api/golf-courses/${golfCourseId}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.data;
+      }
+    } catch (error) {
+      console.error('골프장 정보 가져오기 실패:', error);
+    }
+    return null;
+  };
+
+  // 이 useEffect는 제거 (이전 데이터 복원하지 않음)
+  
   // 여행 기간 옵션
   const periodOptions = [
     { id: 'day', title: '당일 치기', subtitle: '하루코스', days: 1 },
@@ -30,6 +72,59 @@ const CourseStep1 = () => {
     { id: '2night', title: '2박 3일', subtitle: '짧은 휴가', days: 3 },
     { id: '3night', title: '3박 4일', subtitle: '여유로운 여행', days: 4 }
   ];
+
+  // 골프장 검색 API 함수
+  const searchGolfCourses = async (searchTerm) => {
+    if (!searchTerm.trim()) return;
+    
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `https://api.roundandgo.com/api/golf-courses/search?name=${encodeURIComponent(searchTerm)}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('골프장 정보를 불러오는데 실패했습니다.');
+      }
+      
+      const data = await response.json();
+      const results = Array.isArray(data.data) ? data.data : [];
+      setGolfCourseSearchResults(results);
+      setShowSearchResults(true);
+    } catch (error) {
+      console.error("골프장 검색 중 에러 발생:", error);
+      setGolfCourseSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // 골프장 선택 함수
+  const selectGolfCourse = (golfCourse, index) => {
+    const newSelectedCourses = [...selectedGolfCourses];
+    newSelectedCourses[index] = golfCourse;
+    setSelectedGolfCourses(newSelectedCourses);
+    setShowSearchResults(false);
+    setSearchTerm('');
+    setIsGolfCourseModalOpen(false);
+  };
+
+  // 골프장 검색 모달 열기
+  const openGolfCourseModal = (index) => {
+    setCurrentGolfCourseIndex(index);
+    setIsGolfCourseModalOpen(true);
+    setSearchTerm('');
+    setGolfCourseSearchResults([]);
+    setShowSearchResults(false);
+  };
+
+  // 골프장 검색 모달 닫기
+  const closeGolfCourseModal = () => {
+    setIsGolfCourseModalOpen(false);
+    setSearchTerm('');
+    setGolfCourseSearchResults([]);
+    setShowSearchResults(false);
+  };
 
   // 여행 기간에 따른 골프 시간 개수 설정
   const getGolfTimeCount = (period) => {
@@ -43,22 +138,38 @@ const CourseStep1 = () => {
   };
 
   // 여행 기간 변경 시 골프 시간 개수 조정
-  const handlePeriodChange = (period) => {
+  const handlePeriodChange = async (period) => {
     setSelectedPeriod(period);
     const requiredCount = getGolfTimeCount(period);
     const currentCount = golfTimes.length;
     
     if (currentCount < requiredCount) {
-      // 부족한 개수만큼 빈 시간 추가
+      // 부족한 개수만큼 기본 골프장으로 채우기
       const newTimes = [...golfTimes];
+      const newSelectedCourses = [...selectedGolfCourses];
+      
+      // localStorage에서 기본 골프장 ID 가져오기
+      const localGolfCourseId = localStorage.getItem('selectedGolfCourseId');
+      
       for (let i = currentCount; i < requiredCount; i++) {
         newTimes.push('');
+        
+        // 기본 골프장이 있으면 해당 골프장 정보 가져오기
+        if (localGolfCourseId) {
+          const defaultGolfCourse = await fetchGolfCourseById(localGolfCourseId);
+          newSelectedCourses.push(defaultGolfCourse);
+        } else {
+          newSelectedCourses.push(null);
+        }
       }
       setGolfTimes(newTimes);
+      setSelectedGolfCourses(newSelectedCourses);
     } else if (currentCount > requiredCount) {
       // 초과하는 개수만큼 제거 (뒤에서부터)
       const newTimes = golfTimes.slice(0, requiredCount);
+      const newSelectedCourses = selectedGolfCourses.slice(0, requiredCount);
       setGolfTimes(newTimes);
+      setSelectedGolfCourses(newSelectedCourses);
     }
   };
 
@@ -75,23 +186,29 @@ const CourseStep1 = () => {
     const hasAllGolfTimes = golfTimes.length === requiredCount && 
                            golfTimes.every(time => time !== '');
     const hasSelectedPeriod = selectedPeriod !== '';
+    const hasAllGolfCourses = selectedGolfCourses.length === requiredCount && 
+                              selectedGolfCourses.every(course => course !== null && course !== undefined);
     
     // 1박 2일 이상 선택 시 날짜도 확인
     if (selectedPeriod !== 'day') {
-      return hasAllGolfTimes && hasSelectedPeriod && departureDate && arrivalDate;
+      return hasAllGolfTimes && hasSelectedPeriod && hasAllGolfCourses && departureDate;
     }
     
-    return hasAllGolfTimes && hasSelectedPeriod;
+    return hasAllGolfTimes && hasSelectedPeriod && hasAllGolfCourses;
   };
 
   // 다음 단계로 이동
   const handleNext = () => {
+    // 골프장 ID 배열 생성
+    const golfCourseIds = selectedGolfCourses.map(course => course ? course.id : null).filter(id => id !== null);
+    
     // 데이터를 sessionStorage에 저장
     const step1Data = {
       selectedPeriod,
       golfTimes,
       departureDate,
-      arrivalDate,
+      selectedGolfCourses,
+      golfCourseIds,
       travelDays: periodOptions.find(p => p.id === selectedPeriod)?.days || 1
     };
     
@@ -265,17 +382,6 @@ const CourseStep1 = () => {
                   onChange={(e) => setDepartureDate(e.target.value)}
                 />
               </div>
-              <div className="date-separator">-</div>
-              <div className="date-input-container">
-                <label className="date-label">도착 날짜</label>
-                <input
-                  type="date"
-                  className="date-input"
-                  value={arrivalDate}
-                  onChange={(e) => setArrivalDate(e.target.value)}
-                  min={departureDate}
-                />
-              </div>
             </div>
           </div>
 
@@ -321,6 +427,55 @@ const CourseStep1 = () => {
             </div>
           ))}
 
+        </div>
+
+        {/* 골프장 선택 섹션 */}
+        <div className="golf-course-section">
+          <div className="section-header">
+            <h3 className="section-title">골프장 선택</h3>
+          </div>
+          
+          {golfTimes.map((time, index) => (
+            <div key={index} className="golf-course-input">
+              <div className="golf-course-label">
+                {selectedPeriod === 'day' ? '골프장' : `${index + 1}일차 골프장`}
+              </div>
+              {selectedGolfCourses[index] ? (
+                <div 
+                  className="golf-course-display"
+                  onClick={() => openGolfCourseModal(index)}
+                >
+                  <div className="golf-course-info">
+                    <div className="golf-course-name">{selectedGolfCourses[index].name}</div>
+                    <div className="golf-course-address">{selectedGolfCourses[index].address}</div>
+                  </div>
+                  <span className="edit-icon">
+                    <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.75 8.41667L9.16667 2L12.375 5.20833L5.95833 11.625H2.75V8.41667Z" stroke="#269962" strokeWidth="1.5" strokeLinecap="round"/>
+                      <path d="M1 14.25H15" stroke="#269962" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                  </span>
+                </div>
+              ) : (
+                <div 
+                  className="golf-course-placeholder"
+                  onClick={() => openGolfCourseModal(index)}
+                >
+                  {selectedGolfCourses[index] ? (
+                    <div className="golf-course-info">
+                      <div className="golf-course-name">{selectedGolfCourses[index].name}</div>
+                      <div className="golf-course-address">{selectedGolfCourses[index].address}</div>
+                    </div>
+                  ) : (
+                    <>
+                      골프장을 선택해주세요
+                      <span className="search-icon">🔍</span>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
         {/* 여행기간 섹션 */}
@@ -429,6 +584,58 @@ const CourseStep1 = () => {
             <button className="confirm-btn" onClick={confirmTime}>
               입력
             </button>
+          </div>
+        </div>
+      )}
+      
+      {/* 골프장 검색 모달 */}
+      {isGolfCourseModalOpen && (
+        <div className="golf-course-modal-overlay" onClick={closeGolfCourseModal}>
+          <div className="golf-course-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">골프장 검색</h3>
+              <button className="close-btn" onClick={closeGolfCourseModal}>×</button>
+            </div>
+            
+            <div className="search-input-container">
+              <input
+                type="text"
+                className="search-input"
+                placeholder="골프장 이름을 입력하세요"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && searchGolfCourses(searchTerm)}
+              />
+              <button 
+                className="search-btn"
+                onClick={() => searchGolfCourses(searchTerm)}
+                disabled={isSearching}
+              >
+                {isSearching ? '검색중...' : '검색'}
+              </button>
+            </div>
+            
+            {showSearchResults && (
+              <div className="search-results">
+                {golfCourseSearchResults.length > 0 ? (
+                  golfCourseSearchResults.map((course, index) => (
+                    <div
+                      key={course.id}
+                      className="golf-course-result"
+                      onClick={() => selectGolfCourse(course, currentGolfCourseIndex)}
+                    >
+                      <div className="course-info">
+                        <div className="course-name">{course.name}</div>
+                        <div className="course-address">{course.address}</div>
+                      </div>
+                      <div className="select-btn">선택</div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-results">검색 결과가 없습니다.</div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

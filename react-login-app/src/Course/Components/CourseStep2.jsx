@@ -7,8 +7,19 @@ import './CourseStep2.css';
 const CourseStep2 = () => {
   const navigate = useNavigate();
   
+  // 로그인 인증 체크
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/email-login');
+      return;
+    }
+  }, [navigate]);
+  
   // 상태 관리
   const [selectedStyle, setSelectedStyle] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // 스타일 옵션
   const styleOptions = [
@@ -122,6 +133,17 @@ const CourseStep2 = () => {
   const handleNext = async () => {
     if (!selectedStyle) return;
     
+    // 인증 토큰 확인
+    const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+    if (!accessToken) {
+      alert('로그인이 필요합니다. 다시 로그인해주세요.');
+      navigate('/email-login');
+      return;
+    }
+    
+    // 로딩 상태 시작
+    setIsLoading(true);
+    
     // 1단계 데이터 가져오기
     const step1Data = JSON.parse(sessionStorage.getItem('courseStep1') || '{}');
     
@@ -170,8 +192,12 @@ const CourseStep2 = () => {
         response = await fetch(`${apiEndpoint}?${queryParams}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
-          }
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          credentials: 'include',
+          mode: 'cors'
         });
       } else {
         // 다일차: Body로 CourseRecommendationRequestDto 전송
@@ -182,11 +208,38 @@ const CourseStep2 = () => {
           'emotional': 'theme'
         };
         
+        // 여행 기간에 맞춰서 골프장 ID와 시간 배열 생성
+        const travelDays = parseInt(step1Data.travelDays) || 1;
+        const selectedGolfCourseIds = step1Data.golfCourseIds || [];
+        const selectedGolfTimes = step1Data.golfTimes || [];
+        
+        // 여행 기간에 맞춰서 골프장 ID 배열 생성 (부족하면 반복)
+        const golfCourseIds = [];
+        for (let i = 0; i < travelDays; i++) {
+          if (selectedGolfCourseIds[i]) {
+            golfCourseIds.push(selectedGolfCourseIds[i]);
+          } else {
+            // 부족한 경우 첫 번째 골프장 ID로 채움
+            golfCourseIds.push(selectedGolfCourseIds[0] || 1);
+          }
+        }
+        
+        // 여행 기간에 맞춰서 티오프 시간 배열 생성 (부족하면 반복)
+        const teeOffTimes = [];
+        for (let i = 0; i < travelDays; i++) {
+          if (selectedGolfTimes[i]) {
+            teeOffTimes.push(selectedGolfTimes[i]);
+          } else {
+            // 부족한 경우 첫 번째 시간으로 채움
+            teeOffTimes.push(selectedGolfTimes[0] || "09:00");
+          }
+        }
+        
         const requestData = {
-          golfCourseIds: step1Data.golfCourseIds || [1, 2], // 골프장 ID 목록
+          golfCourseIds: golfCourseIds, // 여행 기간에 맞춘 골프장 ID 목록
           startDate: step1Data.departureDate,
-          travelDays: step1Data.travelDays,
-          teeOffTimes: step1Data.golfTimes || ["09:00", "09:30"], // 각 일차별 티오프 시간
+          travelDays: travelDays,
+          teeOffTimes: teeOffTimes, // 여행 기간에 맞춘 티오프 시간 목록
           courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury' // API 명세에 맞게 매핑
         };
         
@@ -206,8 +259,11 @@ const CourseStep2 = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+            'Authorization': `Bearer ${accessToken}`,
+            'X-Requested-With': 'XMLHttpRequest'
           },
+          credentials: 'include',
+          mode: 'cors',
           body: JSON.stringify(requestData)
         });
       }
@@ -221,14 +277,21 @@ const CourseStep2 = () => {
       
       // 결과를 sessionStorage에 저장
       sessionStorage.setItem('courseRecommendation', JSON.stringify(result));
-    
-    // 3단계로 이동
-    navigate('/course/step3');
+      
+      // API 호출 완료 후 3단계로 이동
+      navigate('/course/step3');
       
     } catch (error) {
       console.error('API 호출 중 오류:', error);
-      // 오류가 발생해도 3단계로 이동 (개발 중이므로)
-      navigate('/course/step3');
+      
+      // 로딩 상태 해제
+      setIsLoading(false);
+      
+      // API 호출 실패 시 에러 메시지 표시
+      alert('코스 추천을 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      
+      // 3단계로 이동하지 않고 현재 페이지에 머물기
+      return;
     }
   };
 
@@ -236,6 +299,23 @@ const CourseStep2 = () => {
   const handleBack = () => {
     navigate('/course/step1');
   };
+
+  // 로딩 화면
+  if (isLoading) {
+    return (
+      <main className="main-container">
+        <Header />
+        <div className="course-step2-page">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <h2>최적의 코스를 찾고 있어요</h2>
+            <p>AI가 당신만의 맞춤 코스를 추천하고 있습니다...</p>
+          </div>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
 
   return (
     <main className="main-container">

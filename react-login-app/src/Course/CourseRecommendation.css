@@ -116,6 +116,12 @@
   color: #333;
 }
 
+.golf-course-address {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
 .golf-course-time {
   display: flex;
   gap: 20px;

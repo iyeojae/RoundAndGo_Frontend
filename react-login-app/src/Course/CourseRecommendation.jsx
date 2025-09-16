@@ -6,14 +6,41 @@ const CourseRecommendation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // URL 파라미터에서 데이터 추출
-  const searchParams = new URLSearchParams(location.search);
-  const golfCourseId = searchParams.get('golfCourseId') || '1';
-  const teeOffTime = searchParams.get('teeOffTime') || '09:00';
-  const courseType = searchParams.get('courseType') || 'luxury';
-  const travelDays = searchParams.get('travelDays') || '1';
-  const startDate = searchParams.get('startDate') || new Date().toISOString().split('T')[0];
-  const userPreferences = searchParams.get('userPreferences') || '';
+  // 페이지 진입 시 이전 코스 선택 데이터 정리
+  useEffect(() => {
+    // 코스 추천 페이지는 독립적이므로 이전 선택 데이터 정리
+    sessionStorage.removeItem('courseStep1');
+    sessionStorage.removeItem('courseStep2');
+    sessionStorage.removeItem('courseRecommendation');
+  }, []);
+  
+  // 로컬 저장소에서 골프장 데이터 불러오기 (기본값 사용)
+  const getLocalGolfCourseData = () => {
+    try {
+      // localStorage에서 selectedGolfCourseId 확인 (기본 골프장)
+      const localGolfCourseId = localStorage.getItem('selectedGolfCourseId');
+      if (localGolfCourseId) {
+        // 기본 골프장 정보 반환
+        return [{
+          id: localGolfCourseId,
+          name: '기본 골프장',
+          address: '골프장 주소'
+        }];
+      }
+    } catch (error) {
+      console.error('로컬 골프장 데이터 불러오기 실패:', error);
+    }
+    return [];
+  };
+
+  // 골프장은 기본값, 나머지는 빈 값으로 설정
+  const localGolfCourses = getLocalGolfCourseData();
+  const golfCourseId = localGolfCourses.length > 0 ? localGolfCourses[0].id : '1';
+  const teeOffTime = ''; // 빈 티오프 시간
+  const courseType = ''; // 빈 코스 타입
+  const travelDays = ''; // 빈 여행 기간
+  const startDate = ''; // 빈 날짜
+  const userPreferences = ''; // 빈 선호도
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -40,6 +67,10 @@ const CourseRecommendation = () => {
   const loadCourseRecommendation = async () => {
     try {
       setLoading(true);
+      
+      // 로컬 골프장 데이터 활용
+      const localGolfCourses = getLocalGolfCourseData();
+      console.log('로컬 골프장 데이터:', localGolfCourses);
       
       // 시뮬레이션된 API 호출
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -249,7 +280,10 @@ const CourseRecommendation = () => {
           </div>
           <div className="golf-course-details">
             <div className="golf-course-name">
-              {courseData.day1[0].name || '골프장'}
+              {localGolfCourses.length > 0 ? localGolfCourses[0].name : (courseData.day1[0].name || '골프장')}
+            </div>
+            <div className="golf-course-address">
+              {localGolfCourses.length > 0 ? localGolfCourses[0].address : '골프장 주소'}
             </div>
             <div className="golf-course-time">
               <span className="tee-off-time">티오프: {teeOffTime}</span>

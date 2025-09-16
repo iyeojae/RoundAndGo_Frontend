@@ -261,7 +261,7 @@
 /* 코스 ?�세 ?�보 */
 .course-details {
   background: white;
-  border-radius: 20px 0 0 20px;
+  border-radius: 0;
   padding: 20px;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
   overflow-y: auto;
@@ -280,6 +280,10 @@
   transform: translateX(0);
 }
 
+.course-details-header.show {
+  transform: translateX(-530px) translateY(-50%);
+}
+
 /* 모달 ???�더 ?��???*/
 .course-modal .header {
   position: relative;
@@ -291,19 +295,19 @@
 /* ?�래�??�더 */
 .course-details-header {
   width: 50px;
-  height: 80px;
+  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   background: white;
   border-radius: 20px 0 0 20px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease-in-out;
   position: fixed;
-  left: 0;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 1001;
+  z-index: 499;
   padding: 0;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
@@ -317,19 +321,16 @@
   background: #f8f9fa;
 }
 
-.drag-handle {
-  width: 30px;
-  height: 5px;
+.course-details-header::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 30px;
   background: #adb5bd;
-  border-radius: 3px;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.course-details-header:hover .drag-handle {
-  background: #6c757d;
-  transform: scale(1.05);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border-radius: 1px;
 }
 
 
@@ -358,6 +359,19 @@
   background: #177DF6;
   color: white;
   box-shadow: 0 2px 8px rgba(23, 125, 246, 0.3);
+}
+
+.day-tab.disabled {
+  background: #f0f0f0;
+  color: #999;
+  border-color: #ddd;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.day-tab.disabled:hover {
+  background: #f0f0f0;
+  color: #999;
 }
 
 /* ?�션 버튼 */
@@ -498,7 +512,7 @@
 
 .transport-mode-card {
   width: 90px;
-  height: 71px;
+  height: 50px;
   background: white;
   border-radius: 12px;
   padding: 8px;
@@ -506,7 +520,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -523,26 +537,31 @@
 
 .transport-mode-info {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 4px;
+  flex: 1;
 }
 
 .transport-mode-label {
-  width: 77px;
-  height: 20px;
-  font-size: 12px;
+  width: auto;
+  height: 16px;
+  font-size: 11px;
   color: #666;
   font-weight: 500;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 6px;
 }
 
 .transport-mode-time {
-  font-size: 14px;
+  font-size: 12px;
   color: #333;
   font-weight: 600;
+  text-align: center;
+  height: 16px;
+  line-height: 16px;
 }
 
 .transport-route-button {
@@ -617,6 +636,47 @@
   align-items: flex-start;
   gap: 16px;
   margin-bottom: 16px;
+  position: relative;
+}
+
+/* 시간 편집 컨테이너 */
+.time-edit-container {
+  display: flex;
+  gap: 16px;
+  margin: 8px 0;
+  flex-wrap: nowrap;
+  align-items: end;
+}
+
+.time-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 100px;
+  flex: 1;
+}
+
+.time-input-group label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.time-input {
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 12px;
+  background: white;
+  color: #333;
+  font-weight: 500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.time-input:focus {
+  outline: none;
+  border-color: #2C40F6;
+  box-shadow: 0 0 0 2px rgba(44, 64, 246, 0.1);
 }
 
 .location-icon {
@@ -644,6 +704,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -658,6 +719,7 @@
   flex: 1;
   min-width: 0;
   overflow: hidden;
+  padding-right: 100px; /* 사진 공간 확보 */
 }
 
 .location-name {
@@ -674,7 +736,9 @@
   font-size: 12px;
   color: #666;
   margin: 0 0 4px 0;
+  font-weight: 500;
 }
+
 
 .location-address {
   font-size: 12px;
@@ -692,6 +756,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .location-actions {
@@ -714,23 +780,23 @@
 }
 
 .location-btn {
-  background: #e3f2fd;
-  color: #1976d2;
-  border-color: #1976d2;
-}
-
-.location-btn:hover {
-  background: #bbdefb;
-}
-
-.call-btn {
   background: #e8f5e8;
   color: #4CAF50;
   border-color: #4CAF50;
 }
 
-.call-btn:hover {
+.location-btn:hover {
   background: #c8e6c9;
+}
+
+.call-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-color: #1976d2;
+}
+
+.call-btn:hover {
+  background: #bbdefb;
 }
 
 .action-icon {
@@ -938,19 +1004,20 @@
   }
   
   .course-details {
+    width: 100%;
     padding: 16px;
-    border-radius: 20px 0 0 20px;
-    max-height: calc(45vh - 45px); /* 모바???�더 ?�이 ?�외 */
+    border-radius: 0;
+    max-height: calc(100vh - 40px); /* 모바???�더 ?�이 ?�외 */
   }
   
   .course-details-header {
-    width: 45px;
-    height: 70%;
+    width: 40px;
+    height: 120px;
   }
   
-  .drag-handle {
-    width: 25px;
-    height: 4px;
+  .course-details-header::before {
+    width: 2px;
+    height: 20px;
   }
   
   .course-step3-page.modal-open {
@@ -974,8 +1041,8 @@
   }
   
   .location-image {
-    width: 82px;
-    height: 82px;
+    width: 60px;
+    height: 60px;
   }
   
   .image-placeholder {
@@ -1017,3 +1084,226 @@
     gap: 8px;
   }
 }
+
+/* 에러 컨테이너 */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.error-container h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.error-container p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.error-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.error-actions button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+}
+
+.retry-button {
+  background-color: #269962;
+  color: white;
+}
+
+.retry-button:hover {
+  background-color: #1e7a4f;
+}
+
+/* 편집 모드 스타일 */
+.itinerary-item.edit-mode {
+  border: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  cursor: move;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.itinerary-item.edit-mode:hover {
+  border-color: #ccc;
+  background: #f5f5f5;
+}
+
+.itinerary-item.drag-over {
+  border-color: #269962;
+  background: #f0f8f7;
+  transform: scale(1.02);
+}
+
+/* 왼쪽 편집 버튼들 */
+.edit-actions-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-right: 12px;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 16px 0;
+  min-width: 32px; /* 골프장일 때도 공간 확보 */
+}
+
+.delete-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.delete-btn:hover {
+  transform: scale(1.1);
+}
+
+.delete-btn:active {
+  transform: scale(0.95);
+}
+
+.random-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.random-btn:hover {
+  transform: scale(1.1);
+}
+
+.random-btn:active {
+  transform: scale(0.95);
+}
+
+.add-location-container {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.add-location-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0;
+  min-height: 117px;
+  width: 100%;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px;
+  box-sizing: border-box;
+  background: transparent;
+  color: #666;
+  border: 2px dashed #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-location-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.add-location-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: inherit;
+}
+
+.add-location-btn:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+  color: #999;
+  transform: translateY(-2px);
+}
+
+.add-location-btn:active {
+  transform: translateY(0);
+}
+
+
+/* 드래그 안내 메시지 스타일 */
+.drag-instruction-text {
+  font-size: 12px;
+  color: #007bff;
+  margin-bottom: 12px;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* 장소 사진 스타일 */
+.location-image {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.location-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+

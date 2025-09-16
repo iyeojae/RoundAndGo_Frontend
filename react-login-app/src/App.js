@@ -24,6 +24,7 @@ import CommunityEntirePage from './Community/CommunityEntire.jsx'; // 커뮤니�
 import CommunityWritePage from './Community/CommunityWrite.jsx'; // 커뮤니티 쓰기
 import CourseRecommendation from './Course/CourseRecommendation'; // 코스 추천
 import CourseMain from './Course/CourseMain'; // 코스 추천 메인
+import MyCourseView from './Course/Components/MyCourseView'; // 내 코스보기
 
 function App() {
     return (
@@ -74,6 +75,7 @@ function App() {
                             <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
                             <Route path="/communiyt/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
                             <Route path="/course/recommendation" element={<CourseRecommendation/>}/> {/* 코스 추천 */}
+                            <Route path="/course/my" element={<MyCourseView/>}/> {/* 내 코스보기 */}
                             <Route path="/course/*" element={<CourseMain/>}/> {/* 코스 추천 3단계 */}
                         </Routes>
                     </main>
