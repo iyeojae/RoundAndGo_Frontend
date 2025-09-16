@@ -37,11 +37,11 @@ function App() {
 
                     <Route path="/first-main" element={<FirstMainPage />} /> {/* 첫 메인 페이지 */}
                     <Route path="/main" element={<MainPage />} /> {/* 메인 페이지 */}
-                    <Route path="/detail/main/:" element={<DetailMainPage />} /> {/* 상세 페이지 */}
-                    <Route path="/detail/main/more" elemet={<DetailMorePage/>}/> {/*상세페이지 더보기 - 숙박 */}
-                    <Route path="/community" elemet={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
-                    <Route path="/community/entire" elemet={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
-                    <Route path="/communiyt/write" elemet={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
+                    <Route path="/detail/main/:id" element={<DetailMainPage />} /> {/* 상세 페이지 */}
+                    <Route path="/detail/main/more" element={<DetailMorePage/>}/> {/*상세페이지 더보기 - 숙박 */}
+                    <Route path="/community" element={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
+                    <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
+                    <Route path="/community/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
                     <Route path="/course/recommendation" element={<CourseRecommendation />} /> {/* 코스 추천 */}
                     <Route path="/course/*" element={<CourseMain />} /> {/* 코스 추천 3단계 */}
                 </Routes>
