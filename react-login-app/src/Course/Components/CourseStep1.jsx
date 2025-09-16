@@ -189,39 +189,40 @@ const CourseStep1 = () => {
   };
 
   return (
-    <div className="course-step1-page">
+    <main className="main-container">
       <Header />
-
-      {/* 네비게이션 헤더 */}
-      <div className="step-header">
-        <div className="header-content">
-          <button className="back-btn" onClick={handleBack}>
-            ←
-          </button>
-          <h1 className="step-title">맞춤 코스 설정</h1>
+      
+      <div className="course-step1-page">
+        {/* 네비게이션 헤더 */}
+        <div className="step-header">
+          <div className="header-content">
+            <button className="back-btn" onClick={handleBack}>
+              ←
+            </button>
+            <h1 className="step-title">맞춤 코스 설정</h1>
+          </div>
+          
+          {/* 진행 단계 표시 */}
+          <div className="step-indicator">
+            <div className={`step-item ${currentStep >= 1 ? 'active' : ''}`}>
+              <div className={`step-circle ${currentStep > 1 ? 'completed' : currentStep === 1 ? 'active' : ''}`}>1</div>
+              <span className={`step-label ${currentStep >= 1 ? 'active' : ''}`}>기간 설정</span>
+            </div>
+            <div className="step-line"></div>
+            <div className={`step-item ${currentStep >= 2 ? 'active' : ''}`}>
+              <div className={`step-circle ${currentStep > 2 ? 'completed' : currentStep === 2 ? 'active' : ''}`}>2</div>
+              <span className={`step-label ${currentStep >= 2 ? 'active' : ''}`}>스타일 설정</span>
+            </div>
+            <div className="step-line"></div>
+            <div className={`step-item ${currentStep >= 3 ? 'active' : ''}`}>
+              <div className={`step-circle ${currentStep > 3 ? 'completed' : currentStep === 3 ? 'active' : ''}`}>3</div>
+              <span className={`step-label ${currentStep >= 3 ? 'active' : ''}`}>코스 추천</span>
+            </div>
+          </div>
         </div>
-        
-        {/* 진행 단계 표시 */}
-        <div className="step-indicator">
-          <div className={`step-item ${currentStep >= 1 ? 'active' : ''}`}>
-            <div className={`step-circle ${currentStep > 1 ? 'completed' : currentStep === 1 ? 'active' : ''}`}>1</div>
-            <span className={`step-label ${currentStep >= 1 ? 'active' : ''}`}>기간 설정</span>
-          </div>
-          <div className="step-line"></div>
-          <div className={`step-item ${currentStep >= 2 ? 'active' : ''}`}>
-            <div className={`step-circle ${currentStep > 2 ? 'completed' : currentStep === 2 ? 'active' : ''}`}>2</div>
-            <span className={`step-label ${currentStep >= 2 ? 'active' : ''}`}>스타일 설정</span>
-          </div>
-          <div className="step-line"></div>
-          <div className={`step-item ${currentStep >= 3 ? 'active' : ''}`}>
-            <div className={`step-circle ${currentStep > 3 ? 'completed' : currentStep === 3 ? 'active' : ''}`}>3</div>
-            <span className={`step-label ${currentStep >= 3 ? 'active' : ''}`}>코스 추천</span>
-          </div>
-        </div>
-      </div>
 
-      {/* 메인 콘텐츠 */}
-      <div className="step-content">
+        {/* 메인 콘텐츠 */}
+        <div className="step-content">
         {/* 안내 섹션 */}
         <div className="instruction-section">
           <div className="instruction-icon">
@@ -355,10 +356,9 @@ const CourseStep1 = () => {
             다음
           </button>
         </div>
+        </div>
       </div>
-
-      <Footer />
-
+      
       {/* 시간 선택 모달 */}
       {isModalOpen && (
         <div className="time-modal-overlay" onClick={closeTimeModal}>
@@ -432,7 +432,9 @@ const CourseStep1 = () => {
           </div>
         </div>
       )}
-    </div>
+      
+      <Footer />
+    </main>
   );
 };
 

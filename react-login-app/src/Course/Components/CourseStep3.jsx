@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../Layout/Header';
 import Footer from '../../Layout/Footer';
@@ -23,113 +23,336 @@ const CourseStep3 = () => {
   const [showDetails, setShowDetails] = useState(true);
   const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   
-  // 예시 데이터
-  const [courseData, setCourseData] = useState({
-    day0: [ // 당일치기
-      {
-        id: 1,
-        name: "제주 골프클럽",
-        type: "골프장",
-        address: "제주특별자치도 제주시 애월읍",
-        coordinates: { lat: 33.4615, lng: 126.3112 },
-        imageUrl: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=300&h=200&fit=crop",
-        time: "09:00-12:00",
-        description: "제주도의 아름다운 자연을 배경으로 한 프리미엄 골프장"
-      },
-      {
-        id: 2,
-        name: "성산일출봉",
-        type: "관광지",
-        address: "제주특별자치도 서귀포시 성산읍",
-        coordinates: { lat: 33.4584, lng: 126.9422 },
-        imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
-        time: "14:00-16:00",
-        description: "유네스코 세계자연유산으로 지정된 제주도의 대표 관광지"
-      },
-      {
-        id: 3,
-        name: "제주 흑돼지 맛집",
-        type: "맛집",
-        address: "제주특별자치도 제주시 연동",
-        coordinates: { lat: 33.4996, lng: 126.5312 },
-        imageUrl: "https://images.unsplash.com/photo-1544025162-d76694265947?w=300&h=200&fit=crop",
-        time: "18:00-20:00",
-        description: "제주도 특산품 흑돼지를 맛볼 수 있는 대표 맛집"
-      }
-     ],
-    day1: [ // 1일차
-      {
-        id: 4,
-        name: "제주 골프리조트",
-        type: "골프장",
-        address: "제주특별자치도 서귀포시 중문동",
-        coordinates: { lat: 33.2398, lng: 126.4132 },
-        imageUrl: "https://images.unsplash.com/photo-1593111774240-d529f12cf4b8?w=300&h=200&fit=crop",
-        time: "08:00-11:00",
-        description: "중문 관광단지 내 위치한 고급 골프 리조트"
-      },
-      {
-        id: 5,
-        name: "천지연폭포",
-        type: "관광지",
-        address: "제주특별자치도 서귀포시 서귀동",
-        coordinates: { lat: 33.2460, lng: 126.5600 },
-        imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop",
-        time: "13:00-15:00",
-        description: "제주도 3대 폭포 중 하나로 아름다운 자연 경관"
-      },
-      {
-        id: 6,
-        name: "제주 한라봉 농장",
-        type: "체험",
-        address: "제주특별자치도 서귀포시 남원읍",
-        coordinates: { lat: 33.2797, lng: 126.7000 },
-        imageUrl: "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=300&h=200&fit=crop",
-        time: "16:00-18:00",
-        description: "제주도 특산품 한라봉 따기 체험과 시식"
-      }
-     ],
-    day2: [ // 2일차
-      {
-        id: 7,
-        name: "제주 골프월드",
-        type: "골프장",
-        address: "제주특별자치도 제주시 조천읍",
-        coordinates: { lat: 33.5347, lng: 126.6347 },
-        imageUrl: "https://images.unsplash.com/photo-1587174486073-ae5e5cef1e30?w=300&h=200&fit=crop",
-        time: "09:00-12:00",
-        description: "제주도 동부 지역의 대표적인 골프장"
-      },
-      {
-        id: 8,
-        name: "성읍민속마을",
-        type: "관광지",
-        address: "제주특별자치도 서귀포시 표선면",
-        coordinates: { lat: 33.3867, lng: 126.8000 },
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop",
-        time: "14:00-16:00",
-        description: "제주도 전통 가옥과 생활 문화를 체험할 수 있는 민속마을"
-      },
-      {
-        id: 9,
-        name: "제주 해녀촌",
-        type: "체험",
-        address: "제주특별자치도 제주시 구좌읍",
-        coordinates: { lat: 33.5250, lng: 126.8500 },
-        imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
-        time: "17:00-19:00",
-        description: "제주도 해녀 문화와 신선한 해산물을 체험"
-      }
-     ]
-  });
+  // 코스 추천 데이터
+  const [courseData, setCourseData] = useState(null);
   
   // 지도 관련
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
+  // API 응답을 CourseStep3 형식으로 변환하는 함수
+  const transformApiResponse = (apiData) => {
+    if (!apiData || !apiData.data) return null;
+
+    const { data } = apiData;
+    const { recommendedPlaces, golfCourseName, teeOffTime, estimatedEndTime } = data;
+
+    // 골프장 정보
+    const golfCourse = {
+      id: data.id,
+      name: golfCourseName,
+      type: "골프장",
+      address: "제주특별자치도", // API에서 주소가 없으므로 기본값
+      coordinates: { lat: 33.5, lng: 126.5 }, // 기본 좌표
+      time: `${teeOffTime}-${estimatedEndTime}`,
+      description: "AI가 추천한 골프장"
+    };
+
+    // 추천 장소들을 변환
+    const transformedPlaces = recommendedPlaces.map((place, index) => ({
+      id: data.id + index + 1,
+      name: place.name,
+      type: place.type === 'food' ? '맛집' : 
+            place.type === 'tour' ? '관광지' : 
+            place.type === 'stay' ? '숙소' : '기타',
+      address: place.address,
+      coordinates: { lat: parseFloat(place.mapy), lng: parseFloat(place.mapx) },
+      imageUrl: place.imageUrl,
+      time: `${parseInt(teeOffTime.split(':')[0]) + 4 + index * 2}:00-${parseInt(teeOffTime.split(':')[0]) + 6 + index * 2}:00`,
+      description: `${place.type === 'food' ? '맛집' : place.type === 'tour' ? '관광지' : '숙소'} 추천`,
+      // 교통 정보는 나중에 실제 거리 계산으로 업데이트
+      transportInfo: null
+    }));
+
+    // 당일치기 코스 구성
+    const day0Data = [golfCourse, ...transformedPlaces];
+    
+    return {
+      day0: day0Data,
+      day1: [], // 당일치기이므로 빈 배열
+      day2: []  // 당일치기이므로 빈 배열
+    };
+  };
+
+  // sessionStorage에서 코스 추천 데이터 가져오기
+  useEffect(() => {
+    const recommendationData = sessionStorage.getItem('courseRecommendation');
+    if (recommendationData) {
+      try {
+        const parsedData = JSON.parse(recommendationData);
+        console.log('원본 API 응답:', parsedData);
+        
+        const transformedData = transformApiResponse(parsedData);
+        console.log('변환된 코스 데이터:', transformedData);
+        
+        setCourseData(transformedData);
+        setLoading(false);
+      } catch (error) {
+        console.error('코스 추천 데이터 파싱 오류:', error);
+        setLoading(false);
+      }
+    } else {
+      console.log('코스 추천 데이터가 없습니다.');
+      setLoading(false);
+    }
+  }, []);
+
   // 현재 선택된 날짜의 데이터
-    const currentDayData = selectedDay === 0 ? courseData.day0 : 
-                          selectedDay === 1 ? courseData.day1 : courseData.day2;
+  const currentDayData = courseData ? (
+    selectedDay === 0 ? courseData.day0 : 
+    selectedDay === 1 ? courseData.day1 : courseData.day2
+  ) : null;
+
+  // 교통 정보 계산 함수 (실제 API 사용 가능)
+  const calculateTransportInfo = useCallback((fromLocation, toLocation) => {
+    // 실제로는 Kakao Maps API나 Google Maps API를 사용할 수 있습니다
+    // 여기서는 거리 기반으로 대략적인 시간을 계산합니다
+    
+    const distance = calculateDistance(
+      fromLocation.coordinates.lat, fromLocation.coordinates.lng,
+      toLocation.coordinates.lat, toLocation.coordinates.lng
+    );
+
+    return {
+      distance: `${distance.toFixed(1)}km`,
+      car: `${Math.floor(distance * 2 + Math.random() * 5)}분`, // 거리 기반 + 랜덤
+      public: `${Math.floor(distance * 3 + Math.random() * 10)}분`, // 대중교통은 더 오래
+      walk: `${Math.floor(distance * 12 + Math.random() * 10)}분` // 도보는 훨씬 오래
+    };
+  }, []);
+
+  // 두 지점 간 거리 계산 (Haversine 공식)
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // 지구 반지름 (km)
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  // 지도 초기화 함수
+  const initMap = useCallback(() => {
+      try {
+        // 카카오맵 API 완전 로드 확인
+        if (!window.kakao || !window.kakao.maps || !window.kakao.maps.LatLng || !window.kakao.maps.Map) {
+          console.log('카카오맵 API가 완전히 로드되지 않았습니다.');
+      return;
+    }
+    
+        if (!currentDayData || currentDayData.length === 0) {
+          console.log('현재 날짜 데이터가 없습니다.');
+      return;
+    }
+    
+      const container = mapRef.current;
+        if (!container) {
+          console.log('지도 컨테이너를 찾을 수 없습니다.');
+          return;
+        }
+
+        console.log('지도 컨테이너 정보:', {
+          container: container,
+          width: container.offsetWidth,
+          height: container.offsetHeight,
+          style: container.style.cssText
+        });
+
+        // 첫 번째 장소의 좌표를 중심으로 지도 생성 (임시)
+        const firstLocation = currentDayData[0];
+        const center = new window.kakao.maps.LatLng(
+          firstLocation.coordinates.lat,
+          firstLocation.coordinates.lng
+        );
+      
+      const options = {
+          center: center,
+          level: 8
+      };
+      
+      mapInstance.current = new window.kakao.maps.Map(container, options);
+
+        // 로딩 메시지 제거
+        const loadingDiv = container.querySelector('div');
+        if (loadingDiv) {
+          loadingDiv.remove();
+        }
+
+        // 마커와 경로 추가
+        const markers = [];
+        const pathPositions = [];
+
+        currentDayData.forEach((location, index) => {
+          const markerPosition = new window.kakao.maps.LatLng(
+            location.coordinates.lat,
+            location.coordinates.lng
+          );
+
+          // 경로용 좌표 추가
+          pathPositions.push(markerPosition);
+
+          // 장소 타입에 따른 색상 설정
+          const getMarkerColor = (type) => {
+            switch (type) {
+              case '골프장':
+                return '#269962'; // 초록
+              case '맛집':
+                return '#EA580C'; // 주황
+              case '숙소':
+                return '#2563EB'; // 파랑
+              case '관광지':
+                return '#9333EA'; // 보라
+              default:
+                return '#6B7280'; // 회색 (기본값)
+            }
+          };
+
+          // 커스텀 마커 생성 (번호가 표시된 원형)
+        const markerContent = `
+          <div style="
+            width: 30px;
+            height: 30px;
+              background-color: ${getMarkerColor(location.type)};
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+              font-size: 12px;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+          ">
+              ${index + 1}
+          </div>
+        `;
+        
+          const marker = new window.kakao.maps.CustomOverlay({
+            position: markerPosition,
+          content: markerContent,
+          yAnchor: 0.5,
+          xAnchor: 0.5
+        });
+        
+        marker.setMap(mapInstance.current);
+        markers.push(marker);
+        
+        // 인포윈도우 추가
+        const infowindow = new window.kakao.maps.InfoWindow({
+            content: `<div style="padding:5px; font-size:12px;">${index + 1}. ${location.name}</div>`
+          });
+
+          // 커스텀 마커 클릭 시 인포윈도우 표시
+          window.kakao.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(mapInstance.current, marker);
+          });
+        });
+
+        // 마커들을 순서대로 연결하는 점선 경로 생성
+        if (pathPositions.length > 1) {
+      const polyline = new window.kakao.maps.Polyline({
+            path: pathPositions,
+        strokeWeight: 3,
+            strokeColor: '#999999',
+        strokeOpacity: 0.8,
+            strokeStyle: 'shortdash'
+      });
+      
+      polyline.setMap(mapInstance.current);
+          console.log('경로 선이 그려졌습니다.');
+        }
+
+        // 모든 마커가 보이도록 지도 영역 조정
+        if (pathPositions.length > 0) {
+          const bounds = new window.kakao.maps.LatLngBounds();
+          
+          // 모든 좌표를 bounds에 추가
+          pathPositions.forEach(position => {
+            bounds.extend(position);
+          });
+          
+          // 지도를 모든 마커가 보이도록 조정
+          mapInstance.current.setBounds(bounds);
+          
+          // 여백 추가 (선택사항)
+          const padding = 50; // 픽셀 단위 여백
+      mapInstance.current.relayout();
+      
+          console.log('지도가 모든 마커를 포함하도록 조정되었습니다.');
+        }
+
+        console.log('지도 초기화 완료');
+      } catch (error) {
+        console.error('지도 초기화 중 오류 발생:', error);
+      }
+    }, [currentDayData]);
+
+  // 카카오맵 API 로드 대기 및 지도 초기화
+  useEffect(() => {
+    // 카카오맵 API 로드 상태 확인
+    const checkKakaoMaps = () => {
+      console.log('카카오맵 API 상태 확인:', {
+        window_kakao: !!window.kakao,
+        window_kakao_maps: !!(window.kakao && window.kakao.maps),
+        LatLng: !!(window.kakao && window.kakao.maps && window.kakao.maps.LatLng),
+        Map: !!(window.kakao && window.kakao.maps && window.kakao.maps.Map)
+      });
+      
+      if (window.kakao && window.kakao.maps && window.kakao.maps.LatLng && window.kakao.maps.Map) {
+            console.log('카카오맵 API 로드 완료');
+        initMap();
+        return true;
+      }
+      return false;
+    };
+
+    // 즉시 확인
+    if (!checkKakaoMaps()) {
+      // 카카오맵 API 로드 대기
+      const interval = setInterval(() => {
+        if (checkKakaoMaps()) {
+          clearInterval(interval);
+        }
+      }, 100);
+
+      // 10초 후 타임아웃
+      setTimeout(() => {
+        clearInterval(interval);
+        console.log('카카오맵 API 로드 타임아웃');
+      }, 10000);
+    }
+  }, [initMap]);
+
+  // 교통 정보 계산 및 업데이트
+  useEffect(() => {
+    if (courseData && currentDayData && currentDayData.length > 1) {
+      const updatedCourseData = { ...courseData };
+      const dayKey = selectedDay === 0 ? 'day0' : selectedDay === 1 ? 'day1' : 'day2';
+      
+      // 각 장소 간 교통 정보 계산
+      for (let i = 0; i < currentDayData.length - 1; i++) {
+        const fromLocation = currentDayData[i];
+        const toLocation = currentDayData[i + 1];
+        
+        if (fromLocation && toLocation && fromLocation.coordinates && toLocation.coordinates) {
+          const transportInfo = calculateTransportInfo(fromLocation, toLocation);
+          
+          // 해당 장소의 교통 정보 업데이트
+          const locationIndex = updatedCourseData[dayKey].findIndex(loc => loc.id === fromLocation.id);
+          if (locationIndex !== -1) {
+            updatedCourseData[dayKey][locationIndex].transportInfo = transportInfo;
+          }
+        }
+      }
+      
+      // 상태 업데이트 (무한 루프 방지를 위해 조건부)
+      if (JSON.stringify(updatedCourseData) !== JSON.stringify(courseData)) {
+        setCourseData(updatedCourseData);
+      }
+    }
+  }, [courseData, currentDayData, selectedDay, calculateTransportInfo]);
     
   // 뒤로가기 핸들러
   const handleBack = () => {
@@ -142,8 +365,120 @@ const CourseStep3 = () => {
   };
 
   // 다시 추천 버튼 핸들러
-  const handleRerollClick = () => {
+  const handleRerollClick = async () => {
     console.log('다시 추천 버튼 클릭');
+    
+    try {
+    setLoading(true);
+    
+      // Step1과 Step2 데이터 가져오기
+      const step1Data = JSON.parse(sessionStorage.getItem('courseStep1') || '{}');
+      const step2Data = JSON.parse(sessionStorage.getItem('courseStep2') || '{}');
+      
+      if (!step1Data || !step2Data) {
+        console.error('Step1 또는 Step2 데이터가 없습니다.');
+        return;
+      }
+      
+      const isSameDay = step1Data.selectedPeriod === 'day';
+      
+      // API 엔드포인트 결정
+      const baseUrl = 'https://api.roundandgo.com';
+      
+      const apiEndpoint = isSameDay 
+        ? `${baseUrl}/api/courses/recommendation/ai`
+        : `${baseUrl}/api/courses/recommendation/ai/multi-day`;
+      
+      let response;
+      
+      if (isSameDay) {
+        // 당일치기: Query 파라미터로 전송
+        const courseTypeMapping = {
+          'premium': 'luxury',
+          'value': 'value', 
+          'resort': 'resort',
+          'emotional': 'theme'
+        };
+        
+        const queryParams = new URLSearchParams({
+          golfCourseId: step1Data.golfCourseIds?.[0] || 1,
+          teeOffTime: step1Data.golfTimes?.[0] || "09:00",
+          courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury',
+          userPreferences: "맛집 위주로, 바다 전망 좋은 숙소"
+        });
+        
+        console.log('다시 추천 - 당일치기 API 요청:', {
+          endpoint: `${apiEndpoint}?${queryParams}`,
+          queryParams: Object.fromEntries(queryParams)
+        });
+        
+        response = await fetch(`${apiEndpoint}?${queryParams}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+          }
+        });
+      } else {
+        // 다일차: Body로 CourseRecommendationRequestDto 전송
+        const courseTypeMapping = {
+          'premium': 'luxury',
+          'value': 'value', 
+          'resort': 'resort',
+          'emotional': 'theme'
+        };
+        
+        const requestData = {
+          golfCourseIds: step1Data.golfCourseIds || [1, 2],
+          startDate: step1Data.departureDate,
+          travelDays: step1Data.travelDays,
+          teeOffTimes: step1Data.golfTimes || ["09:00", "09:30"],
+          courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury'
+        };
+        
+        const queryParams = new URLSearchParams({
+          userPreferences: "전통 한식 위주, 온천 숙소 선호, 자연 경관 중시"
+        });
+        
+        console.log('다시 추천 - 다일차 API 요청:', {
+          endpoint: apiEndpoint,
+          requestData: requestData
+        });
+        
+        response = await fetch(`${apiEndpoint}?${queryParams}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+          },
+          body: JSON.stringify(requestData)
+        });
+      }
+      
+      if (!response.ok) {
+        throw new Error(`API 요청 실패: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log('다시 추천 API 응답:', result);
+      
+      // 새로운 결과를 sessionStorage에 저장
+      sessionStorage.setItem('courseRecommendation', JSON.stringify(result));
+      
+      // 새로운 데이터로 상태 업데이트
+      const transformedData = transformApiResponse(result);
+      setCourseData(transformedData);
+      
+      // 지도 다시 초기화
+      if (mapInstance.current) {
+        initMap();
+      }
+      
+    } catch (error) {
+      console.error('다시 추천 API 호출 중 오류:', error);
+      alert('다시 추천 요청 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 여행 시작 버튼 핸들러
@@ -152,13 +487,6 @@ const CourseStep3 = () => {
     navigate('/main');
   };
 
-  // 로딩 완료
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
 
   if (loading) {
     return (
@@ -169,6 +497,24 @@ const CourseStep3 = () => {
           <div className="loading-spinner"></div>
           <h2>최적의 코스를 찾고 있어요</h2>
           <p>AI가 당신만의 맞춤 코스를 추천하고 있습니다...</p>
+        </div>
+      </div>
+      </main>
+    );
+  }
+
+  // 데이터가 없을 때의 처리
+  if (!courseData || !currentDayData) {
+  return (
+      <main>
+      <div className="course-step3-page">
+        <Header />
+        <div className="error-container">
+          <h2>코스 추천 데이터를 불러올 수 없습니다</h2>
+          <p>다시 시도해주세요.</p>
+          <button className="retry-btn" onClick={() => navigate('/course/step2')}>
+            다시 추천받기
+          </button>
         </div>
       </div>
       </main>
@@ -212,7 +558,20 @@ const CourseStep3 = () => {
 
       {/* 지도 섹션 */}
       <div className={`map-section ${showDetails ? 'modal-open' : ''}`}>
-        <div ref={mapRef} className="kakao-map" style={{ width: '100%', height: '100%' }}></div>
+        <div ref={mapRef} className="kakao-map" style={{ width: '100%', height: '100%' }}>
+          {/* 지도 로딩 중 표시 */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            height: '100%', 
+            backgroundColor: '#f5f5f5',
+            color: '#666',
+            fontSize: '14px'
+          }}>
+            지도를 불러오는 중...
+          </div>
+        </div>
         </div>
 
       {/* 드래그 헤더 - 숨김 상태일 때만 보임 */}
@@ -222,7 +581,7 @@ const CourseStep3 = () => {
           onClick={() => setShowDetails(!showDetails)}
         >
           <div className="drag-handle"></div>
-        </div>
+      </div>
       )}
 
       {/* 코스 상세 정보 - 슬라이드 */}
@@ -308,12 +667,12 @@ const CourseStep3 = () => {
                   </svg>
             편집
           </button>
-          <button className="action-btn reroll-btn" onClick={handleRerollClick}>
+          <button className="action-btn reroll-btn" onClick={handleRerollClick} disabled={loading}>
                   <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10.8022 0.63623C11.0726 0.69055 11.2476 0.953679 11.1938 1.22412L10.6753 3.81982C10.5961 4.21568 10.286 4.5258 9.89014 4.60498L7.29443 5.12354C7.02393 5.17744 6.76087 5.00234 6.70654 4.73193C6.65251 4.46122 6.8284 4.19721 7.09912 4.14307L8.896 3.78271C8.42319 3.41536 7.7383 3.00884 6.94482 2.77393C5.94425 2.47779 4.80993 2.4607 3.69092 3.08154C2.5721 3.70241 1.98677 4.6736 1.7085 5.6792C1.42585 6.7008 1.4737 7.72054 1.59814 8.31885C1.68222 8.72412 1.42231 9.1211 1.01709 9.20557C0.611701 9.2899 0.214918 9.02981 0.130371 8.62451C-0.0360755 7.82462 -0.0921687 6.56096 0.262207 5.27979C0.621105 3.98256 1.41367 2.62992 2.96338 1.77002C4.51321 0.910153 6.07997 0.954368 7.37061 1.33643C8.39961 1.64105 9.27622 2.16773 9.88721 2.65576L10.2134 1.02881C10.2676 0.758151 10.5315 0.582118 10.8022 0.63623Z" fill="white"/>
                     <path d="M1.81934 13.6382C1.54917 13.5837 1.37399 13.3206 1.42773 13.0503L1.94629 10.4546C2.02544 10.0588 2.33575 9.74872 2.73145 9.66943L5.32715 9.15088C5.59766 9.09697 5.86071 9.27207 5.91504 9.54248C5.96913 9.81322 5.79321 10.0772 5.52246 10.1313L3.72559 10.4917C4.19841 10.8591 4.88411 11.2655 5.67773 11.5005C6.67815 11.7965 7.81188 11.8135 8.93066 11.1929C10.0496 10.572 10.6358 9.60092 10.9141 8.59521C11.1967 7.57356 11.1479 6.55386 11.0234 5.95557C10.9393 5.5502 11.2001 5.1532 11.6055 5.06885C12.0107 4.98474 12.4066 5.24477 12.4912 5.6499C12.6577 6.44981 12.7138 7.71343 12.3594 8.99463C12.0005 10.2919 11.2079 11.6445 9.6582 12.5044C8.10839 13.3642 6.54158 13.3201 5.25098 12.938C4.22194 12.6333 3.34533 12.1067 2.73438 11.6187L2.4082 13.2456C2.35394 13.5163 2.09004 13.6923 1.81934 13.6382Z" fill="white"/>
                   </svg>
-            다시 추천
+            {loading ? '추천 중...' : '다시 추천'}
           </button>
         </div>
 
@@ -375,7 +734,7 @@ const CourseStep3 = () => {
                                 <circle cx="18" cy="18" r="8" fill="white"/>
                               </svg>
                             )}
-                          </div>
+                </div>
                 </div>
                 <div className="location-details">
                           <h4 className="location-name">{location.name}</h4>
@@ -402,7 +761,7 @@ const CourseStep3 = () => {
                             <span className="transport-icon">🚗</span>
                       <span>다음 목적지까지</span>
                     </div>
-                          <div className="transport-distance">2.3km</div>
+                          <div className="transport-distance">{location.transportInfo?.distance || '2.3km'}</div>
                   </div>
                   
                   <div className="transport-modes">
@@ -410,21 +769,21 @@ const CourseStep3 = () => {
                             <div className="transport-mode-icon">🚗</div>
                             <div className="transport-mode-info">
                               <div className="transport-mode-label">자동차</div>
-                              <div className="transport-mode-time">8분</div>
-                            </div>
+                              <div className="transport-mode-time">{location.transportInfo?.car || '8분'}</div>
                           </div>
+                        </div>
                           <div className="transport-mode-card">
                             <div className="transport-mode-icon">🚌</div>
                             <div className="transport-mode-info">
                               <div className="transport-mode-label">대중교통</div>
-                              <div className="transport-mode-time">15분</div>
-                            </div>
+                              <div className="transport-mode-time">{location.transportInfo?.public || '15분'}</div>
+                      </div>
                           </div>
                           <div className="transport-mode-card">
                             <div className="transport-mode-icon">🚶</div>
                             <div className="transport-mode-info">
                               <div className="transport-mode-label">도보</div>
-                              <div className="transport-mode-time">25분</div>
+                              <div className="transport-mode-time">{location.transportInfo?.walk || '25분'}</div>
                         </div>
                       </div>
                   </div>

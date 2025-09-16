@@ -6,7 +6,7 @@
 }
 
 .course-step3-page.modal-open {
-  padding-bottom: calc(50vh + 80px); /* 모달 ?�이 + Footer ?�이 */
+  padding-bottom: 80px; /* 모달 ?�이 + Footer ?�이 */
   scroll-behavior: smooth;
 }
 
@@ -404,6 +404,17 @@
 
 .reroll-btn:hover {
   background: #2FA568;
+}
+
+.reroll-btn:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.reroll-btn:disabled:hover {
+  background: #9CA3AF;
+  transform: none;
 }
 
 .btn-icon {
@@ -943,7 +954,7 @@
   }
   
   .course-step3-page.modal-open {
-    padding-bottom: calc(45vh + 70px); /* 모바??모달 ?�이 + Footer ?�이 */
+    padding-bottom: 70px; /* 모바??모달 ?�이 + Footer ?�이 */
   }
   
   

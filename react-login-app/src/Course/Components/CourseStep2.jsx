@@ -238,39 +238,40 @@ const CourseStep2 = () => {
   };
 
   return (
-    <div className="course-step2-page">
+    <main className="main-container">
       <Header />
-
-      {/* 네비게이션 헤더 */}
-      <div className="step-header">
-        <div className="header-content">
-          <button className="back-btn" onClick={handleBack}>
-            ←
-          </button>
-          <h1 className="step-title">맞춤 코스 설정</h1>
+      
+      <div className="course-step2-page">
+        {/* 네비게이션 헤더 */}
+        <div className="step-header">
+          <div className="header-content">
+            <button className="back-btn" onClick={handleBack}>
+              ←
+            </button>
+            <h1 className="step-title">맞춤 코스 설정</h1>
+          </div>
+          
+          {/* 진행 단계 표시 */}
+          <div className="step-indicator">
+            <div className="step-item completed">
+              <div className="step-circle completed">1</div>
+              <span className="step-label completed">기간 설정</span>
+            </div>
+            <div className="step-line completed"></div>
+            <div className="step-item active">
+              <div className="step-circle active">2</div>
+              <span className="step-label active">스타일 설정</span>
+            </div>
+            <div className="step-line"></div>
+            <div className="step-item">
+              <div className="step-circle">3</div>
+              <span className="step-label">코스 추천</span>
+            </div>
+          </div>
         </div>
-        
-        {/* 진행 단계 표시 */}
-        <div className="step-indicator">
-          <div className="step-item completed">
-            <div className="step-circle completed">1</div>
-            <span className="step-label completed">기간 설정</span>
-          </div>
-          <div className="step-line completed"></div>
-          <div className="step-item active">
-            <div className="step-circle active">2</div>
-            <span className="step-label active">스타일 설정</span>
-          </div>
-          <div className="step-line"></div>
-          <div className="step-item">
-            <div className="step-circle">3</div>
-            <span className="step-label">코스 추천</span>
-          </div>
-        </div>
-      </div>
 
-      {/* 메인 콘텐츠 */}
-      <div className="step-content">
+        {/* 메인 콘텐츠 */}
+        <div className="step-content">
         {/* 안내 섹션 */}
         <div className="instruction-section">
           <div className="instruction-icon">
@@ -328,10 +329,11 @@ const CourseStep2 = () => {
             다음
           </button>
         </div>
+        </div>
       </div>
-
+      
       <Footer />
-    </div>
+    </main>
   );
 };
 
