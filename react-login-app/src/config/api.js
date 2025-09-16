@@ -3,19 +3,11 @@
  * 환경에 따라 다른 API 엔드포인트를 사용합니다.
  */
 
-// 환경 감지 (로컬 백엔드 서버가 실행되지 않을 때는 프로덕션 사용)
-const isLocal = true; // 임시로 로컬 API 사용 (SSL 인증서 문제 해결 전까지)
-// const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-// API 기본 URL 설정
-export const API_BASE_URL = isLocal 
-  ? 'http://localhost:8080/api'
-  : 'https://api.roundandgo.com/api';
+// 모든 환경에서 프로덕션 API 사용
+export const API_BASE_URL = 'https://api.roundandgo.com/api';
 
 // 백엔드 기본 URL 설정 (OAuth2 콜백용)
-export const BACKEND_BASE_URL = isLocal 
-  ? 'http://localhost:8080'
-  : 'https://api.roundandgo.com';
+export const BACKEND_BASE_URL = 'https://api.roundandgo.com';
 
 // API 엔드포인트들
 export const API_ENDPOINTS = {
@@ -42,5 +34,5 @@ export const API_ENDPOINTS = {
 };
 
 // 환경 정보 로깅
-console.log(`🌍 API 환경: ${isLocal ? '로컬 개발' : '프로덕션'}`);
+console.log(`🌍 API 환경: 프로덕션 API 사용`);
 console.log(`🔗 API Base URL: ${API_BASE_URL}`);
