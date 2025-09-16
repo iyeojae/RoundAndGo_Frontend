@@ -17,17 +17,17 @@ export const API_ENDPOINTS = {
   USER_ME: `${API_BASE_URL}/user/me`,
   USER_INFO: `${API_BASE_URL}/auth/user`,
   TOKEN: `${API_BASE_URL}/auth/token`,
-  
+
   // 계정 찾기
   FIND_ID_REQUEST: `${API_BASE_URL}/auth/find-id/request`,
   FIND_ID_CONFIRM: `${API_BASE_URL}/auth/find-id/confirm`,
-  
+
   // 골프장 검색
   GOLF_COURSES_SEARCH: `${API_BASE_URL}/golf-courses/search-by-address`,
-  
+
   // 관광 정보
   TOUR_INFOS_RESTAURANTS: `${API_BASE_URL}/tour-infos/restaurants`,
-  
+
   // 스케줄 관련
   SCHEDULES: `${API_BASE_URL}/schedules`,
   SCHEDULE_BY_ID: (id) => `${API_BASE_URL}/schedules/${id}`,

@@ -10,9 +10,16 @@
 
 main {
   width: 100%;
-  height: fit-content;
+  height: 100%;
   min-width: 375px;
-  max-width: 440px;
+  /* max-width: 440px;  */
   margin: 0 auto;
   padding: 0;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+main::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
