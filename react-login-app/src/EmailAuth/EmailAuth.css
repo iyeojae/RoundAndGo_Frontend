@@ -26,6 +26,7 @@
   align-items: flex-start;
   padding: 20px;
   position: relative;
+  background: rgb(250, 250, 250);
 }
 
 .email-auth-content {
