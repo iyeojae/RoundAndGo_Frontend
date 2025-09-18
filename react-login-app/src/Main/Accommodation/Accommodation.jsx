@@ -1,19 +1,15 @@
-// Accommodation.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AccommodationList from '../../Common/Accommodation/AccommodationList.jsx';
-import { fetchAccommodations } from "../../Common/Accommodation/AccommodationAPI";
+import { fetchTourData } from '../../Common/BasedOn/API.js';
+import { getAccommodationCategory } from '../../Common/Accommodation/Category';
 
-function Accommodation() {
+function Accommodation({ golfCourseId }) {
     const [accommodations, setAccommodations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('전체');
 
     const navigate = useNavigate();
-    const goTo = (path) => {
-        navigate(path); // 경로 설정된 곳으로 이동
-    };
 
     useEffect(() => {
         const fetchAllAccommodations = async () => {
@@ -22,8 +18,25 @@ function Accommodation() {
             setAccommodations([]);
 
             try {
-                const items = await fetchAccommodations();  // fetchAccommodations 함수 호출
-                setAccommodations(items);
+                const data = await fetchTourData('accommodations', golfCourseId);
+
+                const mapped = data.map(acc => {
+                    const city = acc.city || (() => {
+                        if (acc.addr1?.includes('서귀포시')) return '서귀포시';
+                        if (acc.addr1?.includes('제주시')) return '제주시';
+                        return '기타';
+                    })();
+
+                    return {
+                        ...acc,
+                        city,
+                        category: getAccommodationCategory(acc),
+                        mapx: parseFloat(acc.mapx),
+                        mapy: parseFloat(acc.mapy),
+                    };
+                });
+
+                setAccommodations(mapped);
             } catch (err) {
                 setError(`숙소 데이터를 불러오는 데 실패했습니다: ${err.message}`);
             } finally {
@@ -32,11 +45,20 @@ function Accommodation() {
         };
 
         fetchAllAccommodations();
-    }, []);
+    }, [golfCourseId]);
 
-    const navigateToDetailPage = (contentId) => {
-        navigate('../Detail/DetailAccomodation.jsx', {
-            state: { contentId },
+    const navigateToDetailPage = ({ contentId, mapx, mapy }) => {
+        console.log("Accommodation navigateToDetailPage contentId:", contentId);
+        if (!contentId) {
+            alert("숙소 ID가 없습니다.");
+            return;
+        }
+        navigate('/detail/main/more', {
+            state: {
+                contentId,
+                mapx,
+                mapy,
+            },
         });
     };
 
@@ -50,7 +72,7 @@ function Accommodation() {
                     title="제주도의 인기 숙소를 만나보세요"
                     accommodations={accommodations}
                     showMoreButton={true}
-                    onMoreClick={() => goTo('/detail/main?tab=accommodation')}
+                    onMoreClick={() => navigate('/detail/main?tab=accommodation')}
                     limit={4}
                     navigateToDetailPage={navigateToDetailPage}
                     showFilterButtons={true}

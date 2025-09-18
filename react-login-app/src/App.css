@@ -8,11 +8,39 @@
   pointer-events: none;
 }
 
+.app-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100vh;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  background-image: url('./EntireBackground.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 1;
+}
+
+.left-content-wrapper {
+  /* 필요에 따라 left-content 너비나 높이 설정 */
+  /* 예: width: 300px; height: 100%; */
+}
+
+.right-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  z-index: 1;
+}
+
 main {
   width: 100%;
   height: 100%;
   min-width: 375px;
-  /* max-width: 440px;  */
+  max-width: 440px;
   margin: 0 auto;
   padding: 0;
   overflow-y: auto;
@@ -22,4 +50,14 @@ main {
 
 main::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
+}
+
+/* 768px 이하일 때 왼쪽 콘텐츠 숨기고 오른쪽 콘텐츠만 보이도록 */
+@media (max-width: 768px) {
+  .left-content-wrapper {
+    display: none;
+  }
+  .right-content {
+    width: 100%;
+  }
 }

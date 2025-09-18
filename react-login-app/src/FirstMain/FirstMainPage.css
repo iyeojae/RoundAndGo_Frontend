@@ -8,10 +8,8 @@
     justify-content: flex-start;
     padding-bottom: 20px;
     box-sizing: border-box;
-
     min-width: 375px;
     max-width: 440px;
-    height: 100%;
     margin: 0 auto;
 }
 
@@ -35,7 +33,7 @@
     position: relative;
     width: 100%;
     height: 300px;
-    margin: 120px auto;
+    margin: 100px auto;
     box-sizing: content-box;
 }
 
@@ -79,32 +77,59 @@
     background-color: #FFE500;
 }
 
+/*.Top3ForRegion {*/
+/*    width: 90%;*/
+/*    max-width: 380px;*/
+/*    height: 100px;*/
+/*    border-radius: 8px;*/
+/*    padding: 0;*/
+/*    margin: 0 auto 100px auto;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 15px;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    color: #333;*/
+/*    font-size: 1rem;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/* 기본 최소 높이 */
 .Top3ForRegion {
     width: 90%;
     max-width: 380px;
-    height: 100px;
-    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    margin: 0 auto;
     padding: 0;
-    margin: 0 auto 100px auto;
     display: flex;
     flex-direction: column;
-    gap: 15px;
     justify-content: center;
     align-items: center;
-    color: #333;
-    font-size: 1rem;
-    font-weight: bold;
 }
 
+/* 아무 지역도 선택 안 했을 때 */
+.Top3ForRegion.inactive {
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+/* 지역 선택 시 활성화 상태 */
+.Top3ForRegion.active {
+    height: auto;
+    margin-bottom: 50px;
+    gap: 15px;
+}
+
+
 .subcomment {
-    margin: 20px auto 12px auto;
+    margin: 10px auto;
     text-align: center;
 }
 
 .subcomment p {
-    background-color: #fff;
-    color: #2C8C7D;
-    font-weight: normal;
+    color: #fff;
+    font-weight: 700;
 }
 
 .GolfList {

@@ -1,9 +1,19 @@
 import axios from 'axios';
 
+// // GET 사용자 정보
+// export const getUserInfo = async () => {
+//     const res = await axios.get(`${BASE_URL}/auth/user`, {
+//         headers: {
+//             Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+//         },
+//     });
+//     return res.data.data;// { id, email, nickname, loginType, role }
+// };
+
 // GET 인기글 정보
 export const fetchPopularPosts = async () => {
     try {
-        const response = await axios.get('https://api.roundandgo.com/api/communities/popular');
+        const response = await axios.get('https://api.roundandgo.com/api/posts/popular');
         if (response.status === 200) {
             return response.data.data;
         } else {
@@ -89,50 +99,62 @@ export const PostingBoard = async (accessToken, title, content, category, images
 };
 
 // DELETE 게시글 삭제 API
-export const deletePost = async (postId, accessToken) => {
+export const deletePost = async (postId) => { // accessToken 인자 추가
     try {
         const response = await axios.delete(
             `https://api.roundandgo.com/api/posts/${postId}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    // localStorage 대신 인자로 받은 accessToken 사용
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 },
             }
         );
         return response.data;
     } catch (error) {
         console.error('게시글 삭제 실패:', error);
-        throw new Error('게시글 삭제에 실패했습니다.');
+        // 에러를 던져 상위 컴포넌트에서 catch하도록 함
+        throw error;
     }
 };
 
 // PUT 게시글 수정 (이미지 포함)
-export const updatePostWithImages = async (token, postId, title, content, category, keepImageIds, images) => {
-    const formData = new FormData();
+export const updatePostWithImages = async (postId, title, content, category, images) => {
+    try {
+        const formData = new FormData();
 
-    const postData = {
-        title,
-        content,
-        category,
-        keepImageIds
-    };
+        // 이미지가 있을 때 개별적으로 추가
+        if (images && images.length > 0) {
+            images.forEach((image) => {
+                formData.append('images', image); // f iles
+            });
+        }
 
-    formData.append("post", new Blob([JSON.stringify(postData)], { type: "application/json" }));
+        // 텍스트 데이터 추가
+        const textData = {
+            title: title,
+            content: content,
+            category: category,
+        };
 
-    if (images && images.length > 0) {
-        images.forEach((file) => formData.append("images", file));
+        formData.append("post", JSON.stringify(textData)); // "post"라는 이름으로 묶어서 보냄
+
+        const response = await axios.put(
+            `https://api.roundandgo.com/api/posts/${postId}`,
+            formData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+            }
+        );
+
+        return response.data;  // 수정된 데이터 반환
+    } catch (error) {
+        console.error('게시글 수정 실패:', error);
+        console.error('서버 응답:', error.response?.data);
+        throw new Error('게시글 수정에 실패했습니다.');
     }
-
-    const res = await fetch(`/api/posts/${postId}/with-images`, {
-        method: "PUT",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: formData
-    });
-
-    if (!res.ok) throw new Error("게시글 수정 실패");
-    return res.json();
 };
 
 

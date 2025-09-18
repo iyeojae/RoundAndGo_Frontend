@@ -28,7 +28,19 @@ function FirstMainPage() {
     const [selectedRegionName, setSelectedRegionName] = useState(null); // 선택된 지역 이름
     const [selectedRegionInfo, setSelectedRegionInfo] = useState(null); // 선택된 지역의 전체 정보
     const [golfCourses, setGolfCourses] = useState([]); // 해당 지역의 골프장 목록
-    const [selectedImageIndex, setSelectedImageIndex] = useState(1); // 가운데 강조될 이미지 인덱스
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+    const handleImageClick = (index, course) => {
+        if (selectedImageIndex === index) {
+            // 2번 클릭 -> 이동 및 id 저장
+            console.log("저장된 골프장 ID:", course.id);
+            localStorage.setItem("selectedGolfCourseId", course.id);
+            window.location.href = '/main';
+        } else {
+            // 1번 클릭 -> 선택만
+            setSelectedImageIndex(index);
+        }
+    };
 
     const handleRegionClick = (clickedRegionName) => {
         // 이미 선택된 지역을 다시 클릭하면 선택 해제
@@ -41,7 +53,6 @@ function FirstMainPage() {
             const regionInfo = regions.find(r => r.name === clickedRegionName);
             setSelectedRegionName(clickedRegionName);
             setSelectedRegionInfo(regionInfo);
-            setSelectedImageIndex(1); // 초기 가운데 강조
         }
     };
 
@@ -66,6 +77,14 @@ function FirstMainPage() {
             fetchGolfCourses();
         }
     }, [selectedRegionInfo]);
+
+    useEffect(() => {
+        if (golfCourses.length > 0) {
+            // 가운데 index
+            const centerIndex = Math.floor(golfCourses.length / 2);
+            setSelectedImageIndex(centerIndex);
+        }
+    }, [golfCourses]);
 
     return (
         <main>
@@ -92,7 +111,8 @@ function FirstMainPage() {
                         ))}
                     </div>
 
-                    <div className="Top3ForRegion">
+                    <div className={`Top3ForRegion ${selectedRegionInfo ? 'active' : 'inactive'}`}>
+
                         {selectedRegionInfo ? (
                             <>
                                 {/* 안내 문구 */}
@@ -122,7 +142,7 @@ function FirstMainPage() {
                                 ) : (
                                     <div className="GolfList">
                                         {golfCourses.map((course, index) => {
-                                            const isSelected = (index === selectedImageIndex) || (golfCourses.length === 0 && index === 0);
+                                            const isSelected = (index === selectedImageIndex) || (golfCourses.length === 0);
                                             const listSize = golfCourses.length;
 
                                             // 동적 스타일 설정
@@ -144,8 +164,9 @@ function FirstMainPage() {
                                                 width: '100%',
                                                 height: '100%',
                                                 opacity: isSelected ? 0.34 : 0,
-                                                background: isSelected ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.34) 23.56%, rgba(0, 0, 0, 0) 65.38%)' : 'none',
+                                                background: isSelected ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.6) 23.56%, rgba(0, 0, 0, 0) 65.38%)' : 'none',
                                                 zIndex: 2,
+                                                pointerEvents: 'none',
                                                 transition: 'all 0.3s ease-in-out'
                                             }
                                             return (
@@ -155,7 +176,7 @@ function FirstMainPage() {
                                                         src={course.imageUrl || NoImage}
                                                         alt={course.name}
                                                         style={imageStyle} // 동적 width 적용
-                                                        onClick={() => setSelectedImageIndex(index)}
+                                                        onClick={() => handleImageClick(index, course)}
                                                     />
 
                                                     {isSelected || listSize === 1 || listSize === 0 ? (

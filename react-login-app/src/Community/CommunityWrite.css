@@ -1,3 +1,4 @@
+/* 컨테이너 및 래퍼 */
 .form-wrap {
     width: 90%;
     margin: 0 auto;
@@ -9,32 +10,18 @@
     padding: 3% 0;
 }
 
+/* 폼 요소(input, textarea)의 기본 스타일 */
 .form-wrap div label {
     font-size: 14px;
     font-weight: 400;
     color: #9a9a9a;
     margin-bottom: 3px;
 }
-.form-wrap div input {
-    width: 100%;
-    aspect-ratio: 10 / 1;
-}
-
-.form-wrap div textarea {
-    width: 100%;
-    aspect-ratio: 400 / 258;
-    resize: none;
-}
-
-.form-wrap input:focus,
-.form-wrap textarea:focus {
-    outline: none;
-    border: 1px solid #269962;
-}
 
 .form-wrap div input,
 .form-wrap div textarea {
     box-sizing: border-box;
+    width: 100%;
     border: 1px solid #9a9a9a;
     border-radius: 0.5rem;
     padding: 0 3%;
@@ -45,6 +32,25 @@
     font-family: inherit;
 }
 
+/* 입력 필드의 크기 */
+.form-wrap div input {
+    aspect-ratio: 10 / 1;
+}
+
+.form-wrap div textarea {
+    aspect-ratio: 400 / 258;
+    resize: none;
+    padding: 3%; /* textarea는 패딩을 위아래로도 줘야 함 */
+}
+
+/* 포커스 시 스타일 */
+.form-wrap input:focus,
+.form-wrap textarea:focus {
+    outline: none;
+    border: 1px solid #269962;
+}
+
+/* 카테고리 선택 버튼 */
 .category-select {
     display: flex;
     flex-direction: row;
@@ -72,6 +78,7 @@
     border-color: #269962;
 }
 
+/* 이미지 업로드 */
 .image-upload-container {
     display: flex;
     gap: 5px;
@@ -143,6 +150,7 @@
     text-align: center;
 }
 
+/* 제출 버튼 */
 .SubmitBtn {
     width: 100%;
     display: flex;
@@ -162,8 +170,9 @@
     color: white;
 }
 
+/* 유틸리티 및 애니메이션 */
 .row-cont,
-.mage-preview-multiple {
+.image-preview-multiple {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -173,22 +182,10 @@
     padding: 15% 0 7% 0;
 }
 
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    50% { transform: translateX(3px); }
-    75% { transform: translateX(-3px); }
-    100% { transform: translateX(0); }
-}
-
-.shake {
-    animation: shake 0.2s ease;
-}
-
+/* 에러 스타일 */
 .input-error {
     border: 1px solid red !important;
     color: red;
-    animation: shake 0.2s ease;
 }
 
 .input-error::placeholder {
@@ -196,27 +193,18 @@
     opacity: 1;
 }
 
-
-
-/* 카테고리 에러 시 */
 .category-select.error button {
     border: 1px solid red;
     color: red;
-    animation: shake 0.2s ease;
 }
 
-
-
-.input-error {
-    border: 1px solid red;
-}
-
-.shake {
-    animation: shake 0.3s;
-}
-
+/* 애니메이션 */
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-4px); }
     75% { transform: translateX(4px); }
+}
+
+.shake {
+    animation: shake 0.3s ease-in-out;
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from "../Layout/Header";
-import { TAB_LABELS } from "../Common/Community/Community_TAB_LABELS";
 import { fetchPostDetail, updatePostWithImages } from "../Common/Community/CommunityAPI";
 import { checkAuth } from "../Search/IsContainToken";
 import CategorySelector from './CategorySelector';
@@ -69,13 +68,16 @@ function CommunityEdit() {
 
     const handleSubmit = async () => {
         if (!validate()) return;
+
+        const authToken = localStorage.getItem('authToken');
+
         if (!accessToken) {
             alert("로그인이 필요합니다.");
             return navigate('/email-login');
         }
 
         try {
-            await updatePostWithImages(accessToken, postId, title, content, selectedCategory, keepImageIds, images);
+            await updatePostWithImages(accessToken, postId, title, content, selectedCategory, keepImageIds, images, authToken);
             alert("게시글이 수정되었습니다.");
             navigate(`/community/detail/${postId}`);
         } catch (err) {

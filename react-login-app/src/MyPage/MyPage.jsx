@@ -5,7 +5,6 @@ import Footer from '../Layout/Footer.jsx';
 import './MyPage.css';
 
 import {
-    getUserInfo,
     getProfileImage,
     uploadProfileImage,
     deleteProfileImage, // 이미지 삭제 함수 추가
@@ -14,8 +13,11 @@ import {
 // 프로필 부분
 import updateIcon from '../Community/update.svg'; // 이름수정 아이콘
 import cameraIcon from './camerabtn.svg'; // 카메라 아이콘
-import profileIcon from './ProfileIcon.svg'; // 기본이미지 색상 변경 아이콘
+import profileIcon from './profile.svg'; // 기본이미지 색상 변경 아이콘
 import selectIcon from './SelectColor.svg'; // 색상 선택 아이콘
+import test from './whiteone.svg';
+
+import myIcon from './MY.svg'; // 내 코스 모음 아이콘
 
 import mapIcon from './map.svg'; // 골프장위치 아이콘
 import communityIcon from '../Image/Layout/Footer/ActiveCommunity.svg'; // 커뮤니티 아이콘
@@ -30,9 +32,12 @@ function MyPage() {
     const goTo = (path) => navigate(path);
 
     const profileColors = ['#F97316', '#EC4899', '#A855F7', '#6366F1', '#14B8A6', '#22C55E'];
-    const [selectedColor, setSelectedColor] = useState('#EC4899');
+    const [selectedColor, setSelectedColor] = useState('#EC4899');  // Default color
 
     const [nickname, setNickname] = useState('');
+    const [newNickname, setNewNickname] = useState('');
+    const [isEditingNickname, setIsEditingNickname] = useState(false);
+
     const [profileImageUrl, setProfileImageUrl] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
     const [showSaveButton, setShowSaveButton] = useState(false);
@@ -46,6 +51,7 @@ function MyPage() {
 
     const handleCameraClick = () => {
         fileInputRef.current.click();
+        setShowSaveButton(true); // 저장 버튼 보이게
     };
 
     const handleImageChange = (e) => {
@@ -64,48 +70,48 @@ function MyPage() {
     };
 
     const handleDeleteImageClick = () => {
-        // 삭제 모드로 전환
         setPreviewImage(null);
         setProfileImageUrl(null);
         setDeleteImageMode(true);
         setShowSaveButton(true);
     };
 
-    const handleSaveImage = async () => {
-        if (deleteImageMode) {
-            try {
-                await deleteProfileImage(); // 삭제 API 호출
-                setProfileImageUrl(null);
-                setPreviewImage(null);
-                setDeleteImageMode(false);
-                setShowSaveButton(false);
-            } catch (err) {
-                console.error('이미지 삭제 실패:', err);
-            }
-            return;
-        }
+    const handleEditNicknameClick = () => {
+        setNewNickname(nickname);
+        setIsEditingNickname(true);
+        setShowSaveButton(true); // 저장 버튼 보이게
+    };
 
+    const handleSaveProfile = async () => {
         const file = fileInputRef.current.files[0];
-        if (!file) return;
+        const updatedNickname = isEditingNickname ? newNickname : nickname;
 
         try {
-            const res = await uploadProfileImage(file);
-            setProfileImageUrl(res.url); // 서버에서 받은 최종 이미지 URL
+            if (deleteImageMode) {
+                await deleteProfileImage();
+                setProfileImageUrl(null);
+            } else {
+                const res = await uploadProfileImage(file || null, updatedNickname, profileImageUrl);
+                setProfileImageUrl(res.url || profileImageUrl);
+            }
+
+            setNickname(updatedNickname);
+            setIsEditingNickname(false);
+            setNewNickname('');
             setPreviewImage(null);
             setShowSaveButton(false);
+            setDeleteImageMode(false);
         } catch (err) {
-            console.error('이미지 저장 실패:', err);
+            console.error('프로필 저장 실패:', err);
         }
     };
 
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const userInfo = await getUserInfo();
-                const profileImg = await getProfileImage();
-
-                setNickname(userInfo.email || '사용자');
-                setProfileImageUrl(profileImg?.url || null);
+                const { nickname, profileImageUrl } = await getProfileImage();
+                setNickname(nickname || '사용자');
+                setProfileImageUrl(profileImageUrl || null);
             } catch (err) {
                 console.error('프로필 정보 불러오기 실패:', err);
             }
@@ -120,7 +126,7 @@ function MyPage() {
             <div className="mypage-container">
                 {/* 프로필 섹션 */}
                 <section className="profile-section">
-                    <div className="profile-avatar" style={{ backgroundColor: selectedColor }}>
+                    <div className="profile-avatar" style={{backgroundColor: selectedColor}}>
                         <img
                             src={previewImage || profileImageUrl || profileIcon}
                             alt="프로필 이미지"
@@ -140,65 +146,117 @@ function MyPage() {
                         <input
                             type="file"
                             accept="image/*"
-                            style={{ display: 'none' }}
+                            style={{display: 'none'}}
                             ref={fileInputRef}
                             onChange={handleImageChange}
                         />
                     </div>
+
+                    {/* 색상 선택 아이콘들 */}
+                    <div className="color-con">
+                        {profileColors.map((color, idx) => (
+                            <div
+                                key={idx}
+                                className="color-item"
+                                onClick={() => handleColorClick(color)}
+                            >
+                                <div
+                                    className="color-box"
+                                    style={{
+                                        backgroundColor: color,
+                                        width: '34px',
+                                        height: '34px',
+                                        borderRadius: '50%',
+                                    }}
+                                >
+                                    <img
+                                        src={selectedColor === color ? selectIcon : test} // 클릭되면 selectIcon, 아니면 test 아이콘
+                                        alt={`icon ${idx}`}
+                                        className="test-icon"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+
                     <div className="profile-name-wrapper">
-                        <span className="profile-name">{nickname}</span>
-                        <img
-                            src={updateIcon}
-                            alt="프로필 이미지 삭제"
-                            className="update-image"
-                            onClick={handleDeleteImageClick}
-                        />
+                        <span className="profile-name">
+                            {isEditingNickname ? (
+                                <input
+                                    type="text"
+                                    value={newNickname}
+                                    onChange={(e) => {
+                                        setNewNickname(e.target.value);
+                                        setShowSaveButton(true);
+                                    }}
+                                    onBlur={() => setIsEditingNickname(false)}
+                                    autoFocus
+                                    className="nickname-input"
+                                />
+                            ) : (
+                                nickname
+                            )}
+                        </span>
+
+                        {/* 수정 아이콘은 isEditingNickname이 true면 숨김 */}
+                        {!isEditingNickname && (
+                            <img
+                                src={updateIcon}
+                                alt="닉네임 수정 아이콘"
+                                className="update-image"
+                                onClick={handleEditNicknameClick}
+                            />
+                        )}
+
                         {showSaveButton && (
-                            <button className="save-button" onClick={handleSaveImage}>
+                            <button className="save-button" onClick={handleSaveProfile}>
                                 저장
                             </button>
                         )}
                     </div>
-                    <div className="color-options">
-                        {profileColors.map((color, idx) => (
-                            <span
-                                key={idx}
-                                className="color-dot-wrapper"
-                                onClick={() => handleColorClick(color)}
-                            >
-                                <span
-                                    className={`color-dot ${selectedColor === color ? 'selected' : ''}`}
-                                    style={{ backgroundColor: color }}
-                                />
-                            </span>
-                        ))}
-                    </div>
+                </section>
+
+                {/* 마이 섹션 */}
+                <section className="my-section">
+                    <MenuItem
+                        icon={myIcon}
+                        label={(
+                            <>
+                                내 코스 모음
+                                <br/>
+                                <span>내가 추천받은 코스를 볼 수 있어요.</span>
+                            </>
+                        )}
+                        onClick={() => goTo('/schedule')}
+                    />
+
                 </section>
 
                 {/* 메뉴 섹션 */}
                 <section className="page-section">
-                    <MenuItem icon={scheduleIcon} label="일정관리" onClick={() => goTo('/schedule')} />
-                    <MenuItem icon={courseIcon} label="코스 추천" onClick={() => goTo('/course')} />
-                    <MenuItem icon={communityIcon} label="커뮤니티" onClick={() => goTo('/community')} />
-                    <MenuItem icon={mapIcon} label="골프장 위치 재설정" onClick={() => goTo('/first-main')} />
+                    <MenuItem icon={scheduleIcon} label="일정관리" onClick={() => goTo('/schedule')}/>
+                    <MenuItem icon={courseIcon} label="코스 추천" onClick={() => goTo('/course')}/>
+                    <MenuItem icon={communityIcon} label="커뮤니티" onClick={() => goTo('/community')}/>
+                    <MenuItem icon={mapIcon} label="골프장 위치 재설정" onClick={() => goTo('/first-main')}/>
                 </section>
 
                 {/* 고객지원/로그아웃 */}
                 <section className="login-section">
-                    <MenuItem icon={questionIcon} label="고객지원" />
-                    <MenuItem icon={logoutIcon} label="로그아웃" onClick={() => goTo('/')} isLogout />
+                    <MenuItem icon={questionIcon} label="고객지원"/>
+                    <MenuItem icon={logoutIcon} label="로그아웃" onClick={() => goTo('/')} isLogout/>
                 </section>
+                <Footer/>
             </div>
-            <Footer />
         </main>
     );
 }
 
-function MenuItem({ icon, label, onClick, isLogout = false }) {
+function MenuItem({icon, label, onClick, isLogout = false}) {
     return (
         <div className={`menu-item ${isLogout ? 'logout' : ''}`} onClick={onClick}>
             <div id="icon-btn">
-                <img src={icon} alt={label} className="menu-icon" />
+                <img src={icon} alt={label} className="menu-icon"/>
             </div>
             <span className="menu-label">{label}</span>
         </div>

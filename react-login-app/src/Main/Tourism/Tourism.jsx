@@ -1,13 +1,14 @@
 // Tourism.jsx
 import React, { useEffect, useState } from 'react';
 import NoImage from '../../Common/NoImage.svg';
-import { fetchTourismData } from "../../Common/Tourism/TourismAPI";
+import { fetchTourData } from "../../Common/BasedOn/API.js";
 import './Tourism.css';
 
 function Tourism({
                      title = '제주도 인기 관광지 모음',
                      subtitle = '',
                      mentClassName = 'IntroMent',
+                     golfCourseId = null,
                  }) {
     const [tourismList, setTourismList] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -17,8 +18,17 @@ function Tourism({
         const loadTourismData = async () => {
             setLoading(true);
             try {
-                const tourismItems = await fetchTourismData();  // fetchTourismData 함수 호출
-                setTourismList(tourismItems);
+                const savedId = localStorage.getItem("selectedGolfCourseId");
+                const golfCourseId = savedId ? parseInt(savedId, 10) : null;
+
+                const data = await fetchTourData('attractions', golfCourseId);
+                const mapped = data.map(item => ({
+                    title: item.title,
+                    imageUrl: item.firstimage,
+                    address: item.addr2 ? `${item.addr1} ${item.addr2}` : item.addr1,
+                    category: item.cat1 || '기타'
+                }));
+                setTourismList(mapped);
             } catch (err) {
                 setError('관광지 정보를 불러오는 데 실패했습니다.');
                 console.error(err);
@@ -28,7 +38,7 @@ function Tourism({
         };
 
         loadTourismData();
-    }, []);
+    }, [golfCourseId]);
 
     if (loading) return <p>불러오는 중입니다...</p>;
     if (error) return <p style={{ color: 'red' }}>{error}</p>;

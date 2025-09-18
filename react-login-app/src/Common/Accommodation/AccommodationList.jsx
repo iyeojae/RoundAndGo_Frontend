@@ -1,14 +1,8 @@
-// AccommodationList.jsx
-
-import React, { createContext, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import NoImage from '../NoImage.svg';
-import { getAccommodationTags } from '../Accommodation/Category.js';
-import arrow from '../../Main/arrow.svg'; // 필요 시
+import { getAccommodationTags } from './Category';
+import arrow from '../../Main/arrow.svg';
 import './AccommodationList.css';
-
-const ContentContext = createContext();
-
-export const useContent = () => useContext(ContentContext);
 
 const AccommodationList = ({
                                title,
@@ -32,11 +26,11 @@ const AccommodationList = ({
         ? filteredAccommodations.slice(0, limit)
         : filteredAccommodations;
 
-    const handleAccommodationClick = (contentid) => {
+    const handleAccommodationClick = (contentid, tags, mapx, mapy) => {
         if (contentid) {
-            // contentid를 localStorage에 저장
-            localStorage.setItem('selectedContentid', contentid);
-            navigateToDetailPage(contentid); // 페이지 이동
+            localStorage.setItem('selectedTags', JSON.stringify(tags));
+            // 여기서 인자를 객체 형태로 전달!
+            navigateToDetailPage({ contentId: contentid, mapx, mapy });
         } else {
             console.warn("No contentid found for accommodation");
         }
@@ -107,12 +101,10 @@ const AccommodationList = ({
                 </div>
             )}
 
-            {/* 숙소 목록 */}
             {previewAccommodations.length === 0 ? (
                 <p style={{ textAlign: 'center', color: '#aaa', fontSize: '0.8rem' }}>해당 카테고리의 숙소가 없습니다.</p>
             ) : (
-                <div className={`${gridClassName}`} // Accommo | DetailAccommo
-                >
+                <div className={`${gridClassName}`}>
                     {previewAccommodations.map((acc) => {
                         const imageUrl = acc.firstimage || NoImage;
                         const tags = getAccommodationTags(acc);
@@ -121,13 +113,13 @@ const AccommodationList = ({
                             <div
                                 key={acc.contentid}
                                 className={`${eachofhouseClassName}`}
-                                onClick={() => handleAccommodationClick(acc.contentid)}
+                                onClick={() => handleAccommodationClick(acc.contentid, tags, acc.mapx, acc.mapy)}
                             >
                                 {imageUrl && (
                                     <img
                                         src={imageUrl}
                                         alt={acc.title || '숙소 이미지'}
-                                        className={`${imageClassName}`} // AccommoImg | DetailAccommoImg
+                                        className={`${imageClassName}`}
                                         onError={(e) => { e.target.src = NoImage; }}
                                     />
                                 )}
@@ -148,7 +140,7 @@ const AccommodationList = ({
                                     >
                                         {tags.map((tag, idx) => (
                                             <span key={idx} style={{ fontSize: '0.65rem', color: '#269962', fontWeight: '500' }}>
-                                                #{tag}
+                                                {tag}
                                             </span>
                                         ))}
                                     </div>

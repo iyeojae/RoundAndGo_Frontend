@@ -1,8 +1,21 @@
+/* 전체 컨테이너를 최소 화면 높이로 설정하여 꽉 채우게 함 */
+main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.community-content-wrapper {
+    background: #f8f8f8;
+}
 .community-detail-cont {
     width: 90%;
     margin: 5% auto 0 auto;
+    padding-bottom: 80px; /* 댓글 입력창 높이만큼 패딩 추가 */
+    flex-grow: 1;
 }
 
+/* 게시글 컨테이너 */
 .board-cont {
     background: #FFFFFF;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
@@ -29,28 +42,17 @@
     font-weight: 450;
 }
 
-.title-tab div,
-.profile-tab div div {
+.post-meta-line {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
 
-.title-tab p {
+.post-meta-line p {
     font-size: 10px;
     font-weight: 400;
     color: #787878;
-}
-
-.title-tab span,
-.profile-tab span {
-    width: 2px;
-    height: 2px;
-    background: #595959;
-    border-radius: 50%;
     margin: 0;
-    padding: 0;
 }
 
 #meat-ball {
@@ -59,6 +61,13 @@
     gap: 2px;
     margin: 0;
     padding: 0;
+}
+
+#meat-ball span {
+    width: 2px;
+    height: 2px;
+    background: #595959;
+    border-radius: 50%;
 }
 
 .content-tab p {
@@ -82,46 +91,103 @@
     font-size: 12px;
     color: #269962;
     font-weight: 400;
+    margin-top: 15px; /* 댓글 수와 첫 댓글 사이의 간격 조정 */
 }
 
 
-.profile-tab {
+/* 댓글 목록 컨테이너 */
+.comments-start-tab {
+    margin-top: 20px;
+}
+
+/* 댓글/답글 세트를 묶는 컨테이너 */
+.comment-group {
+    padding: 10px 0;
+}
+
+.comment-group.parent-group:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+}
+
+/* 댓글 아이템 내부 flex 컨테이너 */
+.comment-item-content {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: start;
+    align-items: flex-start;
     gap: 10px;
+    width: 100%;
 }
 
-.profile-tab div {
+/* 답글의 경우에만 패딩을 추가 */
+.comment-item-content.reply {
+    padding-left: 20px;
+}
+
+/* 답글 화살표 이미지 */
+.reply-arrow {
+    width: 14px;
+    height: 14px;
+    margin-top: 10px;
+}
+
+/* 프로필 이미지 */
+.comment-profile-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #ddd;
+    overflow: hidden;
+}
+.comment-profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 댓글 내용 및 메타 정보 컨테이너 */
+.comment-body {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
 }
 
-.profile-tab p {
-    font-size: 12px;
-    font-weight: 350;
-    margin: 0;
+.comment-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.profile-tab strong {
-    font-weight: 400;
+.comment-author-info {
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+    gap: 3px;
 }
 
-#reply {
+.comment-meta strong {
+    font-size: 13px;
+    font-weight: 500;
+}
+.comment-meta p {
     font-size: 10px;
     color: #787878;
-    font-weight: 400;
-    border: none;
-    background: transparent;
     margin: 0;
+}
+.comment-text {
+    font-size: 12px;
+    margin: 5px 0 0 0;
+}
+.reply-btn {
+    font-size: 10px;
+    color: #787878;
+    background: transparent;
+    border: none;
     padding: 0;
+    margin-top: 5px;
+    cursor: pointer;
     width: fit-content;
 }
 
-
-
+/* 바텀시트 */
 .bottom-sheet {
     position: fixed;
     left: 0;
@@ -203,7 +269,7 @@
     color: #269962;
 }
 
-/*삭제할거냗고 뜨는 모달*/
+/*삭제할거냐고 뜨는 모달*/
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -263,4 +329,63 @@
     padding: 3% 0;
     border-radius: 27px;
     margin: 10%;
+}
+
+/* 댓글 입력창 스타일 */
+.comment-input-area {
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+
+.comment-input-area form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 10px 0;
+}
+
+.comment-input-area textarea {
+    flex-grow: 1;
+    border: 1px solid #269962;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 400;
+    resize: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%;
+    transition: border-color 0.3s ease-in-out;
+    font-family: inherit;
+}
+
+.comment-input-area textarea::placeholder {
+    color: #C0C0C0;
+    font-size: 12px;
+    font-weight: 300;
+}
+
+.comment-input-area textarea:focus {
+    outline: none;
+    border-color: #269962;
+}
+
+.comment-input-area button {
+    background: #269962;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.comment-input-area button img {
+    width: 10px;
+    height: 10px;
 }

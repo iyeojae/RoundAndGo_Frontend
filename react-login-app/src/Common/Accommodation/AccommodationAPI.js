@@ -1,34 +1,34 @@
 // AccommodationAPI.js
 import { getAccommodationCategory } from './Category.js';
 
-export const fetchAccommodations = async () => {
-    try {
-        const apiUrl = `https://apis.data.go.kr/B551011/KorService2/searchStay2?numOfRows=50&_type=json&MobileOS=WEB&MobileApp=DDD&serviceKey=2g4UkG4HCnw63pTfOXD%2FLX%2Fy3BRi%2BzsW3B57RCDkJ2q5sDYi6rSb8OFqZYnJ9nGTpzVy4fyCRIFF79zqQBEhuA%3D%3D&areaCode=39&cat1=B02&cat2=B0201&lDongRegnCd=50`;
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error(`API 호출 실패: ${response.statusText}`);
-
-        const responseData = await response.json();
-        let items = responseData?.response?.body?.items?.item || [];
-
-        const itemsWithCityAndCategory = items.map((acc) => {
-            const city = acc.addr1?.includes('서귀포시')
-                ? '서귀포시'
-                : acc.addr1?.includes('제주시')
-                    ? '제주시'
-                    : '기타';
-
-            return {
-                ...acc,
-                city,
-                category: getAccommodationCategory(acc),
-            };
-        });
-
-        return itemsWithCityAndCategory;
-    } catch (err) {
-        throw new Error(`숙소 데이터를 불러오는 데 실패했습니다: ${err.message}`);
-    }
-};
+// export const fetchAccommodations = async () => {
+//     try {
+//         const apiUrl = `https://apis.data.go.kr/B551011/KorService2/searchStay2?numOfRows=50&_type=json&MobileOS=WEB&MobileApp=DDD&serviceKey=2g4UkG4HCnw63pTfOXD%2FLX%2Fy3BRi%2BzsW3B57RCDkJ2q5sDYi6rSb8OFqZYnJ9nGTpzVy4fyCRIFF79zqQBEhuA%3D%3D&areaCode=39&cat1=B02&cat2=B0201&lDongRegnCd=50`;
+//         const response = await fetch(apiUrl);
+//         if (!response.ok) throw new Error(`API 호출 실패: ${response.statusText}`);
+//
+//         const responseData = await response.json();
+//         let items = responseData?.response?.body?.items?.item || [];
+//
+//         const itemsWithCityAndCategory = items.map((acc) => {
+//             const city = acc.addr1?.includes('서귀포시')
+//                 ? '서귀포시'
+//                 : acc.addr1?.includes('제주시')
+//                     ? '제주시'
+//                     : '기타';
+//
+//             return {
+//                 ...acc,
+//                 city,
+//                 category: getAccommodationCategory(acc),
+//             };
+//         });
+//
+//         return itemsWithCityAndCategory;
+//     } catch (err) {
+//         throw new Error(`숙소 데이터를 불러오는 데 실패했습니다: ${err.message}`);
+//     }
+// };
 
 // 제목, 숙소소개, 주소
 export const getAccommodationDetail = async (contentId) => {

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import NoImage from '../NoImage.svg';
 import arrow from '../../Main/arrow.svg';
+import { fetchTourData } from "../BasedOn/API.js";
 import { getRestaurantCategory } from './Category.js';
 import './RestaurantList.css';
 
@@ -20,6 +21,7 @@ function RestaurantList({
                             eachofrestaurantClassName = 'Restrestaurant',
                             commentClassName = 'Restcomment',
                             imageClassName = 'RestImg',
+                            golfCourseId = null,
                         }) {
     const [restaurants, setRestaurants] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -32,30 +34,24 @@ function RestaurantList({
             setError(null);
 
             try {
-                const cities = ['제주시', '서귀포시'];
-                const responses = await Promise.all(
-                    cities.map(city =>
-                        fetch(`https://api.roundandgo.com/api/tour-infos/restaurants?province=제주특별자치도&city=${city}`)
-                            .then(res => res.ok ? res.json() : Promise.reject(`API 에러: ${city}`))
-                            .then(data => data.map(item => ({
-                                ...item,
-                                city,
-                                category: getRestaurantCategory(item.cat3),
-                            })))
-                    )
-                );
+                const data = await fetchTourData('restaurants', golfCourseId);
+                const mapped = data.map(item => ({
+                    ...item,
+                    city: item.city || '',
+                    category: getRestaurantCategory(item.cat3),
+                }));
 
-                const combined = responses.flat();
-                setRestaurants(combined);
+                setRestaurants(mapped);
             } catch (err) {
-                setError(typeof err === 'string' ? err : '데이터 불러오기 실패');
+                console.error(err);
+                setError('음식점 정보를 불러오는 데 실패했습니다.');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchRestaurants();
-    }, []);
+    }, [golfCourseId]);
 
     const filteredRestaurants = restaurants.filter((r) =>
         selectedCategoryFilter === '전체' || r.category === selectedCategoryFilter

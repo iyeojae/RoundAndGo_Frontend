@@ -165,13 +165,13 @@ function CommunityEntire() {
 
                         <div style={{marginTop: '7%'}}>
                         <span style={{
-                            position: 'absolute',
-                            minWidth: '375px',
-                            maxWidth: '440px',
+                            display: 'block',
                             width: '100%',
-                            margin: '0 auto',
+                            maxWidth: '440px',
+                            minWidth: '375px',
                             height: '6px',
                             backgroundColor: '#dfdfdf',
+                            margin: '0 auto',
                         }}></span>
                         </div>
                     </div>

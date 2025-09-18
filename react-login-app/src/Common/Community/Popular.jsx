@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import {fetchPopularPosts, fetchComments, fetchLikeCount, toggleLike} from './CommunityAPI.js';
+import { fetchPopularPosts, fetchComments, fetchLikeCount, toggleLike } from './CommunityAPI.js';
 import { checkAuth } from "../../Search/IsContainToken.js";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -20,7 +20,7 @@ import WatchIcon from '../../Community/WatchIcon.svg';
 function Popular() {
     const navigate = useNavigate();
     const goTo = (path) => {
-        navigate(path); // 경로 설정된 곳으로 이동
+        navigate(path);
     };
 
     const [posts, setPosts] = useState([]);
@@ -70,13 +70,11 @@ function Popular() {
         try {
             await toggleLike(postId, accessToken);
 
-            // 이전 상태 반영하여 좋아요 토글
             setLikedPosts(prev => ({
                 ...prev,
                 [postId]: !prev[postId],
             }));
 
-            // 좋아요 수 증가/감소
             setLikeCounts(prev => ({
                 ...prev,
                 [postId]: prev[postId] + (likedPosts[postId] ? -1 : 1),
@@ -87,7 +85,6 @@ function Popular() {
         }
     };
 
-    // 댓글 수 || 댓글 목록
     const fetchCommentCount = async (postId) => {
         try {
             const { totalCount } = await fetchComments(postId);
@@ -102,7 +99,6 @@ function Popular() {
         const loadCommentCounts = async () => {
             const counts = {};
 
-            // 인기글 댓글 수
             await Promise.all(
                 posts.map(async (post) => {
                     const count = await fetchCommentCount(post.id);
@@ -138,25 +134,25 @@ function Popular() {
     return (
         <div className="popular-posts">
             <div className="TabMsg">
-                <img src={fire} alt='인기글 불모양'/>
+                <img src={fire} alt='인기글 불모양' />
                 <p>인기글</p>
             </div>
 
             <Swiper
-                spaceBetween={10}
+                spaceBetween={20}
                 slidesPerView={1}
                 loop={false}
                 pagination={{ clickable: true }}
                 modules={[Pagination]}
-                style={{ paddingBottom: '30px' }}
+                style={{ padding: '5px 3px 30px 5px', margin: '0 auto' }}
                 className="PopularSwiper"
             >
                 {posts.map((post) => (
                     <SwiperSlide className="popular-slide" key={post.id}>
-                        <div className='content-container' onClick={() => goTo('/community/entire')}>
+                        <div className='content-container' onClick={() => goTo(`/community/detail/${post.id}`)}>
                             <h3>{post.title}</h3>
                             <div>
-                                <img src={CommentIcon} alt='메시지아이콘'/>
+                                <img src={CommentIcon} alt='메시지아이콘' />
                                 <p>{commentCounts[post.id] ?? 0}</p>
                             </div>
                         </div>
@@ -169,7 +165,7 @@ function Popular() {
                                 <span>{likeCounts[post.id] ?? 0}</span>
                             </div>
                             <div className='watch'>
-                                <img src={WatchIcon} alt="조회수 아이콘"/>
+                                <img src={WatchIcon} alt="조회수 아이콘" />
                                 <span>16</span>
                             </div>
                         </div>

@@ -1,18 +1,23 @@
 // DetailRestaurant.jsx
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
 import RestaurantList from '../../Common/Restaurant/RestaurantList.jsx';
 
 function DetailRestaurant() {
-    const navigate = useNavigate();
-    const goTo = (path) => {
-        navigate(path); // 경로 설정된 곳으로 이동
-    };
+    const [golfCourseId, setGolfCourseId] = useState(null);
+
+    useEffect(() => {
+        const savedId = localStorage.getItem("selectedGolfCourseId");
+        if (savedId) {
+            setGolfCourseId(parseInt(savedId, 10));
+        }
+    }, []);
+
 
     return (
         <div className="DetailRestaurant">
             <RestaurantList
                 title="제주도 음식점"
+                golfCourseId={golfCourseId}
                 showMoreButton={false}
                 showCity={false}
                 gridClassName={'DetailRestGrid'}

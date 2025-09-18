@@ -1,12 +1,11 @@
-import CommunityEntire from "./Community/CommunityEntire.jsx";
-
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Banner from './EntireBackground.svg'; // 배경
 import LeftContent from './Banner/LeftContent.jsx'; // 왼쪽 콘텐츠
 
 import './App.css';
+
 import EmailLoginPage from './EmailAuth/EmailLoginPage';
 import SignupPage from './EmailAuth/SignupPage';
 import FindAccountPage from './EmailAuth/FindAccountPage';
@@ -22,59 +21,42 @@ import DetailMorePage from './Detail/Accommodation/MoreAccommodation.jsx'; // �
 import CommunityMainPage from './Community/Community.jsx'; // 커뮤니티
 import CommunityEntirePage from './Community/CommunityEntire.jsx'; // 커뮤니티 전체보기
 import CommunityWritePage from './Community/CommunityWrite.jsx'; // 커뮤니티 쓰기
+import CommunityDetailPage from './Community/CommunityDetail.jsx' // 커뮤니티 상세
+import CommunityEditPage from './Community/CommunityEdit.jsx' // 커뮤니티 편집
 import CourseRecommendation from './Course/CourseRecommendation'; // 코스 추천
 import CourseMain from './Course/CourseMain'; // 코스 추천 메인
+import MyPage from './MyPage/MyPage.jsx'; // 마이페이지
 
 function App() {
     return (
         <Router>
-            <div
-                style={{
-                    backgroundImage: `url(${Banner})`,
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    width: '100%',
-                    height: '100vh',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    padding: '0 2rem',
-                    boxSizing: 'border-box',
-                }}
-            >
-                {/* 왼쪽 콘텐츠 */}
-                <LeftContent/>
-
-                {/* 오른쪽 콘텐츠 */}
-                <div
-                    style={{
-                        flex: 1,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100%',
-                        zIndex: 1,
-                    }}
-                >
+            <div className="app-container">
+                <div className="left-content-wrapper">
+                    <LeftContent />
+                </div>
+                <div className="right-content">
                     <main>
                         <Routes>
-                            <Route path="/" element={<HomePage/>}/>
-                            <Route path="/email-login" element={<EmailLoginPage/>}/>
-                            <Route path="/signup" element={<SignupPage/>}/>
-                            <Route path="/find-account" element={<FindAccountPage/>}/>
-                            <Route path="/schedule" element={<SchedulePage/>}/>
-                            <Route path="/jeju-location" element={<JejuLocationPage/>}/>
-                            <Route path="/login/oauth2/code/kakao" element={<OAuth2Callback/>}/>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/email-login" element={<EmailLoginPage />} />
+                            <Route path="/signup" element={<SignupPage />} />
+                            <Route path="/find-account" element={<FindAccountPage />} />
+                            <Route path="/schedule" element={<SchedulePage />} />
+                            <Route path="/jeju-location" element={<JejuLocationPage />} />
+                            <Route path="/login/oauth2/code/kakao" element={<OAuth2Callback />} />
 
-                            <Route path="/first-main" element={<FirstMainPage/>}/> {/* 첫 메인 페이지 */}
-                            <Route path="/main" element={<MainPage/>}/> {/* 메인 페이지 */}
-                            <Route path="/detail/main/:" element={<DetailMainPage/>}/> {/* 상세 페이지 */}
-                            <Route path="/detail/main/more" element={<DetailMorePage/>}/> {/*상세페이지 더보기 - 숙박 */}
-                            <Route path="/community" element={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
-                            <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
-                            <Route path="/communiyt/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
-                            <Route path="/course/recommendation" element={<CourseRecommendation/>}/> {/* 코스 추천 */}
-                            <Route path="/course/*" element={<CourseMain/>}/> {/* 코스 추천 3단계 */}
+                            <Route path="/first-main" element={<FirstMainPage />} />
+                            <Route path="/main" element={<MainPage />} />
+                            <Route path="/detail/main" element={<DetailMainPage />} />
+                            <Route path="/detail/main/more" element={<DetailMorePage />} />
+                            <Route path="/community" element={<CommunityMainPage />} />
+                            <Route path="/community/entire" element={<CommunityEntirePage />} />
+                            <Route path="/community/detail/:postId" element={<CommunityDetailPage />} />
+                            <Route path="/community/write" element={<CommunityWritePage />} />
+                            <Route path="/community/edit/:postId" element={<CommunityEditPage />} />
+                            <Route path="/course/recommendation" element={<CourseRecommendation />} />
+                            <Route path="/course/*" element={<CourseMain />} />
+                            <Route path="/mypage" element={<MyPage />} />
                         </Routes>
                     </main>
                 </div>
@@ -84,6 +66,3 @@ function App() {
 }
 
 export default App;
-
-
-

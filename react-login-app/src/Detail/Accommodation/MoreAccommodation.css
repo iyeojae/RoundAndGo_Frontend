@@ -1,0 +1,231 @@
+/* 전체 레이아웃 및 공통 스타일 */
+.MoreAccommodation {
+    background: #f8f8f8;
+    min-height: 100vh;
+}
+
+.Contentainer {
+    width: 90%;
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 0 0 32px;
+}
+
+/* 섹션으로 시작하는 클래스 */
+.section {
+    background: #fff;
+    border: 1px solid #E0E0E0;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 10%;
+}
+
+h6 {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+/* 대표 이미지 */
+.Image {
+    position: relative;
+    width: 100%;
+}
+
+#back-arrow {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 28px;
+    aspect-ratio: 1 / 1;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.Image img {
+    width: 100%;
+    aspect-ratio: 375 / 240;
+    display: block;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    object-fit: cover;
+}
+
+/* 숙소 이름 및 태그 */
+.TagTitleContainer {
+    margin: 5% 0 15% 0;
+}
+
+.hashtags {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4c4c4c;
+    margin-bottom: 8px;
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* 숙소사진 슬라이더 */
+.next-images {
+    margin: 1% 0 10% 0;
+}
+
+/* 각 슬라이드 아이템 간 간격 */
+.next-images .slick-slide {
+    width: 97px !important;
+    padding: 0;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    height: auto !important; /* 높이 고정 방지 */
+}
+
+/* 슬라이드 전체 트랙 */
+.next-images .slick-list {
+    margin: 0;
+    overflow: hidden;
+}
+
+/* 슬라이더 이미지 */
+.slider-item {
+    width: 78px;
+    height: 90px;
+    border-bottom: 2px solid transparent;
+}
+
+.slider-image {
+    width: 78px;
+    height: 78px;
+    border-radius: 14px;
+    object-fit: cover;
+    display: block;
+    box-sizing: border-box;
+    transition: border 0.3s;
+}
+
+/* 활성화된 슬라이더 이미지만 border 표시 */
+.next-images .slick-current .slider-item {
+    border-bottom: 2px solid #269962;
+    transition: border 0.3s;
+}
+
+.service-header p {
+    font-size: 14px;
+    color: #4c4c4c;
+    cursor: pointer;
+    margin: 0;
+}
+
+.facilities-list {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 16px;
+}
+
+.facilities-list li {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #4c4c4c;
+}
+
+#check {
+    width: 12px;
+    height: 12px;
+}
+
+/* 위치 */
+.location-container {
+    background: #fff;
+    border: 1px solid #E0E0E0;
+    border-radius: 16px;
+}
+
+.location-map {
+    width: 100%;
+    aspect-ratio: 400 / 200;
+    border-top-right-radius: 16px;
+    border-top-left-radius: 16px;
+    overflow: hidden;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.location-map p {
+    color: #888;
+    font-size: 14px;
+    margin: 0;
+}
+
+.textC {
+    width: 100%;
+    padding: 1rem;
+}
+
+.address-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4c4c4c;
+    margin: 0 0 8px;
+}
+
+.address-copy-btn {
+    background: none;
+    border: none;
+    color: #269962;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.address-copy-btn img {
+    width: 16px;
+    height: 16px;
+}
+
+/* 숙소 소개 */
+.introduce p {
+    font-size: 14px;
+    color: #4c4c4c;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* 자세히 보러가기 버튼 */
+.more-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.more-btn button {
+    width: 100%;
+    max-width: 300px;
+    padding: 16px 24px;
+    border: 1px solid #269962;
+    background-color: #fff;
+    color: #269962;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.more-btn button:hover {
+    background-color: #269962;
+    color: white;
+}

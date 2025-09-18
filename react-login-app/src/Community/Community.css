@@ -1,9 +1,7 @@
 .CommunityContainer {
-
-    margin-top: 13%;
 }
 
-.section-header {
+.section-header-comm-main {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -12,15 +10,16 @@
     margin: 3% auto;
 }
 
-.section-header h4 {
+.section-header-comm-main h4 {
     font-size: 14px;
     font-weight: 500;
     margin: 0;
 }
 
-.section-header img {
+.section-header-comm-main img {
     width: 6px;
     height: 10px;
+    margin: 0;
 }
 
 .post-list {

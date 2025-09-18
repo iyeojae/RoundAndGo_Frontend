@@ -1,7 +1,7 @@
 // DetailTourism.jsx
 import React, { useState, useEffect } from 'react';
 import TourismMain from '../../Main/Tourism/Tourism.jsx';
-import { fetchTourismData } from "../../Common/Tourism/TourismAPI";
+import { fetchTourData } from "../../Common/BasedOn/API.js";
 import NoImage from '../../Common/NoImage.svg';
 
 function DetailTourism() {
@@ -13,10 +13,20 @@ function DetailTourism() {
         const loadTourismData = async () => {
             setLoading(true);
             try {
-                const tourismItems = await fetchTourismData(); // API 호출
-                setTourismList(tourismItems); // 데이터를 state에 저장
+                const savedId = localStorage.getItem("selectedGolfCourseId");
+                const golfCourseId = savedId ? parseInt(savedId, 10) : null;
+
+                const data = await fetchTourData('attractions', golfCourseId);
+                const mapped = data.map(item => ({
+                    title: item.title,
+                    imageUrl: item.firstimage,
+                    address: item.addr2 ? `${item.addr1} ${item.addr2}` : item.addr1,
+                    category: item.cat1 || '기타'
+                }));
+                setTourismList(mapped);
             } catch (err) {
                 setError('관광지 정보를 불러오는 데 실패했습니다.');
+                console.error(err);
             } finally {
                 setLoading(false);
             }
@@ -30,7 +40,7 @@ function DetailTourism() {
             {loading && <p>불러오는 중입니다...</p>}
             {error && <p style={{color: 'red'}}>{error}</p>}
 
-            {/* 컴포넌트에 데이터 전달 */}
+            {/* 컴포넌트에 전달 */}
             <TourismMain
                 title='제주도에 오면 꼭 가봐야되는'
                 subtitle='인기 관광지 모음'
@@ -43,7 +53,6 @@ function DetailTourism() {
                     <div
                         key={index}
                         className="TourismItem"
-                        style={{cursor: 'pointer'}}
                         onClick={() => {
                             const query = encodeURIComponent(item.title);
                             const url = `https://map.naver.com/v5/search/${query}`;

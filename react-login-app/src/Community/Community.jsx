@@ -11,7 +11,7 @@ import NewBoard from './NewBoardIcon.svg';
 import { fetchCategories, fetchPostsLatest, fetchComments } from "../Common/Community/CommunityAPI";
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS.js';
 import Popular from "../Common/Community/Popular";
-import WriteButton from './WriteNewBoard.jsx';
+import WriteNewBoard from './WriteNewBoard.jsx';
 import Toast from '../Common/Community/Toast.jsx';
 
 function CommunityBoard() {
@@ -32,7 +32,7 @@ function CommunityBoard() {
         if (location.state?.deleted) {
             setShowToast(true);
 
-            // 브라우저 히스토리 초기화 (새로고침 시 재표시 방지)
+            // 브라우저 히스토리 초기화
             window.history.replaceState({}, document.title);
         }
     }, [location.state]);
@@ -93,7 +93,10 @@ function CommunityBoard() {
             try {
                 // 최신글
                 const latestData = await fetchPostsLatest();
-                const filteredLatestPosts = latestData.filter(post => isToday(post.createdAt)); // 최신글만 필터링
+                const filteredLatestPosts = latestData
+                    .filter(post => isToday(post.createdAt))
+                    .slice(0, 3); // 최대 3개만
+
                 setLatestPosts(filteredLatestPosts); // 최신글 상태
 
                 // 최신글을 제외 카테고리
@@ -124,18 +127,18 @@ function CommunityBoard() {
                     <div>
                         <DivContent/>
 
-                        {/*<Popular/>*/}
+                        <Popular/>
                         {/* 인기글 */}
 
                         <div style={{marginTop: '7%'}}>
                         <span style={{
-                            position: 'absolute',
-                            minWidth: '375px',
-                            maxWidth: '440px',
+                            display: 'block',
                             width: '100%',
-                            margin: '0 auto',
+                            maxWidth: '440px',
+                            minWidth: '375px',
                             height: '6px',
                             backgroundColor: '#dfdfdf',
+                            margin: '0 auto',
                         }}></span>
                         </div>
                     </div>
@@ -143,7 +146,7 @@ function CommunityBoard() {
                     <div className="CommunityContainer">
                         {/* 최신글 섹션 */}
                         <div className="community-section">
-                            <div className="section-header">
+                            <div className="section-header-comm-main">
                                 <h4>최신글</h4>
                                 <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
                             </div>
@@ -182,7 +185,7 @@ function CommunityBoard() {
 
                             return (
                                 <div key={label} className="community-section">
-                                    <div className="section-header">
+                                    <div className="section-header-comm-main">
                                         <h4>{label}</h4>
                                         <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
                                     </div>
@@ -224,10 +227,10 @@ function CommunityBoard() {
                                 onClose={() => setShowToast(false)}
                             />
                         )}
-                        <WriteButton/>
+                        <WriteNewBoard />
                     </div>
+                    <Footer/>
                 </div>
-                <Footer/>
             </div>
         </main>
     );

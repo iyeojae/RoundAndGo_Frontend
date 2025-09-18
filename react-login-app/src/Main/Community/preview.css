@@ -1,0 +1,56 @@
+.Community {
+    width: 90%;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+
+.CommunityContent {
+    width: 90%;
+    margin: 15px auto;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 15px;
+}
+
+.preview-post {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.preview-post:last-child {
+    border-bottom: none;
+}
+
+.post-header {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    gap: 4px;
+    margin-bottom: 6px; /* 필요 시 유지 */
+}
+
+.category {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2a8f2a; /* 최신 색상 */
+    border: 1px solid #2a8f2a;
+    padding: 2px 6px;
+    margin-right: 8px; /* 필요 시 유지 */
+    width:fit-content;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    flex: 1; /* 필요 시 유지 */
+}
+
+.post-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #555;
+}
