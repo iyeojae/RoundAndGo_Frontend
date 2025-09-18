@@ -19,6 +19,7 @@ const CourseStep2 = () => {
   
   // 상태 관리
   const [selectedStyle, setSelectedStyle] = useState('');
+  const [userPreferences, setUserPreferences] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   // 스타일 옵션
@@ -179,7 +180,7 @@ const CourseStep2 = () => {
           golfCourseId: step1Data.golfCourseIds?.[0] || 1, // 첫 번째 골프장 ID
           teeOffTime: step1Data.golfTimes?.[0] || "09:00", // 첫 번째 골프 시간
           courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury', // API 명세에 맞게 매핑
-          userPreferences: "맛집 위주로, 바다 전망 좋은 숙소" // AI 개인화 추천
+          userPreferences: userPreferences || "현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요" // 사용자 입력 또는 기본값
         });
         
         console.log('당일치기 API 요청:', {
@@ -193,11 +194,8 @@ const CourseStep2 = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          credentials: 'include',
-          mode: 'cors'
+            'Authorization': `Bearer ${accessToken}`
+          }
         });
       } else {
         // 다일차: Body로 CourseRecommendationRequestDto 전송
@@ -245,7 +243,7 @@ const CourseStep2 = () => {
         
         // 다일차 AI 추천용 Query 파라미터
         const queryParams = new URLSearchParams({
-          userPreferences: "전통 한식 위주, 온천 숙소 선호, 자연 경관 중시" // AI 개인화 추천
+          userPreferences: userPreferences || "현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요" // 사용자 입력 또는 기본값
         });
         
         console.log('다일차 API 요청:', {
@@ -259,11 +257,8 @@ const CourseStep2 = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
-            'X-Requested-With': 'XMLHttpRequest'
+            'Authorization': `Bearer ${accessToken}`
           },
-          credentials: 'include',
-          mode: 'cors',
           body: JSON.stringify(requestData)
         });
       }
@@ -371,6 +366,11 @@ const CourseStep2 = () => {
           </div>
           <h2 className="instruction-title">여행 카테고리를 선택해주세요.</h2>
           <p className="instruction-subtitle">어떤 스타일의 여행을 원하시나요?</p>
+          
+          {/* 예시 문구 추가 */}
+          <div className="example-text-container">
+            <p className="example-text">ex) 현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요.</p>
+          </div>
         </div>
 
         {/* 스타일 선택 섹션 */}
@@ -397,6 +397,18 @@ const CourseStep2 = () => {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* 사용자 선호도 입력창 */}
+        <div className="preferences-input-container">
+          <label className="preferences-label">추가 요청사항</label>
+          <textarea
+            className="preferences-input"
+            placeholder="ex) 현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요."
+            value={userPreferences}
+            onChange={(e) => setUserPreferences(e.target.value)}
+            rows={3}
+          />
         </div>
 
         {/* 다음 버튼 */}

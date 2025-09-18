@@ -921,7 +921,8 @@
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
-  max-height: 80vh;
+  max-height: 95vh;
+  height: 90vh;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
@@ -971,6 +972,7 @@
   border-radius: 8px;
   font-size: 1rem;
   margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
 .search-input:focus {

@@ -199,6 +199,50 @@
   margin: 0;
 }
 
+/* 사용자 선호도 입력창 */
+.preferences-input-container {
+  max-width: 320px;
+  margin: 20px auto;
+}
+
+.preferences-label {
+  display: block;
+  font-family: 'Spoqa Han Sans Neo';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.preferences-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid #8F8F8F;
+  border-radius: 8px;
+  background: #FFFFFF;
+  font-family: 'Spoqa Han Sans Neo';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #333;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.preferences-input::placeholder {
+  color: #8F8F8F;
+}
+
+.preferences-input:focus {
+  outline: none;
+  border-color: #2C8C7D;
+  box-shadow: 0 0 0 2px rgba(44, 140, 125, 0.1);
+}
+
 /* 스타일 선택 섹션 */
 .style-selection-section {
   margin-bottom: 40px;

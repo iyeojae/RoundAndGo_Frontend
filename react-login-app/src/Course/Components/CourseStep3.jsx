@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../Layout/Header';
 import Footer from '../../Layout/Footer';
 import { loadKakaoMapSDK, isKakaoMapReady } from '../../utils/kakaoMapLoader';
-import { createSchedule, transformScheduleForAPI } from '../../Schedule&Weather/ScheduleAPI';
 import { API_ENDPOINTS } from '../../config/api';
 import LocationSearchModal from './LocationSearchModal';
 import './CourseStep3.css';
@@ -871,66 +870,6 @@ const CourseStep3 = () => {
   };
 
 
-  // 하루의 코스 데이터를 스케줄 형식으로 변환하는 함수
-  const createSchedulesForDay = (dayData, date, dayNumber) => {
-    const schedules = [];
-    
-    dayData.forEach((location, index) => {
-      // 시간 정보 처리 (startTime, endTime이 직접 있으면 사용, 없으면 time 문자열 파싱)
-      let startTime = '09:00';
-      let endTime = '10:00';
-      
-      if (location.startTime && location.endTime) {
-        // startTime, endTime이 직접 저장된 경우
-        startTime = location.startTime;
-        endTime = location.endTime;
-      } else if (location.time) {
-        // 기존 time 문자열 파싱 (예: "09:00-12:00" 또는 "14:00")
-        const timeParts = location.time.split('-');
-        if (timeParts.length === 2) {
-          startTime = timeParts[0].trim();
-          endTime = timeParts[1].trim();
-        } else if (timeParts.length === 1) {
-          startTime = timeParts[0].trim();
-          // 기본적으로 1시간 소요로 설정
-          const [hour, minute] = startTime.split(':');
-          const endHour = parseInt(hour) + 1;
-          endTime = `${endHour.toString().padStart(2, '0')}:${minute}`;
-        }
-      }
-      
-      // 카테고리별 색상 매핑 (백엔드 데이터 구조에 맞게)
-      const getCategoryColor = (category) => {
-        switch (category) {
-          case 'golf': return '#E70012';
-          case 'food': return '#FF6B35';
-          case 'tour': return '#4ECDC4';
-          case 'stay': return '#45B7D1';
-          case '골프장': return '#E70012';
-          case '맛집': return '#FF6B35';
-          case '관광지': return '#4ECDC4';
-          case '숙소': return '#45B7D1';
-          default: return '#95A5A6';
-        }
-      };
-      
-      const schedule = {
-        title: `${dayNumber}일차 - ${location.name}`,
-        startDate: date,
-        endDate: date,
-        startTime: startTime,
-        endTime: endTime,
-        isAllDay: false,
-        color: getCategoryColor(location.type),
-        category: location.type,
-        location: location.address || location.name
-      };
-      
-      schedules.push(schedule);
-    });
-    
-    return schedules;
-  };
 
   // 여행 시작 버튼 핸들러
   const handleTravelClick = async () => {
@@ -942,6 +881,7 @@ const CourseStep3 = () => {
       const step2Data = JSON.parse(sessionStorage.getItem('courseStep2') || '{}');
       const startDate = step1Data.departureDate;
       const selectedPeriod = step1Data.selectedPeriod;
+      const travelDays = parseInt(step1Data.travelDays) || 1;
       
       if (!courseData || !startDate) {
         alert('코스 데이터가 없습니다. 다시 시도해주세요.');
@@ -949,7 +889,7 @@ const CourseStep3 = () => {
       }
       
       // 사용자 확인
-      const confirmMessage = `선택한 코스를 저장하시겠습니까?\n\n여행 기간: ${selectedPeriod === 'day' ? '당일치기' : step1Data.travelDays + '박 ' + (parseInt(step1Data.travelDays) + 1) + '일'}\n출발일: ${startDate}`;
+      const confirmMessage = `선택한 코스를 저장하시겠습니까?\n\n여행 기간: ${selectedPeriod === 'day' ? '당일치기' : travelDays + '박 ' + (travelDays + 1) + '일'}\n출발일: ${startDate}`;
       
       if (!window.confirm(confirmMessage)) {
         console.log('사용자가 코스 저장을 취소했습니다.');
@@ -976,8 +916,15 @@ const CourseStep3 = () => {
         'emotional': 'theme'
       };
       
-      const travelDays = parseInt(step1Data.travelDays) || 1;
-      const courseName = `${selectedPeriod === 'day' ? '당일치기' : step1Data.travelDays + '박 ' + (travelDays + 1) + '일'} 제주 골프 여행`;
+      const courseName = `${selectedPeriod === 'day' ? '당일치기' : travelDays + '박 ' + (travelDays + 1) + '일'} 제주 골프 여행`;
+      
+      console.log('📅 여행 기간 계산:', {
+        selectedPeriod: selectedPeriod,
+        step1TravelDays: step1Data.travelDays,
+        parsedTravelDays: travelDays,
+        courseName: courseName,
+        expectedResult: selectedPeriod === '3night' ? '3박 4일' : '기타'
+      });
       const description = `${courseTypeMapping[step2Data.selectedStyle] || 'luxury'} 스타일의 제주도 골프 여행 코스`;
       
       // courseDays 배열 생성
@@ -996,6 +943,15 @@ const CourseStep3 = () => {
           const courseDate = new Date(startDate);
           courseDate.setDate(courseDate.getDate() + dayIndex);
           
+          console.log(`📅 ${dayIndex + 1}일차 날짜 계산:`, {
+            startDate: startDate,
+            dayIndex: dayIndex,
+            calculatedDate: courseDate.toISOString().split('T')[0],
+            dayNumber: dayIndex + 1,
+            dayKey: dayKey,
+            expectedDate: `${startDate} + ${dayIndex}일 = ${courseDate.toISOString().split('T')[0]}`
+          });
+          
           // 골프장 정보 (첫 번째 골프장 타입 장소에서 추출)
           const golfPlace = dayData.find(place => place.type === 'golf');
           const golfCourseId = golfPlace ? 1 : 1; // 기본값 1
@@ -1013,6 +969,13 @@ const CourseStep3 = () => {
             else if (placeType === 'golf') category = '골프';
             else if (placeType === 'tour') category = '관광';
             
+            console.log(`🏷️ ${dayIndex + 1}일차 ${placeIndex + 1}번째 장소 카테고리 매핑:`, {
+              placeName: place.name,
+              originalType: place.type,
+              mappedType: placeType,
+              category: category
+            });
+            
             return {
               type: placeType,
               name: place.name || '이름 없음',
@@ -1022,7 +985,21 @@ const CourseStep3 = () => {
               mapx: place.mapx || '126.5219',
               mapy: place.mapy || '33.4996',
               visitOrder: placeIndex + 1,
-              category: category // 카테고리 추가
+              category: category, // 한국어 카테고리 (표시용)
+              categoryType: placeType, // 영어 타입 (백엔드용)
+              // 백엔드에서 스케줄 생성 시 사용할 수 있도록 추가 정보 제공
+              scheduleCategory: category,
+              scheduleType: placeType,
+              // 스케줄 생성 시 필수 정보
+              scheduleInfo: {
+                title: `${dayIndex + 1}일차 - ${place.name}`,
+                category: category,
+                type: placeType,
+                startTime: '09:00', // 기본 시작 시간
+                endTime: '10:00',   // 기본 종료 시간
+                location: place.address || place.name,
+                isAllDay: false
+              }
             };
           });
           
@@ -1031,7 +1008,12 @@ const CourseStep3 = () => {
             courseDate: courseDate.toISOString().split('T')[0],
             teeOffTime: teeOffTime,
             golfCourseId: golfCourseId,
-            places: places
+            places: places,
+            // 백엔드에서 스케줄 생성 시 날짜 정보를 명확히 전달
+            scheduleDate: courseDate.toISOString().split('T')[0],
+            dayIndex: dayIndex,
+            isFirstDay: dayIndex === 0,
+            isLastDay: dayIndex === maxDays - 1
           });
         }
       }
@@ -1043,10 +1025,64 @@ const CourseStep3 = () => {
         startDate: startDate,
         travelDays: travelDays,
         isPublic: true,
-        courseDays: courseDays
+        courseDays: courseDays,
+        // 백엔드에서 스케줄 생성 시 카테고리 정보를 명확히 전달
+        scheduleGenerationInfo: {
+          includeCategories: true,
+          categoryMapping: {
+            'golf': '골프',
+            'food': '맛집', 
+            'tour': '관광',
+            'stay': '숙소'
+          },
+          // 날짜 계산 정보 명확히 전달
+          dateCalculation: {
+            startDate: startDate,
+            note: "dayIndex 0 = 출발일 (1일차), dayIndex 1 = 출발일+1일 (2일차)",
+            example: "출발일이 2024-01-01이면: day0=2024-01-01(1일차), day1=2024-01-02(2일차)"
+          },
+          // 스케줄 생성 가이드
+          scheduleCreationGuide: {
+            instruction: "각 place의 scheduleInfo를 사용하여 스케줄을 생성하세요",
+            requiredFields: ["title", "category", "startTime", "endTime", "location"],
+            categoryUsage: "place.scheduleInfo.category를 스케줄의 category 필드에 사용하세요",
+            example: "골프장 → category: '골프', 맛집 → category: '맛집', 관광지 → category: '관광', 숙소 → category: '숙소'"
+          }
+        }
       };
       
       console.log('📤 코스 저장 요청 데이터:', courseSaveData);
+      console.log('📅 날짜 계산 요약:', {
+        startDate: startDate,
+        totalDays: courseDays.length,
+        dateMapping: courseDays.map(day => ({
+          dayNumber: day.dayNumber,
+          dayIndex: day.dayIndex,
+          courseDate: day.courseDate,
+          scheduleDate: day.scheduleDate,
+          isFirstDay: day.isFirstDay,
+          isLastDay: day.isLastDay
+        }))
+      });
+      console.log('🏷️ 카테고리 정보 요약:', {
+        totalPlaces: courseDays.reduce((sum, day) => sum + day.places.length, 0),
+        categoriesByDay: courseDays.map(day => ({
+          dayNumber: day.dayNumber,
+          categories: day.places.map(place => ({
+            name: place.name,
+            category: place.category,
+            type: place.type,
+            scheduleInfo: place.scheduleInfo
+          }))
+        }))
+      });
+      console.log('📋 스케줄 생성 가이드:', {
+        instruction: "백엔드에서 각 place.scheduleInfo를 사용하여 스케줄 생성",
+        examplePlaces: courseDays.flatMap(day => day.places).slice(0, 3).map(place => ({
+          name: place.name,
+          scheduleInfo: place.scheduleInfo
+        }))
+      });
       
       // POST /api/courses/saved로 코스 저장
       const response = await fetch(API_ENDPOINTS.COURSES_SAVED, {
@@ -1077,51 +1113,19 @@ const CourseStep3 = () => {
       console.log('✅ 코스 저장 성공:', result);
       
       // 코스 저장 성공 후 스케줄에도 저장
-      console.log('📅 스케줄 생성 시작...');
+      // 코스 저장 완료 - 백엔드에서 스케줄을 자동으로 생성합니다
+      console.log('✅ 코스 저장 완료 - 백엔드에서 관련 스케줄을 자동 생성합니다');
       
-      // 각 날짜별로 스케줄 생성
-      const schedulePromises = [];
+      const totalPlaces = Object.values(courseData).flat().length;
+      const categorySummary = courseDays.map(day => 
+        `${day.dayNumber}일차 (${day.scheduleDate}): ${day.places.map(p => p.category).join(', ')}`
+      ).join('\n');
       
-      if (selectedPeriod === 'day') {
-        // 당일치기: day0 데이터만 처리
-        if (courseData.day0 && courseData.day0.length > 0) {
-          const daySchedules = createSchedulesForDay(courseData.day0, startDate, 1);
-          schedulePromises.push(...daySchedules.map(schedule => createSchedule(transformScheduleForAPI(schedule))));
-        }
-      } else {
-        // 다일차: 각 날짜별 데이터 처리
-        const maxDays = selectedPeriod === '1night' ? 2 : 
-                       selectedPeriod === '2night' ? 3 : 
-                       selectedPeriod === '3night' ? 4 : 1;
-        
-        for (let dayIndex = 0; dayIndex < maxDays; dayIndex++) {
-          const dayKey = `day${dayIndex}`;
-          if (courseData[dayKey] && courseData[dayKey].length > 0) {
-            const dayDate = new Date(startDate);
-            dayDate.setDate(dayDate.getDate() + dayIndex);
-            const daySchedules = createSchedulesForDay(courseData[dayKey], dayDate.toISOString().split('T')[0], dayIndex + 1);
-            schedulePromises.push(...daySchedules.map(schedule => createSchedule(transformScheduleForAPI(schedule))));
-          }
-        }
-      }
+      alert(`✅ 코스가 성공적으로 저장되었습니다!\n\n🎯 저장된 정보:\n- 코스: ${courseName}\n- 여행 기간: ${selectedPeriod === 'day' ? '당일치기' : travelDays + '박 ' + (travelDays + 1) + '일'}\n- 출발일: ${startDate}\n- 총 장소 수: ${totalPlaces}개\n\n📅 일정 날짜 및 카테고리:\n${categorySummary}\n\n🏷️ 각 장소의 카테고리 정보가 백엔드로 전달되었습니다.\n백엔드에서 관련 스케줄이 자동으로 생성됩니다.\n스케줄 페이지에서 날짜와 카테고리 정보를 확인해주세요.`);
       
-      // 모든 스케줄 생성 요청 실행
-      const scheduleResults = await Promise.allSettled(schedulePromises);
-      
-      // 스케줄 결과 확인
-      const scheduleSuccessCount = scheduleResults.filter(result => result.status === 'fulfilled').length;
-      const scheduleFailureCount = scheduleResults.filter(result => result.status === 'rejected').length;
-      
-      console.log(`📊 스케줄 저장 결과: 성공 ${scheduleSuccessCount}개, 실패 ${scheduleFailureCount}개`);
-      
-      if (scheduleSuccessCount > 0) {
-        alert(`✅ 코스와 스케줄이 성공적으로 저장되었습니다!\n\n🎯 저장된 정보:\n- 코스: ${courseName}\n- 여행 기간: ${selectedPeriod === 'day' ? '당일치기' : step1Data.travelDays + '박 ' + (parseInt(step1Data.travelDays) + 1) + '일'}\n- 출발일: ${startDate}\n- 스케줄: ${scheduleSuccessCount}개 일정 추가\n\n이제 메인 페이지에서 저장된 코스와 스케줄을 확인할 수 있습니다.`);
-      } else {
-        alert(`✅ 코스는 저장되었지만 스케줄 저장에 실패했습니다.\n\n🎯 저장된 코스 정보:\n- 여행 기간: ${selectedPeriod === 'day' ? '당일치기' : step1Data.travelDays + '박 ' + (parseInt(step1Data.travelDays) + 1) + '일'}\n- 출발일: ${startDate}\n- 총 장소 수: ${Object.values(courseData).flat().length}개\n\n스케줄은 수동으로 추가해주세요.`);
-      }
-      
-      console.log('🎉 코스 및 스케줄 저장 완료 - 메인 페이지로 이동');
-      navigate('/main');
+      console.log('🎉 코스 및 스케줄 저장 완료 - 스케줄 페이지로 이동');
+      // 스케줄 페이지로 이동하여 새로 생성된 스케줄 확인 (새로고침 트리거 포함)
+      navigate('/schedule?refresh=true');
       
     } catch (error) {
       console.error('코스 저장 중 오류:', error);
@@ -1177,28 +1181,11 @@ const CourseStep3 = () => {
             const retryResult = await retryResponse.json();
             console.log('✅ 간단한 데이터로 코스 저장 성공:', retryResult);
             
-            // 간단한 스케줄도 생성
-            try {
-              const simpleSchedule = {
-                title: '제주 골프 여행',
-                startDate: retryStartDate,
-                endDate: retryStartDate,
-                startTime: '09:00',
-                endTime: '18:00',
-                isAllDay: false,
-                category: '골프',
-                location: '제주도'
-              };
-              
-              await createSchedule(transformScheduleForAPI(simpleSchedule));
-              console.log('✅ 간단한 스케줄도 저장 성공');
-              alert('✅ 코스와 스케줄이 성공적으로 저장되었습니다!');
-            } catch (scheduleError) {
-              console.error('스케줄 저장 실패:', scheduleError);
-              alert('✅ 코스는 저장되었지만 스케줄 저장에 실패했습니다.');
-            }
+            // 코스 저장 완료 - 백엔드에서 스케줄을 자동으로 생성합니다
+            console.log('✅ 간단한 데이터로 코스 저장 완료 - 백엔드에서 스케줄 자동 생성');
+            alert('✅ 코스가 성공적으로 저장되었습니다!\n백엔드에서 관련 스케줄이 자동으로 생성됩니다.');
             
-            navigate('/main');
+            navigate('/schedule?refresh=true');
             return;
           } else {
             console.error('간단한 데이터로도 실패:', retryResponse.status);

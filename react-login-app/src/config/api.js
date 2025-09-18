@@ -31,6 +31,9 @@ export const API_ENDPOINTS = {
   // 스케줄 관련
   SCHEDULES: `${API_BASE_URL}/schedules`,
   SCHEDULE_BY_ID: (id) => `${API_BASE_URL}/schedules/${id}`,
+
+  // 코스 관련
+  COURSES_SAVED: `${API_BASE_URL}/courses/saved`,
 };
 
 // 환경 정보 로깅

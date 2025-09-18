@@ -569,7 +569,16 @@ export const transformScheduleFromAPI = (apiSchedule) => {
   // Enum 색상을 CSS 색상으로 변환
   const cssColor = getEnumColorToCSS(apiSchedule.color);
 
-  return {
+  // 카테고리 정보 처리 및 디버깅
+  console.log('🔄 API 스케줄 변환 - 카테고리 정보:', {
+    apiScheduleId: apiSchedule.id,
+    apiScheduleTitle: apiSchedule.title,
+    apiCategory: apiSchedule.category,
+    apiColor: apiSchedule.color,
+    cssColor: cssColor
+  });
+
+  const result = {
     id: apiSchedule.id,
     title: apiSchedule.title,
     startDate: startParsed.date,
@@ -578,7 +587,7 @@ export const transformScheduleFromAPI = (apiSchedule) => {
     endTime: endParsed.time,
     isAllDay: apiSchedule.allDay,
     color: cssColor, // Enum 색상을 CSS 색상으로 변환
-    category: apiSchedule.category,
+    category: apiSchedule.category || '기타', // 기본값 추가
     location: apiSchedule.location,
     // 기존 UI 호환성을 위한 추가 필드들
     time: apiSchedule.allDay ? '하루종일' : `${startParsed.time || '00:00'}~${endParsed.time || '23:59'}`,
@@ -587,4 +596,13 @@ export const transformScheduleFromAPI = (apiSchedule) => {
     attendees: '개인', // 기본값
     reminder: '1시간 전' // 기본값
   };
+
+  console.log('✅ 변환된 스케줄 데이터:', {
+    id: result.id,
+    title: result.title,
+    category: result.category,
+    color: result.color
+  });
+
+  return result;
 };
