@@ -51,7 +51,7 @@ function App() {
                             <Route path="/community" element={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
                             <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
                             <Route path="/community/detail/:postId" element={<CommunityDetailPage/>}/> {/* 커뮤니티 - 상세 */}
-                            <Route path="/communiyt/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
+                            <Route path="/community/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
                             <Route path="/community/edit/:postId" element={<CommunityEditPage />} /> {/* 커뮤니티 - 수정 */}
                             <Route path="/course/recommendation" element={<CourseRecommendation/>}/> {/* 코스 추천 */}
                             <Route path="/course/my" element={<MyCourseView/>}/> {/* 내 코스보기 */}

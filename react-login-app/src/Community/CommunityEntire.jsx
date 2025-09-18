@@ -6,8 +6,6 @@ import WriteBtn from './WriteNewBoard.jsx';
 import DivContent from '../Common/Community/DivContent.jsx';
 import { checkAuth } from "../Search/IsContainToken.js";
 
-import './CommunityEntire.css';
-
 import { fetchCategories, fetchPostsLatest, fetchComments, fetchLikeCount, toggleLike } from "../Common/Community/CommunityAPI";
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS.js';
 import WatchIcon from './WatchIcon.svg';
@@ -159,7 +157,7 @@ function CommunityEntire() {
         <main>
             <div className="community">
                 <Header />
-                <div style={{ backgroundColor: '#F8F8F8', width: '100%' }}>
+                <div style={{ backgroundColor: '#F8F8F8', width: '100%', }}>
                     <div>
                         <DivContent/>
 
@@ -202,7 +200,7 @@ function CommunityEntire() {
                     </div>
 
                     {/* 게시글 목록 */}
-                    <ul style={{width: '90%', margin: '0 auto', listStyle: 'none', padding: 0 }}>
+                    <ul style={{width: '90%', margin: '0 auto', listStyle: 'none', padding: 0, minHeight: '67vh' }}>
                         {filteredPosts.length === 0 && <li>게시글이 없습니다.</li>}
                         {filteredPosts.map(post => (
                             <>
@@ -271,8 +269,8 @@ function CommunityEntire() {
                     </ul>
 
                     <WriteBtn/>
+                    <Footer/>
                 </div>
-                <Footer/>
             </div>
         </main>
     );

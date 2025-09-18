@@ -120,17 +120,16 @@ function CommunityBoard() {
     };
 
     return (
-        <main>
-            <div className="community">
-                <Header/>
-                <div style={{backgroundColor: '#F8F8F8', width: '100%',}}>
-                    <div>
-                        <DivContent/>
+        <div className="community">
+            <Header/>
+            <div style={{backgroundColor: '#F8F8F8', width: '100%',}}>
+                <div>
+                    <DivContent/>
 
-                        <Popular/>
-                        {/* 인기글 */}
+                    <Popular/>
+                    {/* 인기글 */}
 
-                        <div style={{marginTop: '7%'}}>
+                    <div style={{marginTop: '7%'}}>
                         <span style={{
                             display: 'block',
                             width: '100%',
@@ -140,99 +139,98 @@ function CommunityBoard() {
                             backgroundColor: '#dfdfdf',
                             margin: '0 auto',
                         }}></span>
-                        </div>
                     </div>
-
-                    <div className="CommunityContainer">
-                        {/* 최신글 섹션 */}
-                        <div className="community-section">
-                            <div className="section-header-comm-main">
-                                <h4>최신글</h4>
-                                <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
-                            </div>
-                            <ul className="post-list">
-                                {latestPosts.length === 0 && <li className="no-post">최신글이 없습니다</li>}
-                                {latestPosts.map((post) => (
-                                    <li key={post.id} className="post-item" onClick={() => goToPostDetail(post.id)}>
-                                        <div className="post-title">
-                                            <img src={NewBoard} alt='최신글'/>
-                                            <p>{post.title}</p>
-                                        </div>
-                                        <div className="comment-count">
-                                            <img src={Comment} alt='댓글 아이콘'/>
-                                            <p>{commentCounts[post.id] ?? 0}</p>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <span
-                                style={{
-                                    display: 'block',
-                                    height: '2px',
-                                    width: '100%',
-                                    backgroundColor: '#dfdfdf',
-                                    marginTop: '10px',
-                                    borderRadius: '3px',
-                                }}
-                            />
-                        </div>
-
-                        {/* 카테고리별 게시글 섹션 */}
-                        {categorizedPosts.length > 0 && categorizedPosts.map((categoryPosts, idx) => {
-                            const {label} = TAB_LABELS[idx + 1];  // '최신글' 제외
-                            const postsInCategory = categoryPosts.slice(0, 3); // 최대 3개
-
-                            return (
-                                <div key={label} className="community-section">
-                                    <div className="section-header-comm-main">
-                                        <h4>{label}</h4>
-                                        <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
-                                    </div>
-                                    <ul className="post-list">
-                                        {postsInCategory.length === 0 && <li className="no-post">게시글이 없습니다</li>}
-                                        {postsInCategory.map((post) => (
-                                            <li key={post.id} className="post-item"
-                                                onClick={() => goToPostDetail(post.id)}>
-                                                <div className="post-title"><p>{post.title}</p></div>
-                                                <div className="comment-count">
-                                                    <img src={Comment} alt='댓글 아이콘'/>
-                                                    <p>{commentCounts[post.id] ?? 0}</p>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-
-                                    {/* 마지막 index 아닐 때만 visible */}
-                                    {idx !== categorizedPosts.length - 1 && (
-                                        <span
-                                            style={{
-                                                display: 'block',
-                                                height: '2px',
-                                                width: '100%',
-                                                backgroundColor: '#dfdfdf',
-                                                marginTop: '10px',
-                                                borderRadius: '3px',
-                                            }}
-                                        />
-                                    )}
-                                </div>
-                            );
-                        })}
-
-                        {showToast && (
-                            <Toast
-                                message="게시글이 정상적으로 삭제되었습니다."
-                                duration={3000}
-                                onClose={() => setShowToast(false)}
-                            />
-                        )}
-                        <WriteNewBoard />
-                    </div>
-                    <Footer/>
                 </div>
+
+                <div className="CommunityContainer">
+                    {/* 최신글 섹션 */}
+                    <div className="community-section">
+                        <div className="section-header-comm-main">
+                            <h4>최신글</h4>
+                            <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
+                        </div>
+                        <ul className="post-list">
+                            {latestPosts.length === 0 && <li className="no-post">최신글이 없습니다</li>}
+                            {latestPosts.map((post) => (
+                                <li key={post.id} className="post-item" onClick={() => goToPostDetail(post.id)}>
+                                    <div className="post-title">
+                                        <img src={NewBoard} alt='최신글'/>
+                                        <p>{post.title}</p>
+                                    </div>
+                                    <div className="comment-count">
+                                        <img src={Comment} alt='댓글 아이콘'/>
+                                        <p>{commentCounts[post.id] ?? 0}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+
+                        <span
+                            style={{
+                                display: 'block',
+                                height: '2px',
+                                width: '100%',
+                                backgroundColor: '#dfdfdf',
+                                marginTop: '10px',
+                                borderRadius: '3px',
+                            }}
+                        />
+                    </div>
+
+                    {/* 카테고리별 게시글 섹션 */}
+                    {categorizedPosts.length > 0 && categorizedPosts.map((categoryPosts, idx) => {
+                        const {label} = TAB_LABELS[idx + 1];  // '최신글' 제외
+                        const postsInCategory = categoryPosts.slice(0, 3); // 최대 3개
+
+                        return (
+                            <div key={label} className="community-section">
+                                <div className="section-header-comm-main">
+                                    <h4>{label}</h4>
+                                    <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
+                                </div>
+                                <ul className="post-list">
+                                    {postsInCategory.length === 0 && <li className="no-post">게시글이 없습니다</li>}
+                                    {postsInCategory.map((post) => (
+                                        <li key={post.id} className="post-item"
+                                            onClick={() => goToPostDetail(post.id)}>
+                                            <div className="post-title"><p>{post.title}</p></div>
+                                            <div className="comment-count">
+                                                <img src={Comment} alt='댓글 아이콘'/>
+                                                <p>{commentCounts[post.id] ?? 0}</p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                {/* 마지막 index 아닐 때만 visible */}
+                                {idx !== categorizedPosts.length - 1 && (
+                                    <span
+                                        style={{
+                                            display: 'block',
+                                            height: '2px',
+                                            width: '100%',
+                                            backgroundColor: '#dfdfdf',
+                                            marginTop: '10px',
+                                            borderRadius: '3px',
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        );
+                    })}
+
+                    {showToast && (
+                        <Toast
+                            message="게시글이 정상적으로 삭제되었습니다."
+                            duration={3000}
+                            onClose={() => setShowToast(false)}
+                        />
+                    )}
+                    <WriteNewBoard/>
+                </div>
+                <Footer/>
             </div>
-        </main>
+        </div>
     );
 }
 

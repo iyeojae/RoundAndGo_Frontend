@@ -335,7 +335,7 @@ function CommunityDetail() {
         <main>
             <Header versionClassName={'ArrowVer'} showLogo={false} showArrow={true} TitleText={'커뮤니티'} />
             <div className="community-content-wrapper">
-                <div className="community-detail-cont">
+                <div className="community-detail-cont" style={{height: '100vh'}}>
                     <div className='board-cont'>
                         <div className='title-tab'>
                             <p id='cate'>{getCategoryLabel(post.category)}</p>
@@ -358,7 +358,7 @@ function CommunityDetail() {
                                 {Array.isArray(post.images) && post.images.map((img, i) => (
                                     <img
                                         key={i}
-                                        src={img.url}
+                                        src={`/api${new URL(img.url).pathname}`}
                                         alt={img.originalFilename || `img-${i}`}
                                         onClick={() => setSelectedImage(img.url)}
                                     />
