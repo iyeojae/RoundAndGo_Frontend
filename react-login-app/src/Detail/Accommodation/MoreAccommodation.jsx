@@ -249,7 +249,7 @@ function MoreAccommodation() {
                     {/* 자세히 보러가기 */}
                     <button
                         onClick={() => {
-                            alert("자세히 보러가기 기능은 아직 미정입니다.");
+                            alert("자세히 보러가기는 뭘로 가야하나용?? 네이버 연동할까");
                         }}
                     >
                         자세히 보러가기

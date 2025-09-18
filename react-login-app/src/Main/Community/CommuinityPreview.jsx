@@ -6,6 +6,9 @@ import { fetchPostsLatest, fetchComments } from "../../Common/Community/Communit
 import { TAB_LABELS } from "../../Common/Community/Community_TAB_LABELS.js";
 import './preview.css';
 import arrow from "../arrow.svg";
+import heart from '../../Community/HeartIcon.svg';
+import view from '../../Community/WatchIcon.svg';
+import comment from '../../Community/CommentIcon.svg';
 
 function CommunityPreview() {
     const navigate = useNavigate();
@@ -51,29 +54,26 @@ function CommunityPreview() {
     }, []);
 
     return (
-        // src/MainPage/CommunityPreview.jsx
-        <div className="Community" style={{ paddingTop: '30px', width: '90%', margin: '0 auto' }}>
+        <>
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}>
                 <p className="IntroMent"
-                   style={{ fontSize: '18px', fontWeight: '600', color: '#000', padding: '0' }}>
+                   style={{fontSize: '18px', fontWeight: '500', color: '#000', padding: '0', margin: '0'}}>
                     커뮤니티
                 </p>
-                <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={goToCommunity}>
-                    <p style={{ fontSize: '12px', color: '#797979', marginRight: '5px' }}>더보기</p>
-                    <img style={{ width: '6px', height: '12px' }} src={arrow} alt="더보기"/>
+                <div style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={goToCommunity}>
+                    <p style={{fontSize: '12px', color: '#797979', marginRight: '5px'}}>더보기</p>
+                    <img style={{width: '6px', height: '12px'}} src={arrow} alt="더보기"/>
                 </div>
             </div>
 
-            {/* 카드 박스도 width 90% margin auto */}
             <div className="CommunityContent">
                 {previewPosts.map(post => (
                     <div className="preview-post" key={post.id} onClick={() => goToDetail(post.id)}>
-                        {/* 카테고리 + 제목 세로 정렬 */}
-                        <div className="post-header" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <div className="post-header" style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
                     <span className="category" style={{
                         fontSize: '12px',
                         fontWeight: '600',
@@ -89,17 +89,18 @@ function CommunityPreview() {
                         {post.title}
                     </span>
                         </div>
-                        <div className="post-meta" style={{ fontSize: '12px', color: '#555', marginTop: '8px', display: 'flex', gap: '10px' }}>
-                            <span>❤️ {post.likeCount || 0}</span>
-                            <span>👁 {post.viewCount || 0}</span>
-                            <span>💬 {post.commentCount}</span>
+                        <div className="post-meta"
+                             style={{fontSize: '12px', color: '#555', marginTop: '8px', display: 'flex', gap: '10px'}}>
+                            <span><img src={heart} alt='좋아요'/> {post.likeCount || 0}</span>
+                            <span><img src={view} alt='조회수'/> {post.viewCount || 0}</span>
+                            <span><img style={{width: '10px', height: '10px'}} src={comment}
+                                       alt='댓글'/> {post.commentCount}</span>
                         </div>
                     </div>
                 ))}
-                {previewPosts.length === 0 && <p style={{ padding: '20px' }}>게시글이 없습니다</p>}
+                {previewPosts.length === 0 && <p style={{padding: '20px'}}>게시글이 없습니다</p>}
             </div>
-        </div>
-
+        </>
     );
 }
 

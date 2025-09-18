@@ -26,6 +26,7 @@ import CommunityDetailPage from './Community/CommunityDetail.jsx' // 커뮤니�
 import CommunityEditPage from './Community/CommunityEdit.jsx' // 커뮤니티 편집
 import CourseRecommendation from './Course/CourseRecommendation'; // 코스 추천
 import CourseMain from './Course/CourseMain'; // 코스 추천 메인
+import MyCourseView from './Course/Components/MyCourseView.jsx'; // 내 코스 보기
 import MyPage from './MyPage/MyPage.jsx'; // 마이페이지
 
 function App() {
@@ -48,10 +49,11 @@ function App() {
 
                             <Route path="/first-main" element={<FirstMainPage/>}/> {/* 첫 메인 페이지 */}
                             <Route path="/main" element={<MainPage/>}/> {/* 메인 페이지 */}
-                            <Route path="/detail/main/:" element={<DetailMainPage/>}/> {/* 상세 페이지 */}
+                            <Route path="/detail/main" element={<DetailMainPage/>}/> {/* 상세 페이지 */}
                             <Route path="/detail/main/more" element={<DetailMorePage/>}/> {/*상세페이지 더보기 - 숙박 */}
                             <Route path="/community" element={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
                             <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
+                            <Route path="/community/detail/:postId" element={<CommunityDetailPage/>}/> {/* 커뮤니티 - 상세 */}
                             <Route path="/communiyt/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
                             <Route path="/community/edit/:postId" element={<CommunityEditPage />} /> {/* 커뮤니티 - 수정 */}
                             <Route path="/course/recommendation" element={<CourseRecommendation/>}/> {/* 코스 추천 */}
