@@ -1,18 +1,23 @@
 /* 전체 컨테이너를 최소 화면 높이로 설정하여 꽉 채우게 함 */
-main {
-    min-height: 100vh;
+#main {
+    height: fit-content;
     display: flex;
     flex-direction: column;
+    background: #f8f8f8;
 }
 
 .community-content-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     background: #f8f8f8;
 }
 .community-detail-cont {
-    width: 90%;
+    width: 100%;
     margin: 5% auto 0 auto;
     padding-bottom: 80px; /* 댓글 입력창 높이만큼 패딩 추가 */
     flex-grow: 1;
+    background: #f8f8f8;
 }
 
 /* 게시글 컨테이너 */
@@ -97,12 +102,14 @@ main {
 
 /* 댓글 목록 컨테이너 */
 .comments-start-tab {
-    margin-top: 20px;
+    width: 90%;
+    margin: 20px auto 0 auto;
 }
 
 /* 댓글/답글 세트를 묶는 컨테이너 */
 .comment-group {
     padding: 10px 0;
+    background: #f8f8f8;
 }
 
 .comment-group.parent-group:not(:last-child) {

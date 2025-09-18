@@ -6,16 +6,16 @@
 
 .CommunityContent {
     width: 90%;
-    margin: 15px auto;
+    margin: 5% auto 10% auto;
     border-radius: 10px;
     background: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
     padding: 15px;
 }
 
 .preview-post {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    border-bottom: 1px solid #797979;
     cursor: pointer;
 }
 
@@ -31,20 +31,19 @@
 }
 
 .category {
-    font-size: 12px;
-    font-weight: 600;
-    color: #2a8f2a; /* 최신 색상 */
-    border: 1px solid #2a8f2a;
+    font-size: 9px;
+    font-weight: 500;
+    color: #269962;
+    border: 0.8px solid #269962;
     padding: 2px 6px;
-    margin-right: 8px; /* 필요 시 유지 */
     width:fit-content;
 }
 
 .title {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: #000;
-    flex: 1; /* 필요 시 유지 */
+    flex: 1;
 }
 
 .post-meta {

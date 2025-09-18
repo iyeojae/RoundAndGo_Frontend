@@ -1,28 +1,38 @@
 import { WEATHER_CONFIG, isApiKeyValid } from '../config/weather';
 
+import sun from './img/sun.svg';
+import snow from './img/snow.svg';
+import suncloud from './img/sunandcloud.svg';
+import cloud from './img/cloud.svg';
+import rain from './img/rain.svg';
+import thunder from './img/thunder.svg';
+import wind from './img/wind.svg';
+import moon from './img/moon.svg';
+
 // 날씨 아이콘 매핑 함수
+// 날씨 아이콘 매핑 함수 (경로 대신 문자열 반환)
 export const getWeatherIcon = (iconCode) => {
   const iconMap = {
-    '01d': '☀️', // clear sky day
-    '01n': '🌙', // clear sky night
-    '02d': '⛅', // few clouds day
-    '02n': '☁️', // few clouds night
-    '03d': '☁️', // scattered clouds
-    '03n': '☁️', // scattered clouds
-    '04d': '☁️', // broken clouds
-    '04n': '☁️', // broken clouds
-    '09d': '🌧️', // shower rain
-    '09n': '🌧️', // shower rain
-    '10d': '🌦️', // rain day
-    '10n': '🌧️', // rain night
-    '11d': '⛈️', // thunderstorm
-    '11n': '⛈️', // thunderstorm
-    '13d': '❄️', // snow
-    '13n': '❄️', // snow
-    '50d': '🌫️', // mist
-    '50n': '🌫️', // mist
+    '01d': 'sun', // clear sky day
+    '01n': 'moon', // clear sky night
+    '02d': 'suncloud', // few clouds day
+    '02n': 'cloud', // few clouds night
+    '03d': 'cloud', // scattered clouds
+    '03n': 'cloud', // scattered clouds
+    '04d': 'cloud', // broken clouds
+    '04n': 'cloud', // broken clouds
+    '09d': 'rain', // shower rain
+    '09n': 'rain', // shower rain
+    '10d': 'rain', // rain day
+    '10n': 'rain', // rain night
+    '11d': 'thunder', // thunderstorm
+    '11n': 'thunder', // thunderstorm
+    '13d': 'snow', // snow
+    '13n': 'snow', // snow
+    '50d': 'wind', // mist
+    '50n': 'wind', // mist
   };
-  return iconMap[iconCode] || '❓';
+  return iconMap[iconCode] || cloud; // NoImage는 따로 정의 필요
 };
 
 // 도시명을 좌표로 변환하는 함수 (제주도 내 지역 중심)

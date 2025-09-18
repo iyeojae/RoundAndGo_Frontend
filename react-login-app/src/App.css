@@ -22,11 +22,6 @@
   z-index: 1;
 }
 
-.left-content-wrapper {
-  /* 필요에 따라 left-content 너비나 높이 설정 */
-  /* 예: width: 300px; height: 100%; */
-}
-
 .right-content {
   flex: 1;
   display: flex;

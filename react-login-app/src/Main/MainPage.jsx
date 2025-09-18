@@ -8,7 +8,6 @@ import Accommodation from './Accommodation/Accommodation.jsx'; // 숙박시설 �
 import Restaurant from './Restaurant/Restaurant.jsx'; // 음식점 정보 컴포넌트
 import Tourism from './Tourism/Tourism.jsx'; // 관광지 컴포넌트 
 import CommunityPreview from "./Community/CommuinityPreview"; // 커뮤니티 컴포넌트
-import arrow from "./arrow.svg";
 import GoToCourse from './GoToCourse.svg';
 import IconAI from '../Common/IconAI.svg';
 import Arrow from '../Detail/BackBtn.svg';

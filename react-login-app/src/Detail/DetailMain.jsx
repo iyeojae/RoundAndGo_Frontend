@@ -1,11 +1,12 @@
-// DetailMain.jsx
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom'; // 빠졌던 부분
+import { useSearchParams } from 'react-router-dom';
 import DetailNavbar from './Navbar/DetailNavbar.jsx';
 import DetailAccommodation from './Accommodation/DetailAccomodation.jsx';
 import DetailRestaurant from './Restaurant/DetailRestaurant.jsx';
 import DetailTourism from './Tourism/DetailTourism.jsx';
 import Header from "../Layout/Header";
+import Arrow from "./BackBtn.svg";
+import './DetailMain.css';
 
 function DetailMain() {
     const [searchParams] = useSearchParams();
@@ -19,19 +20,35 @@ function DetailMain() {
         }
     }, [searchParams]);
 
-    return (
-        <main>
-            <div className="DetailMain" style={{width: '100%', backgroundColor: '#F8F8F8'}}>
-                <Header/>
-                <DetailNavbar activeTab={activeTab} onTabChange={setActiveTab}/>
+    // const ScrollToTopButton = () => {
+    //     const scrollToTop = () => {
+    //         window.scrollTo({ top: 0, behavior: 'smooth' });
+    //     };
+    //
+    //     return (
+    //         <button
+    //             className="scroll-to-top-btn"
+    //             onClick={scrollToTop}
+    //             aria-label="위로 가기"
+    //         >
+    //             <img src={Arrow} alt="위로 가기" />
+    //         </button>
+    //     );
+    // };
 
-                <div>
-                    {activeTab === 'accommodation' && <DetailAccommodation/>}
-                    {activeTab === 'restaurant' && <DetailRestaurant/>}
-                    {activeTab === 'tourism' && <DetailTourism/>}
-                </div>
+    return (
+        <div className="DetailMain" style={{ width: '100%', backgroundColor: '#F8F8F8', position: 'relative' }}>
+            <Header />
+            <DetailNavbar activeTab={activeTab} onTabChange={setActiveTab} />
+
+            <div>
+                {activeTab === 'accommodation' && <DetailAccommodation />}
+                {activeTab === 'restaurant' && <DetailRestaurant />}
+                {activeTab === 'tourism' && <DetailTourism />}
             </div>
-        </main>
+
+            {/*<ScrollToTopButton />*/}
+        </div>
     );
 }
 

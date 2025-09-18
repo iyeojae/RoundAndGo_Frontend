@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getAuthToken } from '../../utils/cookieUtils';
 
+
 // axios 기본 설정 - 쿠키 포함
 axios.defaults.withCredentials = true;
 
@@ -68,7 +69,7 @@ export const fetchPostDetail = async (postId) => {
 };
 
 // POST 게시글 작성
-export const PostingBoard = async (accessToken, title, content, category, images) => {
+export const PostingBoard = async (title, content, category, images) => {
     try {
         const formData = new FormData();
         // 이미지가 있을 때 개별적으로 추가
@@ -95,10 +96,10 @@ export const PostingBoard = async (accessToken, title, content, category, images
             }
         );
 
-        return response.data;
+        return response.data.data;
     } catch (error) {
         console.error('게시글 작성 실패:', error);
-        console.error('서버 응답:', error.response?.data);
+        console.error('서버 응답:', error.response?.data.data);
         throw new Error('게시글 작성에 실패했습니다.');
     }
 };
@@ -177,7 +178,7 @@ export const fetchLikeCount = async (postId) => {
 };
 
 // POST 좋아요 버튼
-export const toggleLike = async (postId, accessToken) => {
+export const toggleLike = async (postId) => {
     try {
         const token = getAuthToken();
         const response = await axios.post(
@@ -223,7 +224,7 @@ export const fetchComments = async (communityId) => {
 };
 
 // POST 댓글 작성 api
-export const postComment = async (communityId, content, accessToken, parentCommentId = null)  => {
+export const postComment = async (communityId, content, parentCommentId = null)  => {
     try {
         const token = getAuthToken();
         const response = await axios.post(
@@ -250,7 +251,7 @@ export const postComment = async (communityId, content, accessToken, parentComme
 };
 
 // PUT 댓글 수정 API
-export const updateComment = async (commentId, content, communityId, accessToken, parentCommentId = null) => {
+export const updateComment = async (commentId, content, communityId, parentCommentId = null) => {
     try {
         const response = await axios.put(
             `https://api.roundandgo.com/api/comments/${commentId}`,
@@ -274,7 +275,7 @@ export const updateComment = async (commentId, content, communityId, accessToken
 };
 
 // DELETE 댓글 삭제 API
-export const deleteComment = async (commentId, accessToken) => {
+export const deleteComment = async (commentId) => {
     try {
         const token = getAuthToken();
         const response = await axios.delete(

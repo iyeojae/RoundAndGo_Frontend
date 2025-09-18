@@ -12,6 +12,7 @@ import WatchIcon from './WatchIcon.svg';
 import ActiveHeartIcon from './ActiveHeartIcon.svg';
 import HeartIcon from './HeartIcon.svg';
 import Comment from './CommentIcon.svg';
+import NoContent from './NoContent.svg';
 
 function CommunityEntire() {
     const navigate = useNavigate();
@@ -157,7 +158,7 @@ function CommunityEntire() {
         <main>
             <div className="community">
                 <Header />
-                <div style={{ backgroundColor: '#F8F8F8', width: '100%', }}>
+                <div style={{backgroundColor: '#F8F8F8', width: '100%',}}>
                     <div>
                         <DivContent/>
 
@@ -200,73 +201,93 @@ function CommunityEntire() {
                     </div>
 
                     {/* 게시글 목록 */}
-                    <ul style={{width: '90%', margin: '0 auto', listStyle: 'none', padding: 0, minHeight: '67vh' }}>
-                        {filteredPosts.length === 0 && <li>게시글이 없습니다.</li>}
+                    <ul style={{
+                        width: '90%',
+                        margin: '0 auto',
+                        listStyle: 'none',
+                        padding: 0,
+                        minHeight: '67vh',
+                        display: filteredPosts.length === 0 ? 'flex' : 'block',
+                        alignItems: filteredPosts.length === 0 ? 'center' : undefined,
+                        justifyContent: filteredPosts.length === 0 ? 'center' : undefined
+                    }}>
+                        {filteredPosts.length === 0 && (
+                            <li>
+                                <img src={NoContent} alt='no'/>
+                            </li>
+                        )}
                         {filteredPosts.map(post => (
-                            <>
-                                <li key={post.id} className="post-item" onClick={() => goToPostDetail(post.id)} style={{
-                                    margin: '12px auto 1px auto',
-                                    paddingBottom: '1px',
-                                    borderBottom: '0.5px solid #797979',
-                                    display: 'flex', flexDirection: 'row', justifyContent: 'space-between'
+                            <li key={post.id} className="post-item" onClick={() => goToPostDetail(post.id)} style={{
+                                margin: '12px auto 1px auto',
+                                paddingBottom: '1px',
+                                borderBottom: '0.5px solid #797979',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between'
+                            }}>
+                                <div className="post-left-cont" style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '5px',
+                                    alignItems: 'flex-start',
                                 }}>
-                                    <div className="post-left-cont" style={{
+                                    <p style={{
+                                        fontSize: '9px',
+                                        border: '0.8px solid #269962',
+                                        fontWeight: '400',
+                                        color: '#269962',
+                                        width: 'fit-content',
+                                        margin: 0,
+                                        padding: '0.25% 1%',
+                                    }}>{EngToKor(post.category)}</p>
+
+                                    <p style={{
+                                        fontSize: '13px',
+                                        fontWeight: '450',
+                                        margin: '0'
+                                    }}>{post.title}</p>
+
+                                    <div style={{
+                                        width: '100%',
+                                        margin: 0,
                                         display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '5px',
-                                        alignItems: 'flex-start',
-                                    }}> {/* 카테고리, 제목, 좋아요, 조회수 */}
-                                        <p style={{
-                                            fontSize: '9px',
-                                            border: '0.8px solid #269962',
-                                            fontWeight: '400',
-                                            color: '#269962',
-                                            width: 'fit-content',
-                                            margin: 0,
-                                            padding: '0.25% 1%',
-                                        }}>{EngToKor(post.category)}</p> {/* 카테고리 표시 */}
+                                        flexDirection: 'row',
+                                        gap: '10px'
+                                    }}>
+                                        <div style={{display: 'flex', flexDirection: 'row', gap: '2px'}}>
+                                            <img
+                                                style={{width: '14px'}}
+                                                onClick={() => ToggleLike(post.id)}
+                                                src={likedPosts[post.id] ? ActiveHeartIcon : HeartIcon}
+                                                alt="좋아요"
+                                            />
+                                            <p style={{
+                                                margin: 0,
+                                                fontSize: '9px',
+                                                color: '#797979'
+                                            }}>{likeCounts[post.id] ?? 0}</p>
+                                        </div>
 
-                                        <p style={{
-                                            fontSize: '13px',
-                                            fontWeight: '450',
-                                            margin: '0'
-                                        }}>{post.title}</p> {/* 제목 */}
-
-                                        {/* 조회수, 좋아요 아이콘 */}
-                                        <div style={{
-                                            width: '100%',
-                                            margin: 0,
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            gap: '10px'
-                                        }}>
-                                            <div style={{display: 'flex', flexDirection: 'row', gap: '2px'}}>
-                                                <img style={{width: '14px'}} onClick={() => ToggleLike(post.id)} src={likedPosts[post.id] ? ActiveHeartIcon : HeartIcon} alt="좋아요"/>
-                                                <p style={{margin: 0, fontSize: '9px', color: '#797979'}}>{likeCounts[post.id] ?? 0}</p>
-                                            </div>
-
-                                            <div style={{display: 'flex', flexDirection: 'row', gap: '2px'}}>
-                                                <img src={WatchIcon} alt="조회수" style={{width: '14px'}}/>
-                                                <p style={{margin: 0, fontSize: '9px', color: '#797979'}}>0</p>
-                                            </div>
+                                        <div style={{display: 'flex', flexDirection: 'row', gap: '2px'}}>
+                                            <img src={WatchIcon} alt="조회수" style={{width: '14px'}}/>
+                                            <p style={{margin: 0, fontSize: '9px', color: '#797979'}}>0</p>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div className='post-right-cont'
-                                         style={{display: 'flex', flexDirection: 'column'}}> {/* 댓글 아이콘 / 댓글 수 */}
-                                        <img style={{margin: '0'}} src={Comment} alt='메시지아이콘'/>
-                                        <p style={{
-                                            margin: 0,
-                                            fontSize: '11px',
-                                            color: '#797979',
-                                            textAlign: 'center'
-                                        }}>0</p>
-                                    </div>
-
-                                </li>
-                            </>
+                                <div className='post-right-cont' style={{display: 'flex', flexDirection: 'column'}}>
+                                    <img style={{margin: '0'}} src={Comment} alt='메시지아이콘'/>
+                                    <p style={{
+                                        margin: 0,
+                                        fontSize: '11px',
+                                        color: '#797979',
+                                        textAlign: 'center'
+                                    }}>0</p>
+                                </div>
+                            </li>
                         ))}
                     </ul>
+
 
                     <WriteBtn/>
                     <Footer/>

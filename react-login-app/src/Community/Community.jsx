@@ -122,7 +122,7 @@ function CommunityBoard() {
     return (
         <div className="community">
             <Header/>
-            <div style={{backgroundColor: '#F8F8F8', width: '100%',}}>
+            <div style={{backgroundColor: '#F8F8F8', width: '100%'}}>
                 <div>
                     <DivContent/>
 
@@ -142,7 +142,7 @@ function CommunityBoard() {
                     </div>
                 </div>
 
-                <div className="CommunityContainer">
+                <div className="CommunityContainer" style={{paddingBottom: '5%'}}>
                     {/* 최신글 섹션 */}
                     <div className="community-section">
                         <div className="section-header-comm-main">

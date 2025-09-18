@@ -170,8 +170,8 @@ function TabButtons() {
             <>
                 <p style={{
                     color: '#269962',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
+                    fontSize: '10px',
+                    fontWeight: '300',
                     textAlign: 'center',
                     marginBottom: '10px'
                 }}>
@@ -205,9 +205,9 @@ function TabButtons() {
                                                 whiteSpace: 'nowrap',
                                                 flexGrow: 1
                                             }}>
-                                                <h4 style={{ fontSize: '14px', margin: '0 0 5px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title || '내용 없음'}</h4>
+                                                <h4 style={{ fontSize: '13px', fontWeight: '500', margin: '0 0 5px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title || '내용 없음'}</h4>
                                                 {createdAt && (
-                                                    <p style={{ fontSize: '12px', color: '#555', margin: '0' }}>{createdAt}</p>
+                                                    <p style={{ fontSize: '11px', fontWeight: '400', color: '#797979', margin: '0' }}>{createdAt}</p>
                                                 )}
                                             </div>
                                             {activeTab === 'written' && (
@@ -272,6 +272,7 @@ function TabButtons() {
                         ...commonStyle,
                         ...(activeTab === 'written' ? activeStyle : {}),
                         ...(activeTab === 'written' ? leftRounded : {}),
+                        borderRight: '1px solid white'
                     }}
                 >
                     내가 쓴 글
@@ -282,6 +283,7 @@ function TabButtons() {
                         ...commonStyle,
                         ...(activeTab === 'commented' ? activeStyle : {}),
                         ...(activeTab === 'commented' ? rightRounded : {}),
+                        borderLeft: '1px solid white'
                     }}
                 >
                     댓글 단 글

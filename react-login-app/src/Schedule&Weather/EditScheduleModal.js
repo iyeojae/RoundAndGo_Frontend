@@ -103,7 +103,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
       location: editSchedule.location,
       isAllDay
     });
-    
+
     if (editSchedule.title && editSchedule.startDate && selectedCategory && editSchedule.location) {
       onUpdate({
         ...editSchedule,
@@ -128,17 +128,17 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === 'endDate' && editSchedule.startDate && value < editSchedule.startDate) {
       alert('종료일은 시작일보다 늦거나 같아야 합니다.');
       return;
     }
-    
+
     if (name === 'startDate' && editSchedule.endDate && value > editSchedule.endDate) {
       alert('시작일은 종료일보다 이르거나 같아야 합니다.');
       return;
     }
-    
+
     setEditSchedule(prev => ({
       ...prev,
       [name]: value
@@ -176,22 +176,22 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
   };
 
   const applyTime = () => {
-    const hour24 = tempTime.period === '오후' 
+    const hour24 = tempTime.period === '오후'
       ? (tempTime.hour === '12' ? 12 : parseInt(tempTime.hour) + 12)
       : (tempTime.hour === '12' ? 0 : parseInt(tempTime.hour));
-    
+
     const timeString = `${hour24.toString().padStart(2, '0')}:${tempTime.minute}`;
-    
+
     if (timePickerType === 'start') {
       setEditSchedule(prev => {
         const newSchedule = { ...prev, startTime: timeString };
-        
+
         if (prev.endTime && timeString >= prev.endTime) {
           const [hours, minutes] = timeString.split(':');
           const endHour = (parseInt(hours) + 1) % 24;
           newSchedule.endTime = `${endHour.toString().padStart(2, '0')}:${minutes}`;
         }
-        
+
         return newSchedule;
       });
     } else {
@@ -201,7 +201,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
       }
       setEditSchedule(prev => ({ ...prev, endTime: timeString }));
     }
-    
+
     closeTimePicker();
   };
 
@@ -241,7 +241,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
             <CategorySection>
               <CategoryLabel>카테고리 *</CategoryLabel>
               <CategoryGrid>
-                <CategoryItem 
+                <CategoryItem
                   selected={selectedCategory === '골프'}
                   onClick={() => setSelectedCategory('골프')}
                   $categoryColor={getCategoryCSSColor('골프')}
@@ -257,7 +257,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                   </CategoryIcon>
                   <CategoryText>골프</CategoryText>
                 </CategoryItem>
-                <CategoryItem 
+                <CategoryItem
                   selected={selectedCategory === '맛집'}
                   onClick={() => setSelectedCategory('맛집')}
                   $categoryColor={getCategoryCSSColor('맛집')}
@@ -270,7 +270,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                   </CategoryIcon>
                   <CategoryText>맛집</CategoryText>
                 </CategoryItem>
-                <CategoryItem 
+                <CategoryItem
                   selected={selectedCategory === '숙소'}
                   onClick={() => setSelectedCategory('숙소')}
                   $categoryColor={getCategoryCSSColor('숙소')}
@@ -289,7 +289,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                   </CategoryIcon>
                   <CategoryText>숙소</CategoryText>
                 </CategoryItem>
-                <CategoryItem 
+                <CategoryItem
                   selected={selectedCategory === '관광'}
                   onClick={() => setSelectedCategory('관광')}
                   $categoryColor={getCategoryCSSColor('관광')}
@@ -305,7 +305,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                   </CategoryIcon>
                   <CategoryText>관광</CategoryText>
                 </CategoryItem>
-                <CategoryItem 
+                <CategoryItem
                   selected={selectedCategory === '모임'}
                   onClick={() => setSelectedCategory('모임')}
                   $categoryColor={getCategoryCSSColor('모임')}
@@ -318,7 +318,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                   </CategoryIcon>
                   <CategoryText>모임</CategoryText>
                 </CategoryItem>
-                <CategoryItem 
+                <CategoryItem
                   selected={selectedCategory === '기타'}
                   onClick={() => setSelectedCategory('기타')}
                   $categoryColor={getCategoryCSSColor('기타')}
@@ -357,7 +357,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                     onChange={handleChange}
                     required
                   />
-                  <TimeButton 
+                  <TimeButton
                     type="button"
                     onClick={() => openTimePicker('start')}
                     disabled={isAllDay}
@@ -379,7 +379,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                     onChange={handleChange}
                     min={editSchedule.startDate}
                   />
-                  <TimeButton 
+                  <TimeButton
                     type="button"
                     onClick={() => openTimePicker('end')}
                     disabled={isAllDay}
@@ -398,7 +398,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                 onChange={(e) => {
                   const checked = e.target.checked;
                   setIsAllDay(checked);
-                  
+
                   if (checked) {
                     setEditSchedule(prev => ({
                       ...prev,
@@ -437,8 +437,8 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
           <DeleteButton onClick={handleDelete}>
             삭제
           </DeleteButton>
-          <UpdateButton 
-            type="button" 
+          <UpdateButton
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               handleSubmit(e);
@@ -454,34 +454,34 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
       {showTimePicker && (
         <TimePickerOverlay onClick={closeTimePicker}>
           <TimePickerContent onClick={(e) => e.stopPropagation()}>
-            <TimePickerHeader>
-              <TimePickerTitle>
-                {timePickerType === 'start' ? '시작 시간' : '종료 시간'}
-              </TimePickerTitle>
-              <TimePickerCloseButton onClick={closeTimePicker}>×</TimePickerCloseButton>
-            </TimePickerHeader>
-            
+            {/*<TimePickerHeader>*/}
+            {/*  <TimePickerTitle>*/}
+            {/*    {timePickerType === 'start' ? '시작 시간' : '종료 시간'}*/}
+            {/*  </TimePickerTitle>*/}
+            {/*  <TimePickerCloseButton onClick={closeTimePicker}>×</TimePickerCloseButton>*/}
+            {/*</TimePickerHeader>*/}
+
             <TimePickerBody>
               <TimeColumn>
-                <TimeOption 
+                <TimeOption
                   selected={tempTime.period === '오전'}
                   onClick={() => setTempTime(prev => ({ ...prev, period: '오전' }))}
                 >
                   오전
                 </TimeOption>
-                <TimeOption 
+                <TimeOption
                   selected={tempTime.period === '오후'}
                   onClick={() => setTempTime(prev => ({ ...prev, period: '오후' }))}
                 >
                   오후
                 </TimeOption>
               </TimeColumn>
-              
+
               <TimeColumn>
                 {Array.from({ length: 12 }, (_, i) => {
                   const hour = (i + 1).toString().padStart(2, '0');
                   return (
-                    <TimeOption 
+                    <TimeOption
                       key={hour}
                       selected={tempTime.hour === hour}
                       onClick={() => setTempTime(prev => ({ ...prev, hour }))}
@@ -491,12 +491,12 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                   );
                 })}
               </TimeColumn>
-              
+
               <TimeColumn>
                 {Array.from({ length: 60 }, (_, i) => {
                   const minute = i.toString().padStart(2, '0');
                   return (
-                    <TimeOption 
+                    <TimeOption
                       key={minute}
                       selected={tempTime.minute === minute}
                       onClick={() => setTempTime(prev => ({ ...prev, minute }))}
@@ -507,7 +507,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                 })}
               </TimeColumn>
             </TimePickerBody>
-            
+
             <TimePickerFooter>
               <TimePickerButton type="button" onClick={closeTimePicker}>취소</TimePickerButton>
               <TimePickerButton type="button" $primary onClick={applyTime}>확인</TimePickerButton>
@@ -1043,13 +1043,13 @@ const TimeOption = styled.div`
   margin: 2px 10px;
 
   &:hover {
-    background: #F8F9FA;
+    background: rgba(44, 140, 125, 0.3);
   }
 
   ${props => props.selected && `
-    background: #E8F5E8;
-    color: #269962;
-    font-weight: 500;
+    background: rgba(44, 140, 125, 0.3);
+    color: #2C8C7D;
+    font-weight: 350;
   `}
 `;
 

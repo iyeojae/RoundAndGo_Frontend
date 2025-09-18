@@ -4,6 +4,11 @@ import React from "react";
 import { oauth2KakaoApi } from '../Auth/oauth2KakaoConfig.js';
 import { markKakaoLoginAttempt } from '../Auth/useKakaoLoginDetector.js';
 
+import logo from '../Image/Layout/Header/greenlogo.svg';
+import shape1 from '../Login/1.svg'; // 88% // 390/274
+import shape2 from '../Login/2.svg'; // 70% // 370/274
+import shape3 from '../Login/3.svg'; // 62% // 274/437
+
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -429,38 +434,117 @@ function HomePage() {
     };
 
     return (
-        <AppContainer>
-            <LoginFrame>
-                <LogoSection>
-                    <BackgroundShapes>
-                        <Shape1 />
-                        <Shape4 />
-                    </BackgroundShapes>
+        // <AppContainer>
+        //     <LoginFrame>
+        //         <LogoSection>
+        //             <BackgroundShapes>
+        //                 <Shape1 />
+        //                 <Shape4 />
+        //             </BackgroundShapes>
+        //
+        //             <LogoContent>
+        //                 <LogoContainer>
+        //                     <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="ROUND & GO Logo" />
+        //                 </LogoContainer>
+        //                 <Title>ROUND & GO</Title>
+        //             </LogoContent>
+        //         </LogoSection>
+        //
+        //         <Shape2 />
+        //
+        //         <ButtonContainer>
+        //             <EmailButton onClick={handleEmailLogin}>
+        //                 이메일로 시작하기
+        //             </EmailButton>
+        //
+        //             <KakaoButton onClick={handleKakaoLogin}>
+        //                 <KakaoText src={process.env.PUBLIC_URL + "/images/kakao-text-57a9c7.png"} alt="카카오로 시작하기" />
+        //             </KakaoButton>
+        //         </ButtonContainer>
+        //
+        //         <BottomShapeContainer>
+        //             <Shape3 />
+        //         </BottomShapeContainer>
+        //     </LoginFrame>
+        // </AppContainer> linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        // import shape1 from '../Login/1.svg'; // 88% // 390/274
+        // import shape2 from '../Login/2.svg'; // 70% // 370/274
+        // import shape3 from '../Login/3.svg'; // 62% // 274/437
+        <div style={{
+            background: 'linear-gradient(180deg, #269962 0%, #FFFFFF 100%)',
+            position: 'relative',
+            overflow: 'hidden',
+            height: '100vh',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }}>
+            {/* Shape 1 */}
+            <div style={{
+                position: 'absolute',
+                top: '0',
+                left: '55%',
+                width: '92%',
+                height: '28%',
+                transform: 'translateX(-50%)',
+                zIndex: '3'
+            }}>
+                {/*<p style={{position: 'relative', top: '40%', right: '40%'}}>ROUND & GO</p>*/}
+                <img style={{width: '100%', aspectRatio: '390/274'}} src={shape1} alt='Shape 1'/>
+            </div>
 
-                    <LogoContent>
-                        <LogoContainer>
-                            <Logo src={process.env.PUBLIC_URL + "/images/logo-280a0a.png"} alt="ROUND & GO Logo" />
-                        </LogoContainer>
-                        <Title>ROUND & GO</Title>
-                    </LogoContent>
-                </LogoSection>
+            {/* Shape 2 */}
+            <div style={{
+                position: 'absolute',
+                top: '32%',
+                left: '29%',
+                width: '74%',
+                height: '35%',
+                transform: 'translateX(-50%)'
+            }}>
+                <img style={{width: '100%', aspectRatio: '370/274'}} src={shape2} alt='Shape 2'/>
+            </div>
 
-                <Shape2 />
+            {/* Login Button Container */}
+            <ButtonContainer style={{
+                position: 'absolute',
+                bottom: '20%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '80%',
+                margin: '0 auto',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '0 20px',
+                boxSizing: 'border-box',
+                zIndex: 10
+            }}>
+                <EmailButton onClick={handleEmailLogin}>
+                    로그인
+                </EmailButton>
 
-                <ButtonContainer>
-                    <EmailButton onClick={handleEmailLogin}>
-                        이메일로 시작하기
-                    </EmailButton>
+                <KakaoButton onClick={handleKakaoLogin}>
+                    <KakaoText src={process.env.PUBLIC_URL + "/images/kakao-text-57a9c7.png"} alt="카카오로 시작하기"/>
+                </KakaoButton>
+            </ButtonContainer>
 
-                    <KakaoButton onClick={handleKakaoLogin}>
-                        <KakaoText src={process.env.PUBLIC_URL + "/images/kakao-text-57a9c7.png"} alt="카카오로 시작하기" />
-                    </KakaoButton>
-                </ButtonContainer>
-
-                <BottomShapeContainer>
-                    <Shape3 />
-                </BottomShapeContainer>
-            </LoginFrame>
-        </AppContainer>
+            {/* Shape 3 */}
+            <div style={{
+                position: 'absolute',
+                bottom: '0',
+                right: '0',
+                width: '62%',
+                height: '47%',
+                margin: '0',
+                zIndex: 5
+            }}>
+                <img style={{width: '100%', aspectRatio: '274/437'}} src={shape3} alt='Shape 3'/>
+            </div>
+        </div>
     );
-} export default HomePage;
+}
+
+export default HomePage;
