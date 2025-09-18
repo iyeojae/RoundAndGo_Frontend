@@ -1,9 +1,6 @@
-import CommunityEntire from "./Community/CommunityEntire.jsx";
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 
-import Banner from './EntireBackground.svg'; // 배경
 import LeftContent from './Banner/LeftContent.jsx'; // 왼쪽 콘텐츠
 
 import './App.css';
@@ -12,7 +9,7 @@ import SignupPage from './EmailAuth/SignupPage';
 import FindAccountPage from './EmailAuth/FindAccountPage';
 import SchedulePage from './Schedule&Weather/SchedulePage';
 import JejuLocationPage from './Schedule&Weather/JejuLocationPage';
-import HomePage from "./HomePage";
+import HomePage from "./Login/HomePage";
 import OAuth2Callback from "./OAuth2Callback";
 
 import FirstMainPage from "./FirstMain/FirstMainPage"; // 첫 메인
