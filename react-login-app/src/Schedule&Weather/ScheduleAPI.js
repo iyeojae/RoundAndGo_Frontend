@@ -8,21 +8,11 @@ import { API_ENDPOINTS } from '../config/api';
 
 // 인증 토큰 가져오기
 const getAuthToken = () => {
-  // localStorage의 모든 키 확인
-  console.log('🔍 localStorage 키들:', Object.keys(localStorage));
+  // 쿠키에서 토큰 가져오기
+  const { getAuthToken: getCookieToken } = require('../utils/cookieUtils');
+  const token = getCookieToken();
   
-  // authUtils.js와 동일한 키 사용
-  const token = localStorage.getItem('authToken');
-  
-  // 다른 가능한 토큰 키들도 확인
-  const alternativeTokens = {
-    'accessToken': localStorage.getItem('accessToken'),
-    'token': localStorage.getItem('token'),
-    'jwt': localStorage.getItem('jwt'),
-    'authToken': token
-  };
-  
-  console.log('🔑 토큰 검색 결과:', alternativeTokens);
+  console.log('🔑 쿠키에서 토큰 검색 결과:', token ? '토큰 발견' : '토큰 없음');
   
   return token;
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import './utils/cleanupLocalStorage'; // 쿠키 기반 인증으로 전환하면서 로컬스토리지 정리
 
 import LeftContent from './Banner/LeftContent.jsx'; // 왼쪽 콘텐츠
 
@@ -51,7 +52,7 @@ function App() {
                             <Route path="/community" element={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
                             <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
                             <Route path="/community/detail/:postId" element={<CommunityDetailPage/>}/> {/* 커뮤니티 - 상세 */}
-                            <Route path="/communiyt/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
+                            <Route path="/community/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
                             <Route path="/community/edit/:postId" element={<CommunityEditPage />} /> {/* 커뮤니티 - 수정 */}
                             <Route path="/course/recommendation" element={<CourseRecommendation/>}/> {/* 코스 추천 */}
                             <Route path="/course/my" element={<MyCourseView/>}/> {/* 내 코스보기 */}

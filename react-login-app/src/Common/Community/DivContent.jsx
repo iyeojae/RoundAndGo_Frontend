@@ -5,6 +5,7 @@ import comment from '../../Community/CommentIcon.svg';
 import axios from 'axios';
 import Slider from 'react-slick';
 import { useNavigate } from 'react-router-dom';
+import { getAuthToken } from '../../utils/cookieUtils';
 
 // react-slick CSS 파일 임포트
 import "slick-carousel/slick/slick.css";
@@ -46,7 +47,7 @@ function TabButtons() {
     const [writtenPosts, setWrittenPosts] = useState([]);
     const [commentedPosts, setCommentedPosts] = useState([]);
     const [loading, setLoading] = useState(false);
-    const token = localStorage.getItem('authToken');
+    const token = getAuthToken();
     const navigate = useNavigate();
 
     // 동적으로 CSS를 삽입하는 useEffect 훅

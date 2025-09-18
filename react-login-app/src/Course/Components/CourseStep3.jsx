@@ -4,6 +4,7 @@ import Header from '../../Layout/Header';
 import Footer from '../../Layout/Footer';
 import { loadKakaoMapSDK, isKakaoMapReady } from '../../utils/kakaoMapLoader';
 import { API_ENDPOINTS } from '../../config/api';
+import { getAuthToken } from '../../utils/cookieUtils';
 import LocationSearchModal from './LocationSearchModal';
 import './CourseStep3.css';
 
@@ -12,7 +13,7 @@ const CourseStep3 = () => {
   
   // 로그인 인증 체크
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = getAuthToken();
     if (!token) {
       alert('로그인이 필요한 서비스입니다.');
       navigate('/email-login');
@@ -564,7 +565,7 @@ const CourseStep3 = () => {
   // 랜덤 장소 생성 (실제 API 호출)
   const handleRandomLocation = async (dayKey, itemIndex) => {
     try {
-      const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+      const accessToken = getAuthToken();
       if (!accessToken) {
         alert('로그인이 필요합니다.');
         return;
@@ -776,7 +777,7 @@ const CourseStep3 = () => {
         response = await fetch(`${apiEndpoint}?${queryParams}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+            'Authorization': `Bearer ${getAuthToken()}`
           }
         });
       } else {
@@ -836,7 +837,7 @@ const CourseStep3 = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+            'Authorization': `Bearer ${getAuthToken()}`
           },
           body: JSON.stringify(requestData)
         });
@@ -901,7 +902,7 @@ const CourseStep3 = () => {
       console.log('💾 코스 저장 중...');
       
       // 인증 토큰 확인
-      const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+      const accessToken = getAuthToken();
       if (!accessToken) {
         alert('로그인이 필요합니다. 다시 로그인해주세요.');
         navigate('/email-login');
@@ -1137,7 +1138,7 @@ const CourseStep3 = () => {
           // 변수들을 다시 가져오기
           const retryStep1Data = JSON.parse(sessionStorage.getItem('courseStep1') || '{}');
           const retryStartDate = retryStep1Data.departureDate;
-          const retryAccessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+          const retryAccessToken = getAuthToken();
           
           // 최소한의 필수 데이터만 포함
           const simpleData = {

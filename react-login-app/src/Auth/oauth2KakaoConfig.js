@@ -11,6 +11,7 @@
  */
 
 import { API_ENDPOINTS, BACKEND_BASE_URL } from '../config/api';
+import { setAuthToken, setCookie, removeAuthToken, deleteCookie } from '../utils/cookieUtils';
 
 /**
  * 4. 상세한 디버깅 및 에러 처리
@@ -132,14 +133,16 @@ export const oauth2KakaoApi = {
                 if (event.data.type === 'OAUTH2_LOGIN_SUCCESS') {
                     console.log('✅ OAuth2 로그인 성공:', event.data);
                     
-                    // JWT 토큰 저장
-                    localStorage.setItem('authToken', event.data.accessToken);
-                    localStorage.setItem('refreshToken', event.data.refreshToken);
-                    localStorage.setItem('user', JSON.stringify({
+                    // JWT 토큰 저장 (쿠키 기반)
+                    setAuthToken(event.data.accessToken, 7);
+                    if (event.data.refreshToken) {
+                        setCookie('refreshToken', event.data.refreshToken, { expires: 30 });
+                    }
+                    setCookie('user', JSON.stringify({
                         type: 'kakao',
                         loginTime: new Date().toISOString(),
                         isOAuth2: true
-                    }));
+                    }), { expires: 7 });
                     
                     popup.close();
                     window.removeEventListener('message', messageListener);
@@ -174,11 +177,10 @@ export const oauth2KakaoApi = {
      */
     logout: () => {
         try {
-            // 🚪 로컬스토리지에서 모든 카카오 인증 정보 제거
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('user');
-            localStorage.removeItem('isLoggedIn');
+            // 🚪 쿠키에서 모든 카카오 인증 정보 제거
+            removeAuthToken();
+            deleteCookie('refreshToken');
+            deleteCookie('user');
             
             // 🍪 쿠키에서도 카카오 인증 정보 제거
             document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -225,10 +227,10 @@ export const handleOAuth2Callback = () => {
             if (accessToken) {
                 console.log('✅ URL 파라미터에서 액세스 토큰 발견');
                 
-                // 로컬스토리지에 토큰 저장
-                localStorage.setItem('authToken', accessToken);
+                // 쿠키에 토큰 저장
+                setAuthToken(accessToken, 7);
                 if (refreshToken) {
-                    localStorage.setItem('refreshToken', refreshToken);
+                    setCookie('refreshToken', refreshToken, { expires: 30 });
                 }
                 
                 // 사용자 정보 저장
@@ -238,8 +240,7 @@ export const handleOAuth2Callback = () => {
                     isOAuth2: true
                 };
                 
-                localStorage.setItem('user', JSON.stringify(userInfo));
-                localStorage.setItem('isLoggedIn', 'true');
+                setCookie('user', JSON.stringify(userInfo), { expires: 7 });
                 
                 console.log('✅ OAuth2 콜백 처리 완료 - URL 파라미터 방식');
                 resolve(userInfo);
@@ -255,13 +256,12 @@ export const handleOAuth2Callback = () => {
                 const token = cookieToken.split('=')[1];
                 console.log('✅ 쿠키에서 토큰 발견');
                 
-                localStorage.setItem('authToken', token);
-                localStorage.setItem('user', JSON.stringify({
+                setAuthToken(token, 7);
+                setCookie('user', JSON.stringify({
                     type: 'kakao',
                     loginTime: new Date().toISOString(),
                     isOAuth2: true
-                }));
-                localStorage.setItem('isLoggedIn', 'true');
+                }), { expires: 7 });
                 
                 console.log('✅ OAuth2 콜백 처리 완료 - 쿠키 방식');
                 resolve({
@@ -290,13 +290,12 @@ export const handleOAuth2Callback = () => {
                         const userData = await response.json();
                         console.log('✅ 백엔드 세션에서 사용자 정보 확인:', userData);
                         
-                        localStorage.setItem('user', JSON.stringify({
+                        setCookie('user', JSON.stringify({
                             type: 'kakao',
                             loginTime: new Date().toISOString(),
                             isOAuth2: true,
                             userInfo: userData
-                        }));
-                        localStorage.setItem('isLoggedIn', 'true');
+                        }), { expires: 7 });
                         
                         console.log('✅ OAuth2 콜백 처리 완료 - 세션 방식');
                         resolve({

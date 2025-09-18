@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getAuthToken } from '../../utils/cookieUtils';
 import './LocationSearchModal.css';
 
 const LocationSearchModal = ({ isOpen, onClose, onSelectLocation, dayKey }) => {
@@ -20,7 +21,7 @@ const LocationSearchModal = ({ isOpen, onClose, onSelectLocation, dayKey }) => {
     
     setIsLoading(true);
     try {
-      const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+      const accessToken = getAuthToken();
       if (!accessToken) {
         throw new Error('로그인이 필요합니다.');
       }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import { getAccommodationDetail, getAccommodationImages, getAccommodationInfo } from '../../Common/Accommodation/AccommodationAPI';
+import { KAKAO_CONFIG } from '../../config/kakaoConfig';
 
 import arrow from '../Navbar/BackArrowGR.svg';
 import NoImage from '../../Common/NoImage.svg';
@@ -28,7 +29,7 @@ function MoreAccommodation() {
                 initMap();
             } else {
                 const script = document.createElement('script');
-                script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=본인의_API_KEY&autoload=false';
+                script.src = KAKAO_CONFIG.MAP_SDK_URL_AUTOLOAD_FALSE;
                 script.async = true;
                 document.head.appendChild(script);
                 script.onload = () => {

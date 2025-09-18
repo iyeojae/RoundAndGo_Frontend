@@ -1,5 +1,5 @@
 // 카카오맵 SDK 동적 로드 유틸리티
-const KAKAO_MAP_APP_KEY = 'ad66696f1e438be81ff958f80c7ced41';
+import { KAKAO_CONFIG } from '../config/kakaoConfig';
 
 let isKakaoMapLoaded = false;
 let isKakaoMapLoading = false;
@@ -32,7 +32,7 @@ export const loadKakaoMapSDK = () => {
       // 새로운 스크립트 생성 (autoload=false 옵션 추가)
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_MAP_APP_KEY}&autoload=false`;
+      script.src = KAKAO_CONFIG.MAP_SDK_URL_AUTOLOAD_FALSE;
       script.async = true;
       script.defer = true;
 
