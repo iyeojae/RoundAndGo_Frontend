@@ -1,0 +1,379 @@
+/* 장소 검색 모달 스타일 */
+.location-search-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.location-search-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* 모달 헤더 */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #2563EB;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #f0f4ff;
+  color: #1d4ed8;
+}
+
+/* 카테고리 선택 */
+.category-selector {
+  display: flex;
+  padding: 16px 24px;
+  gap: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.category-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.category-btn.active {
+  background: #269962;
+  border-color: #269962;
+  color: white;
+}
+
+.category-btn:hover:not(.active) {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+
+.category-icon {
+  font-size: 16px;
+}
+
+.category-label {
+  font-weight: 500;
+}
+
+/* 검색 입력 */
+.search-input-container {
+  padding: 20px 24px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper svg {
+  position: absolute;
+  left: 12px;
+  top: 45%;
+  transform: translateY(-50%);
+  color: #999;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #269962;
+  box-shadow: 0 0 0 3px rgba(38, 153, 98, 0.1);
+}
+
+/* 검색 결과 */
+.search-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px 24px 24px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #269962;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.result-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.result-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.result-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.result-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.result-type {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.result-address {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.result-hours {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.result-actions {
+  display: flex;
+  align-items: center;
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: #269962;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.add-btn:hover {
+  background: #1e7e5e;
+}
+
+.add-btn:active {
+  transform: scale(0.98);
+}
+
+.no-results,
+.search-prompt {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.no-results p,
+.search-prompt p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+.no-results p:last-child,
+.search-prompt p:last-child {
+  margin-bottom: 0;
+  font-size: 12px;
+  color: #999;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .location-search-modal-overlay {
+    padding: 10px;
+  }
+  
+  .location-search-modal {
+    max-height: 90vh;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+  }
+  
+  .category-selector {
+    padding: 12px 20px;
+    gap: 6px;
+    overflow-x: auto;
+  }
+  
+  .category-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  
+  .search-input-container {
+    padding: 16px 20px;
+  }
+  
+  .search-results {
+    padding: 0 20px 20px 20px;
+  }
+  
+  .result-item {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .result-image {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .result-name {
+    font-size: 14px;
+  }
+  
+  .result-type {
+    font-size: 13px;
+  }
+  
+  .result-address,
+  .result-hours {
+    font-size: 11px;
+  }
+  
+  .add-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .result-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .result-image {
+    width: 100%;
+    height: 120px;
+  }
+  
+  .result-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .add-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}

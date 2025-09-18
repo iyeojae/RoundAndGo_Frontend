@@ -9,6 +9,16 @@ const CourseMain = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 로그인 인증 체크
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/email-login');
+      return;
+    }
+  }, [navigate]);
+
   // 현재 단계 추적
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -34,15 +44,13 @@ const CourseMain = () => {
   }, []);
 
   return (
-    <div className="course-main-container">
-      <Routes>
-        <Route path="/step1" element={<CourseStep1 />} />
-        <Route path="/step2" element={<CourseStep2 />} />
-        <Route path="/step3" element={<CourseStep3 />} />
-        {/* 기본 경로는 1단계로 리다이렉트 */}
-        <Route path="/" element={<CourseStep1 />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/step1" element={<CourseStep1 />} />
+      <Route path="/step2" element={<CourseStep2 />} />
+      <Route path="/step3" element={<CourseStep3 />} />
+      {/* 기본 경로는 1단계로 리다이렉트 */}
+      <Route path="/" element={<CourseStep1 />} />
+    </Routes>
   );
 };
 

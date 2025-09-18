@@ -1,8 +1,4 @@
 /* CourseMain 통합 스타일 */
-.course-main-container {
-  min-height: 100vh;
-  background-color: #f8f9fa;
-}
 
 /* 공통 스타일은 각 단계별 CSS에서 정의 */
 /* 이 파일은 필요시 전역 스타일이나 공통 요소에 사용 */

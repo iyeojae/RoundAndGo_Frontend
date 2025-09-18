@@ -23,6 +23,7 @@ import {
 } from '../config/weather';
 import WeatherLocationModal from '../WeatherLocationModal';
 import Header from '../Layout/Header';
+import Footer from '../Layout/Footer';
 import './SchedulePage.css';
 
 // 위치 아이콘 SVG 컴포넌트
@@ -135,6 +136,17 @@ const SchedulePage = () => {
         const transformedSchedules = Array.isArray(schedulesData) 
           ? schedulesData.map(transformScheduleFromAPI)
           : [transformScheduleFromAPI(schedulesData)];
+        
+        console.log('📊 스케줄 로드 완료 - 카테고리 정보 확인:', {
+          totalSchedules: transformedSchedules.length,
+          categories: transformedSchedules.map(s => ({
+            id: s.id,
+            title: s.title,
+            category: s.category,
+            type: s.type
+          }))
+        });
+        
         setSchedules(transformedSchedules);
       } else {
         setError(response.message || '스케줄을 불러오는데 실패했습니다.');
@@ -252,6 +264,18 @@ const SchedulePage = () => {
     loadWeatherData(selectedLocation);
   }, []);
 
+  // URL 파라미터로 새로고침 트리거 (코스 저장 후 스케줄 페이지 이동 시)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const refresh = urlParams.get('refresh');
+    if (refresh === 'true') {
+      console.log('🔄 코스 저장 후 스케줄 새로고침');
+      loadSchedules();
+      // URL에서 refresh 파라미터 제거
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [location.search]);
+
   // 위치 변경 시 날씨 데이터 다시 로드
   useEffect(() => {
     if (selectedLocation) {
@@ -306,8 +330,9 @@ const SchedulePage = () => {
 
 
   return (
-    <div className="schedule-page">
+    <main>
       <Header />
+      <div className="schedule-page">
       
       <div className="schedule-content">
         <div className="schedule-weather-toggle-container">
@@ -611,23 +636,72 @@ const SchedulePage = () => {
                   </div>
                 </div>
               ) : (
-                daySchedules.map((schedule) => (
+                daySchedules.map((schedule) => {
+                  // 기존 데이터의 type을 한국어 카테고리로 변환
+                  const getDisplayCategory = (schedule) => {
+                    console.log('🔍 스케줄 카테고리 디버깅:', {
+                      scheduleId: schedule.id,
+                      scheduleTitle: schedule.title,
+                      scheduleCategory: schedule.category,
+                      scheduleType: schedule.type,
+                      allScheduleKeys: Object.keys(schedule)
+                    });
+                    
+                    // 이미 한국어 카테고리가 있으면 그대로 사용
+                    if (schedule.category && ['골프', '관광', '맛집', '숙소', '모임', '기타'].includes(schedule.category)) {
+                      console.log('✅ 한국어 카테고리 사용:', schedule.category);
+                      return schedule.category;
+                    }
+                    
+                    // type이 영어로 되어 있으면 한국어로 변환
+                    if (schedule.type) {
+                      const convertedCategory = (() => {
+                        switch (schedule.type) {
+                          case 'golf': return '골프';
+                          case 'tour': return '관광';
+                          case 'food': return '맛집';
+                          case 'stay': return '숙소';
+                          default: return '기타';
+                        }
+                      })();
+                      console.log('🔄 영어 타입을 한국어로 변환:', schedule.type, '→', convertedCategory);
+                      return convertedCategory;
+                    }
+                    
+                    // 기본값
+                    console.log('⚠️ 기본값 사용: 기타');
+                    return '기타';
+                  };
+                  
+                  const displayCategory = getDisplayCategory(schedule);
+                  console.log('📋 최종 displayCategory:', displayCategory);
+                  
+                  // 카테고리가 없거나 잘못된 경우 사용자에게 알림
+                  if (!displayCategory || displayCategory === '기타') {
+                    console.warn('⚠️ 카테고리 정보가 없거나 기본값입니다:', {
+                      scheduleId: schedule.id,
+                      scheduleTitle: schedule.title,
+                      displayCategory: displayCategory
+                    });
+                  }
+                  
+                  return (
                     <div key={schedule.id} className="schedule-item" style={{ 
-                      backgroundColor: schedule.category === '골프' ? 'rgba(38, 153, 98, 0.1)' :
-                                      schedule.category === '관광' ? 'rgba(147, 51, 234, 0.1)' :
-                                      schedule.category === '모임' ? 'rgba(239, 68, 68, 0.1)' :
-                                      schedule.category === '맛집' ? 'rgba(234, 88, 12, 0.1)' :
-                                      schedule.category === '숙소' ? 'rgba(37, 99, 235, 0.1)' :
+                      backgroundColor: displayCategory === '골프' ? 'rgba(38, 153, 98, 0.1)' :
+                                      displayCategory === '관광' ? 'rgba(147, 51, 234, 0.1)' :
+                                      displayCategory === '모임' ? 'rgba(239, 68, 68, 0.1)' :
+                                      displayCategory === '맛집' ? 'rgba(234, 88, 12, 0.1)' :
+                                      displayCategory === '숙소' ? 'rgba(37, 99, 235, 0.1)' :
                                       'rgba(107, 114, 128, 0.1)',
-                      borderColor: schedule.category === '골프' ? '#269962' :
-                                  schedule.category === '관광' ? '#9333EA' :
-                                  schedule.category === '모임' ? '#EF4444' :
-                                  schedule.category === '맛집' ? '#EA580C' :
-                                  schedule.category === '숙소' ? '#2563EB' :
+                      borderColor: displayCategory === '골프' ? '#269962' :
+                                  displayCategory === '관광' ? '#9333EA' :
+                                  displayCategory === '모임' ? '#EF4444' :
+                                  displayCategory === '맛집' ? '#EA580C' :
+                                  displayCategory === '숙소' ? '#2563EB' :
                                   '#6B7280'
                     }}>
                     <div className="schedule-item-icon">
-                      {schedule.category === '골프' && (
+                      {displayCategory === '골프' && (
                         <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <mask id="path-1-inside-1_988_3015" fill="white">
                             <path d="M9.48047 0C12.6142 0 15.3926 1.52041 17.1187 3.86377C17.2605 4.0562 17.2336 4.32209 17.0646 4.4911L12.2051 9.35153C12.0098 9.54679 12.0098 9.86335 12.2051 10.0586L16.8688 14.7224C17.0424 14.8959 17.0654 15.1706 16.913 15.363C15.1765 17.5543 12.4935 18.9609 9.48047 18.9609C4.24451 18.9607 0 14.7165 0 9.48047C9.66358e-08 4.24445 4.24451 0.000248432 9.48047 0Z"/>
@@ -636,7 +710,7 @@ const SchedulePage = () => {
                           <circle cx="9.35547" cy="5.48047" r="1" fill="#269962"/>
                         </svg>
                       )}
-                      {schedule.category === '관광' && (
+                      {displayCategory === '관광' && (
                         <svg width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <mask id="path-1-inside-1_988_3045" fill="white">
                             <path d="M15.8662 1.83301C15.8662 2.38529 16.3139 2.83301 16.8662 2.83301H20.1553C20.7076 2.83301 21.1553 3.28072 21.1553 3.83301V16C21.1553 16.5523 20.7076 17 20.1553 17H1C0.447715 17 0 16.5523 0 16V3.83301C0 3.28072 0.447715 2.83301 1 2.83301H4.28809C4.84037 2.83301 5.28809 2.38529 5.28809 1.83301V1C5.28809 0.447715 5.7358 0 6.28809 0H14.8662C15.4185 0 15.8662 0.447715 15.8662 1V1.83301Z"/>
@@ -645,19 +719,19 @@ const SchedulePage = () => {
                           <circle cx="10.5" cy="9" r="3.5" stroke="#9333EA" strokeWidth="2"/>
                         </svg>
                       )}
-                      {schedule.category === '모임' && (
+                      {displayCategory === '모임' && (
                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <circle cx="5" cy="5" r="4" transform="matrix(-1 0 0 1 13 0)" stroke="#EF4444" strokeWidth="2"/>
                           <path d="M8 11C12.4183 11 16 14.5817 16 19H14C14 15.6863 11.3137 13 8 13C4.68629 13 2 15.6863 2 19H0C0 14.5817 3.58172 11 8 11Z" fill="#EF4444"/>
                         </svg>
                       )}
-                      {schedule.category === '맛집' && (
+                      {displayCategory === '맛집' && (
                         <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M16.0342 0.00134277C16.0515 0.00193704 16.0688 0.0027826 16.0859 0.00427246C16.1087 0.00620759 16.131 0.00963133 16.1533 0.0130615C16.1624 0.0144823 16.1716 0.0152983 16.1807 0.0169678C16.1875 0.0182197 16.1944 0.0194829 16.2012 0.020874L16.2676 0.0374756H16.2695C16.3244 0.0527997 16.3771 0.0730347 16.4277 0.0970459C16.4396 0.102655 16.4513 0.108556 16.4629 0.114624C16.4762 0.121609 16.489 0.129524 16.502 0.137085C16.5147 0.14449 16.5276 0.151581 16.54 0.159546C16.5554 0.169439 16.5702 0.180098 16.585 0.190796C16.5984 0.200465 16.6121 0.209752 16.625 0.220093C16.6354 0.228473 16.6452 0.237675 16.6553 0.24646C16.6685 0.257932 16.6817 0.269427 16.6943 0.281616C16.7034 0.290422 16.7119 0.299816 16.7207 0.30896C16.7365 0.325389 16.7519 0.342164 16.7666 0.359741C16.7733 0.367741 16.7797 0.375946 16.7861 0.384155C16.7964 0.397301 16.8067 0.410468 16.8164 0.424194C16.8288 0.441665 16.8403 0.459632 16.8516 0.477905C16.8581 0.488594 16.8649 0.499142 16.8711 0.510132C16.9289 0.612586 16.9677 0.726249 16.9863 0.847046C16.9885 0.860792 16.9916 0.874326 16.9932 0.888062C16.9949 0.903245 16.9951 0.918579 16.9961 0.93396C16.9974 0.95324 16.9989 0.972389 16.999 0.991577C16.999 0.994507 17 0.997431 17 1.00037V18.5004C17 19.0527 16.5523 19.5004 16 19.5004C15.4477 19.5004 15 19.0527 15 18.5004V13.5004H14C12.8954 13.5004 12 12.6049 12 11.5004V8.00037C12 3.05082 14.0456 0.656291 15.6045 0.0804443C15.6574 0.0576595 15.7133 0.041149 15.7705 0.02771C15.7754 0.0265438 15.7802 0.0248924 15.7852 0.0238037C15.8054 0.019368 15.826 0.0162489 15.8467 0.0130615C15.8604 0.0109138 15.874 0.00778843 15.8877 0.00622559C15.9029 0.00453097 15.9182 0.00430409 15.9336 0.0032959C15.9489 0.00226443 15.9642 0.000684237 15.9795 0.000366211H16C16.0114 0.000366211 16.0228 0.00096138 16.0342 0.00134277ZM15 3.30994C14.4734 4.23372 14 5.71212 14 8.00037V11.5004H15V3.30994Z" fill="#EA580C"/>
                           <path d="M7.89844 0C8.45065 0 8.89833 0.44781 8.89844 1V5.58789C8.89844 6.69246 8.00301 7.58789 6.89844 7.58789H5.44922V18C5.44922 18.5523 5.0015 19 4.44922 19C3.89713 18.9998 3.44922 18.5521 3.44922 18V7.58789H2C0.895557 7.58774 0 6.69237 0 5.58789V1C0.000111199 0.4479 0.447908 0.000146363 1 0C1.55222 0 1.99989 0.44781 2 1V5.58789H3.44922V1C3.44935 0.44797 3.89721 0.00023074 4.44922 0C5.00142 2.41376e-08 5.44909 0.447828 5.44922 1V5.58789H6.89844V1C6.89855 0.44801 7.3465 0.000324362 7.89844 0Z" fill="#EA580C"/>
                         </svg>
                       )}
-                      {schedule.category === '숙소' && (
+                      {displayCategory === '숙소' && (
                         <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M1 18.5H20.5" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"/>
                           <path d="M3 18.5V2C3 1.44772 3.44772 1 4 1H14.5C15.0523 1 15.5 1.44772 15.5 2V6" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"/>
@@ -669,7 +743,7 @@ const SchedulePage = () => {
                           <rect x="14" y="10" width="2" height="2" fill="white"/>
                         </svg>
                       )}
-                      {schedule.category === '기타' && (
+                      {displayCategory === '기타' && (
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M1 16.8V1.2C1 1.08954 1.08954 1 1.2 1H16.8C16.9105 1 17 1.08954 17 1.2V16.8C17 16.9105 16.9105 17 16.8 17H1.2C1.08954 17 1 16.9105 1 16.8Z" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
                           <path d="M4.20001 5H7.40001" stroke="#6B7280" strokeWidth="2" strokeLinecap="round"/>
@@ -684,11 +758,11 @@ const SchedulePage = () => {
                     <div className="schedule-item-content">
                       <div className="schedule-item-header">
                         <h4 className="schedule-item-title" style={{
-                          color: schedule.category === '골프' ? '#269962' :
-                                 schedule.category === '관광' ? '#9333EA' :
-                                 schedule.category === '모임' ? '#EF4444' :
-                                 schedule.category === '맛집' ? '#EA580C' :
-                                 schedule.category === '숙소' ? '#2563EB' :
+                          color: displayCategory === '골프' ? '#269962' :
+                                 displayCategory === '관광' ? '#9333EA' :
+                                 displayCategory === '모임' ? '#EF4444' :
+                                 displayCategory === '맛집' ? '#EA580C' :
+                                 displayCategory === '숙소' ? '#2563EB' :
                                  '#6B7280'
                         }}>{schedule.title}</h4>
                     <button 
@@ -711,7 +785,8 @@ const SchedulePage = () => {
                       )}
                     </div>
                   </div>
-                ))
+                  );
+                })
               );
             })()}
           </div>
@@ -754,7 +829,9 @@ const SchedulePage = () => {
           schedule={editingSchedule}
         />
       )}
-    </div>
+      </div>
+      <Footer />
+    </main>
   );
 };
 

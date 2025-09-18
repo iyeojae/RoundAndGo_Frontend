@@ -235,7 +235,7 @@ function MyPage() {
 
                 {/* 메뉴 섹션 */}
                 <section className="page-section">
-                    <MenuItem icon={scheduleIcon} label="일정관리" onClick={() => goTo('/schedule')}/>
+                    <MenuItem icon={scheduleIcon} label="일정관리" onClick={() => goTo('/course/my')}/>
                     <MenuItem icon={courseIcon} label="코스 추천" onClick={() => goTo('/course')}/>
                     <MenuItem icon={communityIcon} label="커뮤니티" onClick={() => goTo('/community')}/>
                     <MenuItem icon={mapIcon} label="골프장 위치 재설정" onClick={() => goTo('/first-main')}/>

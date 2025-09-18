@@ -1,11 +1,12 @@
+import CommunityEntire from "./Community/CommunityEntire.jsx";
+
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 
 import Banner from './EntireBackground.svg'; // 배경
 import LeftContent from './Banner/LeftContent.jsx'; // 왼쪽 콘텐츠
 
 import './App.css';
-
 import EmailLoginPage from './EmailAuth/EmailLoginPage';
 import SignupPage from './EmailAuth/SignupPage';
 import FindAccountPage from './EmailAuth/FindAccountPage';
@@ -45,18 +46,18 @@ function App() {
                             <Route path="/jeju-location" element={<JejuLocationPage />} />
                             <Route path="/login/oauth2/code/kakao" element={<OAuth2Callback />} />
 
-                            <Route path="/first-main" element={<FirstMainPage />} />
-                            <Route path="/main" element={<MainPage />} />
-                            <Route path="/detail/main" element={<DetailMainPage />} />
-                            <Route path="/detail/main/more" element={<DetailMorePage />} />
-                            <Route path="/community" element={<CommunityMainPage />} />
-                            <Route path="/community/entire" element={<CommunityEntirePage />} />
-                            <Route path="/community/detail/:postId" element={<CommunityDetailPage />} />
-                            <Route path="/community/write" element={<CommunityWritePage />} />
-                            <Route path="/community/edit/:postId" element={<CommunityEditPage />} />
-                            <Route path="/course/recommendation" element={<CourseRecommendation />} />
-                            <Route path="/course/*" element={<CourseMain />} />
-                            <Route path="/mypage" element={<MyPage />} />
+                            <Route path="/first-main" element={<FirstMainPage/>}/> {/* 첫 메인 페이지 */}
+                            <Route path="/main" element={<MainPage/>}/> {/* 메인 페이지 */}
+                            <Route path="/detail/main/:" element={<DetailMainPage/>}/> {/* 상세 페이지 */}
+                            <Route path="/detail/main/more" element={<DetailMorePage/>}/> {/*상세페이지 더보기 - 숙박 */}
+                            <Route path="/community" element={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
+                            <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
+                            <Route path="/communiyt/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
+                            <Route path="/community/edit/:postId" element={<CommunityEditPage />} /> {/* 커뮤니티 - 수정 */}
+                            <Route path="/course/recommendation" element={<CourseRecommendation/>}/> {/* 코스 추천 */}
+                            <Route path="/course/my" element={<MyCourseView/>}/> {/* 내 코스보기 */}
+                            <Route path="/course/*" element={<CourseMain/>}/> {/* 코스 추천 3단계 */}
+                            <Route path="/mypage" element={<MyPage />} /> {/* 마이 페이지 */}
                         </Routes>
                     </main>
                 </div>
@@ -66,3 +67,6 @@ function App() {
 }
 
 export default App;
+
+
+

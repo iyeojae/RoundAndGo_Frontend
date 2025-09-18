@@ -7,8 +7,20 @@ import './CourseStep2.css';
 const CourseStep2 = () => {
   const navigate = useNavigate();
   
+  // 로그인 인증 체크
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/email-login');
+      return;
+    }
+  }, [navigate]);
+  
   // 상태 관리
   const [selectedStyle, setSelectedStyle] = useState('');
+  const [userPreferences, setUserPreferences] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // 스타일 옵션
   const styleOptions = [
@@ -122,6 +134,17 @@ const CourseStep2 = () => {
   const handleNext = async () => {
     if (!selectedStyle) return;
     
+    // 인증 토큰 확인
+    const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+    if (!accessToken) {
+      alert('로그인이 필요합니다. 다시 로그인해주세요.');
+      navigate('/email-login');
+      return;
+    }
+    
+    // 로딩 상태 시작
+    setIsLoading(true);
+    
     // 1단계 데이터 가져오기
     const step1Data = JSON.parse(sessionStorage.getItem('courseStep1') || '{}');
     
@@ -157,7 +180,7 @@ const CourseStep2 = () => {
           golfCourseId: step1Data.golfCourseIds?.[0] || 1, // 첫 번째 골프장 ID
           teeOffTime: step1Data.golfTimes?.[0] || "09:00", // 첫 번째 골프 시간
           courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury', // API 명세에 맞게 매핑
-          userPreferences: "맛집 위주로, 바다 전망 좋은 숙소" // AI 개인화 추천
+          userPreferences: userPreferences || "현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요" // 사용자 입력 또는 기본값
         });
         
         console.log('당일치기 API 요청:', {
@@ -170,7 +193,8 @@ const CourseStep2 = () => {
         response = await fetch(`${apiEndpoint}?${queryParams}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
           }
         });
       } else {
@@ -182,17 +206,44 @@ const CourseStep2 = () => {
           'emotional': 'theme'
         };
         
+        // 여행 기간에 맞춰서 골프장 ID와 시간 배열 생성
+        const travelDays = parseInt(step1Data.travelDays) || 1;
+        const selectedGolfCourseIds = step1Data.golfCourseIds || [];
+        const selectedGolfTimes = step1Data.golfTimes || [];
+        
+        // 여행 기간에 맞춰서 골프장 ID 배열 생성 (부족하면 반복)
+        const golfCourseIds = [];
+        for (let i = 0; i < travelDays; i++) {
+          if (selectedGolfCourseIds[i]) {
+            golfCourseIds.push(selectedGolfCourseIds[i]);
+          } else {
+            // 부족한 경우 첫 번째 골프장 ID로 채움
+            golfCourseIds.push(selectedGolfCourseIds[0] || 1);
+          }
+        }
+        
+        // 여행 기간에 맞춰서 티오프 시간 배열 생성 (부족하면 반복)
+        const teeOffTimes = [];
+        for (let i = 0; i < travelDays; i++) {
+          if (selectedGolfTimes[i]) {
+            teeOffTimes.push(selectedGolfTimes[i]);
+          } else {
+            // 부족한 경우 첫 번째 시간으로 채움
+            teeOffTimes.push(selectedGolfTimes[0] || "09:00");
+          }
+        }
+        
         const requestData = {
-          golfCourseIds: step1Data.golfCourseIds || [1, 2], // 골프장 ID 목록
+          golfCourseIds: golfCourseIds, // 여행 기간에 맞춘 골프장 ID 목록
           startDate: step1Data.departureDate,
-          travelDays: step1Data.travelDays,
-          teeOffTimes: step1Data.golfTimes || ["09:00", "09:30"], // 각 일차별 티오프 시간
+          travelDays: travelDays,
+          teeOffTimes: teeOffTimes, // 여행 기간에 맞춘 티오프 시간 목록
           courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury' // API 명세에 맞게 매핑
         };
         
         // 다일차 AI 추천용 Query 파라미터
         const queryParams = new URLSearchParams({
-          userPreferences: "전통 한식 위주, 온천 숙소 선호, 자연 경관 중시" // AI 개인화 추천
+          userPreferences: userPreferences || "현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요" // 사용자 입력 또는 기본값
         });
         
         console.log('다일차 API 요청:', {
@@ -206,7 +257,7 @@ const CourseStep2 = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken') || 'dummy-token'}`
+            'Authorization': `Bearer ${accessToken}`
           },
           body: JSON.stringify(requestData)
         });
@@ -221,14 +272,21 @@ const CourseStep2 = () => {
       
       // 결과를 sessionStorage에 저장
       sessionStorage.setItem('courseRecommendation', JSON.stringify(result));
-    
-    // 3단계로 이동
-    navigate('/course/step3');
+      
+      // API 호출 완료 후 3단계로 이동
+      navigate('/course/step3');
       
     } catch (error) {
       console.error('API 호출 중 오류:', error);
-      // 오류가 발생해도 3단계로 이동 (개발 중이므로)
-      navigate('/course/step3');
+      
+      // 로딩 상태 해제
+      setIsLoading(false);
+      
+      // API 호출 실패 시 에러 메시지 표시
+      alert('코스 추천을 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      
+      // 3단계로 이동하지 않고 현재 페이지에 머물기
+      return;
     }
   };
 
@@ -237,40 +295,58 @@ const CourseStep2 = () => {
     navigate('/course/step1');
   };
 
+  // 로딩 화면
+  if (isLoading) {
+    return (
+      <main className="main-container">
+        <Header />
+        <div className="course-step2-page">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <h2>최적의 코스를 찾고 있어요</h2>
+            <p>AI가 당신만의 맞춤 코스를 추천하고 있습니다...</p>
+          </div>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
   return (
-    <div className="course-step2-page">
+    <main className="main-container">
       <Header />
-
-      {/* 네비게이션 헤더 */}
-      <div className="step-header">
-        <div className="header-content">
-          <button className="back-btn" onClick={handleBack}>
-            ←
-          </button>
-          <h1 className="step-title">맞춤 코스 설정</h1>
+      
+      <div className="course-step2-page">
+        {/* 네비게이션 헤더 */}
+        <div className="step-header">
+          <div className="header-content">
+            <button className="back-btn" onClick={handleBack}>
+              ←
+            </button>
+            <h1 className="step-title">맞춤 코스 설정</h1>
+          </div>
+          
+          {/* 진행 단계 표시 */}
+          <div className="step-indicator">
+            <div className="step-item completed">
+              <div className="step-circle completed">1</div>
+              <span className="step-label completed">기간 설정</span>
+            </div>
+            <div className="step-line completed"></div>
+            <div className="step-item active">
+              <div className="step-circle active">2</div>
+              <span className="step-label active">스타일 설정</span>
+            </div>
+            <div className="step-line"></div>
+            <div className="step-item">
+              <div className="step-circle">3</div>
+              <span className="step-label">코스 추천</span>
+            </div>
+          </div>
         </div>
-        
-        {/* 진행 단계 표시 */}
-        <div className="step-indicator">
-          <div className="step-item completed">
-            <div className="step-circle completed">1</div>
-            <span className="step-label completed">기간 설정</span>
-          </div>
-          <div className="step-line completed"></div>
-          <div className="step-item active">
-            <div className="step-circle active">2</div>
-            <span className="step-label active">스타일 설정</span>
-          </div>
-          <div className="step-line"></div>
-          <div className="step-item">
-            <div className="step-circle">3</div>
-            <span className="step-label">코스 추천</span>
-          </div>
-        </div>
-      </div>
 
-      {/* 메인 콘텐츠 */}
-      <div className="step-content">
+        {/* 메인 콘텐츠 */}
+        <div className="step-content">
         {/* 안내 섹션 */}
         <div className="instruction-section">
           <div className="instruction-icon">
@@ -290,6 +366,11 @@ const CourseStep2 = () => {
           </div>
           <h2 className="instruction-title">여행 카테고리를 선택해주세요.</h2>
           <p className="instruction-subtitle">어떤 스타일의 여행을 원하시나요?</p>
+          
+          {/* 예시 문구 추가 */}
+          <div className="example-text-container">
+            <p className="example-text">ex) 현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요.</p>
+          </div>
         </div>
 
         {/* 스타일 선택 섹션 */}
@@ -318,6 +399,18 @@ const CourseStep2 = () => {
           </div>
         </div>
 
+        {/* 사용자 선호도 입력창 */}
+        <div className="preferences-input-container">
+          <label className="preferences-label">추가 요청사항</label>
+          <textarea
+            className="preferences-input"
+            placeholder="ex) 현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요."
+            value={userPreferences}
+            onChange={(e) => setUserPreferences(e.target.value)}
+            rows={3}
+          />
+        </div>
+
         {/* 다음 버튼 */}
         <div className="next-button-container">
           <button 
@@ -328,10 +421,11 @@ const CourseStep2 = () => {
             다음
           </button>
         </div>
+        </div>
       </div>
-
+      
       <Footer />
-    </div>
+    </main>
   );
 };
 
