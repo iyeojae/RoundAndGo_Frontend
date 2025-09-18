@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import './utils/cleanupLocalStorage'; // 쿠키 기반 인증으로 전환하면서 로컬스토리지 정리
 
 import LeftContent from './Banner/LeftContent.jsx'; // 왼쪽 콘텐츠
 

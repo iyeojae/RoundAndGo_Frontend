@@ -63,111 +63,27 @@ const CourseRecommendation = () => {
 
   const courseTypeDisplay = getCourseTypeDisplay(courseType);
 
-  // 더미 데이터 (실제로는 API에서 가져올 데이터)
+  // 실제 API에서 데이터 가져오기
   const loadCourseRecommendation = async () => {
     try {
       setLoading(true);
       
-      // 로컬 골프장 데이터 활용
-      const localGolfCourses = getLocalGolfCourseData();
-      console.log('로컬 골프장 데이터:', localGolfCourses);
+      // 실제 API 호출
+      const response = await fetch('/api/courses/recommendation', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       
-      // 시뮬레이션된 API 호출
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (!response.ok) {
+        throw new Error('API 호출 실패');
+      }
       
-      const dummyData = {
-        day1: [
-          {
-            id: 1,
-            name: '제주 클럽하우스',
-            type: '골프장',
-            address: '제주특별자치도 제주시',
-            image: '🏌️',
-            distance: '2.5km',
-            walkTime: '30분',
-            carTime: '5분',
-            transportTime: '15분',
-            icon: '🏌️',
-            iconColor: '#4CAF50',
-            coordinates: { lat: 33.4996, lng: 126.5312 },
-            phone: '064-123-4567',
-            rating: 4.5,
-            price: '150,000원'
-          },
-          {
-            id: 2,
-            name: '해녀촌 레스토랑',
-            type: '식당',
-            address: '제주특별자치도 서귀포시',
-            image: '🍽️',
-            distance: '1.2km',
-            walkTime: '15분',
-            carTime: '3분',
-            transportTime: '8분',
-            icon: '🍽️',
-            iconColor: '#FF9800',
-            coordinates: { lat: 33.2400, lng: 126.5623 },
-            phone: '064-234-5678',
-            rating: 4.2,
-            price: '30,000원'
-          },
-          {
-            id: 3,
-            name: '성산일출봉',
-            type: '관광지',
-            address: '제주특별자치도 서귀포시 성산읍',
-            image: '🏔️',
-            distance: '5.8km',
-            walkTime: '70분',
-            carTime: '12분',
-            transportTime: '25분',
-            icon: '🏔️',
-            iconColor: '#2196F3',
-            coordinates: { lat: 33.4584, lng: 126.9423 },
-            phone: '064-783-0959',
-            rating: 4.7,
-            price: '5,000원'
-          }
-        ],
-        day2: travelDays === '2' ? [
-          {
-            id: 4,
-            name: '중문 골프클럽',
-            type: '골프장',
-            address: '제주특별자치도 서귀포시 중문동',
-            image: '⛳',
-            distance: '3.2km',
-            walkTime: '40분',
-            carTime: '8분',
-            transportTime: '18분',
-            icon: '⛳',
-            iconColor: '#4CAF50',
-            coordinates: { lat: 33.2394, lng: 126.4123 },
-            phone: '064-345-6789',
-            rating: 4.3,
-            price: '180,000원'
-          },
-          {
-            id: 5,
-            name: '천지연폭포',
-            type: '관광지',
-            address: '제주특별자치도 서귀포시 서홍동',
-            image: '🌊',
-            distance: '2.1km',
-            walkTime: '25분',
-            carTime: '5분',
-            transportTime: '12분',
-            icon: '🌊',
-            iconColor: '#00BCD4',
-            coordinates: { lat: 33.2456, lng: 126.5678 },
-            phone: '064-456-7890',
-            rating: 4.4,
-            price: '2,500원'
-          }
-        ] : []
-      };
-
-      setCourseData(dummyData);
+      const apiData = await response.json();
+      
+      // API 응답 데이터 설정
+      setCourseData(apiData);
     } catch (err) {
       setError('코스 추천을 불러오는데 실패했습니다.');
       console.error('Error loading course recommendation:', err);

@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import CourseStep1 from './Components/CourseStep1';
 import CourseStep2 from './Components/CourseStep2';
 import CourseStep3 from './Components/CourseStep3';
+import { getAuthToken } from '../utils/cookieUtils';
 import './CourseMain.css';
 
 const CourseMain = () => {
@@ -11,7 +12,7 @@ const CourseMain = () => {
 
   // 로그인 인증 체크
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = getAuthToken();
     if (!token) {
       alert('로그인이 필요한 서비스입니다.');
       navigate('/email-login');

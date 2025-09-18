@@ -13,23 +13,9 @@
  */
 
 import { API_ENDPOINTS } from '../config/api';
+import { setAuthToken, getAuthToken, removeAuthToken, setCookie, getCookie, deleteCookie } from '../utils/cookieUtils';
 
-/**
- * 브라우저 쿠키에서 특정 값을 가져오는 헬퍼 함수
- *
- * @param {string} name - 가져올 쿠키의 이름
- * @returns {string|null} 쿠키 값 또는 null (없는 경우)
- *
- * @example
- * const token = getCookie('authToken');
- * const sessionId = getCookie('JSESSIONID');
- */
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-};
+// 쿠키 유틸리티는 cookieUtils.js에서 import
 
 /**
  * 사용자의 로그인 상태를 확인하는 함수
@@ -44,15 +30,10 @@ const getCookie = (name) => {
  * @returns {boolean} 로그인 상태 (true: 로그인됨, false: 로그인안됨)
  */
 export const isLoggedIn = () => {
-  // 🏠 1단계: 로컬스토리지에서 JWT 토큰 확인
-  let token = localStorage.getItem('authToken');
+  // 🍪 쿠키에서 JWT 토큰 확인
+  let token = getAuthToken();
 
-  // 🍪 2단계: 로컬스토리지에 없으면 쿠키에서 JWT 토큰 확인
-  if (!token) {
-    token = getCookie('authToken') || getCookie('accessToken') || getCookie('JWT');
-  }
-
-  // 🔍 3단계: JWT 토큰이 없으면 세션 기반 인증 확인
+  // 🔍 JWT 토큰이 없으면 세션 기반 인증 확인
   if (!token) {
     const sessionId = getCookie('JSESSIONID');
     if (sessionId) {
@@ -60,7 +41,7 @@ export const isLoggedIn = () => {
       return true; // 세션이 있으면 로그인 상태로 간주
     }
 
-    console.log('🔍 토큰 없음: 로컬스토리지, 쿠키, 세션 모두 확인했으나 인증 정보가 없습니다');
+    console.log('🔍 토큰 없음: 쿠키, 세션 모두 확인했으나 인증 정보가 없습니다');
     return false;
   }
 
@@ -96,21 +77,11 @@ export const isLoggedIn = () => {
  * @returns {Object|null} 사용자 정보 객체 또는 null (없는 경우)
  */
 export const getUserInfo = () => {
-  // 🏠 1단계: 로컬스토리지에서 사용자 정보 확인
-  let user = localStorage.getItem('user');
-
-  // 이메일 로그인 사용자 정보 키도 확인
-  if (!user) {
-    user = localStorage.getItem('emailUser');
-  }
-
-  // 🍪 2단계: 로컬스토리지에 없으면 쿠키에서 확인
-  if (!user) {
-    user = getCookie('user') || getCookie('userInfo');
-  }
+  // 🍪 쿠키에서 사용자 정보 확인
+  const user = getCookie('userInfo');
 
   if (!user) {
-    console.log('🔍 사용자 정보 없음: 로컬스토리지와 쿠키 모두 확인했으나 사용자 정보가 없습니다');
+    console.log('🔍 사용자 정보 없음: 쿠키에서 사용자 정보가 없습니다');
     return null;
   }
 
@@ -132,24 +103,12 @@ export const getUserInfo = () => {
  */
 export const logout = async () => {
   try {
-    // 🚪 로컬스토리지와 쿠키에서 모든 인증 정보 제거
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
-    localStorage.removeItem('emailUser');
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('email');
-    localStorage.removeItem('emailAccessToken');
-    localStorage.removeItem('emailRefreshToken');
-
-    // 쿠키에서도 인증 정보 제거 (path와 domain 명확히 지정)
-    const cookieOptions = 'expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-    document.cookie = `authToken=; ${cookieOptions}`;
-    document.cookie = `accessToken=; ${cookieOptions}`;
-    document.cookie = `JWT=; ${cookieOptions}`;
-    document.cookie = `JSESSIONID=; ${cookieOptions}`;
+    // 🚪 쿠키에서 모든 인증 정보 제거
+    removeAuthToken();
+    deleteCookie('refreshToken');
+    deleteCookie('user');
+    deleteCookie('userInfo');
+    deleteCookie('JSESSIONID');
 
     console.log('✅ 로그아웃 완료');
   } catch (error) {
@@ -193,6 +152,7 @@ const callLoginAPI = async (email, password) => {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include', // 쿠키 포함
     body: JSON.stringify({ email, password }),
   });
 
@@ -210,21 +170,19 @@ const processLoginResponse = (data, email) => {
     throw new Error('토큰 정보를 받지 못했습니다.');
   }
 
-  // 토큰 저장 (authToken 키로 통일)
-  localStorage.setItem('authToken', accessToken);
+  // 토큰을 쿠키에 저장
+  setAuthToken(accessToken, 7); // 7일간 유효
   if (refreshToken) {
-    localStorage.setItem('refreshToken', refreshToken);
+    setCookie('refreshToken', refreshToken, { expires: 30 }); // 30일간 유효
   }
 
-  // 사용자 정보 저장 (emailUser 키 유지)
-  localStorage.setItem('emailUser', JSON.stringify({
+  // 사용자 정보를 쿠키에 저장
+  setCookie('userInfo', JSON.stringify({
     type: 'email',
     loginTime: new Date().toISOString(),
     isOAuth2: false,
     userInfo: data.user || { email }
-  }));
-
-  localStorage.setItem('isLoggedIn', 'true');
+  }), { expires: 7 });
 
   return data;
 };

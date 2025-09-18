@@ -1,4 +1,8 @@
 import axios from 'axios';
+import { getAuthToken } from '../../utils/cookieUtils';
+
+// axios 기본 설정 - 쿠키 포함
+axios.defaults.withCredentials = true;
 
 // // GET 사용자 정보
 // export const getUserInfo = async () => {
@@ -80,13 +84,14 @@ export const PostingBoard = async (accessToken, title, content, category, images
             category: category,
         };
         formData.append('post', JSON.stringify(textData)); // post라는 이름의 data로 하나로 보내
+        const token = getAuthToken();
         const response = await axios.post(
             'https://api.roundandgo.com/api/posts',
             formData,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-                },
+                    'Authorization': `Bearer ${token}`
+                }
             }
         );
 
@@ -99,15 +104,15 @@ export const PostingBoard = async (accessToken, title, content, category, images
 };
 
 // DELETE 게시글 삭제 API
-export const deletePost = async (postId) => { // accessToken 인자 추가
+export const deletePost = async (postId) => {
     try {
+        const token = getAuthToken();
         const response = await axios.delete(
             `https://api.roundandgo.com/api/posts/${postId}`,
             {
                 headers: {
-                    // localStorage 대신 인자로 받은 accessToken 사용
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                },
+                    'Authorization': `Bearer ${token}`
+                }
             }
         );
         return response.data;
@@ -141,12 +146,7 @@ export const updatePostWithImages = async (postId, title, content, category, ima
 
         const response = await axios.put(
             `https://api.roundandgo.com/api/posts/${postId}`,
-            formData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-                },
-            }
+            formData
         );
 
         return response.data;  // 수정된 데이터 반환
@@ -179,12 +179,13 @@ export const fetchLikeCount = async (postId) => {
 // POST 좋아요 버튼
 export const toggleLike = async (postId, accessToken) => {
     try {
+        const token = getAuthToken();
         const response = await axios.post(
             `https://api.roundandgo.com/api/posts/${postId}/like`,
             null,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 인증 필요
+                    'Authorization': `Bearer ${token}`
                 }
             }
         );
@@ -224,6 +225,7 @@ export const fetchComments = async (communityId) => {
 // POST 댓글 작성 api
 export const postComment = async (communityId, content, accessToken, parentCommentId = null)  => {
     try {
+        const token = getAuthToken();
         const response = await axios.post(
             'https://api.roundandgo.com/api/comments', // 댓글 작성 API 경로
             {
@@ -233,8 +235,8 @@ export const postComment = async (communityId, content, accessToken, parentComme
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // Bearer {accessToken} 추가
                     'Content-Type': 'application/json',  // JSON 형식
+                    'Authorization': `Bearer ${token}`
                 },
             }
         );
@@ -259,8 +261,8 @@ export const updateComment = async (commentId, content, communityId, accessToken
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getAuthToken()}`
                 },
             }
         );
@@ -274,12 +276,13 @@ export const updateComment = async (commentId, content, communityId, accessToken
 // DELETE 댓글 삭제 API
 export const deleteComment = async (commentId, accessToken) => {
     try {
+        const token = getAuthToken();
         const response = await axios.delete(
             `https://api.roundandgo.com/api/comments/${commentId}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-                },
+                    'Authorization': `Bearer ${token}`
+                }
             }
         );
         return response.data;

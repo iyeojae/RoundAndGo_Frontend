@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header from "../Layout/Header";
 import { fetchPostDetail, updatePostWithImages } from "../Common/Community/CommunityAPI";
 import { checkAuth } from "../Search/IsContainToken";
+import { getAuthToken } from '../utils/cookieUtils';
 import CategorySelector from './CategorySelector';
 import ImageUploader from './ImageUploader';
 import InputField from './InputField';
@@ -69,7 +70,7 @@ function CommunityEdit() {
     const handleSubmit = async () => {
         if (!validate()) return;
 
-        const authToken = localStorage.getItem('authToken');
+        const authToken = getAuthToken();
 
         if (!accessToken) {
             alert("로그인이 필요합니다.");

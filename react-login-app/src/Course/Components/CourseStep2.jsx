@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../Layout/Header';
 import Footer from '../../Layout/Footer';
+import { getAuthToken, isLoggedIn } from '../../utils/cookieUtils';
 import './CourseStep2.css';
 
 const CourseStep2 = () => {
@@ -9,8 +10,7 @@ const CourseStep2 = () => {
   
   // 로그인 인증 체크
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
+    if (!isLoggedIn()) {
       alert('로그인이 필요한 서비스입니다.');
       navigate('/email-login');
       return;
@@ -135,7 +135,7 @@ const CourseStep2 = () => {
     if (!selectedStyle) return;
     
     // 인증 토큰 확인
-    const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+    const accessToken = getAuthToken();
     if (!accessToken) {
       alert('로그인이 필요합니다. 다시 로그인해주세요.');
       navigate('/email-login');
@@ -156,14 +156,16 @@ const CourseStep2 = () => {
     sessionStorage.setItem('courseStep2', JSON.stringify(step2Data));
     
     try {
+      console.log('Step1 데이터 확인:', step1Data);
       const isSameDay = step1Data.selectedPeriod === 'day';
+      console.log('isSameDay:', isSameDay, 'selectedPeriod:', step1Data.selectedPeriod);
       
-      // API 엔드포인트 결정 (항상 https://api.roundandgo.com 사용)
-      const baseUrl = 'https://api.roundandgo.com';
+      // API 엔드포인트 결정 (직접 백엔드 API 호출)
+      const baseUrl = 'https://api.roundandgo.com/api'; // 백엔드 API Base URL
       
       const apiEndpoint = isSameDay 
-        ? `${baseUrl}/api/courses/recommendation/ai`
-        : `${baseUrl}/api/courses/recommendation/ai/multi-day`;
+        ? `${baseUrl}/courses/recommendation/ai`
+        : `${baseUrl}/courses/recommendation/ai/multi-day`;
       
       let response;
       
@@ -177,10 +179,10 @@ const CourseStep2 = () => {
         };
         
         const queryParams = new URLSearchParams({
-          golfCourseId: step1Data.golfCourseIds?.[0] || 1, // 첫 번째 골프장 ID
-          teeOffTime: step1Data.golfTimes?.[0] || "09:00", // 첫 번째 골프 시간
+          golfCourseId: step1Data.golfCourseIds?.[0], // 첫 번째 골프장 ID
+          teeOffTime: step1Data.golfTimes?.[0], // 첫 번째 골프 시간
           courseType: courseTypeMapping[step2Data.selectedStyle] || 'luxury', // API 명세에 맞게 매핑
-          userPreferences: userPreferences || "현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요" // 사용자 입력 또는 기본값
+          userPreferences: userPreferences || "" // 사용자 입력
         });
         
         console.log('당일치기 API 요청:', {
@@ -194,8 +196,9 @@ const CourseStep2 = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-          }
+            'Authorization': `Bearer ${accessToken}` // 임시로 Authorization 헤더 추가
+          },
+          credentials: 'include' // 쿠키 포함
         });
       } else {
         // 다일차: Body로 CourseRecommendationRequestDto 전송
@@ -243,24 +246,31 @@ const CourseStep2 = () => {
         
         // 다일차 AI 추천용 Query 파라미터
         const queryParams = new URLSearchParams({
-          userPreferences: userPreferences || "현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요" // 사용자 입력 또는 기본값
+          userPreferences: userPreferences || "" // 사용자 입력
         });
         
+        const fullUrl = `${apiEndpoint}?${queryParams}`;
         console.log('다일차 API 요청:', {
+          fullUrl: fullUrl,
           endpoint: apiEndpoint,
+          queryParams: queryParams.toString(),
           requestData: requestData,
           step1Data: step1Data,
-          step2Data: step2Data
+          step2Data: step2Data,
+          accessToken: accessToken ? '토큰 존재' : '토큰 없음'
         });
         
-        response = await fetch(`${apiEndpoint}?${queryParams}`, {
+        response = await fetch(fullUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
+            'Authorization': `Bearer ${accessToken}` // 임시로 Authorization 헤더 추가
           },
+          credentials: 'include', // 쿠키 포함
           body: JSON.stringify(requestData)
         });
+        
+        console.log('API 응답 상태:', response.status, response.statusText);
       }
       
       if (!response.ok) {
@@ -367,10 +377,6 @@ const CourseStep2 = () => {
           <h2 className="instruction-title">여행 카테고리를 선택해주세요.</h2>
           <p className="instruction-subtitle">어떤 스타일의 여행을 원하시나요?</p>
           
-          {/* 예시 문구 추가 */}
-          <div className="example-text-container">
-            <p className="example-text">ex) 현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요.</p>
-          </div>
         </div>
 
         {/* 스타일 선택 섹션 */}
@@ -404,7 +410,7 @@ const CourseStep2 = () => {
           <label className="preferences-label">추가 요청사항</label>
           <textarea
             className="preferences-input"
-            placeholder="ex) 현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요."
+            placeholder="원하는 여행 스타일을 입력해주세요."
             value={userPreferences}
             onChange={(e) => setUserPreferences(e.target.value)}
             rows={3}
