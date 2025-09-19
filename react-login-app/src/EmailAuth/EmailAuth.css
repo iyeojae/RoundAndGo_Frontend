@@ -29,7 +29,6 @@
 .email-auth-content {
   width: 100%;
   position: relative;
-  padding: 0;
   margin: 0 auto;
   z-index: 2;
 }
@@ -558,7 +557,6 @@
 /* ===== 반응형 디자인 ===== */
 @media (max-width: 480px) {
   .email-auth-content {
-    padding: 0;
   }
   
   .email-auth-submit-button,
