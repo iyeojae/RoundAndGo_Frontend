@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 const LoginContainer = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background: linear-gradient(180deg, #269962 0%, #FFFFFF 100%);
   display: flex;
@@ -11,7 +11,7 @@ const LoginContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   padding: 20px;
 `;
 
