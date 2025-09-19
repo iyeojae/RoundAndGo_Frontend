@@ -407,10 +407,10 @@ const CourseStep2 = () => {
 
         {/* 사용자 선호도 입력창 */}
         <div className="preferences-input-container">
-          <label className="preferences-label">추가 요청사항</label>
+          <label className="preferences-label">한 줄 문구</label>
           <textarea
             className="preferences-input"
-            placeholder="원하는 여행 스타일을 입력해주세요."
+            placeholder="ex) 현지 맛집과 자연 경관이 좋은 곳으로 추천해주세요."
             value={userPreferences}
             onChange={(e) => setUserPreferences(e.target.value)}
             rows={3}

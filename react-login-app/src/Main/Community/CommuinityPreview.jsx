@@ -65,8 +65,8 @@ function CommunityPreview() {
                     커뮤니티
                 </p>
                 <div style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={goToCommunity}>
-                    <p style={{fontSize: '12px', color: '#797979', marginRight: '5px'}}>더보기</p>
-                    <img style={{width: '6px', height: '12px'}} src={arrow} alt="더보기"/>
+                    <p style={{fontSize: '10px', color: '#797979', marginRight: '5px'}}>더보기</p>
+                    <img style={{width: '6px', height: '10px'}} src={arrow} alt="더보기"/>
                 </div>
             </div>
 
@@ -74,18 +74,10 @@ function CommunityPreview() {
                 {previewPosts.map(post => (
                     <div className="preview-post" key={post.id} onClick={() => goToDetail(post.id)}>
                         <div className="post-header" style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
-                    <span className="category" style={{
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        color: '#2a8f2a'
-                    }}>
+                    <span className="category">
                         {getCategoryLabel(post.category)}
                     </span>
-                            <span className="title" style={{
-                                fontSize: '14px',
-                                fontWeight: '500',
-                                color: '#000'
-                            }}>
+                            <span className="title">
                         {post.title}
                     </span>
                         </div>

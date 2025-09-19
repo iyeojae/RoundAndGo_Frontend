@@ -40,13 +40,15 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 56%;
+  height: 60%;
   background: linear-gradient(135deg, #269962 0%, #2C8C7D 100%);
   z-index: 0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .schedule-content {
+  display: flex;
+  flex-direction: column;
   padding-top: 20px;
   position: relative;
   z-index: 2;
@@ -79,7 +81,7 @@
 
 .schedule-weather-toggle-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 20px;
   width: calc(100% - 40px);
@@ -93,70 +95,86 @@
 
 
 .schedule-page-title {
-  font-size: clamp(16px, 4vw, 20px);
+  font-size: 1.2rem;
   font-weight: bold;
   margin: 0;
   color: white;
 }
 
 .schedule-weather-toggle {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
+  background: transparent;
+  border: 1px solid #fff;
+  box-shadow: 0 0 5px rgba(18, 72, 46, 0.7);
   color: white;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 2px 1rem;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: clamp(10px, 2.5vw, 12px);
+  font-size: 0.65rem;
+  font-weight: bold;
   white-space: nowrap;
+  width: fit-content;
   flex-shrink: 0;
 }
 
 /* 날씨 카드 */
 .schedule-page .schedule-weather-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 15px;
-  margin: 0 auto 20px auto !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  width: calc(100% - 80px);
-  max-width: 500px;
-  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
 }
 
 .schedule-weather-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
 }
 
 .schedule-weather-date {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 0.65rem;
+  font-weight: 500;
 }
 
 .schedule-weather-location {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+}
+
+.schedule-weather-location p {
+  display: flex;
+  align-items: center;
+  font-size: 0.65rem;
+  margin: 0;
 }
 
 .schedule-weather-main {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  gap: 15px;
+  flex-direction: row;
+  gap: 10px;
+  width: inherit;
 }
 
 .schedule-weather-left {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  padding: 3% 2%;
+  box-sizing: border-box;
+  width: 45.5%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  aspect-ratio: 182 / 108;
   flex: 1;
+}
+
+#wlrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
 }
 
 .schedule-weather-icon {
@@ -164,43 +182,63 @@
 }
 
 .schedule-weather-temp {
-  font-size: 24px;
+  font-size: 36px;
   font-weight: bold;
+  letter-spacing: 2px;
+  margin: 0;
+  padding: 0;
 }
 
 .schedule-weather-desc {
-  font-size: 14px;
-  margin: 5px 0;
+  font-size: 10px;
+  font-weight: bold;
+  margin-top: -4%;
+  margin-left: -8%;
+  padding: 0;
 }
 
 .schedule-weather-range {
-  font-size: 12px;
-  opacity: 0.8;
+  font-size: 8px;
+  margin: 10% auto 0 auto;
+  width: 90%;
+  text-align: right;
 }
 
 .schedule-weather-center {
   text-align: center;
   flex: 0 0 auto;
   min-width: 80px;
+  padding: 2%;
+  box-sizing: border-box;
+  display: flex;
+  width: 20.25%;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  aspect-ratio: 81 / 108;
 }
 
 .schedule-weather-rain {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 5px;
 }
 
 .schedule-weather-rain-icon {
-  font-size: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .schedule-weather-rain-text {
-  font-size: 12px;
+  font-size: 0.5rem;
 }
 
 .schedule-weather-rain-percent {
-  font-size: 18px;
+  font-size: 24px;
+  color: #4D65C5;
   font-weight: bold;
 }
 
@@ -208,56 +246,109 @@
   text-align: right;
   font-size: 12px;
   flex: 0 0 auto;
-  min-width: 100px;
   display: flex;
   flex-direction: column;
   gap: 3px;
+  align-items: center;
+  justify-content: center;
+  padding: 2%;
+  width: 20.25%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  aspect-ratio: 81 / 108;
+}
+
+.schedule-weather-right span {
+  width: 100%;
+  height: 1px;
+  background-color: #fff;
+  margin: 5% 0;
 }
 
 .schedule-weather-dust {
   margin-bottom: 0;
   line-height: 1.3;
+  font-size: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
 }
 
 .schedule-weather-wind {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  margin: 0;
   gap: 5px;
+}
+.schedule-weather-wind p {
+  font-size: 0.5rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+.schedule-weather-wind h6 {
+  font-size: 0.65rem;
+  font-weight: 400;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.weather-line {
+  width: 100%;
+  height:0.5px;
+  background: #fff;
+  margin: 1rem auto;
 }
 
 /* 일별 날씨 예보 */
 .schedule-page .schedule-daily-weather {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 15px;
-  margin: 0 auto 20px auto !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  overflow-x: auto;
-  width: calc(100% - 80px);
-  max-width: 500px;
-  min-width: 300px;
+  /*background: rgba(255, 255, 255, 0.15);*/
+  /*backdrop-filter: blur(10px);*/
+  /*border-radius: 20px;*/
+  /*padding: 15px;*/
+  /*margin: 0 auto 20px auto !important;*/
+  /*border: 1px solid rgba(255, 255, 255, 0.2);*/
+  /*overflow-x: auto;*/
+  /*width: calc(100% - 80px);*/
+  /*max-width: 500px;*/
+  /*min-width: 300px;*/
 }
 
 .schedule-daily-list {
   display: flex;
-  gap: 20px;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: row;
+  gap: 10px;
+  width: inherit;
+  margin-top: 10px;
 }
 
 .schedule-daily-item {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 8px;
   flex: 1;
-  min-width: 60px;
+
+  padding: 2%;
+  box-sizing: border-box;
+  width: fit-content;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  aspect-ratio:60 / 100;
 }
 
 .schedule-daily-date {
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 0.65rem;
+  font-weight: 400;
 }
 
 .schedule-daily-icon {
@@ -265,7 +356,7 @@
 }
 
 .schedule-daily-temps {
-  font-size: 12px;
+  font-size: 0.65rem;
   text-align: center;
 }
 
@@ -275,7 +366,7 @@
   border-radius: 20px;
   padding: 15px;
   margin: 0 auto 20px auto !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   width: calc(100% - 80px);
   max-width: 500px;
   min-width: 300px;
@@ -304,7 +395,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 5px;
-  margin: 0 60px;
+  margin: 0 7%;
 }
 
 .schedule-month-title {
@@ -446,15 +537,13 @@
   border-radius: 20px;
   padding: 15px;
   margin: 0 auto 20px auto !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: calc(100% - 80px);
-  max-width: 500px;
-  min-width: 300px;
-  /* aspect-ratio: 1; 제거 - 정사각형 제한 해제 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  width: 80%;
+  aspect-ratio: 400 / 332;
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* space-between에서 flex-start로 변경 */
-  min-height: 200px; /* 최소 높이 설정 */
+
 }
 
 .schedule-section-header {
@@ -467,14 +556,15 @@
 
 .schedule-section-title {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 500;
   margin: 0;
-  color: #333;
+  color: #000;
 }
 
 .schedule-count {
   font-size: 12px;
-  color: #666;
+  font-weight: 400;
+  color: #595959;
   margin: 4px 0 0 0;
 }
 
@@ -542,17 +632,18 @@
 }
 
 .schedule-empty-text {
-  font-size: clamp(15px, 2.5vw, 17px);
-  color: #666;
-  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #595959;
+  margin: 5% 0 3% 0;
   font-weight: 500;
   text-align: center;
   white-space: nowrap;
 }
 
 .schedule-empty-hint {
-  font-size: clamp(13px, 2vw, 15px);
-  color: #999;
+  font-size: 0.875rem;
+  color: #595959;
+  font-weight: 400;
   line-height: 1.3;
   text-align: center;
   white-space: nowrap;
@@ -562,7 +653,7 @@
   background: rgba(76, 175, 80, 0.2);
   border: 2px solid #4CAF50;
   border-radius: 12px;
-  padding: 16px;
+  padding: 0.25rem 0.5rem;
   transition: all 0.3s ease;
   flex-shrink: 0;
   position: relative;
@@ -610,26 +701,27 @@
 }
 
 .schedule-item-title {
-  font-size: clamp(14px, 3vw, 16px);
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 400;
   color: #4CAF50;
   margin: 0;
   line-height: 1.2;
 }
 
 .schedule-item-time {
-  font-size: clamp(12px, 2.5vw, 14px);
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.75rem;
+  color: #8F8F8F;
   margin: 0;
-  font-weight: 500;
+  font-weight: 350;
 }
 
 .schedule-item-location {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: clamp(12px, 2.5vw, 14px);
-  color: rgba(255, 255, 255, 0.9);
+  font-weight: 350;
+  font-size: 0.75rem;
+  color: #8F8F8F;
 }
 
 .location-icon {
@@ -674,22 +766,18 @@
   .schedule-weather-toggle-container {
     padding: 0 15px;
     gap: 8px;
-    width: calc(100% - 30px);
-    max-width: calc(100% - 30px);
   }
   
   .schedule-page .schedule-weather-card,
   .schedule-page .schedule-daily-weather {
-    margin: 0 auto 15px auto !important;
-    width: calc(100% - 60px);
-    max-width: calc(100% - 60px);
-    min-width: 280px;
+    width: 100%;
   }
   
   .schedule-weather-main {
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
     gap: 10px;
-    align-items: stretch;
+    width: 100%;
   }
   
   .schedule-weather-left {
@@ -704,7 +792,7 @@
   }
   
   .schedule-daily-list {
-    gap: 15px;
+    gap: 10px;
   }
   
   .schedule-page .schedule-calendar-section,
@@ -729,4 +817,17 @@
   .schedule-page-title {
     text-align: center;
   }
+}
+
+.weather-entire-container {
+  width: 90%;
+  aspect-ratio: 400 / 325;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+  box-sizing: border-box;
+  padding: 5%;
+  margin: 2% auto 5% auto;
+  display: flex;
+  flex-direction: column;
 }

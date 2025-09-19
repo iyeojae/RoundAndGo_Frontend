@@ -15,7 +15,7 @@ import {
 } from './ScheduleAPI';
 import { 
   getCachedWeather, 
-  getWeatherIcon 
+  // getWeatherIcon
 } from '../services/weatherAPI';
 import { 
   isApiKeyValid, 
@@ -25,6 +25,17 @@ import WeatherLocationModal from '../WeatherLocationModal';
 import Header from '../Layout/Header';
 import Footer from '../Layout/Footer';
 import './SchedulePage.css';
+
+
+import sun from '../services/img/sun.svg';
+import snow from '../services/img/snow.svg';
+import suncloud from '../services/img/sunandcloud.svg';
+import cloud from '../services/img/cloud.svg';
+import rain from '../services/img/rain.svg';
+import thunder from '../services/img/thunder.svg';
+import wind from '../services/img/wind.svg';
+import moon from '../services/img/moon.svg';
+import umbrella from '../services/img/umbrella.svg';
 
 // 위치 아이콘 SVG 컴포넌트
 const LocationIcon = () => (
@@ -328,6 +339,30 @@ const SchedulePage = () => {
     return days;
   };
 
+  const getWeatherIcon = (iconCode) => {
+    const iconMap = {
+      '01d': sun,
+      '01n': moon,
+      '02d': suncloud,
+      '02n': cloud,
+      '03d': cloud,
+      '03n': cloud,
+      '04d': cloud,
+      '04n': cloud,
+      '09d': rain,
+      '09n': rain,
+      '10d': rain,
+      '10n': rain,
+      '11d': thunder,
+      '11n': thunder,
+      '13d': snow,
+      '13n': snow,
+      '50d': wind,
+      '50n': wind,
+    };
+    return iconMap[iconCode] || cloud;
+  };
+
 
   return (
     <main className="schedule-main-container">
@@ -417,174 +452,234 @@ const SchedulePage = () => {
               </section>
             )}
 
-            {/* 로딩 상태 */}
-            {isApiKeyValid() && weatherLoading && (
-              <section className="schedule-weather-card">
-                <div className="schedule-weather-header">
-                  <div className="schedule-weather-date">날씨 로딩 중...</div>
-                  <div 
-                    className="schedule-weather-location" 
-                    onClick={() => setShowWeatherLocationModal(true)}
-                    style={{ 
-                      cursor: 'pointer', 
-                      display: 'flex', 
-                      alignItems: 'center',
-                      transition: 'opacity 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => e.target.style.opacity = '0.7'}
-                    onMouseLeave={(e) => e.target.style.opacity = '1'}
-                  >
-                    <LocationIcon />
-                    {selectedLocation}
-                  </div>
-                </div>
-                <div className="schedule-weather-main">
-                  <div style={{ textAlign: 'center', padding: '20px' }}>
-                    <div style={{ fontSize: '24px', marginBottom: '10px' }}>⏳</div>
-                    <div>날씨 정보를 가져오는 중...</div>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* 에러 상태 */}
-            {isApiKeyValid() && weatherError && !weatherLoading && (
-              <section className="schedule-weather-card">
-                <div className="schedule-weather-header">
-                  <div className="schedule-weather-date">❌ 날씨 오류</div>
-                  <div 
-                    className="schedule-weather-location" 
-                    onClick={() => setShowWeatherLocationModal(true)}
-                    style={{ 
-                      cursor: 'pointer', 
-                      display: 'flex', 
-                      alignItems: 'center',
-                      transition: 'opacity 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => e.target.style.opacity = '0.7'}
-                    onMouseLeave={(e) => e.target.style.opacity = '1'}
-                  >
-                    <LocationIcon />
-                    {selectedLocation}
-                  </div>
-                </div>
-                <div className="schedule-weather-main">
-                  <div style={{ textAlign: 'center', padding: '20px', color: '#e74c3c' }}>
-                    <div style={{ fontSize: '24px', marginBottom: '10px' }}>⚠️</div>
-                    <div>{weatherError}</div>
-                    <button 
-                      onClick={() => loadWeatherData(selectedLocation)}
-                      style={{ 
-                        marginTop: '10px', 
-                        padding: '5px 10px', 
-                        backgroundColor: '#3498db', 
-                        color: 'white', 
-                        border: 'none', 
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      다시 시도
-                    </button>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* 현재 날씨 카드 */}
-            {isApiKeyValid() && weatherData && !weatherLoading && !weatherError && (
-              <section className="schedule-weather-card">
-                <div className="schedule-weather-header">
-                  <div className="schedule-weather-date">현재 {new Date().toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })}</div>
-                  <div 
-                    className="schedule-weather-location" 
-                    onClick={() => setShowWeatherLocationModal(true)}
-                    style={{ 
-                      cursor: 'pointer', 
-                      display: 'flex', 
-                      alignItems: 'center',
-                      transition: 'opacity 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => e.target.style.opacity = '0.7'}
-                    onMouseLeave={(e) => e.target.style.opacity = '1'}
-                  >
-                    <LocationIcon />
-                    {selectedLocation}
-                  </div>
-                </div>
-                
-                <div className="schedule-weather-main">
-                  <div className="schedule-weather-left">
-                    <div className="schedule-weather-icon">{getWeatherIcon(weatherData.weather?.[0]?.icon || '01d')}</div>
-                    <div>
-                      <div className="schedule-weather-temp">{Math.round(weatherData.main?.temp || 0)}°</div>
-                      <div className="schedule-weather-desc">{weatherData.weather?.[0]?.description || '날씨 정보 없음'}</div>
-                      <div className="schedule-weather-range">최고 {Math.round(weatherData.main?.temp_max || 0)}° 최저 {Math.round(weatherData.main?.temp_min || 0)}°</div>
-                    </div>
-                  </div>
-                  
-                  <div className="schedule-weather-center">
-                    <div className="schedule-weather-rain">
-                      <div className="schedule-weather-rain-icon">☂️</div>
-                      <div className="schedule-weather-rain-text">강수량</div>
-                      <div className="schedule-weather-rain-percent">{weatherData.rain?.['1h'] || 0}%</div>
-                    </div>
-                  </div>
-                  
-                  <div className="schedule-weather-right">
-                    <div className="schedule-weather-dust">미세 {weatherData.main?.humidity || 0}%</div>
-                    <div className="schedule-weather-dust">습도 {weatherData.main?.humidity || 0}%</div>
-                    <div className="schedule-weather-wind">
-                      💨 {weatherData.wind?.speed || 0}m/s
-                    </div>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* 일별 날씨 예보 - 실제 데이터가 있을 때만 표시 */}
-            {isApiKeyValid() && forecastData && !weatherLoading && !weatherError && (
-              <section className="schedule-daily-weather">
-                <div className="schedule-daily-list">
-                  {forecastData.slice(0, 5).map((day, index) => {
-                    const date = new Date(day.date);
-                    const dayNames = ['오늘', '내일', '모레', '4일 후', '5일 후'];
-                    const dayName = dayNames[index] || date.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' });
-                    
-                    return (
-                      <div key={index} className="schedule-daily-item">
-                        <div className="schedule-daily-date">{dayName}</div>
-                        <div className="schedule-daily-icon">{getWeatherIcon(day.weather?.icon || '01d')}</div>
-                        <div className="schedule-daily-temps">
-                          {Math.round(day.temp_max || 0)}°<br/>
-                          {Math.round(day.temp_min || 0)}°
+                  {/* 로딩 상태 */}
+                  {isApiKeyValid() && weatherLoading && (
+                      <section className="schedule-weather-card">
+                        <div className="schedule-weather-header">
+                          <div className="schedule-weather-date">날씨 로딩 중...</div>
+                          <div
+                              className="schedule-weather-location"
+                              onClick={() => setShowWeatherLocationModal(true)}
+                              style={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                transition: 'opacity 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.target.style.opacity = '0.7'}
+                              onMouseLeave={(e) => e.target.style.opacity = '1'}
+                          >
+                            <LocationIcon />
+                            {selectedLocation}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
+                        <div className="schedule-weather-main">
+                          <div style={{ textAlign: 'center', padding: '20px' }}>
+                            <div style={{ fontSize: '24px', marginBottom: '10px' }}>⏳</div>
+                            <div>날씨 정보를 가져오는 중...</div>
+                          </div>
+                        </div>
+                      </section>
+                  )}
+
+                  {/* 에러 상태 */}
+                  {isApiKeyValid() && weatherError && !weatherLoading && (
+                      <section className="schedule-weather-card">
+                        <div className="schedule-weather-header">
+                          <div className="schedule-weather-date">❌ 날씨 오류</div>
+                          <div
+                              className="schedule-weather-location"
+                              onClick={() => setShowWeatherLocationModal(true)}
+                              style={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                transition: 'opacity 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.target.style.opacity = '0.7'}
+                              onMouseLeave={(e) => e.target.style.opacity = '1'}
+                          >
+                            <LocationIcon />
+                            {selectedLocation}
+                          </div>
+                        </div>
+                        <div className="schedule-weather-main">
+                          <div style={{ textAlign: 'center', padding: '20px', color: '#e74c3c' }}>
+                            <div style={{ fontSize: '24px', marginBottom: '10px' }}>⚠️</div>
+                            <div>{weatherError}</div>
+                            <button
+                                onClick={() => loadWeatherData(selectedLocation)}
+                                style={{
+                                  marginTop: '10px',
+                                  padding: '5px 10px',
+                                  backgroundColor: '#3498db',
+                                  color: 'white',
+                                  border: 'none',
+                                  borderRadius: '4px',
+                                  cursor: 'pointer'
+                                }}
+                            >
+                              다시 시도
+                            </button>
+                          </div>
+                        </div>
+                      </section>
+                  )}
+
+                  <div className='weather-entire-container'>
+                    {/* 현재 날씨 카드 */}
+                    {isApiKeyValid() && weatherData && !weatherLoading && !weatherError && (
+                        <section className="schedule-weather-card">
+                          <div className="schedule-weather-header">
+                            <div className="schedule-weather-date">현재 {new Date().toLocaleDateString('ko-KR', {
+                              month: '2-digit',
+                              day: '2-digit'
+                            })}</div>
+                            <div
+                                className="schedule-weather-location"
+                                onClick={() => setShowWeatherLocationModal(true)}
+                                style={{
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  transition: 'opacity 0.2s ease'
+                                }}
+                                onMouseEnter={(e) => e.target.style.opacity = '0.7'}
+                                onMouseLeave={(e) => e.target.style.opacity = '1'}
+                            >
+                              <LocationIcon/>
+                              <p>{selectedLocation}</p>
+                            </div>
+                          </div>
+
+                          <div className="schedule-weather-main">
+                            <div className="schedule-weather-left">
+                              <div id='wlrow'>
+                                <div className="schedule-weather-icon"><img
+                                    src={getWeatherIcon(weatherData.weather?.[0]?.icon || '01d')}
+                                    alt="날씨 아이콘"
+                                    style={{width: '48px', height: '48px'}}
+                                /></div>
+                                <div style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'center',
+                                  alignItems: 'center'
+                                }}>
+                                  <div className="schedule-weather-temp">{Math.round(weatherData.main?.temp || 0)}°
+                                  </div>
+                                  <div
+                                      className="schedule-weather-desc">{weatherData.weather?.[0]?.description || '날씨 정보 없음'}</div>
+                                </div>
+                              </div>
+                              <div className="schedule-weather-range">최고 <span style={{
+                                fontSize: '12px',
+                                fontWeight: 'bolder',
+                                color: '#DD4245',
+                                letterSpacing: '1px'
+                              }}>{Math.round(weatherData.main?.temp_max || 0)}°</span> 최저 <span style={{
+                                fontSize: '12px',
+                                fontWeight: 'bolder',
+                                color: '#146FD6',
+                                letterSpacing: '1px'
+                              }}>{Math.round(weatherData.main?.temp_min || 0)}°</span></div>
+                            </div>
+
+                            <div className="schedule-weather-center">
+                              <div className="schedule-weather-rain">
+                                <div className="schedule-weather-rain-icon"><img src={umbrella} alt='강수량'/></div>
+                                <div className="schedule-weather-rain-text">강수량</div>
+                                <div className="schedule-weather-rain-percent">{weatherData.rain?.['1h'] || 0}%</div>
+                              </div>
+                            </div>
+
+                            <div className="schedule-weather-right">
+                              <div className="schedule-weather-dust">미세 <p style={{
+                                color: '#146FD6',
+                                fontWeight: 'bold',
+                                margin: 0
+                              }}>{weatherData.main?.humidity || 0}%</p></div>
+                              <div className="schedule-weather-dust">습도 <p style={{
+                                color: '#DD4245',
+                                fontWeight: 'bold',
+                                margin: 0
+                              }}>{weatherData.main?.humidity || 0}%</p></div>
+                              <span></span>
+                              <div className="schedule-weather-wind">
+                                <p>돌풍</p>
+                                <h6><p style={{
+                                  fontSize: '18px',
+                                  fontWeight: 'bolder'
+                                }}>{weatherData.wind?.speed || 0} </p> m/s
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+                    )}
+
+                    <span className='weather-line'></span>
+
+                    {/* 일별 날씨 예보 - 실제 데이터가 있을 때만 표시 */}
+                    {isApiKeyValid() && forecastData && !weatherLoading && !weatherError && (
+                        <section className="schedule-daily-weather">
+                          <p style={{
+                            margin: 0,
+                            padding: 0,
+                            textAlign: 'center',
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            textShadow: '0 0 5px rgba(18, 72, 46, 0.7)',
+                            fontSize: '0.75rem',
+                            fontWeight: '400'
+                          }}>날짜별 일기예보</p>
+                          <div className="schedule-daily-list">
+                            {forecastData.slice(0, 5).map((day, index) => {
+                              const date = new Date(day.date);
+                              const dayNames = ['오늘', '내일', '모레', '4일 후', '5일 후'];
+                              const dayName = dayNames[index] || date.toLocaleDateString('ko-KR', {
+                                month: '2-digit',
+                                day: '2-digit'
+                              });
+
+                              return (
+                                  <div key={index} className="schedule-daily-item">
+                                    <div className="schedule-daily-date">{dayName}</div>
+                                    <div className="schedule-daily-icon"><img
+                                        src={getWeatherIcon(day.weather?.icon || '01d')}
+                                        alt="날씨 아이콘"
+                                        style={{width: '20px', height: '20px'}}
+                                    /></div>
+                                    <div className="schedule-daily-temps">
+                                      <span style={{fontWeight: 'bold'}}>{Math.round(day.temp_max || 0)}°</span><br/>
+                                      <span style={{fontWeight: '300'}}>{Math.round(day.temp_min || 0)}°</span>
+                                    </div>
+                                  </div>
+                              );
+                            })}
+                          </div>
+                        </section>
+                    )}
+                  </div>
+                </>
             )}
-          </>
-        )}
 
-        <section className="schedule-calendar-section">
-          <div className="schedule-calendar-header">
-            <button className="schedule-month-button" onClick={goToPreviousMonth}>‹</button>
-            <h2 className="schedule-month-title">
-              {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
-            </h2>
-            <button className="schedule-month-button" onClick={goToNextMonth}>›</button>
-          </div>
+            <section className="schedule-calendar-section">
+              <div className="schedule-calendar-header">
+                <button className="schedule-month-button" onClick={goToPreviousMonth}>‹</button>
+                <h2 className="schedule-month-title">
+                  {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
+                </h2>
+                <button className="schedule-month-button" onClick={goToNextMonth}>›</button>
+              </div>
 
-          <div className="schedule-calendar-grid">
-            <div className="schedule-weekday-header">
-              {['일', '월', '화', '수', '목', '금', '토'].map((day, index) => (
-                <div key={day} className={`schedule-weekday ${index === 0 || index === 6 ? 'weekend' : ''}`}>
-                  {day}
+              <div className="schedule-calendar-grid">
+                <div className="schedule-weekday-header">
+                  {['일', '월', '화', '수', '목', '금', '토'].map((day, index) => (
+                      <div key={day} className={`schedule-weekday ${index === 0 || index === 6 ? 'weekend' : ''}`}>
+                        {day}
+                      </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
             <div className="schedule-days-grid">
               {renderCalendarDays()}
@@ -611,88 +706,93 @@ const SchedulePage = () => {
                 </button>
               </div>
 
-          <div className="schedule-list">
-            {(() => {
-              const selectedDateString = selectedDate.toISOString().split('T')[0];
-              const daySchedules = schedules.filter(schedule => schedule.date === selectedDateString);
-              
-              console.log('📅 일정 필터링 정보:', {
-                selectedDateString,
-                allSchedules: schedules,
-                daySchedules,
-                schedulesCount: schedules.length,
-                daySchedulesCount: daySchedules.length
-              });
-              
-              return daySchedules.length === 0 ? (
-                <div className="schedule-empty">
-                  <div className="schedule-empty-icon">
-                    <img src={ScheduleIcon} alt="일정 없음" />
-                  </div>
-                  <div className="schedule-empty-content">
-                    <div className="schedule-empty-text">등록된 일정이 없습니다</div>
-                    <div className="schedule-empty-hint">우측상단 + 버튼으로 일정을 추가해보세요</div>
-                  </div>
-                </div>
-              ) : (
-                daySchedules.map((schedule) => {
-                  // 기존 데이터의 type을 한국어 카테고리로 변환
-                  const getDisplayCategory = (schedule) => {
-                    console.log('🔍 스케줄 카테고리 디버깅:', {
-                      scheduleId: schedule.id,
-                      scheduleTitle: schedule.title,
-                      scheduleCategory: schedule.category,
-                      scheduleType: schedule.type,
-                      allScheduleKeys: Object.keys(schedule)
-                    });
-                    
-                    // 이미 한국어 카테고리가 있으면 그대로 사용
-                    if (schedule.category && ['골프', '관광', '맛집', '숙소', '모임', '기타'].includes(schedule.category)) {
-                      console.log('✅ 한국어 카테고리 사용:', schedule.category);
-                      return schedule.category;
-                    }
-                    
-                    // type이 영어로 되어 있으면 한국어로 변환
-                    if (schedule.type) {
-                      const convertedCategory = (() => {
-                        switch (schedule.type) {
-                          case 'golf': return '골프';
-                          case 'tour': return '관광';
-                          case 'food': return '맛집';
-                          case 'stay': return '숙소';
-                          default: return '기타';
+              <div className="schedule-list">
+                {(() => {
+                  const selectedDateString = selectedDate.toISOString().split('T')[0];
+                  const daySchedules = schedules.filter(schedule => schedule.date === selectedDateString);
+
+                  console.log('📅 일정 필터링 정보:', {
+                    selectedDateString,
+                    allSchedules: schedules,
+                    daySchedules,
+                    schedulesCount: schedules.length,
+                    daySchedulesCount: daySchedules.length
+                  });
+
+                  return daySchedules.length === 0 ? (
+                      <div className="schedule-empty">
+                        <div className="schedule-empty-icon">
+                          <img src={ScheduleIcon} alt="일정 없음"/>
+                        </div>
+                        <div className="schedule-empty-content">
+                          <div className="schedule-empty-text">등록된 일정이 없습니다</div>
+                          <div className="schedule-empty-hint">우측상단 + 버튼으로 일정을 추가해보세요</div>
+                        </div>
+                      </div>
+                  ) : (
+                      daySchedules.map((schedule) => {
+                        // 기존 데이터의 type을 한국어 카테고리로 변환
+                        const getDisplayCategory = (schedule) => {
+                          console.log('🔍 스케줄 카테고리 디버깅:', {
+                            scheduleId: schedule.id,
+                            scheduleTitle: schedule.title,
+                            scheduleCategory: schedule.category,
+                            scheduleType: schedule.type,
+                            allScheduleKeys: Object.keys(schedule)
+                          });
+
+                          // 이미 한국어 카테고리가 있으면 그대로 사용
+                          if (schedule.category && ['골프', '관광', '맛집', '숙소', '모임', '기타'].includes(schedule.category)) {
+                            console.log('✅ 한국어 카테고리 사용:', schedule.category);
+                            return schedule.category;
+                          }
+
+                          // type이 영어로 되어 있으면 한국어로 변환
+                          if (schedule.type) {
+                            const convertedCategory = (() => {
+                              switch (schedule.type) {
+                                case 'golf':
+                                  return '골프';
+                                case 'tour':
+                                  return '관광';
+                                case 'food':
+                                  return '맛집';
+                                case 'stay':
+                                  return '숙소';
+                                default:
+                                  return '기타';
+                              }
+                            })();
+                            console.log('🔄 영어 타입을 한국어로 변환:', schedule.type, '→', convertedCategory);
+                            return convertedCategory;
+                          }
+
+                          // 기본값
+                          console.log('⚠️ 기본값 사용: 기타');
+                          return '기타';
+                        };
+
+                        const displayCategory = getDisplayCategory(schedule);
+                        console.log('📋 최종 displayCategory:', displayCategory);
+
+                        // 카테고리가 없거나 잘못된 경우 사용자에게 알림
+                        if (!displayCategory || displayCategory === '기타') {
+                          console.warn('⚠️ 카테고리 정보가 없거나 기본값입니다:', {
+                            scheduleId: schedule.id,
+                            scheduleTitle: schedule.title,
+                            displayCategory: displayCategory
+                          });
                         }
-                      })();
-                      console.log('🔄 영어 타입을 한국어로 변환:', schedule.type, '→', convertedCategory);
-                      return convertedCategory;
-                    }
-                    
-                    // 기본값
-                    console.log('⚠️ 기본값 사용: 기타');
-                    return '기타';
-                  };
-                  
-                  const displayCategory = getDisplayCategory(schedule);
-                  console.log('📋 최종 displayCategory:', displayCategory);
-                  
-                  // 카테고리가 없거나 잘못된 경우 사용자에게 알림
-                  if (!displayCategory || displayCategory === '기타') {
-                    console.warn('⚠️ 카테고리 정보가 없거나 기본값입니다:', {
-                      scheduleId: schedule.id,
-                      scheduleTitle: schedule.title,
-                      displayCategory: displayCategory
-                    });
-                  }
-                  
-                  return (
-                    <div key={schedule.id} className="schedule-item" style={{ 
-                      backgroundColor: displayCategory === '골프' ? 'rgba(38, 153, 98, 0.1)' :
-                                      displayCategory === '관광' ? 'rgba(147, 51, 234, 0.1)' :
+
+                        return (
+                            <div key={schedule.id} className="schedule-item" style={{
+                              backgroundColor: displayCategory === '골프' ? 'rgba(38, 153, 98, 0.1)' :
+                                  displayCategory === '관광' ? 'rgba(147, 51, 234, 0.1)' :
                                       displayCategory === '모임' ? 'rgba(239, 68, 68, 0.1)' :
-                                      displayCategory === '맛집' ? 'rgba(234, 88, 12, 0.1)' :
-                                      displayCategory === '숙소' ? 'rgba(37, 99, 235, 0.1)' :
-                                      'rgba(107, 114, 128, 0.1)',
-                      borderColor: displayCategory === '골프' ? '#269962' :
+                                          displayCategory === '맛집' ? 'rgba(234, 88, 12, 0.1)' :
+                                              displayCategory === '숙소' ? 'rgba(37, 99, 235, 0.1)' :
+                                                  'rgba(107, 114, 128, 0.1)',
+                              borderColor: displayCategory === '골프' ? '#269962' :
                                   displayCategory === '관광' ? '#9333EA' :
                                   displayCategory === '모임' ? '#EF4444' :
                                   displayCategory === '맛집' ? '#EA580C' :
@@ -795,27 +895,27 @@ const SchedulePage = () => {
         <Footer />
       </div>
 
-      {showAddScheduleModal && (
-        <AddScheduleModal
-          onClose={() => setShowAddScheduleModal(false)}
-          onAdd={handleAddSchedule}
-          schedule={{
-            ...newSchedule,
-            startDate: newSchedule.startDate || selectedDate.toISOString().split('T')[0],
-            endDate: newSchedule.endDate || selectedDate.toISOString().split('T')[0]
-          }}
-          setSchedule={setNewSchedule}
-          selectedDate={selectedDate}
-        />
-      )}
+        {showAddScheduleModal && (
+            <AddScheduleModal
+                onClose={() => setShowAddScheduleModal(false)}
+                onAdd={handleAddSchedule}
+                schedule={{
+                  ...newSchedule,
+                  startDate: newSchedule.startDate || selectedDate.toISOString().split('T')[0],
+                  endDate: newSchedule.endDate || selectedDate.toISOString().split('T')[0]
+                }}
+                setSchedule={setNewSchedule}
+                selectedDate={selectedDate}
+            />
+        )}
 
-      {showWeatherLocationModal && (
-        <WeatherLocationModal
-          onClose={() => setShowWeatherLocationModal(false)}
-          onLocationChange={handleWeatherLocationChange}
-          currentLocation={selectedLocation}
-        />
-      )}
+        {showWeatherLocationModal && (
+            <WeatherLocationModal
+                onClose={() => setShowWeatherLocationModal(false)}
+                onLocationChange={handleWeatherLocationChange}
+                currentLocation={selectedLocation}
+            />
+        )}
 
       {showEditScheduleModal && editingSchedule && (
         <EditScheduleModal

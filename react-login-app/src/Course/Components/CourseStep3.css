@@ -13,7 +13,8 @@
 /* ?�비게이???�더 */
 .step-header {
   background: white;
-  padding: 16px 20px;
+  width: 90%;
+  margin: 0 auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -21,9 +22,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 30px;
-  max-width: 320px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 }
 
 .back-btn {
@@ -46,9 +45,8 @@
 .step-indicator {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  max-width: 320px;
-  margin: 0 auto;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .step-item {

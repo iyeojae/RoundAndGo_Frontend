@@ -384,6 +384,7 @@ const CourseStep1 = () => {
                 <input
                   type="date"
                   className="date-input"
+                  placeholder='날짜 선택'
                   value={departureDate}
                   onChange={(e) => setDepartureDate(e.target.value)}
                 />
@@ -392,54 +393,59 @@ const CourseStep1 = () => {
           </div>
 
         {/* 골프 치는 시간 섹션 */}
-        <div className="golf-time-section">
-          <div className="section-header">
-            <h3 className="section-title">골프 치는 시간</h3>
+          <div className="golf-time-section">
+            {/*<div className="section-header">*/}
+            {/*  <h3 className="section-title">골프 치는 시간</h3>*/}
+            {/*</div>*/}
+            <p>골프 치는 시간</p>
+            {golfTimes.map((time, index) => (
+                <>
+                <div key={index} className="golf-time-input">
+                  {/*<div className="golf-time-label">*/}
+                  {/*  {selectedPeriod === 'day' ? '골프 시간' : `${index + 1}일차`}*/}
+                  {/*</div>*/}
+                  {time === '' ? (
+                      <div
+                          className="time-input time-placeholder"
+                          onClick={() => openTimeModal(index)}
+                      >
+                        골프 치는 시간을 선택해주세요
+                        <span className="clock-icon">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="9" cy="9" r="8" stroke="#999" strokeWidth="1.5"/>
+                      <path d="M9 5V9L12 12" stroke="#999" strokeWidth="1.5" strokeLinecap="round"
+                            strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                      </div>
+                  ) : null}
+                  {time !== '' && (
+                      <div
+                          className="time-input time-display"
+                          onClick={() => openTimeModal(index)}
+                      >
+                        {time}
+                        <span className="clock-icon">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="9" cy="9" r="8" stroke="#999" strokeWidth="1.5"/>
+                      <path d="M9 5V9L12 12" stroke="#999" strokeWidth="1.5" strokeLinecap="round"
+                            strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                      </div>
+                  )}
+                </div>
+                <div style={{width: '100%', height: '1px', borderBottom:'1px dashed #595959', margin: '10px 0'}}></div>
+                </>
+            ))}
+
           </div>
-          
-          {golfTimes.map((time, index) => (
-            <div key={index} className="golf-time-input">
-              <div className="golf-time-label">
-                {selectedPeriod === 'day' ? '골프 시간' : `${index + 1}일차`}
-              </div>
-              {time === '' ? (
-                <div 
-                  className="time-input time-placeholder"
-                  onClick={() => openTimeModal(index)}
-                >
-                  골프 치는 시간을 선택해주세요
-                  <span className="clock-icon">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="9" cy="9" r="8" stroke="#999" strokeWidth="1.5"/>
-                      <path d="M9 5V9L12 12" stroke="#999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </span>
-                </div>
-              ) : null}
-              {time !== '' && (
-                <div 
-                  className="time-input time-display"
-                  onClick={() => openTimeModal(index)}
-                >
-                  {time}
-                  <span className="clock-icon">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="9" cy="9" r="8" stroke="#999" strokeWidth="1.5"/>
-                      <path d="M9 5V9L12 12" stroke="#999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </span>
-                </div>
-              )}
-            </div>
-          ))}
 
-        </div>
-
-        {/* 골프장 선택 섹션 */}
+          {/* 골프장 선택 섹션 */}
         <div className="golf-course-section">
-          <div className="section-header">
-            <h3 className="section-title">골프장 선택</h3>
-          </div>
+          {/*<div className="section-header">*/}
+          {/*  <h3 className="section-title">골프장 선택</h3>*/}
+          {/*</div>*/}
           
           {golfTimes.map((time, index) => (
             <div key={index} className="golf-course-input">

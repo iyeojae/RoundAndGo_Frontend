@@ -332,9 +332,9 @@ function CommunityDetail() {
     const isAuthor = post.author === currentUserNickname;
 
     return (
-        <main>
+        <div id='main'>
             <Header versionClassName={'ArrowVer'} showLogo={false} showArrow={true} TitleText={'커뮤니티'} />
-            <div className="community-content-wrapper">
+            <div className="community-content-wrapper"  style={{height: '100vh'}}>
                 <div className="community-detail-cont">
                     <div className='board-cont'>
                         <div className='title-tab'>
@@ -358,7 +358,7 @@ function CommunityDetail() {
                                 {Array.isArray(post.images) && post.images.map((img, i) => (
                                     <img
                                         key={i}
-                                        src={img.url}
+                                        src={`/api${new URL(img.url).pathname}`}
                                         alt={img.originalFilename || `img-${i}`}
                                         onClick={() => setSelectedImage(img.url)}
                                     />
@@ -389,19 +389,19 @@ function CommunityDetail() {
                         {renderComments(nestComments(comments))}
                     </div>
                 </div>
-            </div>
 
-            {/* 댓글 입력창 */}
-            <div className='comment-input-area'>
-                <form onSubmit={handleCommentSubmit}>
+                {/* 댓글 입력창 */}
+                <div className='comment-input-area'>
+                    <form onSubmit={handleCommentSubmit}>
                     <textarea
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder={replyTargetId ? '답글을 입력해주세요' : '댓글을 입력해주세요'}
                         rows="1"
                     />
-                    <button type="submit"><img src={SendIcon} alt="send" /></button>
-                </form>
+                        <button type="submit"><img src={SendIcon} alt="send" /></button>
+                    </form>
+                </div>
             </div>
 
             {/* 바텀시트 */}
@@ -448,7 +448,7 @@ function CommunityDetail() {
             {showToast && (
                 <Toast message={toastMessage} onClose={() => setShowToast(false)} />
             )}
-        </main>
+        </div>
     );
 }
 

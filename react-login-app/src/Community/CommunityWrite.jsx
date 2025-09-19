@@ -107,7 +107,7 @@ function CommunityWrite() {
             <div>
                 <Header versionClassName={'ArrowVer'} showLogo={false} showArrow={true} TitleText={'글쓰기'} />
                 <div style={{ backgroundColor: '#F8F8F8', width: '100%' }}>
-                    <div className="form-wrap">
+                    <div className="form-wrap" style={{height: '100vh'}}>
                         <div id='section-cont'>
                             <label>제목</label>
                             <input
@@ -180,7 +180,7 @@ function CommunityWrite() {
                             </div>
                         </div>
 
-                        <div className='btn-wrap'>
+                        <div className='btn-wrap' style={{width: '90%', position: 'fixed', bottom: 0, margin: '3% 0'}}>
                             <button onClick={handleSubmit} className='SubmitBtn'>작성</button>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import { getAccommodationDetail, getAccommodationImages, getAccommodationInfo } from '../../Common/Accommodation/AccommodationAPI';
@@ -180,6 +180,16 @@ function MoreAccommodation() {
         arrows: false,
     };
 
+    const handleMoreDetailsClick = () => {
+        if (detail?.title) {
+            const query = encodeURIComponent(detail.title);
+            const url = `https://search.naver.com/search.naver?query=${query}`;
+            window.open(url, '_blank');
+        } else {
+            alert("숙소 정보가 없어 검색할 수 없습니다.");
+        }
+    };
+
     return (
         <div className="MoreAccommodation">
             {/* 대표 이미지 */}
@@ -290,9 +300,7 @@ function MoreAccommodation() {
                 <div className="more-btn">
                     {/* 자세히 보러가기 */}
                     <button
-                        onClick={() => {
-                            alert("자세히 보러가기는 뭘로 가야하나용?? 네이버 연동할까");
-                        }}
+                        onClick={handleMoreDetailsClick}
                     >
                         자세히 보러가기
                     </button>
