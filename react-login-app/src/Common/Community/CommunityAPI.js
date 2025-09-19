@@ -15,6 +15,21 @@ axios.defaults.withCredentials = true;
 //     return res.data.data;// { id, email, nickname, loginType, role }
 // };
 
+// GET 게시글 검색
+export const searchPosts = async (keyword) => {
+    try {
+        const response = await fetch(`https://api.roundandgo.com/api/posts/search?keyword=${encodeURIComponent(keyword)}`);
+        if (!response.ok) throw new Error('검색 실패');
+        const data = await response.json();
+        return data.data;
+    } catch (error) {
+        console.error('게시글 검색 에러:', error);
+        return [];
+    }
+};
+
+
+
 // GET 인기글 정보
 export const fetchPopularPosts = async () => {
     try {

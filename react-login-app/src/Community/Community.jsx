@@ -8,11 +8,13 @@ import'./Community.css';
 import BlackArrow from './BlackArrow.svg';
 import Comment from './CommentIcon.svg';
 import NewBoard from './NewBoardIcon.svg';
-import { fetchCategories, fetchPostsLatest, fetchComments } from "../Common/Community/CommunityAPI";
+import { fetchCategories, fetchPostsLatest, fetchComments, searchPosts } from "../Common/Community/CommunityAPI";
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS.js';
 import Popular from "../Common/Community/Popular";
 import WriteNewBoard from './WriteNewBoard.jsx';
 import Toast from '../Common/Community/Toast.jsx';
+
+import search from '../Community/search.svg';
 
 function CommunityBoard() {
     const navigate = useNavigate();
@@ -27,6 +29,23 @@ function CommunityBoard() {
 
     const [showToast, setShowToast] = useState(false);
     const location = useLocation();
+
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+
+    const handleSearchChange = (e) => {
+        setSearchKeyword(e.target.value);
+    };
+
+    const handleSearchSubmit = async (e) => {
+        e.preventDefault();
+        if (searchKeyword.trim() === '') return;
+
+        const results = await searchPosts(searchKeyword);
+        setSearchResults(results);
+        setIsSearching(true);
+    };
 
     useEffect(() => {
         if (location.state?.deleted) {
@@ -124,6 +143,95 @@ function CommunityBoard() {
             <Header/>
             <div style={{backgroundColor: '#F8F8F8', width: '100%'}}>
                 <div>
+                    {/* 검색창 */}
+                    <form onSubmit={handleSearchSubmit} style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        margin: '20px auto',
+                        width: '100%',
+                    }}>
+                        <div className='formcon' style={{position: 'relative', width: '90%', maxWidth: '440px'}}>
+                            <input
+                                type="text"
+                                placeholder="보고싶은 게시글을 검색하세요"
+                                value={searchKeyword}
+                                onChange={handleSearchChange}
+                                style={{
+                                    width: '100%',
+                                    boxSizing: 'border-box',
+                                    height: '45px',
+                                    padding: '0 40px 0 15px', // 오른쪽 아이콘 공간 확보
+                                    borderRadius: '10px',
+                                    border: '1px solid #ccc',
+                                    fontSize: '14px',
+                                    boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.25)',
+                                }}
+                            />
+                            <img
+                                src={search}
+                                alt="검색아이콘"
+                                style={{
+                                    position: 'absolute',
+                                    right: '15px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    width: '16px',
+                                    height: '16px',
+                                    pointerEvents: 'none',
+                                    userSelect: 'none', // 혹시 선택 막기 원하면 추가
+                                }}
+                            />
+                        </div>
+
+                    </form>
+
+                    {/* 검색 결과 */}
+                    {isSearching && (
+                        <div className="community-section">
+                            <div className="section-header-comm-main">
+                                <h4>검색 결과</h4>
+                                <button onClick={() => {
+                                    setIsSearching(false);
+                                    setSearchKeyword('');
+                                    setSearchResults([]);
+                                }} style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    fontSize: '12px',
+                                    color: '#269962',
+                                    cursor: 'pointer'
+                                }}>
+                                    초기화
+                                </button>
+                            </div>
+                            <ul className="post-list">
+                                {searchResults.length === 0 ? (
+                                    <li className="no-post">검색 결과가 없습니다</li>
+                                ) : (
+                                    searchResults.map((post) => (
+                                        <li key={post.id} className="post-item" onClick={() => goToPostDetail(post.id)}>
+                                            <div className="post-title"><p>{post.title}</p></div>
+                                            <div className="comment-count">
+                                                <img src={Comment} alt="댓글" />
+                                                <p>{commentCounts[post.id] ?? 0}</p>
+                                            </div>
+                                        </li>
+                                    ))
+                                )}
+                            </ul>
+                            <span style={{
+                                display: 'block',
+                                height: '2px',
+                                width: '100%',
+                                backgroundColor: '#dfdfdf',
+                                marginTop: '10px',
+                                borderRadius: '3px',
+                            }} />
+                        </div>
+                    )}
+
+
                     <DivContent/>
 
                     <Popular/>
