@@ -33,8 +33,8 @@
   width: 100%;
   max-width: 375px;
   position: relative;
-  padding: 20px;
-  margin: 0 auto;
+  padding: 0;
+  margin: 0;
   z-index: 2;
 }
 
@@ -563,7 +563,7 @@
 /* ===== 반응형 디자인 ===== */
 @media (max-width: 480px) {
   .email-auth-content {
-    padding: 16px;
+    padding: 0;
   }
   
   .email-auth-submit-button,

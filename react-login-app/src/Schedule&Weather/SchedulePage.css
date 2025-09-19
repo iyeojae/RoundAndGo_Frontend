@@ -1,11 +1,19 @@
 /* 일정관리 페이지 스타일 */
+.schedule-main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
 .schedule-page {
   background: white;
   color: white;
   font-family: 'Arial', sans-serif;
   position: relative;
-  min-height: 100vh;
-  padding-bottom: 100px; /* Footer 공간 확보 */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   /* 일정이 많을 때 자동으로 늘어나도록 설정 */
   height: auto;
 }
@@ -42,12 +50,31 @@
   padding-top: 20px;
   position: relative;
   z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-main-content {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Header z-index 조정 */
 .schedule-page .Header {
   position: relative;
   z-index: 10;
+}
+
+/* Footer - schedule-page 안에서 자연스럽게 배치 */
+.schedule-page .Footer {
+  position: relative;
+  width: 100%;
+  margin-top: auto;
+  z-index: 10;
+  background: white;
 }
 
 .schedule-weather-toggle-container {
@@ -286,6 +313,9 @@
   margin: 0;
   text-align: center;
   color: #333;
+  text-indent: 0;
+  padding-left: 0;
+  white-space: nowrap;
 }
 
 /* 캘린더 그리드 */

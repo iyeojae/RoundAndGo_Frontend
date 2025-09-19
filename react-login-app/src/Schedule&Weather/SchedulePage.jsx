@@ -330,59 +330,58 @@ const SchedulePage = () => {
 
 
   return (
-    <main>
+    <main className="schedule-main-container">
       <Header />
       <div className="schedule-page">
-      
-      <div className="schedule-content">
-        <div className="schedule-weather-toggle-container">
-          <h2 className="schedule-page-title">일정관리</h2>
-          <button className="schedule-weather-toggle" onClick={() => setShowWeather(!showWeather)}>
-            {showWeather ? '날씨 숨기기' : '날씨 보기'}
-          </button>
-        </div>
-
-        {/* 에러 메시지 표시 */}
-        {error && (
-          <div className="error-message" style={{
-            backgroundColor: '#ffebee',
-            color: '#c62828',
-            padding: '10px 15px',
-            margin: '10px 20px',
-            borderRadius: '8px',
-            border: '1px solid #ffcdd2',
-            fontSize: '14px'
-          }}>
-            {error}
-            <button 
-              onClick={() => setError(null)}
-              style={{
-                float: 'right',
-                background: 'none',
-                border: 'none',
-                color: '#c62828',
-                cursor: 'pointer',
-                fontSize: '16px'
-              }}
-            >
-              ×
+        <div className="schedule-content">
+          <div className="schedule-weather-toggle-container">
+            <h2 className="schedule-page-title">일정관리</h2>
+            <button className="schedule-weather-toggle" onClick={() => setShowWeather(!showWeather)}>
+              {showWeather ? '날씨 숨기기' : '날씨 보기'}
             </button>
           </div>
-        )}
 
-        {/* 로딩 표시 */}
-        {loading && (
-          <div className="loading-message" style={{
-            textAlign: 'center',
-            padding: '20px',
-            color: '#666',
-            fontSize: '14px'
-          }}>
-            로딩 중...
-          </div>
-        )}
+          {/* 에러 메시지 표시 */}
+          {error && (
+            <div className="error-message" style={{
+              backgroundColor: '#ffebee',
+              color: '#c62828',
+              padding: '10px 15px',
+              margin: '10px 20px',
+              borderRadius: '8px',
+              border: '1px solid #ffcdd2',
+              fontSize: '14px'
+            }}>
+              {error}
+              <button 
+                onClick={() => setError(null)}
+                style={{
+                  float: 'right',
+                  background: 'none',
+                  border: 'none',
+                  color: '#c62828',
+                  cursor: 'pointer',
+                  fontSize: '16px'
+                }}
+              >
+                ×
+              </button>
+            </div>
+          )}
 
-      <main>
+          {/* 로딩 표시 */}
+          {loading && (
+            <div className="loading-message" style={{
+              textAlign: 'center',
+              padding: '20px',
+              color: '#666',
+              fontSize: '14px'
+            }}>
+              로딩 중...
+            </div>
+          )}
+
+          <div className="schedule-main-content">
         {showWeather && (
           <>
             {/* API 키 설정 안내 */}
@@ -594,23 +593,23 @@ const SchedulePage = () => {
         </section>
 
 
-        <section className="schedule-section">
-          <div className="schedule-section-header">
-            <div>
-              <h3 className="schedule-section-title">
-                {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일
-              </h3>
-              <p className="schedule-count">
-                총 {schedules.filter(schedule => schedule.date === selectedDate.toISOString().split('T')[0]).length}개의 일정
-              </p>
-            </div>
-            <button className="schedule-add-button" onClick={() => setShowAddScheduleModal(true)}>
-              <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="15.5" cy="15.5" r="15.5" fill="#2D8779" fillOpacity="0.5"/>
-                <path d="M9.34556 16.272V13.776H14.1936V8.664H16.8096V13.776H21.6576V16.272H16.8096V21.384H14.1936V16.272H9.34556Z" fill="white"/>
-              </svg>
-            </button>
-          </div>
+            <section className="schedule-section">
+              <div className="schedule-section-header">
+                <div>
+                  <h3 className="schedule-section-title">
+                    {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일
+                  </h3>
+                  <p className="schedule-count">
+                    총 {schedules.filter(schedule => schedule.date === selectedDate.toISOString().split('T')[0]).length}개의 일정
+                  </p>
+                </div>
+                <button className="schedule-add-button" onClick={() => setShowAddScheduleModal(true)}>
+                  <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="15.5" cy="15.5" r="15.5" fill="#2D8779" fillOpacity="0.5"/>
+                    <path d="M9.34556 16.272V13.776H14.1936V8.664H16.8096V13.776H21.6576V16.272H16.8096V21.384H14.1936V16.272H9.34556Z" fill="white"/>
+                  </svg>
+                </button>
+              </div>
 
           <div className="schedule-list">
             {(() => {
@@ -789,12 +788,12 @@ const SchedulePage = () => {
                 })
               );
             })()}
+              </div>
+            </section>
           </div>
-        </section>
-
-      </main>
+        </div>
+        <Footer />
       </div>
-
 
       {showAddScheduleModal && (
         <AddScheduleModal
@@ -829,8 +828,6 @@ const SchedulePage = () => {
           schedule={editingSchedule}
         />
       )}
-      </div>
-      <Footer />
     </main>
   );
 };
