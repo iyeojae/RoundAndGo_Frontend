@@ -22,21 +22,17 @@ function MoreAccommodation() {
     const mapContainer = useRef(null);
 
     useEffect(() => {
-        if (!mapx || !mapy) return;
+        if (!mapx || !mapy) {
+            console.log('지도 좌표가 없습니다:', { mapx, mapy });
+            return;
+        }
 
-        const loadKakaoMap = () => {
-            if (window.kakao && window.kakao.maps) {
-                initMap();
-            } else {
-                const script = document.createElement('script');
-                script.src = KAKAO_CONFIG.MAP_SDK_URL_AUTOLOAD_FALSE;
-                script.async = true;
-                document.head.appendChild(script);
-                script.onload = () => {
-                    window.kakao.maps.load(initMap);
-                };
-            }
-        };
+        if (!mapContainer.current) {
+            console.log('mapContainer가 아직 준비되지 않았습니다. 재시도합니다.');
+            return;
+        }
+
+        console.log('지도 초기화 시작:', { mapx, mapy });
 
         const initMap = () => {
             const container = mapContainer.current;
@@ -45,20 +41,51 @@ function MoreAccommodation() {
                 return;
             }
 
-            const options = {
-                center: new window.kakao.maps.LatLng(mapy, mapx),
-                level: 3,
-            };
-            const map = new window.kakao.maps.Map(container, options);
+            try {
+                const options = {
+                    center: new window.kakao.maps.LatLng(mapy, mapx),
+                    level: 3,
+                };
+                const map = new window.kakao.maps.Map(container, options);
 
-            const marker = new window.kakao.maps.Marker({
-                position: new window.kakao.maps.LatLng(mapy, mapx),
-            });
-            marker.setMap(map);
+                const marker = new window.kakao.maps.Marker({
+                    position: new window.kakao.maps.LatLng(mapy, mapx),
+                });
+                marker.setMap(map);
+                
+                console.log('지도 초기화 완료');
+            } catch (error) {
+                console.error('지도 초기화 중 오류:', error);
+            }
         };
 
-        loadKakaoMap();
-    }, [mapx, mapy]);
+        const loadKakaoMap = () => {
+            if (window.kakao && window.kakao.maps) {
+                console.log('카카오맵 API가 이미 로드됨');
+                initMap();
+            } else {
+                console.log('카카오맵 API 로딩 중...');
+                const script = document.createElement('script');
+                script.src = KAKAO_CONFIG.MAP_SDK_URL_AUTOLOAD_FALSE;
+                script.async = true;
+                document.head.appendChild(script);
+                script.onload = () => {
+                    console.log('카카오맵 스크립트 로드 완료');
+                    window.kakao.maps.load(() => {
+                        console.log('카카오맵 API 로드 완료');
+                        // DOM이 준비될 때까지 기다린 후 지도 초기화
+                        setTimeout(initMap, 200);
+                    });
+                };
+                script.onerror = (error) => {
+                    console.error('카카오맵 스크립트 로드 실패:', error);
+                };
+            }
+        };
+
+        // DOM이 완전히 준비될 때까지 기다린 후 지도 로딩 시도
+        setTimeout(loadKakaoMap, 300);
+    }, [mapx, mapy, mapContainer.current]);
 
 
     const [detail, setDetail] = useState(null);
@@ -237,6 +264,20 @@ function MoreAccommodation() {
                     <div className="location-container">
                         <div className="location-map" ref={mapContainer} style={{ width: '100%', height: '300px' }}>
                             {/* 지도 렌더링 영역 */}
+                            {(!mapx || !mapy) && (
+                                <div style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    background: '#f5f5f5',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: '#666',
+                                    fontSize: '14px'
+                                }}>
+                                    지도 정보가 없습니다
+                                </div>
+                            )}
                         </div>
                         <div className="textC">
                             <p className="address-text">{detail?.addr1}</p>

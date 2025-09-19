@@ -1,34 +1,9 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+// 프록시 설정 제거됨 - 직접 API 호출 사용
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
-  app.use(
-    '/api',
-    createProxyMiddleware({
-      target: 'https://api.roundandgo.com',
-      changeOrigin: true,
-      secure: true, // HTTPS 인증서 검증 활성화
-      pathRewrite: {
-        '^/api': '/api', // 경로 그대로 유지
-      },
-      onError: (err, req, res) => {
-        console.error('프록시 에러:', err);
-        res.writeHead(500, {
-          'Content-Type': 'application/json',
-        });
-        res.end(JSON.stringify({ 
-          error: '프록시 에러', 
-          message: err.message,
-          details: '백엔드 서버 연결에 실패했습니다.'
-        }));
-      },
-      onProxyReq: (proxyReq, req, res) => {
-        console.log('프록시 요청:', req.method, req.url, '→', proxyReq.path);
-      },
-      onProxyRes: (proxyRes, req, res) => {
-        console.log('프록시 응답:', proxyRes.statusCode, req.url);
-      }
-    })
-  );
+  // 프록시 설정이 제거되었습니다.
+  // 모든 API 호출은 직접 https://api.roundandgo.com으로 진행됩니다.
   
-  console.log('✅ 프록시 설정 로드됨 - Render 백엔드 서버로 프록시');
+  // 프록시 설정 제거됨 - 직접 API 호출 사용
 };

@@ -228,7 +228,7 @@ function MyPage() {
                                 <span>내가 추천받은 코스를 볼 수 있어요.</span>
                             </>
                         )}
-                        onClick={() => goTo('/schedule')}
+                        onClick={() => goTo('/course/my')}
                     />
 
                 </section>

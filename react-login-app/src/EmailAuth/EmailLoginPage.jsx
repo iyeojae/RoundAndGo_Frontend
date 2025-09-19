@@ -48,7 +48,6 @@ function EmailLoginPage() {
       const result = await loginWithEmail(formData.email, formData.password);
 
       if (result.success) {
-        alert('로그인 성공!');
         navigate('/first-main');
       } else {
         alert('로그인 실패: ' + result.error);

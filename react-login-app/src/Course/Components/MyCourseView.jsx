@@ -200,11 +200,18 @@ const MyCourseView = ({ courseData, courseInfo }) => {
     const courseType = courseTypeMapping[step2Data.selectedStyle] || '프리미엄';
     
     let totalPlaces = 0;
-    Object.values(dataToUse).forEach(dayData => {
-      if (Array.isArray(dayData)) {
-        totalPlaces += dayData.length;
+    if (dataToUse && typeof dataToUse === 'object' && dataToUse !== null) {
+      try {
+        Object.values(dataToUse).forEach(dayData => {
+          if (Array.isArray(dayData)) {
+            totalPlaces += dayData.length;
+          }
+        });
+      } catch (error) {
+        console.error('Error processing dataToUse:', error);
+        totalPlaces = 0;
       }
-    });
+    }
     
     return {
       title: `${period.title} 여행`,

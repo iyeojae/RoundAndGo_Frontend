@@ -76,7 +76,7 @@ function CommunityWrite() {
         }
 
         const { accessToken } = checkAuth();
-        console.log('Access Token:', accessToken);
+        // Access Token 확인
 
         if (!accessToken) {
             console.error('토큰이 없습니다. 로그인 상태를 확인해주세요.');
@@ -85,7 +85,7 @@ function CommunityWrite() {
 
         try {
             const response = await PostingBoard(accessToken, title, content, selectedCategoryLabel, images);
-            console.log('게시 성공:', response);
+            // 게시 성공
 
             const postId = response?.data?.id;
 
