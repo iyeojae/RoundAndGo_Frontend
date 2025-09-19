@@ -62,33 +62,33 @@ export const oauth2KakaoApi = {
         // 🎯 Spring Security OAuth2 카카오 로그인 엔드포인트 URL 생성 (HTTPS 강제)
         const kakaoLoginUrl = `https://api.roundandgo.com/oauth2/authorization/kakao`;
         
-        console.log('🚀 OAuth2 카카오 로그인 시작');
-        console.log('🔗 리다이렉트 URL:', kakaoLoginUrl);
+        // OAuth2 카카오 로그인 시작
+        // 리다이렉트 URL 확인
         
         // 🎯 개발/프로덕션 환경별 최적화된 리다이렉트
-        console.log('🔄 카카오 로그인 페이지로 이동 시작...');
+        // 카카오 로그인 페이지로 이동 시작
         
         if (process.env.NODE_ENV === 'development') {
             // 🏠 개발 환경: 프록시를 통한 간단한 이동
-            console.log('🛠️ 개발 환경: 프록시를 통한 백엔드 연결');
+            // 개발 환경: 프록시를 통한 백엔드 연결
             window.location.href = kakaoLoginUrl;
         } else {
             // 🌐 프로덕션 환경: React Router 강력 우회
-            console.log('🚀 프로덕션 환경: React Router 강력 우회 시작');
+            // 프로덕션 환경: React Router 강력 우회 시작
             
             // 🚨 방법 1: 즉시 페이지 완전 교체
-            console.log('💥 즉시 페이지 완전 교체');
+            // 즉시 페이지 완전 교체
             window.location.href = kakaoLoginUrl;
             
             // 🚨 방법 2: 강제 페이지 새로고침 (백업)
             setTimeout(() => {
-                console.log('🔄 강제 새로고침 백업');
+                // 강제 새로고침 백업
                 window.location.replace(kakaoLoginUrl);
             }, 100);
             
             // 🚨 방법 3: document.location 사용 (최종 백업)
             setTimeout(() => {
-                console.log('🔄 document.location 최종 백업');
+                // document.location 최종 백업
                 document.location.href = kakaoLoginUrl;
             }, 200);
             
@@ -96,12 +96,12 @@ export const oauth2KakaoApi = {
             try {
                 if (window.top) {
                     setTimeout(() => {
-                        console.log('🔄 top.location 프레임 우회');
+                        // top.location 프레임 우회
                         window.top.location.href = kakaoLoginUrl;
                     }, 300);
                 }
             } catch (e) {
-                console.log('⚠️ top.location 접근 불가 (보안 제한)');
+                // top.location 접근 불가 (보안 제한)
             }
         }
     },

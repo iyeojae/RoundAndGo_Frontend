@@ -55,7 +55,7 @@ const CourseStep3 = () => {
   const processApiResponseAsIs = (apiData) => {
     if (!apiData) return null;
 
-    console.log('API 응답 구조 (그대로 사용):', apiData);
+    // API 응답 구조 확인
 
     // 다일차 API 응답 처리 (1박2일 이상) - data 배열 구조
     if (apiData.data && Array.isArray(apiData.data)) {
@@ -70,15 +70,15 @@ const CourseStep3 = () => {
       apiData.data.forEach((dayData, dayIndex) => {
         const dayKey = `day${dayIndex}`;
         
-        console.log(`Day ${dayIndex + 1} 원본 데이터:`, dayData);
+        // Day 데이터 확인
         
         // 백엔드에서 준 데이터를 그대로 사용
         result[dayKey] = dayData.recommendedPlaces || [];
         
-        console.log(`${dayKey} 원본 데이터 사용:`, result[dayKey]);
+        // 원본 데이터 사용
       });
 
-      console.log('최종 원본 코스 데이터:', result);
+      // 최종 원본 코스 데이터
       return result;
     }
 

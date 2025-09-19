@@ -265,7 +265,7 @@ function EmailLoginPage() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    console.log('로그인 시도:', { userId, password });
+    // 로그인 시도
     // 로그인 로직 구현
   };
 
@@ -274,12 +274,12 @@ function EmailLoginPage() {
   };
 
   const handleFindAccount = () => {
-    console.log('아이디·비밀번호 찾기');
+    // 아이디·비밀번호 찾기
     // 아이디·비밀번호 찾기 페이지로 이동
   };
 
   const handleSignUp = () => {
-    console.log('회원가입');
+    // 회원가입
     // 회원가입 페이지로 이동
   };
 

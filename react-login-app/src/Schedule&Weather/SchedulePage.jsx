@@ -138,7 +138,7 @@ const SchedulePage = () => {
     setError(null);
     try {
       const response = await getSchedules();
-      console.log('📊 스케줄 조회 응답:', response);
+      // 스케줄 조회 응답
       
       // CommonResponse 형식에 따라 응답 처리
       if (response.success !== false) {
@@ -148,15 +148,7 @@ const SchedulePage = () => {
           ? schedulesData.map(transformScheduleFromAPI)
           : [transformScheduleFromAPI(schedulesData)];
         
-        console.log('📊 스케줄 로드 완료 - 카테고리 정보 확인:', {
-          totalSchedules: transformedSchedules.length,
-          categories: transformedSchedules.map(s => ({
-            id: s.id,
-            title: s.title,
-            category: s.category,
-            type: s.type
-          }))
-        });
+        // 스케줄 로드 완료
         
         setSchedules(transformedSchedules);
       } else {
@@ -177,7 +169,7 @@ const SchedulePage = () => {
     try {
       const apiSchedule = transformScheduleForAPI(schedule);
       const response = await createSchedule(apiSchedule);
-      console.log('📝 스케줄 생성 응답:', response);
+      // 스케줄 생성 응답
       
       if (response.success !== false) {
         const newSchedule = transformScheduleFromAPI(response.data || response);
@@ -212,7 +204,7 @@ const SchedulePage = () => {
     try {
       const apiSchedule = transformScheduleForAPI(updatedSchedule);
       const response = await updateSchedule(editingSchedule.id, apiSchedule);
-      console.log('✏️ 스케줄 수정 응답:', response);
+      // 스케줄 수정 응답
       
       if (response.success !== false) {
         const updatedScheduleData = transformScheduleFromAPI(response.data || response);
@@ -240,7 +232,7 @@ const SchedulePage = () => {
     setError(null);
     try {
       const response = await deleteSchedule(editingSchedule.id);
-      console.log('🗑️ 스케줄 삭제 응답:', response);
+      // 스케줄 삭제 응답
       
       if (response.success !== false) {
         setSchedules(prev => prev.filter(schedule => schedule.id !== editingSchedule.id));
@@ -280,7 +272,7 @@ const SchedulePage = () => {
     const urlParams = new URLSearchParams(location.search);
     const refresh = urlParams.get('refresh');
     if (refresh === 'true') {
-      console.log('🔄 코스 저장 후 스케줄 새로고침');
+      // 코스 저장 후 스케줄 새로고침
       loadSchedules();
       // URL에서 refresh 파라미터 제거
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -711,13 +703,7 @@ const SchedulePage = () => {
                   const selectedDateString = selectedDate.toISOString().split('T')[0];
                   const daySchedules = schedules.filter(schedule => schedule.date === selectedDateString);
 
-                  console.log('📅 일정 필터링 정보:', {
-                    selectedDateString,
-                    allSchedules: schedules,
-                    daySchedules,
-                    schedulesCount: schedules.length,
-                    daySchedulesCount: daySchedules.length
-                  });
+                  // 일정 필터링 정보
 
                   return daySchedules.length === 0 ? (
                       <div className="schedule-empty">
@@ -733,17 +719,11 @@ const SchedulePage = () => {
                       daySchedules.map((schedule) => {
                         // 기존 데이터의 type을 한국어 카테고리로 변환
                         const getDisplayCategory = (schedule) => {
-                          console.log('🔍 스케줄 카테고리 디버깅:', {
-                            scheduleId: schedule.id,
-                            scheduleTitle: schedule.title,
-                            scheduleCategory: schedule.category,
-                            scheduleType: schedule.type,
-                            allScheduleKeys: Object.keys(schedule)
-                          });
+                          // 스케줄 카테고리 디버깅
 
                           // 이미 한국어 카테고리가 있으면 그대로 사용
                           if (schedule.category && ['골프', '관광', '맛집', '숙소', '모임', '기타'].includes(schedule.category)) {
-                            console.log('✅ 한국어 카테고리 사용:', schedule.category);
+                            // 한국어 카테고리 사용
                             return schedule.category;
                           }
 
@@ -763,17 +743,17 @@ const SchedulePage = () => {
                                   return '기타';
                               }
                             })();
-                            console.log('🔄 영어 타입을 한국어로 변환:', schedule.type, '→', convertedCategory);
+                            // 영어 타입을 한국어로 변환
                             return convertedCategory;
                           }
 
                           // 기본값
-                          console.log('⚠️ 기본값 사용: 기타');
+                          // 기본값 사용
                           return '기타';
                         };
 
                         const displayCategory = getDisplayCategory(schedule);
-                        console.log('📋 최종 displayCategory:', displayCategory);
+                        // 최종 displayCategory
 
                         // 카테고리가 없거나 잘못된 경우 사용자에게 알림
                         if (!displayCategory || displayCategory === '기타') {
