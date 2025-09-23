@@ -739,6 +739,8 @@ const SchedulePage = () => {
                                   return '맛집';
                                 case 'stay':
                                   return '숙소';
+                                case 'meeting':
+                                  return '모임';
                                 default:
                                   return '기타';
                               }
@@ -755,12 +757,21 @@ const SchedulePage = () => {
                         const displayCategory = getDisplayCategory(schedule);
                         // 최종 displayCategory
 
-                        // 카테고리가 없거나 잘못된 경우 사용자에게 알림
-                        if (!displayCategory || displayCategory === '기타') {
-                          console.warn('⚠️ 카테고리 정보가 없거나 기본값입니다:', {
+                        // 카테고리 정보 디버깅 (기타도 정상적인 카테고리)
+                        if (!displayCategory) {
+                          console.warn('⚠️ 카테고리 정보가 없습니다:', {
                             scheduleId: schedule.id,
                             scheduleTitle: schedule.title,
-                            displayCategory: displayCategory
+                            originalType: schedule.type,
+                            originalCategory: schedule.category
+                          });
+                        } else {
+                          console.log('📋 스케줄 카테고리 정보:', {
+                            scheduleId: schedule.id,
+                            scheduleTitle: schedule.title,
+                            displayCategory: displayCategory,
+                            originalType: schedule.type,
+                            originalCategory: schedule.category
                           });
                         }
 
