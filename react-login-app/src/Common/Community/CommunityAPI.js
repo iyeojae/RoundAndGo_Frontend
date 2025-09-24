@@ -100,14 +100,13 @@ export const PostingBoard = async (title, content, category, images) => {
             category: category,
         };
         formData.append('post', JSON.stringify(textData)); // post라는 이름의 data로 하나로 보내
-        const token = getAuthToken();
         const response = await axios.post(
-            'https://api.roundandgo.com/api/posts',
+            'https://roundandgo.shop/api/posts',
             formData,
             {
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
             }
         );
 

@@ -74,23 +74,6 @@
     background-color: #FFE500;
 }
 
-/*.Top3ForRegion {*/
-/*    width: 90%;*/
-/*    max-width: 380px;*/
-/*    height: 100px;*/
-/*    border-radius: 8px;*/
-/*    padding: 0;*/
-/*    margin: 0 auto 100px auto;*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    gap: 15px;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*    color: #333;*/
-/*    font-size: 1rem;*/
-/*    font-weight: bold;*/
-/*}*/
-
 /* 기본 최소 높이 */
 .Top3ForRegion {
     width: 90%;
@@ -282,6 +265,12 @@
     font-weight: 450;
 }
 
+.swiper-slide-active,
+.swiper-slide-prev,
+.swiper-slide-next {
+    width: 100% !important;
+    margin: 0 !important;
+}
 
 
 /* swiper */

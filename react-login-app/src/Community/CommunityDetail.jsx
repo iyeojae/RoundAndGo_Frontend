@@ -1,5 +1,4 @@
 // CommunityDetail.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from "../Layout/Header";
@@ -12,11 +11,11 @@ import { getUserInfo } from '../Common/MyPageAPI.js';
 
 import { checkAuth } from "../Search/IsContainToken.js";
 import DeleteConfirmModal from "../Common/Community/DeleteConfirm";
-import BottomSheet from "./BottomSheet";
 import Toast from '../Common/Community/Toast.jsx';
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS';
 
-import Comment from './CommentIcon.svg';
+// import Comment from './CommentIcon.svg';
+import profile from '../MyPage/profile.svg';
 import reply from './replybtn.svg';
 import heart from './Heart.svg';
 import greenheart from './GreenHeart.svg';
@@ -212,7 +211,7 @@ function CommunityDetail() {
                         <div className={`comment-item-content ${!isParent ? 'reply-content' : ''}`}>
                             {!isParent && <img src={reply} alt="reply" className="reply-arrow" />}
                             <div className="comment-profile-img">
-                                <img src={Comment} alt='profile' />
+                                <img src={profile} alt='profile' />
                             </div>
                             <div className="comment-body">
                                 <div className='comment-meta'>

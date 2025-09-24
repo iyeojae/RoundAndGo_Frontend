@@ -437,17 +437,18 @@ export const transformScheduleForAPI = (schedule) => {
   // 날짜가 undefined인 경우 현재 날짜 사용
   const startDate = schedule.startDate || new Date().toISOString().split('T')[0];
   const endDate = schedule.endDate || startDate;
-  
+
   const startDateTime = formatDateTime(startDate, schedule.startTime);
   const endDateTime = formatDateTime(endDate, schedule.endTime);
 
-  console.log('🔍 원래 변환 디버깅:', {
-    originalSchedule: schedule,
-    startDate,
-    endDate,
-    startDateTime,
-    endDateTime
-  });
+  {/* !!! NOTE : 콘솔 주석했어요 */}
+  // console.log('🔍 원래 변환 디버깅:', {
+  //   originalSchedule: schedule,
+  //   startDate,
+  //   endDate,
+  //   startDateTime,
+  //   endDateTime
+  // });
 
   // 카테고리에 따른 색상 자동 매핑
   const categoryColor = getCategoryColor(schedule.category);

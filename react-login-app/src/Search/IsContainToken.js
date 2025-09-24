@@ -1,4 +1,3 @@
-import { getUserInfo } from '../Auth/authUtils.js';
 import { getAuthToken, isLoggedIn, getCookie } from '../utils/cookieUtils';
 
 export const checkAuth = () => {

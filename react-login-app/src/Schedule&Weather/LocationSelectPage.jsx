@@ -87,7 +87,6 @@ const LocationSelectPage = ({ onLocationSelect, onBack }) => {
       <Header>
         <BackButton onClick={handleBack}>뒤로</BackButton>
         <Title>장소</Title>
-        <div></div>
       </Header>
       
       <SearchSection>
@@ -159,7 +158,9 @@ const LocationSelectPage = ({ onLocationSelect, onBack }) => {
 
 // 스타일 컴포넌트들
 const Container = styled.div`
-  width: 100%;
+  position: relative;
+  width: 90%;
+  margin: 0 auto;
   height: 100vh;
   background: #FFFFFF;
   display: flex;
@@ -168,51 +169,70 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #269962;
+  position: relative;
+  padding: 20px 0;
+  box-sizing: border-box;
 `;
 
 const BackButton = styled.button`
   background: none;
   border: none;
-  color: #269962;
+  color: #003CFF;
+  
+  padding: 0;
+  
+  font-weight: 300;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 16px;
+  
   cursor: pointer;
 `;
 
 const Title = styled.h1`
   font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 400;
+  
   color: #000000;
+  
   margin: 0;
+
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const SearchSection = styled.div`
-  padding: 20px;
+  padding: 15px 0;
+  border-top: 1px solid #269962;
+  border-bottom: 1px solid #269962;
 `;
 
 const SearchInput = styled.input`
   width: 100%;
-  border: 1px solid #269962;
-  border-radius: 12px;
-  padding: 15px 20px;
+  border: 0.3px solid #269962;
+  border-radius: 54px;
+
+  padding: 10px 25px;
+  box-sizing: border-box;
+  box-shadow: 0 0 4.8px rgba(16, 117, 54, 0.42);
+  
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 14px;
+  
   color: #050505;
   background: #FFFFFF;
+  
   outline: none;
-  box-sizing: border-box;
 
   &:focus {
     border-color: #269962;
   }
 
   &::placeholder {
-    color: #A7A7A7;
+    color: #B2B2B2;
+    font-size: 12px;
   }
 `;
 

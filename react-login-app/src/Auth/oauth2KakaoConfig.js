@@ -10,7 +10,7 @@
  * 3. 팝업/현재창 로그인 모드 지원
  */
 
-import { API_ENDPOINTS, BACKEND_BASE_URL } from '../config/api';
+import { API_ENDPOINTS } from '../config/api';
 import { setAuthToken, setCookie, removeAuthToken, deleteCookie } from '../utils/cookieUtils';
 
 /**

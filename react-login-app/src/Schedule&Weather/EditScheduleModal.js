@@ -20,20 +20,21 @@ const GlobalDatePickerStyle = createGlobalStyle`
     top: 0;
     width: auto;
   }
-  input[type="date"]::-webkit-datetime-edit {
-    padding: 0;
-  }
+  
   input[type="date"]::-webkit-datetime-edit-fields-wrapper {
     padding: 0;
   }
+  
   input[type="date"]::-webkit-datetime-edit-text {
     padding: 0 2px;
   }
+  
   input[type="date"]::-webkit-datetime-edit-month-field,
   input[type="date"]::-webkit-datetime-edit-day-field,
   input[type="date"]::-webkit-datetime-edit-year-field {
     padding: 0 2px;
   }
+  
   .date-input-container {
     position: relative;
     display: flex;
@@ -52,15 +53,15 @@ const GlobalDatePickerStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
   }
-  input[type="date"]::-webkit-datetime-edit {
-    text-align: left;
-  }
+ 
   input[type="date"]::-webkit-datetime-edit-fields-wrapper {
     text-align: left;
   }
+  
   .date-input-container input[type="date"]:focus {
     outline: none;
   }
+  
   input[type="date"]::-webkit-calendar-picker-indicator:active {
     right: 0;
     left: auto;
@@ -74,6 +75,26 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
   const [timePickerType, setTimePickerType] = useState('start');
   const [tempTime, setTempTime] = useState({ period: '오전', hour: '09', minute: '00' });
   const [showLocationSelect, setShowLocationSelect] = useState(false);
+
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }));
+
+  const updateTime = () => {
+    setCurrentTime(new Date().toLocaleTimeString('ko-KR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }));
+  };
+
+  useEffect(() => {
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval); // 컴포넌트가 unmount 될 때 interval 해제
+  }, []);
+
   const [editSchedule, setEditSchedule] = useState({
     title: schedule?.title || '',
     startDate: schedule?.startDate || '',
@@ -84,15 +105,6 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
     color: schedule?.color || '#E70012',
     location: schedule?.location || ''
   });
-
-  const categories = [
-    { id: '골프', label: '골프' },
-    { id: '맛집', label: '맛집' },
-    { id: '숙소', label: '숙소' },
-    { id: '관광', label: '관광' },
-    { id: '모임', label: '모임' },
-    { id: '기타', label: '기타' }
-  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -225,6 +237,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
   };
 
   return (
+      <div style={{ display: 'flex', position: 'relative' }}>
     <ModalOverlay onClick={handleOverlayClick}>
       <GlobalDatePickerStyle />
       <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -348,7 +361,7 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
 
             <DateRowSection>
               <DateRow>
-                <DateLabel>시작일</DateLabel>
+                <DateLabel>시작</DateLabel>
                 <div className="date-input-container">
                   <DateInput
                     type="date"
@@ -358,19 +371,22 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                     required
                   />
                   <TimeButton
-                    type="button"
-                    onClick={() => openTimePicker('start')}
-                    disabled={isAllDay}
+                      type="button"
+                      onClick={() => openTimePicker('start')}
+                      disabled={isAllDay}
                   >
-                    {editSchedule.startTime ? formatTime(editSchedule.startTime) : '시간 선택'}
-                  </TimeButton>
+                    {editSchedule.startTime
+                        ? formatTime(editSchedule.startTime)
+                        : currentTime
+                    }
+                  </TimeButton> {/* 현재 시간 */}
                 </div>
               </DateRow>
             </DateRowSection>
 
             <DateRowSection>
               <DateRow>
-                <DateLabel>종료일</DateLabel>
+                <DateLabel>종료</DateLabel>
                 <div className="date-input-container">
                   <DateInput
                     type="date"
@@ -380,12 +396,15 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
                     min={editSchedule.startDate}
                   />
                   <TimeButton
-                    type="button"
-                    onClick={() => openTimePicker('end')}
-                    disabled={isAllDay}
+                      type="button"
+                      onClick={() => openTimePicker('end')}
+                      disabled={isAllDay}
                   >
-                    {editSchedule.endTime ? formatTime(editSchedule.endTime) : '시간 선택'}
-                  </TimeButton>
+                    {editSchedule.endTime
+                        ? formatTime(editSchedule.endTime)
+                        : currentTime
+                    }
+                  </TimeButton> {/* 현재 시간 */}
                 </div>
               </DateRow>
             </DateRowSection>
@@ -451,69 +470,64 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
       </ModalContent>
 
       {/* 시간 선택 팝업 (AddScheduleModal과 동일) */}
+      {/* 시간 선택 팝업 */}
       {showTimePicker && (
-        <TimePickerOverlay onClick={closeTimePicker}>
-          <TimePickerContent onClick={(e) => e.stopPropagation()}>
-            {/*<TimePickerHeader>*/}
-            {/*  <TimePickerTitle>*/}
-            {/*    {timePickerType === 'start' ? '시작 시간' : '종료 시간'}*/}
-            {/*  </TimePickerTitle>*/}
-            {/*  <TimePickerCloseButton onClick={closeTimePicker}>×</TimePickerCloseButton>*/}
-            {/*</TimePickerHeader>*/}
+          <TimePickerOverlay onClick={closeTimePicker}>
+            <TimePickerContent onClick={(e) => e.stopPropagation()}>
 
-            <TimePickerBody>
-              <TimeColumn>
-                <TimeOption
-                  selected={tempTime.period === '오전'}
-                  onClick={() => setTempTime(prev => ({ ...prev, period: '오전' }))}
-                >
-                  오전
-                </TimeOption>
-                <TimeOption
-                  selected={tempTime.period === '오후'}
-                  onClick={() => setTempTime(prev => ({ ...prev, period: '오후' }))}
-                >
-                  오후
-                </TimeOption>
-              </TimeColumn>
+              <TimePickerBody>
+                <TimeColumn>
+                  <TimeOption
+                      selected={tempTime.period === '오전'}
+                      onClick={() => setTempTime(prev => ({...prev, period: '오전'}))}
+                  >
+                    오전
+                  </TimeOption>
+                  <TimeOption
+                      selected={tempTime.period === '오후'}
+                      onClick={() => setTempTime(prev => ({...prev, period: '오후'}))}
+                  >
+                    오후
+                  </TimeOption>
+                </TimeColumn>
 
-              <TimeColumn>
-                {Array.from({ length: 12 }, (_, i) => {
-                  const hour = (i + 1).toString().padStart(2, '0');
-                  return (
-                    <TimeOption
-                      key={hour}
-                      selected={tempTime.hour === hour}
-                      onClick={() => setTempTime(prev => ({ ...prev, hour }))}
-                    >
-                      {hour}
-                    </TimeOption>
-                  );
-                })}
-              </TimeColumn>
+                <TimeColumn>
+                  {Array.from({length: 12}, (_, i) => {
+                    const hour = (i + 1).toString().padStart(2, '0');
+                    return (
+                        <TimeOption
+                            key={hour}
+                            selected={tempTime.hour === hour}
+                            onClick={() => setTempTime(prev => ({...prev, hour}))}
+                        >
+                          {hour}
+                        </TimeOption>
+                    );
+                  })}
+                </TimeColumn>
 
-              <TimeColumn>
-                {Array.from({ length: 60 }, (_, i) => {
-                  const minute = i.toString().padStart(2, '0');
-                  return (
-                    <TimeOption
-                      key={minute}
-                      selected={tempTime.minute === minute}
-                      onClick={() => setTempTime(prev => ({ ...prev, minute }))}
-                    >
-                      {minute}
-                    </TimeOption>
-                  );
-                })}
-              </TimeColumn>
-            </TimePickerBody>
+                <TimeColumn>
+                  {Array.from({length: 60}, (_, i) => {
+                    const minute = i.toString().padStart(2, '0');
+                    return (
+                        <TimeOption
+                            key={minute}
+                            selected={tempTime.minute === minute}
+                            onClick={() => setTempTime(prev => ({...prev, minute}))}
+                        >
+                          {minute}
+                        </TimeOption>
+                    );
+                  })}
+                </TimeColumn>
+              </TimePickerBody>
 
-            <TimePickerFooter>
-              <TimePickerButton type="button" onClick={closeTimePicker}>취소</TimePickerButton>
-              <TimePickerButton type="button" $primary onClick={applyTime}>확인</TimePickerButton>
-            </TimePickerFooter>
-          </TimePickerContent>
-        </TimePickerOverlay>
+              <TimePickerFooter>
+                <TimePickerButton type="button" onClick={closeTimePicker}>취소</TimePickerButton>
+                <TimePickerButton type="button" $primary onClick={applyTime}>확인</TimePickerButton>
+              </TimePickerFooter>
+            </TimePickerContent>
+          </TimePickerOverlay>
       )}
 
       {/* 장소 선택 페이지 */}
@@ -526,12 +540,13 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
         </LocationSelectOverlay>
       )}
     </ModalOverlay>
+      </div>
   );
 };
 
 // 스타일 컴포넌트들 (AddScheduleModal과 동일하지만 일부 수정)
 const ModalOverlay = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -554,12 +569,10 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: calc(100% - 80px);
-  max-width: 500px;
-  min-width: 300px;
-  height: 75vh;
+  width: 100%;
+  aspect-ratio: 440 / 600;
   background: #FFFFFF;
-  border-radius: 20px 20px 0px 0px;
+  border-radius: 20px 20px 0 0;
   overflow: hidden;
   position: relative;
   animation: slideUp 0.6s ease-out;
@@ -584,7 +597,7 @@ const Header = styled.div`
   position: relative;
   height: 80px;
   background: #FFFFFF;
-  border-radius: 20px 20px 0px 0px;
+  border-radius: 20px 20px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -601,7 +614,7 @@ const HeaderLeft = styled.div`
 const CloseButton = styled.button`
   background: transparent;
   border: none;
-  color: #269962;
+  color: #003CFF;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 300;
   font-size: 16px;
@@ -613,6 +626,14 @@ const ModalWindow = styled.div`
   height: calc(75vh - 250px);
   overflow-y: auto;
   
+  /* 웹킷 기반 브라우저 스크롤바 숨기기 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Firefox 스크롤바 숨기기 */
+  scrollbar-width: none;
+
   @media (max-width: 480px) {
     padding: 15px;
     height: calc(75vh - 230px);
@@ -622,7 +643,7 @@ const ModalWindow = styled.div`
 const ModalTitle = styled.h2`
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   color: #000000;
   text-align: left;
   margin: 0;
@@ -634,8 +655,8 @@ const DateSubtitle = styled.div`
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 400;
   font-size: 12px;
-  color: #999999;
-  margin: 0;
+  color: #595959;
+  margin: 5px 0 0 0;
   padding: 0;
   line-height: 1;
 `;
@@ -655,7 +676,7 @@ const DateRowSection = styled.div`
 const DateRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 13px;
 
   .date-input-container {
     flex: 1;
@@ -682,12 +703,16 @@ const DateInput = styled.input`
   border: none;
   border-radius: 0;
   padding: 15px 20px;
+  box-sizing: border-box;
+  
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 14px;
   color: #050505;
+  
   background: transparent;
   outline: none;
-  box-sizing: border-box;
+  
+  
   flex: 1;
   position: relative;
 
@@ -699,8 +724,8 @@ const DateInput = styled.input`
 const AllDaySection = styled.div`
   display: flex;
   align-items: center;
+  margin-left: auto;
   gap: 10px;
-  margin-left: 20px;
 `;
 
 const AllDayLabel = styled.label`
@@ -719,13 +744,14 @@ const CategorySection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  margin-bottom: 5%;
 `;
 
 const CategoryLabel = styled.label`
   font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: #050505;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 const CategoryGrid = styled.div`
@@ -734,34 +760,41 @@ const CategoryGrid = styled.div`
   gap: 12px;
 `;
 
+const ACTIVE_COLOR = '#2D8779';
+const ACTIVE_BG = 'rgba(44, 140, 125, 0.15)';
+const HOVER_BG = 'rgba(44, 140, 125, 0.07)';
+
 const CategoryItem = styled.div`
+  font-family: 'Spoqa Han Sans Neo', sans-serif;
+  text-align: center;
+  color: ${props => props.selected ? ACTIVE_COLOR : '#666666'};
+  font-size: 12px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   padding: 15px 10px;
-  border: 1px solid #E5E5E5;
-  border-radius: 12px;
-  background: ${props => props.selected ? '#F8F9FA' : '#FFFFFF'};
-  cursor: pointer;
+  box-sizing: border-box;
+  aspect-ratio: 126 / 88;
+
+  border: 1px solid ${props => props.selected ? ACTIVE_COLOR : '#A7A7A7'};
+  border-radius: 10px;
+
+  background: ${props => props.selected ? ACTIVE_BG : '#FFFFFF'};
   transition: all 0.3s ease;
-  min-height: 80px;
 
   &:hover {
-    border-color: ${props => props.$categoryColor || '#269962'};
-    background: #F8F9FA;
+    border-color: ${ACTIVE_COLOR};
+    background: ${HOVER_BG};
+    color: ${ACTIVE_COLOR};
   }
-
-  ${props => props.selected && `
-    border-color: ${props.$categoryColor || '#269962'};
-    background: #F8F9FA;
-  `}
 `;
 
 const CategoryText = styled.div`
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 12px;
-  color: #666666;
   text-align: center;
 `;
 
@@ -772,7 +805,7 @@ const CategoryIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   svg {
     width: auto;
     height: auto;
@@ -879,11 +912,13 @@ const BottomButtonSection = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20px;
+  width: 90%;
+  margin: 0 auto;
   background: #FFFFFF;
-  border-top: 1px solid #E5E5E5;
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5%;
 `;
 
 const DeleteButton = styled.button`
@@ -933,7 +968,6 @@ const UpdateButton = styled.button`
 // 시간 선택 관련 스타일 컴포넌트들 (AddScheduleModal과 동일)
 const TimeButton = styled.button`
   border: none;
-  border-left: 1px solid #E5E5E5;
   border-radius: 0;
   padding: 15px 20px;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
@@ -959,139 +993,109 @@ const TimeButton = styled.button`
 `;
 
 const TimePickerOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
 `;
 
 const TimePickerContent = styled.div`
   background: #FFFFFF;
-  border-radius: 20px;
-  width: 320px;
-  max-height: 500px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-`;
+  border: 1px solid #2C8C7D;
+  border-radius: 10px;
 
-const TimePickerHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #E5E5E5;
-`;
-
-const TimePickerTitle = styled.h3`
-  font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: #050505;
-  margin: 0;
-`;
-
-const TimePickerCloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #999999;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    color: #050505;
-  }
+  width: 188px;
+  aspect-ratio: 188 / 234;
 `;
 
 const TimePickerBody = styled.div`
   display: flex;
-  height: 300px;
   overflow: hidden;
 `;
 
 const TimeColumn = styled.div`
   flex: 1;
+  padding: 5px;
+  border-right: 1px solid #2C8C7D;
+
+  max-height: 188px;
   overflow-y: auto;
-  padding: 10px 0;
-  border-right: 1px solid #E5E5E5;
 
   &:last-child {
     border-right: none;
   }
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 `;
 
 const TimeOption = styled.div`
-  padding: 12px 20px;
+  padding: 12px;
+  box-sizing: border-box;
+
   font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 14px;
-  color: #050505;
-  cursor: pointer;
+  font-size: 12px;
   transition: all 0.2s ease;
   text-align: center;
+
   border-radius: 8px;
-  margin: 2px 10px;
+
+  margin: 1% 0;
+
+  cursor: pointer;
 
   &:hover {
-    background: rgba(44, 140, 125, 0.3);
+    background: #F8F9FA;
   }
 
   ${props => props.selected && `
     background: rgba(44, 140, 125, 0.3);
     color: #2C8C7D;
-    font-weight: 350;
+    font-weight: 300;
   `}
 `;
 
 const TimePickerFooter = styled.div`
   display: flex;
   gap: 10px;
-  padding: 20px;
-  border-top: 1px solid #E5E5E5;
+  padding: 5px;
+  border-top: 1px solid #2C8C7D;
 `;
 
 const TimePickerButton = styled.button`
   flex: 1;
-  padding: 12px;
-  border: 1px solid #E5E5E5;
-  border-radius: 12px;
+  padding: 8px;
+  border: 1px solid rgba(44, 140, 125, 0.8);
+  border-radius: 10px;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.3s ease;
   background: #FFFFFF;
   color: #050505;
 
   &:hover {
-    border-color: #269962;
-    color: #269962;
+    background: rgba(44, 140, 125, 0.3);
+    color: #2C8C7D;
   }
 
   ${props => props.$primary && `
-    background: #269962;
-    color: #FFFFFF;
-    border-color: #269962;
 
     &:hover {
-      background: #1e7a4f;
-      border-color: #1e7a4f;
+      background: rgba(44, 140, 125, 0.3);
+      color: #2C8C7D;
     }
   `}
 `;
 
 const LocationSelectOverlay = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;

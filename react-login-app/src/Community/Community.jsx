@@ -22,7 +22,6 @@ function CommunityBoard() {
         navigate(path); // 경로 설정된 곳으로 이동
     };
 
-    const [posts, setPosts] = useState([]);
     const [latestPosts, setLatestPosts] = useState([]);
     const [categorizedPosts, setCategorizedPosts] = useState([]);
     const [commentCounts, setCommentCounts] = useState({});

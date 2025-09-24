@@ -1,7 +1,7 @@
 // GolfSearch.jsx
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react'; //
+import { Swiper, SwiperSlide } from 'swiper/react'; // 검색결과 슬라이드
 import 'swiper/css';
 import 'swiper/css/pagination'; // 페이지네이션
 import { Pagination } from 'swiper/modules';
@@ -28,7 +28,6 @@ function GolfSearch() {
         error,
         searchPerformed, // 검색 수행 여부
         clickedIndex, // 클릭된 버튼 인덱스
-        currentPage, // swiper
     } = state;
 
     const navigate = useNavigate();
@@ -125,7 +124,7 @@ function GolfSearch() {
                     예약한 골프장이 없어요
                 </p>
 
-                {loading && <p>로딩 중...</p>}
+                {loading && <p>로딩 중...</p>} {/*  TODO : 로딩중 이미지 !!! */}
                 {error && <p>에러 발생: {error}</p>}
 
                 {!loading && !error && searchPerformed && (

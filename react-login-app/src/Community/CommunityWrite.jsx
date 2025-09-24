@@ -84,7 +84,7 @@ function CommunityWrite() {
         }
 
         try {
-            const response = await PostingBoard(accessToken, title, content, selectedCategoryLabel, images);
+            const response = await PostingBoard(title, content, selectedCategoryLabel, images);
             // 게시 성공
 
             const postId = response?.data?.id;

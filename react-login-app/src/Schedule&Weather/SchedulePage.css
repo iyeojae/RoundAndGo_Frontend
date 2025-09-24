@@ -10,12 +10,12 @@
   background: white;
   color: white;
   font-family: 'Arial', sans-serif;
-  position: relative;
-  flex: 1;
+  /*flex: 1;*/
+  margin: 0;
   display: flex;
   flex-direction: column;
   /* 일정이 많을 때 자동으로 늘어나도록 설정 */
-  height: auto;
+  width: 100%;
 }
 
 .schedule-page::after {
@@ -40,6 +40,7 @@
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
   height: 60%;
   background: linear-gradient(135deg, #269962 0%, #2C8C7D 100%);
   z-index: 0;
@@ -81,16 +82,10 @@
 
 .schedule-weather-toggle-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  width: calc(100% - 40px);
-  max-width: 510px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 20px;
-  flex-wrap: wrap;
-  gap: 10px;
+  width: 90%;
+  margin: 0 auto 20px auto;
 }
 
 
@@ -309,18 +304,6 @@
 }
 
 /* 일별 날씨 예보 */
-.schedule-page .schedule-daily-weather {
-  /*background: rgba(255, 255, 255, 0.15);*/
-  /*backdrop-filter: blur(10px);*/
-  /*border-radius: 20px;*/
-  /*padding: 15px;*/
-  /*margin: 0 auto 20px auto !important;*/
-  /*border: 1px solid rgba(255, 255, 255, 0.2);*/
-  /*overflow-x: auto;*/
-  /*width: calc(100% - 80px);*/
-  /*max-width: 500px;*/
-  /*min-width: 300px;*/
-}
 
 .schedule-daily-list {
   display: flex;
@@ -365,12 +348,13 @@
   background: white;
   border-radius: 20px;
   padding: 15px;
-  margin: 0 auto 20px auto !important;
+  box-sizing: border-box;
+  margin: 0 auto 5% auto;
+  aspect-ratio: 400 / 434;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  width: calc(100% - 80px);
+  width: 90%;
   max-width: 500px;
   min-width: 300px;
-  aspect-ratio: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -387,14 +371,13 @@
 .schedule-month-button {
   background: transparent;
   border: none;
-  color: #333;
+  color: #4B5563;
   height: 30px;
   cursor: pointer;
   font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 5px;
   margin: 0 7%;
 }
 
@@ -403,7 +386,7 @@
   font-weight: bold;
   margin: 0;
   text-align: center;
-  color: #333;
+  color: #1F2937;
   text-indent: 0;
   padding-left: 0;
   white-space: nowrap;
@@ -430,13 +413,17 @@
 .schedule-weekday {
   text-align: center;
   padding: 8px 3px;
-  font-weight: bold;
+  font-weight: 500;
   font-size: clamp(10px, 2vw, 12px);
-  color: #666;
+  color: #6B7280;
 }
 
-.schedule-weekday.weekend {
-  color: #ff6b6b;
+.schedule-weekday.sunday {
+  color: #EF4444;
+}
+
+.schedule-weekday.saturday{
+  color: #3B82F6;
 }
 
 .schedule-days-grid {
@@ -466,46 +453,50 @@
   max-width: 55px;
   border-radius: 8px;
   margin: 2px auto;
-  color: #333;
+  color: #374151;
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: 400;
 }
 
 .schedule-day:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(45, 135, 121, 0.6);
 }
 
 .schedule-day.other-month {
-  color: #999;
-  opacity: 0.8;
+  color: #D1D5DB;
 }
 
 .schedule-day.other-month .schedule-day-number {
-  color: #999 !important;
-  opacity: 0.8;
+  color: #D1D5DB !important;
 }
 
 .schedule-day.other-month:hover {
-  background: rgba(0, 0, 0, 0.02);
-  opacity: 0.9;
+  background: rgba(154, 216, 207, 0.3);
 }
 
 .schedule-day.today {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(45, 135, 121, 0.25);
+}
+
+.schedule-day.today.selected {
+  background: rgb(45, 135, 121);
 }
 
 .schedule-day.selected {
-  background: #269962;
+  background: #2d8779;
   color: white !important;
 }
 
 .schedule-day.selected .schedule-day-number {
   color: white !important;
+  font-weight: bold;
 }
 
 .schedule-day-number {
   font-size: clamp(11px, 2.5vw, 14px);
-  font-weight: bold;
+  font-weight: 400;
   margin: 0;
-  color: #333;
+  color: #374151;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -532,23 +523,24 @@
 }
 
 /* 일정 섹션 */
+
 .schedule-page .schedule-section {
   background: white;
   border-radius: 20px;
   padding: 15px;
-  margin: 0 auto 20px auto !important;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   width: 80%;
+  margin: 0 auto 15% auto;
   aspect-ratio: 400 / 332;
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* space-between에서 flex-start로 변경 */
-
 }
 
 .schedule-section-header {
   display: flex;
   justify-content: space-between;
+  width: 100%;
   align-items: center;
   margin-bottom: 15px;
   flex-shrink: 0;
@@ -603,7 +595,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  text-align: center;
+  box-sizing: border-box;
   flex: 1;
   min-height: 0;
   position: relative;
@@ -620,7 +612,6 @@
 .schedule-empty-icon {
   height: 80px;
   width: 80px;
-  display: flex;
   align-items: center;
   justify-content: center;
 }

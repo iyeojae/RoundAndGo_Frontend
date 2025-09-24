@@ -8,18 +8,14 @@ import {
   createSchedule, 
   updateSchedule, 
   deleteSchedule,
-  getCategoryCSSColor,
   transformScheduleForAPI,
-  transformScheduleForAPIAlternative,
   transformScheduleFromAPI
 } from './ScheduleAPI';
 import { 
-  getCachedWeather, 
-  // getWeatherIcon
+  getCachedWeather,
 } from '../services/weatherAPI';
 import { 
-  isApiKeyValid, 
-  getApiKeyMessage 
+  isApiKeyValid,
 } from '../config/weather';
 import WeatherLocationModal from '../WeatherLocationModal';
 import Header from '../Layout/Header';
@@ -49,7 +45,6 @@ const LocationIcon = () => (
 );
 
 const SchedulePage = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜로 설정
   const [selectedDate, setSelectedDate] = useState(new Date()); // 현재 날짜를 기본 선택
@@ -357,7 +352,7 @@ const SchedulePage = () => {
 
 
   return (
-    <main className="schedule-main-container">
+    <div className="schedule-main-container">
       <Header />
       <div className="schedule-page">
         <div className="schedule-content">
@@ -667,7 +662,7 @@ const SchedulePage = () => {
               <div className="schedule-calendar-grid">
                 <div className="schedule-weekday-header">
                   {['일', '월', '화', '수', '목', '금', '토'].map((day, index) => (
-                      <div key={day} className={`schedule-weekday ${index === 0 || index === 6 ? 'weekend' : ''}`}>
+                      <div key={day} className={`schedule-weekday ${index === 0 ? 'sunday' : index === 6 ? 'saturday' : ''}`}>
                         {day}
                       </div>
                   ))}
@@ -703,9 +698,7 @@ const SchedulePage = () => {
                   const selectedDateString = selectedDate.toISOString().split('T')[0];
                   const daySchedules = schedules.filter(schedule => schedule.date === selectedDateString);
 
-                  // 일정 필터링 정보
-
-                  return daySchedules.length === 0 ? (
+                  return daySchedules.length === 0 ? ( // 일정 필터링 정보
                       <div className="schedule-empty">
                         <div className="schedule-empty-icon">
                           <img src={ScheduleIcon} alt="일정 없음"/>
@@ -716,19 +709,14 @@ const SchedulePage = () => {
                         </div>
                       </div>
                   ) : (
-                      daySchedules.map((schedule) => {
-                        // 기존 데이터의 type을 한국어 카테고리로 변환
-                        const getDisplayCategory = (schedule) => {
-                          // 스케줄 카테고리 디버깅
+                      daySchedules.map((schedule) => { // 기존 데이터의 type을 한국어 카테고리로 변환
+                        const getDisplayCategory = (schedule) => { // 스케줄 카테고리 디버깅
 
-                          // 이미 한국어 카테고리가 있으면 그대로 사용
-                          if (schedule.category && ['골프', '관광', '맛집', '숙소', '모임', '기타'].includes(schedule.category)) {
-                            // 한국어 카테고리 사용
-                            return schedule.category;
+                          if (schedule.category && ['골프', '관광', '맛집', '숙소', '모임', '기타'].includes(schedule.category)) { // 이미 한국어 카테고리가 있으면 그대로 사용
+                            return schedule.category; // 한국어 카테고리 사용
                           }
 
-                          // type이 영어로 되어 있으면 한국어로 변환
-                          if (schedule.type) {
+                          if (schedule.type) { // type이 영어로 되어 있으면 한국어로 변환
                             const convertedCategory = (() => {
                               switch (schedule.type) {
                                 case 'golf':
@@ -742,21 +730,16 @@ const SchedulePage = () => {
                                 default:
                                   return '기타';
                               }
-                            })();
-                            // 영어 타입을 한국어로 변환
+                            })(); // 영어 타입을 한국어로 변환
                             return convertedCategory;
                           }
 
-                          // 기본값
-                          // 기본값 사용
-                          return '기타';
+                          return '기타'; // 기본값 사용
                         };
 
-                        const displayCategory = getDisplayCategory(schedule);
-                        // 최종 displayCategory
+                        const displayCategory = getDisplayCategory(schedule); // 최종 displayCategory
 
-                        // 카테고리가 없거나 잘못된 경우 사용자에게 알림
-                        if (!displayCategory || displayCategory === '기타') {
+                        if (!displayCategory || displayCategory === '기타') { // 카테고리가 없거나 잘못된 경우 사용자에게 알림
                           console.warn('⚠️ 카테고리 정보가 없거나 기본값입니다:', {
                             scheduleId: schedule.id,
                             scheduleTitle: schedule.title,
@@ -872,22 +855,21 @@ const SchedulePage = () => {
             </section>
           </div>
         </div>
-        <Footer />
       </div>
-
-        {showAddScheduleModal && (
-            <AddScheduleModal
-                onClose={() => setShowAddScheduleModal(false)}
-                onAdd={handleAddSchedule}
-                schedule={{
-                  ...newSchedule,
-                  startDate: newSchedule.startDate || selectedDate.toISOString().split('T')[0],
-                  endDate: newSchedule.endDate || selectedDate.toISOString().split('T')[0]
-                }}
-                setSchedule={setNewSchedule}
-                selectedDate={selectedDate}
-            />
-        )}
+      <Footer />
+      {showAddScheduleModal && (
+          <AddScheduleModal
+              onClose={() => setShowAddScheduleModal(false)}
+              onAdd={handleAddSchedule}
+              schedule={{
+                ...newSchedule,
+                startDate: newSchedule.startDate || selectedDate.toISOString().split('T')[0],
+                endDate: newSchedule.endDate || selectedDate.toISOString().split('T')[0]
+              }}
+              setSchedule={setNewSchedule}
+              selectedDate={selectedDate}
+          />
+      )}
 
         {showWeatherLocationModal && (
             <WeatherLocationModal
@@ -908,7 +890,7 @@ const SchedulePage = () => {
           schedule={editingSchedule}
         />
       )}
-    </main>
+    </div>
   );
 };
 
