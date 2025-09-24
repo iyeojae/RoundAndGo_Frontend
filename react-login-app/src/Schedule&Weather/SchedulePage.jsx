@@ -8,14 +8,18 @@ import {
   createSchedule, 
   updateSchedule, 
   deleteSchedule,
+  getCategoryCSSColor,
   transformScheduleForAPI,
+  transformScheduleForAPIAlternative,
   transformScheduleFromAPI
 } from './ScheduleAPI';
 import { 
-  getCachedWeather,
+  getCachedWeather, 
+  // getWeatherIcon
 } from '../services/weatherAPI';
 import { 
-  isApiKeyValid,
+  isApiKeyValid, 
+  getApiKeyMessage 
 } from '../config/weather';
 import WeatherLocationModal from '../WeatherLocationModal';
 import Header from '../Layout/Header';
@@ -45,6 +49,7 @@ const LocationIcon = () => (
 );
 
 const SchedulePage = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜로 설정
   const [selectedDate, setSelectedDate] = useState(new Date()); // 현재 날짜를 기본 선택
@@ -740,10 +745,19 @@ const SchedulePage = () => {
                         const displayCategory = getDisplayCategory(schedule); // 최종 displayCategory
 
                         if (!displayCategory || displayCategory === '기타') { // 카테고리가 없거나 잘못된 경우 사용자에게 알림
-                          console.warn('⚠️ 카테고리 정보가 없거나 기본값입니다:', {
+                          console.warn('⚠️ 카테고리 정보가 없습니다:', {
                             scheduleId: schedule.id,
                             scheduleTitle: schedule.title,
-                            displayCategory: displayCategory
+                            originalType: schedule.type,
+                            originalCategory: schedule.category
+                          });
+                        } else {
+                          console.log('📋 스케줄 카테고리 정보:', {
+                            scheduleId: schedule.id,
+                            scheduleTitle: schedule.title,
+                            displayCategory: displayCategory,
+                            originalType: schedule.type,
+                            originalCategory: schedule.category
                           });
                         }
 

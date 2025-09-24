@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../Layout/Header';
 import Footer from '../../Layout/Footer';
+import { getAuthToken, isLoggedIn } from '../../utils/cookieUtils';
 import './MyCourseView.css';
 import { loadKakaoMapSDK } from '../../utils/kakaoMapLoader';
 
@@ -15,6 +16,21 @@ const MyCourseView = ({ courseData, courseInfo }) => {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
+  // 토큰 확인 및 자동 리다이렉트
+  useEffect(() => {
+    const accessToken = getAuthToken();
+    console.log('🔑 MyCourseView 토큰 확인:', {
+      accessToken: accessToken ? '토큰 존재' : '토큰 없음',
+      isLoggedIn: isLoggedIn()
+    });
+    
+    if (!accessToken) {
+      console.log('❌ 토큰이 없어서 로그인 페이지로 이동');
+      alert('로그인이 필요합니다. 다시 로그인해주세요.');
+      navigate('/email-login');
+      return;
+    }
+  }, [navigate]);
 
   // 실제 데이터만 사용
   const dataToUse = courseData;

@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getAuthToken, isLoggedIn } from '../utils/cookieUtils';
 import './CourseRecommendation.css';
 
 const CourseRecommendation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  // 토큰 확인 및 자동 리다이렉트
+  useEffect(() => {
+    const accessToken = getAuthToken();
+    console.log('🔑 CourseRecommendation 토큰 확인:', {
+      accessToken: accessToken ? '토큰 존재' : '토큰 없음',
+      isLoggedIn: isLoggedIn()
+    });
+    
+    if (!accessToken) {
+      console.log('❌ 토큰이 없어서 로그인 페이지로 이동');
+      alert('로그인이 필요합니다. 다시 로그인해주세요.');
+      navigate('/email-login');
+      return;
+    }
+  }, [navigate]);
+
   // 페이지 진입 시 이전 코스 선택 데이터 정리
   useEffect(() => {
     // 코스 추천 페이지는 독립적이므로 이전 선택 데이터 정리

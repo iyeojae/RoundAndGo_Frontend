@@ -136,7 +136,15 @@ const CourseStep2 = () => {
     
     // 인증 토큰 확인
     const accessToken = getAuthToken();
+    console.log('🔑 토큰 확인:', {
+      accessToken: accessToken ? '토큰 존재' : '토큰 없음',
+      tokenLength: accessToken ? accessToken.length : 0,
+      allCookies: document.cookie,
+      isLoggedIn: isLoggedIn()
+    });
+    
     if (!accessToken) {
+      console.log('❌ 토큰이 없어서 로그인 페이지로 이동');
       alert('로그인이 필요합니다. 다시 로그인해주세요.');
       navigate('/email-login');
       return;

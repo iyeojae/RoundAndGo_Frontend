@@ -1605,7 +1605,16 @@ const CourseStep3 = () => {
 
                     {/* 다음 장소까지 교통수단 정보 (마지막 장소가 아닌 경우, 편집 모드가 아닐 때만) */}
               {index < currentDayData.length - 1 && !isEditMode && (
-                <div className="transport-info-between">
+                <div className="transport-info-wrapper">
+                  <div className="transport-info-container">
+                    {/* 왼쪽 영역 - 점선 */}
+                    <div className="transport-dotted-line-area">
+                      <div className="transport-dotted-line"></div>
+                    </div>
+                    
+                    {/* 오른쪽 영역 - transport-info-between */}
+                    <div className="transport-info-area">
+                      <div className="transport-info-between">
                   <div className="transport-info-header">
                     <div className="transport-info-title">
                       <span className="transport-icon">
@@ -1679,6 +1688,9 @@ const CourseStep3 = () => {
                         >
                           경로 안내 받기
                   </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
                   </div>

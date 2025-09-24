@@ -2,7 +2,8 @@
 .course-step1-page {
   min-height: 100vh;
   background-color: #f8f9fa;
-  padding-bottom: 80px; /* Footer 높이만큼 하단 패딩 */
+  padding: 0;
+  margin: 0;
 }
 
 /* 네비게이션 헤더 */
@@ -598,22 +599,23 @@
 .time-modal {
   background: white;
   border-radius: 16px;
-  padding: 30px;
+  padding: 20px;
   max-width: 400px;
   width: 90%;
-  max-height: 80vh;
-  overflow: hidden;
+  max-height: 90vh;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 .modal-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .modal-clock-icon {
-  width: 34px;
-  height: 34px;
-  margin: 0 auto 16px auto;
+  width: 24px;
+  height: 24px;
+  margin: 0 auto 12px auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -628,24 +630,32 @@
 
 .time-picker {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   margin-bottom: 30px;
   justify-content: center;
+  height: 350px;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .time-column {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: stretch;
   gap: 8px;
-  height: 200px;
+  height: 100%;
   overflow-y: auto;
   position: relative;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  flex: 1;
+  min-width: 0;
 }
 
 .period-column {
@@ -657,7 +667,7 @@
 }
 
 .spacer {
-  height: 80px;
+  height: 120px;
   width: 100%;
 }
 
@@ -680,9 +690,11 @@
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
+  width: 100%;
   min-width: 80px;
   font-weight: normal;
   position: relative;
+  box-sizing: border-box;
 }
 
 .time-option:hover {
@@ -706,6 +718,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin: 0;
 }
 
 .confirm-btn:hover {
@@ -716,7 +729,8 @@
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .course-step1-page {
-    padding: 0 10px 80px 10px;
+    padding: 0;
+    margin: 0;
   }
   
   .header-content {
@@ -855,12 +869,63 @@
   .section-title {
     font-size: 14px;
   }
+  
+  /* confirm-btn 반응형 */
+  .confirm-btn {
+    padding: 12px;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  /* SVG 요소들 반응형 */
+  .clock-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* 모달 시계 아이콘 반응형 */
+  .modal-clock-icon {
+    width: 20px;
+    height: 20px;
+    margin: 0 auto 10px auto;
+  }
+  
+  /* time-modal 반응형 */
+  .time-modal {
+    padding: 15px;
+    max-height: 85vh;
+    overflow: visible;
+  }
+  
+  .modal-header {
+    margin-bottom: 15px;
+  }
+  
+  .time-picker {
+    margin-bottom: 25px;
+    height: 300px;
+    overflow: hidden;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .calendar-icon svg {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .section-icon svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 /* 더 작은 화면을 위한 추가 반응형 */
 @media (max-width: 480px) {
   .course-step1-page {
-    padding: 0 5px 80px 5px;
+    padding: 0;
+    margin: 0;
   }
   
   .header-content {
@@ -899,6 +964,56 @@
   .time-input {
     font-size: 14px;
     padding: 12px 16px;
+  }
+  
+  /* confirm-btn 소형 모바일 반응형 */
+  .confirm-btn {
+    padding: 10px;
+    font-size: 13px;
+    margin: 0;
+  }
+  
+  /* SVG 요소들 소형 모바일 반응형 */
+  .clock-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  /* 모달 시계 아이콘 소형 모바일 반응형 */
+  .modal-clock-icon {
+    width: 18px;
+    height: 18px;
+    margin: 0 auto 8px auto;
+  }
+  
+  /* time-modal 소형 모바일 반응형 */
+  .time-modal {
+    padding: 12px;
+    max-height: 80vh;
+    overflow: visible;
+  }
+  
+  .modal-header {
+    margin-bottom: 12px;
+  }
+  
+  .time-picker {
+    margin-bottom: 20px;
+    height: 280px;
+    overflow: hidden;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .calendar-icon svg {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .section-icon svg {
+    width: 16px;
+    height: 16px;
   }
 }
 

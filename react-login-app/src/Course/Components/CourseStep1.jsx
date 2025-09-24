@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../Layout/Header';
 import Footer from '../../Layout/Footer';
+import { getAuthToken, isLoggedIn } from '../../utils/cookieUtils';
 import './CourseStep1.css';
 
 const CourseStep1 = () => {
@@ -33,6 +34,22 @@ const CourseStep1 = () => {
   // 골프장 검색 모달 상태
   const [isGolfCourseModalOpen, setIsGolfCourseModalOpen] = useState(false);
   const [currentGolfCourseIndex, setCurrentGolfCourseIndex] = useState(0);
+
+  // 토큰 확인 및 자동 리다이렉트
+  useEffect(() => {
+    const accessToken = getAuthToken();
+    console.log('🔑 CourseStep1 토큰 확인:', {
+      accessToken: accessToken ? '토큰 존재' : '토큰 없음',
+      isLoggedIn: isLoggedIn()
+    });
+    
+    if (!accessToken) {
+      console.log('❌ 토큰이 없어서 로그인 페이지로 이동');
+      alert('로그인이 필요합니다. 다시 로그인해주세요.');
+      navigate('/email-login');
+      return;
+    }
+  }, [navigate]);
 
   // 컴포넌트 마운트 시 기본 골프장으로만 초기화
   useEffect(() => {
@@ -542,6 +559,7 @@ const CourseStep1 = () => {
 
             <div className="time-picker">
               <div className="time-column period-column">
+                <div className="spacer"></div>
                 {['오전', '오후'].map((period) => (
                   <div
                     key={period}
@@ -555,9 +573,11 @@ const CourseStep1 = () => {
                     {period}
                   </div>
                 ))}
+                <div className="spacer"></div>
               </div>
 
               <div className="time-column">
+                <div className="spacer"></div>
                 {Array.from({length: 12}, (_, i) => {
                   const hour = (i + 1).toString();
                   return (
@@ -574,9 +594,11 @@ const CourseStep1 = () => {
                     </div>
                   );
                 })}
+                <div className="spacer"></div>
               </div>
 
               <div className="time-column">
+                <div className="spacer"></div>
                 {['00', '10', '20', '30', '40', '50'].map((minute) => (
                   <div
                     key={minute}
@@ -590,6 +612,7 @@ const CourseStep1 = () => {
                     {minute}분
                   </div>
                 ))}
+                <div className="spacer"></div>
               </div>
             </div>
 

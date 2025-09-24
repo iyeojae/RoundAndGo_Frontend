@@ -171,10 +171,17 @@ const LocationSearchModal = ({ isOpen, onClose, onSelectLocation, dayKey }) => {
     }
   };
 
+  // 모달 외부 클릭으로 닫기
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="location-search-modal-overlay">
+    <div className="location-search-modal-overlay" onClick={handleOverlayClick}>
       <div className="location-search-modal">
         {/* 헤더 */}
         <div className="modal-header">
