@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { signupWithEmail } from '../Auth/authUtils';
 import './EmailAuth.css';
 
+import HomePage from '../Login/HomePage.jsx';
+
 function SignupPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -141,30 +143,31 @@ function SignupPage() {
 
   if (signupCompleted) {
     return (
-      <div className="email-auth-container">
-        <div className="email-auth-content">
-          {/* 로고 및 서비스명 */}
-          <div className="email-auth-logo-container">
-            <img src="/images/logo-280a0a.png" alt="ROUND & GO Logo" className="email-auth-logo" />
-            <h1 className="email-auth-title">ROUND & GO</h1>
-          </div>
-
-          {/* 회원가입 완료 메시지 */}
-          <div className="email-auth-result-container">
-            <div className="email-auth-result-icon">✓</div>
-            <h2 className="email-auth-result-title">회원가입 완료!</h2>
-            <p className="email-auth-result-message">
-              환영합니다! 이제 로그인하여 서비스를 이용하실 수 있습니다.
-            </p>
-            <button
-              className="email-auth-submit-button"
-              onClick={() => navigate('/email-login')}
-            >
-              로그인 하러가기
-            </button>
-          </div>
-        </div>
-      </div>
+      // <div className="email-auth-container">
+      //   {/*<div className="email-auth-content">*/}
+      //   {/*  /!* 로고 및 서비스명 *!/*/}
+      //   {/*  <div className="email-auth-logo-container">*/}
+      //   {/*    <img src="/images/logo-280a0a.png" alt="ROUND & GO Logo" className="email-auth-logo" />*/}
+      //   {/*    <h1 className="email-auth-title">ROUND & GO</h1>*/}
+      //   {/*  </div>*/}
+      //
+      //   {/*  /!* 회원가입 완료 메시지 *!/*/}
+      //   {/*  <div className="email-auth-result-container">*/}
+      //   {/*    <div className="email-auth-result-icon">✓</div>*/}
+      //   {/*    <h2 className="email-auth-result-title">회원가입 완료!</h2>*/}
+      //   {/*    <p className="email-auth-result-message">*/}
+      //   {/*      환영합니다! 이제 로그인하여 서비스를 이용하실 수 있습니다.*/}
+      //   {/*    </p>*/}
+      //   {/*    <button*/}
+      //   {/*      className="email-auth-submit-button"*/}
+      //   {/*      onClick={() => navigate('/email-login')}*/}
+      //   {/*    >*/}
+      //   {/*      로그인 하러가기*/}
+      //   {/*    </button>*/}
+      //   {/*  </div>*/}
+      //   {/*</div>*/}
+      // </div>
+        <HomePage/>
     );
   }
 
@@ -184,9 +187,9 @@ function SignupPage() {
 
         {/* 회원가입 폼 */}
         <div className="email-auth-form-container">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} style={{width: '95%', margin: '15% auto 3% auto'}}>
             {/* 이메일 입력 */}
-            <div className="email-auth-input-group">
+            <div className="email-auth-input-group" style={{marginBottom: '10%'}}>
               <label className="email-auth-label">아이디(이메일)</label>
               <div className="email-auth-password-input-container">
                 <input
@@ -194,8 +197,8 @@ function SignupPage() {
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange('email')}
-                  placeholder="이메일을 입력해주세요"
-                  style={{ borderColor: errors.email ? '#e74c3c' : '#E5E5E5' }}
+                  placeholder="사용하실 이메일을 입력해주세요"
+                  style={{ borderColor: errors.email ? '#F62C2F' : '#269962', boxShadow: errors.email ? '0 0 4.8px rgba(246, 44, 47, 0.42)' : '0 0 4.8px rgba(16, 117, 54, 0.42)' }}
                 />
                 {formData.email && (
                   <button
@@ -221,8 +224,8 @@ function SignupPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={handleInputChange('password')}
-                  placeholder="영문, 숫자, 특수문자 포함 8자 이상"
-                  style={{ borderColor: errors.password ? '#e74c3c' : '#E5E5E5' }}
+                  placeholder="영문, 숫자, 특수문자가 모두 들어간 8자 이상"
+                  style={{ borderColor: errors.password ? '#F62C2F' : '#269962', boxShadow: errors.password ? '0 0 4.8px rgba(246, 44, 47, 0.42)' : '0 0 4.8px rgba(16, 117, 54, 0.42)' }}
                 />
                                   <button
                     type="button"
@@ -231,14 +234,14 @@ function SignupPage() {
                   >
                     {showPassword ? (
                       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8.50098 4L8.501 3.5H8.50098V4ZM16 8.5L16.4458 8.72648L16.5608 8.5L16.4458 8.27352L16 8.5ZM8.50098 13V13.5H8.501L8.50098 13ZM1 8.5L0.554224 8.27354L0.439181 8.5L0.554224 8.72646L16 8.5ZM8.50098 4L8.50095 4.5C11.6103 4.50016 14.2864 6.23117 15.5542 8.72648L16 8.5L16.4458 8.27352C15.0067 5.44127 11.9853 3.50018 8.501 3.5L8.50098 4ZM16 8.5L15.5542 8.27352C14.2864 10.7688 11.6103 12.4998 8.50095 12.5L8.50098 13L8.501 13.5C11.9853 13.4998 15.0067 11.5587 16.4458 8.72648L16 8.5ZM8.50098 13V12.5C5.39112 12.5 2.71352 10.7691 1.44578 8.27354L1 8.5L0.554224 8.72646C1.99328 11.5592 5.01641 13.5 8.50098 13.5V13ZM1 8.5L1.44578 8.72646C2.71352 6.23093 5.39112 4.5 8.50098 4.5V4V3.5C5.01641 3.5 1.99328 5.4408 0.554224 8.27354L1 8.5Z" fill="#2D8779"/>
-                        <circle cx="8.5" cy="8.5" r="2.5" stroke="#2D8779"/>
-                        <path d="M16 1L1 16" stroke="#2D8779" strokeLinecap="round"/>
+                        <path d="M8.50098 4L8.501 3.5H8.50098V4ZM16 8.5L16.4458 8.72648L16.5608 8.5L16.4458 8.27352L16 8.5ZM8.50098 13V13.5H8.501L8.50098 13ZM1 8.5L0.554224 8.27354L0.439181 8.5L0.554224 8.72646L16 8.5ZM8.50098 4L8.50095 4.5C11.6103 4.50016 14.2864 6.23117 15.5542 8.72648L16 8.5L16.4458 8.27352C15.0067 5.44127 11.9853 3.50018 8.501 3.5L8.50098 4ZM16 8.5L15.5542 8.27352C14.2864 10.7688 11.6103 12.4998 8.50095 12.5L8.50098 13L8.501 13.5C11.9853 13.4998 15.0067 11.5587 16.4458 8.72648L16 8.5ZM8.50098 13V12.5C5.39112 12.5 2.71352 10.7691 1.44578 8.27354L1 8.5L0.554224 8.72646C1.99328 11.5592 5.01641 13.5 8.50098 13.5V13ZM1 8.5L1.44578 8.72646C2.71352 6.23093 5.39112 4.5 8.50098 4.5V4V3.5C5.01641 3.5 1.99328 5.4408 0.554224 8.27354L1 8.5Z" fill="#7D7D7D"/>
+                        <circle cx="8.5" cy="8.5" r="2.5" stroke="#7D7D7D"/>
+                        <path d="M16 1L1 16" stroke="#7D7D7D" strokeLinecap="round"/>
                       </svg>
                     ) : (
                       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8.50098 4L8.501 3.5H8.50098V4ZM16 8.5L16.4458 8.72648L16.5608 8.5L16.4458 8.27352L16 8.5ZM8.50098 13V13.5H8.501L8.50098 13ZM1 8.5L0.554224 8.27354L0.439181 8.5L0.554224 8.72646L16 8.5ZM8.50098 4L8.50095 4.5C11.6103 4.50016 14.2864 6.23117 15.5542 8.72648L16 8.5L16.4458 8.27352C15.0067 5.44127 11.9853 3.50018 8.501 3.5L8.50098 4ZM16 8.5L15.5542 8.27352C14.2864 10.7688 11.6103 12.4998 8.50095 12.5L8.50098 13L8.501 13.5C11.9853 13.4998 15.0067 11.5587 16.4458 8.72648L16 8.5ZM8.50098 13V12.5C5.39112 12.5 2.71352 10.7691 1.44578 8.27354L1 8.5L0.554224 8.72646C1.99328 11.5592 5.01641 13.5 8.50098 13.5V13ZM1 8.5L1.44578 8.72646C2.71352 6.23093 5.39112 4.5 8.50098 4.5V4V3.5C5.01641 3.5 1.99328 5.4408 0.554224 8.27354L1 8.5Z" fill="#2D8779"/>
-                        <circle cx="8.5" cy="8.5" r="2.5" stroke="#2D8779"/>
+                        <path d="M8.50098 4L8.501 3.5H8.50098V4ZM16 8.5L16.4458 8.72648L16.5608 8.5L16.4458 8.27352L16 8.5ZM8.50098 13V13.5H8.501L8.50098 13ZM1 8.5L0.554224 8.27354L0.439181 8.5L0.554224 8.72646L16 8.5ZM8.50098 4L8.50095 4.5C11.6103 4.50016 14.2864 6.23117 15.5542 8.72648L16 8.5L16.4458 8.27352C15.0067 5.44127 11.9853 3.50018 8.501 3.5L8.50098 4ZM16 8.5L15.5542 8.27352C14.2864 10.7688 11.6103 12.4998 8.50095 12.5L8.50098 13L8.501 13.5C11.9853 13.4998 15.0067 11.5587 16.4458 8.72648L16 8.5ZM8.50098 13V12.5C5.39112 12.5 2.71352 10.7691 1.44578 8.27354L1 8.5L0.554224 8.72646C1.99328 11.5592 5.01641 13.5 8.50098 13.5V13ZM1 8.5L1.44578 8.72646C2.71352 6.23093 5.39112 4.5 8.50098 4.5V4V3.5C5.01641 3.5 1.99328 5.4408 0.554224 8.27354L1 8.5Z" fill="#7D7D7D"/>
+                        <circle cx="8.5" cy="8.5" r="2.5" stroke="#7D7D7D"/>
                       </svg>
                     )}
                   </button>
@@ -249,15 +252,15 @@ function SignupPage() {
             </div>
 
             {/* 비밀번호 확인 입력 */}
-            <div className="email-auth-input-group email-auth-password-confirm-group">
+            <div className="email-auth-input-group email-auth-password-confirm-group" style={{marginBottom: '10%'}}>
               <div className="email-auth-password-input-container">
                 <input
                   className="email-auth-input email-auth-password-input"
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={handleInputChange('confirmPassword')}
-                  placeholder="비밀번호를 한번 더 입력해주세요"
-                  style={{ borderColor: errors.confirmPassword ? '#e74c3c' : '#E5E5E5' }}
+                  placeholder="비밀번호 재입력"
+                  style={{ borderColor: errors.confirmPassword ? '#F62C2F' : '#269962', boxShadow: errors.confirmPassword ? '0 0 4.8px rgba(246, 44, 47, 0.42)' : '0 0 4.8px rgba(16, 117, 54, 0.42)' }}
                 />
                                   <button
                     type="button"
@@ -266,14 +269,14 @@ function SignupPage() {
                   >
                     {showConfirmPassword ? (
                       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8.50098 4L8.501 3.5H8.50098V4ZM16 8.5L16.4458 8.72648L16.5608 8.5L16.4458 8.27352L16 8.5ZM8.50098 13V13.5H8.501L8.50098 13ZM1 8.5L0.554224 8.27354L0.439181 8.5L0.554224 8.72646L16 8.5ZM8.50098 4L8.50095 4.5C11.6103 4.50016 14.2864 6.23117 15.5542 8.72648L16 8.5L16.4458 8.27352C15.0067 5.44127 11.9853 3.50018 8.501 3.5L8.50098 4ZM16 8.5L15.5542 8.27352C14.2864 10.7688 11.6103 12.4998 8.50095 12.5L8.50098 13L8.501 13.5C11.9853 13.4998 15.0067 11.5587 16.4458 8.72648L16 8.5ZM8.50098 13V12.5C5.39112 12.5 2.71352 10.7691 1.44578 8.27354L1 8.5L0.554224 8.72646C1.99328 11.5592 5.01641 13.5 8.50098 13.5V13ZM1 8.5L1.44578 8.72646C2.71352 6.23093 5.39112 4.5 8.50098 4.5V4V3.5C5.01641 3.5 1.99328 5.4408 0.554224 8.27354L1 8.5Z" fill="#2D8779"/>
-                        <circle cx="8.5" cy="8.5" r="2.5" stroke="#2D8779"/>
-                        <path d="M16 1L1 16" stroke="#2D8779" strokeLinecap="round"/>
+                        <path d="M8.50098 4L8.501 3.5H8.50098V4ZM16 8.5L16.4458 8.72648L16.5608 8.5L16.4458 8.27352L16 8.5ZM8.50098 13V13.5H8.501L8.50098 13ZM1 8.5L0.554224 8.27354L0.439181 8.5L0.554224 8.72646L16 8.5ZM8.50098 4L8.50095 4.5C11.6103 4.50016 14.2864 6.23117 15.5542 8.72648L16 8.5L16.4458 8.27352C15.0067 5.44127 11.9853 3.50018 8.501 3.5L8.50098 4ZM16 8.5L15.5542 8.27352C14.2864 10.7688 11.6103 12.4998 8.50095 12.5L8.50098 13L8.501 13.5C11.9853 13.4998 15.0067 11.5587 16.4458 8.72648L16 8.5ZM8.50098 13V12.5C5.39112 12.5 2.71352 10.7691 1.44578 8.27354L1 8.5L0.554224 8.72646C1.99328 11.5592 5.01641 13.5 8.50098 13.5V13ZM1 8.5L1.44578 8.72646C2.71352 6.23093 5.39112 4.5 8.50098 4.5V4V3.5C5.01641 3.5 1.99328 5.4408 0.554224 8.27354L1 8.5Z" fill="#7D7D7D"/>
+                        <circle cx="8.5" cy="8.5" r="2.5" stroke="#7D7D7D"/>
+                        <path d="M16 1L1 16" stroke="#7D7D7D" strokeLinecap="round"/>
                       </svg>
                     ) : (
                       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8.50098 4L8.501 3.5H8.50098V4ZM16 8.5L16.4458 8.72648L16.5608 8.5L16.4458 8.27352L16 8.5ZM8.50098 13V13.5H8.501L8.50098 13ZM1 8.5L0.554224 8.27354L0.439181 8.5L0.554224 8.72646L16 8.5ZM8.50098 4L8.50095 4.5C11.6103 4.50016 14.2864 6.23117 15.5542 8.72648L16 8.5L16.4458 8.27352C15.0067 5.44127 11.9853 3.50018 8.501 3.5L8.50098 4ZM16 8.5L15.5542 8.27352C14.2864 10.7688 11.6103 12.4998 8.50095 12.5L8.50098 13L8.501 13.5C11.9853 13.4998 15.0067 11.5587 16.4458 8.72648L16 8.5ZM8.50098 13V12.5C5.39112 12.5 2.71352 10.7691 1.44578 8.27354L1 8.5L0.554224 8.72646C1.99328 11.5592 5.01641 13.5 8.50098 13.5V13ZM1 8.5L1.44578 8.72646C2.71352 6.23093 5.39112 4.5 8.50098 4.5V4V3.5C5.01641 3.5 1.99328 5.4408 0.554224 8.27354L1 8.5Z" fill="#2D8779"/>
-                        <circle cx="8.5" cy="8.5" r="2.5" stroke="#2D8779"/>
+                        <path d="M8.50098 4L8.501 3.5H8.50098V4ZM16 8.5L16.4458 8.72648L16.5608 8.5L16.4458 8.27352L16 8.5ZM8.50098 13V13.5H8.501L8.50098 13ZM1 8.5L0.554224 8.27354L0.439181 8.5L0.554224 8.72646L16 8.5ZM8.50098 4L8.50095 4.5C11.6103 4.50016 14.2864 6.23117 15.5542 8.72648L16 8.5L16.4458 8.27352C15.0067 5.44127 11.9853 3.50018 8.501 3.5L8.50098 4ZM16 8.5L15.5542 8.27352C14.2864 10.7688 11.6103 12.4998 8.50095 12.5L8.50098 13L8.501 13.5C11.9853 13.4998 15.0067 11.5587 16.4458 8.72648L16 8.5ZM8.50098 13V12.5C5.39112 12.5 2.71352 10.7691 1.44578 8.27354L1 8.5L0.554224 8.72646C1.99328 11.5592 5.01641 13.5 8.50098 13.5V13ZM1 8.5L1.44578 8.72646C2.71352 6.23093 5.39112 4.5 8.50098 4.5V4V3.5C5.01641 3.5 1.99328 5.4408 0.554224 8.27354L1 8.5Z" fill="#7D7D7D"/>
+                        <circle cx="8.5" cy="8.5" r="2.5" stroke="#7D7D7D"/>
                       </svg>
                     )}
                   </button>
@@ -284,7 +287,7 @@ function SignupPage() {
             </div>
 
             {/* 닉네임 입력 */}
-            <div className="email-auth-input-group">
+            <div className="email-auth-input-group" style={{marginBottom: '10%'}}>
               <label className="email-auth-label">닉네임</label>
               <div className="email-auth-password-input-container">
                 <input
@@ -292,8 +295,8 @@ function SignupPage() {
                   type="text"
                   value={formData.nickname}
                   onChange={handleInputChange('nickname')}
-                  placeholder="닉네임을 입력해주세요"
-                  style={{ borderColor: errors.nickname ? '#e74c3c' : '#E5E5E5' }}
+                  placeholder="사용하실 닉네임을 입력해주세요"
+                  style={{ borderColor: errors.nickname ? '#F62C2F' : '#269962', boxShadow: errors.nickname ? '0 0 4.8px rgba(246, 44, 47, 0.42)' : '0 0 4.8px rgba(16, 117, 54, 0.42)' }}
                 />
                 {formData.nickname && (
                   <button

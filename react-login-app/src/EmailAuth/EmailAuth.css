@@ -4,11 +4,15 @@
 .email-auth-container {
   width: 100%;
   min-height: 100vh;
-  background: white;
+  padding: 20px;
+  box-sizing: border-box;
+
+  background: #F8F8F8;
+
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 20px;
+
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -30,7 +34,6 @@
   width: 100%;
   position: relative;
   margin: 0 auto;
-  z-index: 2;
 }
 
 /* styled-components 클래스 오버라이드 */
@@ -39,40 +42,6 @@
   border: none !important;
   box-shadow: none !important;
 }
-
-/*!* 메인 페이지와 동일한 배경 도형들 (투명도 적용) *!*/
-/*.email-auth-shape-1 {*/
-/*  position: absolute;*/
-/*  width: 90%;*/
-/*  height: 380px;*/
-/*  left: 10%;*/
-/*  top: 15%;*/
-/*  background: linear-gradient(90deg, rgba(255, 255, 255, 0.6) 0%, rgba(155, 201, 179, 0.6) 100%);*/
-/*  border-radius: 190px 0 0 190px;*/
-/*  z-index: 1;*/
-/*}*/
-
-/*.email-auth-shape-2 {*/
-/*  position: absolute;*/
-/*  width: 90%;*/
-/*  height: 380px;*/
-/*  right: 10%;*/
-/*  top: 400px;*/
-/*  background: linear-gradient(270deg, rgba(42, 130, 88, 0.6) 0%, rgba(160, 203, 182, 0.6) 100%);*/
-/*  border-radius: 0 190px 190px 0;*/
-/*  z-index: 1;*/
-/*}*/
-
-/*.email-auth-shape-3 {*/
-/*  position: absolute;*/
-/*  width: 450px;*/
-/*  height: 100%;*/
-/*  right: 0;*/
-/*  bottom: 0%;*/
-/*  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(155, 201, 179, 0.6) 100%);*/
-/*  border-radius: 225px 225px 0 0;*/
-/*  z-index: 1;*/
-/*}*/
 
 /* ===== 뒤로가기 버튼 ===== */
 .email-auth-back-button {
@@ -98,24 +67,27 @@
 /* ===== 로고 컨테이너 ===== */
 .email-auth-logo-container {
   text-align: center;
-  margin: 80px 0 50px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .email-auth-logo {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  margin: 0 auto 12px;
+  width: 117px;
+  aspect-ratio: 117 / 121;
+  object-fit: cover;
+  margin: 0 auto;
 }
 
 .email-auth-title {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 20px;
   line-height: 1.2;
-  color: #333;
+  color: #2C8C7D;
   text-align: center;
-  margin: 12px 0 0 0;
+  margin: -2.5% auto 0 auto;
 }
 
 /* ===== 탭 컨테이너 ===== */
@@ -131,11 +103,11 @@
 
 .email-auth-tab {
   flex: 1;
-  padding: 12px 20px;
+  padding: 8px 20px;
   border: none;
-  border-bottom: 2px solid #ccc;
-  font-size: 16px;
-  font-weight: 400;
+  border-bottom: 4px solid #ccc;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: transparent;
@@ -147,21 +119,17 @@
   color: #2D8779;
 }
 
-.email-auth-tab:hover {
-  color: #2D8779;
-  border-bottom-color: #2D8779;
-}
 
-.email-auth-tab:disabled {
-  cursor: not-allowed;
-  color: #999;
-  opacity: 0.5;
-}
+/*.email-auth-tab:disabled {*/
+/*  cursor: not-allowed;*/
+/*  color: #999;*/
+/*  opacity: 0.5;*/
+/*}*/
 
-.email-auth-tab:disabled:hover {
-  color: #999;
-  border-bottom-color: #ccc;
-}
+/*.email-auth-tab:disabled:hover {*/
+/*  color: #999;*/
+/*  border-bottom-color: #ccc;*/
+/*}*/
 
 /* ===== 폼 컨테이너 ===== */
 .email-auth-form-container {
@@ -171,14 +139,13 @@
   padding: 0;
   margin-bottom: 24px;
   width: 100%;
-  max-width: 360px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .email-auth-input-group {
-  margin-bottom: 20px;
+  margin-bottom: 5%;
   width: 100%;
 }
 
@@ -189,23 +156,29 @@
 
 .email-auth-label {
   display: block;
-  color: #2D8779;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
+  color: #2C8C7D;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 2%;
   text-align: left;
 }
 
 .email-auth-input {
   width: 100%;
-  padding: 16px 20px;
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
-  font-size: 16px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  transition: all 0.3s ease;
+  padding: 16px 12px;
   box-sizing: border-box;
+  box-shadow: 0 0 4.8px rgba(16, 117, 54, 0.42);
+
+  border: 0.3px solid #269962;
+  border-radius: 8px;
+
+  font-size: 12px;
+  color: #898989;
+  font-weight: 400;
+
+  background: #FFFFFF;
+  transition: all 0.3s ease;
+
   backdrop-filter: blur(10px);
 }
 
@@ -213,10 +186,6 @@
   outline: none;
   border-color: #2C8C7D;
   box-shadow: 0 0 0 3px rgba(44, 140, 125, 0.1);
-}
-
-.email-auth-input::placeholder {
-  color: #999;
 }
 
 .email-auth-input:disabled {
@@ -265,28 +234,34 @@
 }
 
 /* ===== 에러 메시지 ===== */
+.email-auth-error,
 .email-auth-error-message {
-  color: #e74c3c;
+  color: #F62C2F;
   font-size: 12px;
+  font-weight: 400;
+
   margin-top: 4px;
   margin-left: 2px;
 }
 
 /* ===== 제출 버튼 ===== */
 .email-auth-submit-button {
-  width: 360px;
-  height: 56px;
+  width: 85%;
+  margin: 20px auto 0 auto;
+  padding: 16px 8px;
+
   background: transparent;
   border: 1px solid #2D8779;
   border-radius: 27px;
+
   color: #2D8779;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 500;
   font-size: 16px;
   line-height: 1.25;
+
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 20px auto 0;
   display: block;
 }
 
@@ -366,30 +341,31 @@
   align-items: center;
   text-align: center;
   width: 100%;
-  max-width: 360px;
+  margin: 10% 0;
+  position: relative;
+
+  height: 50vh;
 }
 
 .email-auth-email-icon {
-  width: 40px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 10%;
 }
 
 .email-auth-email-sent-title {
-  color: #333;
-  font-size: 18px;
-  font-weight: 600;
+  color: #595959;
+  font-size: 16px;
+  font-weight: 500;
   margin: 0 0 16px 0;
 }
 
 .email-auth-email-sent-message {
-  color: #666;
-  font-size: 14px;
+  color: #898989;
+  font-size: 12px;
+  font-weight: 400;
   line-height: 1.5;
-  margin: 0 0 8px 0;
 }
 
 .email-auth-resend-button {
@@ -397,10 +373,14 @@
   background: transparent;
   border: 1px solid #2D8779;
   border-radius: 20px;
+
+  margin: 3% 0;
+
   color: #2D8779;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 12px;
+
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -411,19 +391,27 @@
 }
 
 .email-auth-confirm-button {
-  width: 360px;
-  height: 56px;
   background: transparent;
   border: 1px solid #2D8779;
   border-radius: 27px;
+
+  width: 100%;
+  padding: 16px 12px;
+  box-sizing: border-box;
+
   color: #2D8779;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 500;
-  font-size: 16px;
+
+  font-size: 14px;
   line-height: 1.25;
+
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 20px;
+
+  position: absolute;
+  bottom: 5%;
 }
 
 .email-auth-confirm-button:hover {
@@ -444,12 +432,11 @@
 
 /* ===== 링크 컨테이너 ===== */
 .email-auth-links {
-  width: 100%;
-  max-width: 360px;
+  width: 85%;
+  margin: 20px auto 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
 }
 
 .email-auth-link {
@@ -475,14 +462,13 @@
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-size: 12px;
   line-height: 1.25;
-  color: #2D8779;
+  color: #92BEA9;
   text-decoration: none;
   cursor: pointer;
   background: transparent;
   border: none;
   padding: 0;
   margin: 0;
-  font-weight: 600;
   transition: color 0.3s ease;
 }
 
@@ -493,10 +479,12 @@
 
 .email-auth-link-left {
   text-align: left;
+  font-weight: 400;
 }
 
 .email-auth-link-right {
   text-align: right;
+  font-weight: 600;
 }
 
 /* ===== 결과 정보 박스 ===== */
