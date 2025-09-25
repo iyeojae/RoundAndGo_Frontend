@@ -23,7 +23,7 @@ function LeftContent() {
                 <p style={{ fontSize: '1.5rem', color: '#595959', fontWeight: '350', margin: 0 }}>
                     당신의 골프여행이 더욱 특별해집니다!
                 </p>
-                <Link to="/course/recommendation" style={{
+                <Link to="/course" style={{
                     fontSize: '1rem',
                     color: '#2C8C7D',
                     fontWeight: 'bold',

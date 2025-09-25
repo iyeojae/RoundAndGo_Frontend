@@ -91,7 +91,7 @@ const AccommodationList = ({
                                     transition: '0.3s ease-in-out',
                                     whiteSpace: 'nowrap',
                                     flexShrink: 0,
-                                    fontSize: '0.65rem'
+                                    fontSize: '12px'
                                 }}
                             >
                                 {cat}

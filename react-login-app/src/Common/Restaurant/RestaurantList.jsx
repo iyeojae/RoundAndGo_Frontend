@@ -101,7 +101,8 @@ function RestaurantList({
                                 style={{
                                     backgroundColor: selectedCategoryFilter === cat ? '#269962' : '#DFDFDF',
                                     color: '#fff',
-                                    padding: '6px 12px',
+                                    fontSize: '12px',
+                                    padding: '5px 12px',
                                     border: 'none',
                                     borderRadius: '47px',
                                     cursor: 'pointer',

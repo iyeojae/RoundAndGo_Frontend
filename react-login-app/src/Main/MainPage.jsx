@@ -24,7 +24,7 @@ function MainPage() {
     }, []);
 
     const goTo = () => {
-        navigate('/course/recommendation');
+        navigate('/course');
     };
 
     return (

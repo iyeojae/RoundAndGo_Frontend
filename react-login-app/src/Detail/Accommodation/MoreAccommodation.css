@@ -112,11 +112,17 @@ h2 {
     transition: border 0.3s;
 }
 
+.service-header {
+    display: flex;
+    width: 95%;
+    margin: 0 auto;
+}
+
 .service-header p {
     font-size: 14px;
     color: #4c4c4c;
     cursor: pointer;
-    margin: 0;
+    margin: 0 0 0 auto;
 }
 
 .facilities-list {

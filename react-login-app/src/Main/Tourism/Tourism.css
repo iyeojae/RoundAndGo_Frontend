@@ -166,8 +166,14 @@
     -ms-overflow-style: none;
 }
 
-.TourismScrollWrapper::-webkit-scrollbar {
-    display: none;
+.TourismScrollArea {
+    overflow-x: scroll;
+    white-space: nowrap;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
 }
 
 .ScrollbarContainer {

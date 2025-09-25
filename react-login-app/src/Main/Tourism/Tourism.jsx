@@ -74,15 +74,7 @@ function Tourism({
             </div>
 
             <div className="TourismScrollWrapper" style={{marginTop: '-56%', position: 'relative'}}>
-                <div style={{
-                    overflowX: 'scroll',
-                    whiteSpace: 'nowrap',
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: '16px',
-                    alignItems: 'center'
-                }}>
+                <div className="TourismScrollArea">
                     <div
                         className="ListOfTourismImg"
                         ref={scrollContainerRef}
