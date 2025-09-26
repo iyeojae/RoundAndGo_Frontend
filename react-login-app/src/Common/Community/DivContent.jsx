@@ -123,7 +123,7 @@ function TabButtons() {
                         height: '100%'
                     }}
                 >
-                    <img src={NoContent} alt="없음" style={{ width: '40px', marginBottom: '10px' }} />
+                    <img src={NoContent} alt="없음" style={{ width: '70px' }} />
                     <p style={{ color: '#AAAAAA', fontSize: '0.65rem' }}>
                         최근 작성하신 {activeTab === 'written' ? '글' : '댓글'}이 없습니다.
                     </p>
@@ -296,14 +296,12 @@ function TabButtons() {
                     style={{
                         backgroundColor: '#F6F6F6',
                         borderRadius: '10px',
-                        padding: '20px',
                         width: '90%',
+                        aspectRatio: '398 / 220',
                         margin: '0 auto',
-                        minHeight: '150px',
                         boxSizing: 'border-box',
                         boxShadow: '0 0 5px rgba(0, 0, 0, 0.25)',
                         position: 'relative',
-                        paddingBottom: '50px'
                     }}
                 >
                     {activeTab === 'written'

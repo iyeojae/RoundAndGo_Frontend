@@ -162,7 +162,7 @@
     color: #9C9C9C;
     font-size: 14px;
     font-weight: 400;
-    padding: 2% 0;
+    padding: 3% 0;
 }
 
 .SubmitBtn:active {
@@ -178,8 +178,13 @@
     gap: 10px;
 }
 
-.btn-wrap {
-    padding: 15% 0 7% 0;
+.btn-wrap-write {
+    width: 90%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 10% 0 5% 0;
 }
 
 /* 에러 스타일 */

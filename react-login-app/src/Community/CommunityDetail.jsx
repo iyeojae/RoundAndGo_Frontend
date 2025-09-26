@@ -409,12 +409,12 @@ function CommunityDetail() {
                     <div className="bottom-sheet-content" onClick={e => e.stopPropagation()}>
                         {selectedComment?.author === currentUserNickname ? (
                             <>
-                                <button onClick={handleEdit}>수정하기</button>
-                                <button onClick={handleDelete}>삭제하기</button>
+                                <button onClick={handleEdit} style={{color: '#2563EB'}}>수정하기</button>
+                                <button onClick={handleDelete} style={{color: '#F62C2F'}}>삭제하기</button>
                             </>
                         ) : (
                             <>
-                                <button onClick={handleReport}>신고하기</button>
+                                <button onClick={handleReport} style={{color: '#F62C2F'}}>신고하기</button>
                                 <button onClick={handleShare}>공유하기</button>
                             </>
                         )}
@@ -425,7 +425,7 @@ function CommunityDetail() {
             {/* 이미지 확대 모달 */}
             {selectedImage && (
                 <div className="image-modal" onClick={() => setSelectedImage(null)}>
-                    <img src={selectedImage} alt="확대 이미지" />
+                    <img src={selectedImage} alt="확대 이미지"/>
                 </div>
             )}
 
@@ -437,7 +437,7 @@ function CommunityDetail() {
                     try {
                         await deletePost(post.id, accessToken);
                         setShowDeleteModal(false);
-                        navigate('/community', { state: { deleted: true } });
+                        navigate('/community', {state: {deleted: true}});
                     } catch {
                         showToastWithMessage('삭제에 실패했습니다.');
                     }

@@ -144,7 +144,7 @@ function Popular() {
                 loop={false}
                 pagination={{ clickable: true }}
                 modules={[Pagination]}
-                style={{ padding: '5px 3px 30px 5px', margin: '0 auto' }}
+                // style={{ padding: '5px 3px 30px 5px', margin: '0 auto' }}
                 className="PopularSwiper"
             >
                 {posts.map((post) => (

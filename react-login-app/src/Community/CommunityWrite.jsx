@@ -180,14 +180,7 @@ function CommunityWrite() {
                             </div>
                         </div>
 
-                        <div className='btn-wrap' style={{
-                            width: '90%',
-                            position: 'absolute',
-                            bottom: 0,
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            margin: '0 0 3% 0'
-                        }}>
+                        <div className='btn-wrap-write'>
                             <button onClick={handleSubmit} className='SubmitBtn'>작성</button>
                         </div>
                     </div>

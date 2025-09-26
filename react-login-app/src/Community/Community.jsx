@@ -150,7 +150,7 @@ function CommunityBoard() {
                         margin: '20px auto',
                         width: '100%',
                     }}>
-                        <div className='formcon' style={{position: 'relative', width: '90%', maxWidth: '440px'}}>
+                        <div className='formcon' style={{position: 'relative', width: '90%', margin: '0 auto'}}>
                             <input
                                 type="text"
                                 placeholder="보고싶은 게시글을 검색하세요"
@@ -160,7 +160,7 @@ function CommunityBoard() {
                                     width: '100%',
                                     boxSizing: 'border-box',
                                     height: '45px',
-                                    padding: '0 40px 0 15px', // 오른쪽 아이콘 공간 확보
+                                    padding: '0 40px 0 15px',
                                     borderRadius: '10px',
                                     border: '1px solid #ccc',
                                     fontSize: '14px',
@@ -178,7 +178,7 @@ function CommunityBoard() {
                                     width: '16px',
                                     height: '16px',
                                     pointerEvents: 'none',
-                                    userSelect: 'none', // 혹시 선택 막기 원하면 추가
+                                    userSelect: 'none',
                                 }}
                             />
                         </div>
@@ -206,7 +206,7 @@ function CommunityBoard() {
                             </div>
                             <ul className="post-list">
                                 {searchResults.length === 0 ? (
-                                    <li className="no-post">검색 결과가 없습니다</li>
+                                    <li className="no-post" style={{ textAlign: 'center'}}>검색 결과가 없습니다</li>
                                 ) : (
                                     searchResults.map((post) => (
                                         <li key={post.id} className="post-item" onClick={() => goToPostDetail(post.id)}>
@@ -224,7 +224,7 @@ function CommunityBoard() {
                                 height: '2px',
                                 width: '100%',
                                 backgroundColor: '#dfdfdf',
-                                marginTop: '10px',
+                                marginTop: '3%',
                                 borderRadius: '3px',
                             }} />
                         </div>
