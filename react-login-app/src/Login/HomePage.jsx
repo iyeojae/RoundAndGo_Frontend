@@ -48,11 +48,11 @@ function HomePage() {
                     position: 'relative',
                     width: '100%',
                     minHeight: '100vh',
-                    objectFit: 'cover',
+                    backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat, no-repeat',
                     backgroundPosition: 'left top, left bottom',
                 }}>
-                    <div className='buttons' style={{position: 'absolute', bottom: '10%', zIndexs: 3, width: '100%'}}>
+                    <div className='buttons' style={{position: 'absolute', bottom: '10%', zIndex: 3, width: '100%'}}>
                         <div style={{
                             width: '90%',
                             margin: '0 auto',
@@ -67,7 +67,7 @@ function HomePage() {
                                 borderRadius: '27px',
                                 backgroundColor: '#2d8779',
                                 padding: '15px',
-                                fontSize: '14px',
+                                fontSize: 'clamp(14px, 2vw, 18px)',
                                 color: '#fff'
                             }} onClick={handleEmailLogin}>로그인
                             </button>
@@ -77,21 +77,20 @@ function HomePage() {
                                 border: 'none',
                                 borderRadius: '27px',
                                 backgroundColor: '#fee500',
-                                padding: '3px 15px',
+                                padding: '8.75px 15px',
                                 display: 'flex',
                                 flexDirection: 'row',
-                                fontSize: '14px',
+                                fontSize: 'clamp(14px, 2vw, 18px)',
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}>
-                                <img style={{marginRight: 'auto'}} src={kakao} alt='카카오 로고'/>
-                                <p style={{marginRight: 'auto', paddingRight: '7%'}}>카카오로 시작하기</p>
+                                <img style={{marginRight: 'auto', width: ''}} src={kakao} alt='카카오 로고'/>
+                                <p style={{paddingRight: '7%', margin: '0 auto 0 0'}}>카카오로 시작하기</p>
                             </button>
                             <p onClick={handleSignUp} style={{
                                 width: '85%',
-                                maxWidth: '380px',
                                 color: '#2d8779',
-                                fontSize: '14px',
+                                fontSize: 'clamp(14px, 2vw, 18px)',
                                 textAlign: 'right',
                                 margin: '0 0 0 3%'
                             }}>회원가입</p>

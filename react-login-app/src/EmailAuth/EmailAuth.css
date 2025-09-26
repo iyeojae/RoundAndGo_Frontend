@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: clamp(20px, 3vw, 24px);
   font-weight: bolder;
   background: #fff;
   border-radius: 50%;
@@ -119,18 +119,6 @@
   color: #2D8779;
 }
 
-
-/*.email-auth-tab:disabled {*/
-/*  cursor: not-allowed;*/
-/*  color: #999;*/
-/*  opacity: 0.5;*/
-/*}*/
-
-/*.email-auth-tab:disabled:hover {*/
-/*  color: #999;*/
-/*  border-bottom-color: #ccc;*/
-/*}*/
-
 /* ===== 폼 컨테이너 ===== */
 .email-auth-form-container {
   background: transparent;
@@ -150,14 +138,14 @@
 }
 
 .email-auth-password-confirm-group {
-  margin-top: -8px;
-  margin-bottom: 16px;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
 }
 
 .email-auth-label {
   display: block;
   color: #2C8C7D;
-  font-size: 12px;
+  font-size: clamp(12px, 2vw, 16px);
   font-weight: 500;
   margin-bottom: 2%;
   text-align: left;
@@ -165,14 +153,14 @@
 
 .email-auth-input {
   width: 100%;
-  padding: 16px 12px;
+  padding: 3% 2%;
   box-sizing: border-box;
   box-shadow: 0 0 4.8px rgba(16, 117, 54, 0.42);
 
   border: 0.3px solid #269962;
-  border-radius: 8px;
+  border-radius: clamp(8px, 2vw, 12px);
 
-  font-size: 12px;
+  font-size: clamp(12px, 2vw, 16px);
   color: #898989;
   font-weight: 400;
 
@@ -206,12 +194,12 @@
 }
 
 .email-auth-verification-button {
-  padding: 12px 20px;
+  padding: 0.75rem 1.25rem;
   background-color: #269962;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 0.5rem;
+  font-size: clamp(14px, 2vw, 18px);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -237,7 +225,7 @@
 .email-auth-error,
 .email-auth-error-message {
   color: #F62C2F;
-  font-size: 12px;
+  font-size: clamp(12px, 2vw, 16px);
   font-weight: 400;
 
   margin-top: 4px;
@@ -248,16 +236,16 @@
 .email-auth-submit-button {
   width: 85%;
   margin: 20px auto 0 auto;
-  padding: 16px 8px;
+  padding: 3.5% 2%;
 
   background: transparent;
   border: 1px solid #2D8779;
-  border-radius: 27px;
+  border-radius: clamp(27px, 5vw, 54px);
 
   color: #2D8779;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(16px, 2.2vw, 18px);
   line-height: 1.25;
 
   cursor: pointer;
@@ -356,14 +344,14 @@
 
 .email-auth-email-sent-title {
   color: #595959;
-  font-size: 16px;
+  font-size: clamp(16px, 2vw, 18px);
   font-weight: 500;
   margin: 0 0 16px 0;
 }
 
 .email-auth-email-sent-message {
   color: #898989;
-  font-size: 12px;
+  font-size: clamp(12px, 2vw, 14px);
   font-weight: 400;
   line-height: 1.5;
 }
@@ -379,7 +367,7 @@
   color: #2D8779;
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 500;
-  font-size: 12px;
+  font-size:clamp(12px, 2vw, 14px);
 
   cursor: pointer;
   transition: all 0.3s ease;
@@ -403,7 +391,7 @@
   font-family: 'Spoqa Han Sans Neo', sans-serif;
   font-weight: 500;
 
-  font-size: 14px;
+  font-size: clamp(14px, 2vw, 16px);
   line-height: 1.25;
 
   cursor: pointer;
@@ -441,7 +429,7 @@
 
 .email-auth-link {
   font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 12px;
+  font-size: clamp(12px, 2vw, 14px);
   line-height: 1.25;
   color: #2D8779;
   text-decoration: none;
@@ -460,7 +448,7 @@
 /* ===== 링크 버튼 스타일 ===== */
 .email-auth-link-button {
   font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 12px;
+  font-size: clamp(12px, 2vw, 16px);
   line-height: 1.25;
   color: #92BEA9;
   text-decoration: none;
@@ -500,7 +488,7 @@
 
 .email-auth-result-info-line {
   font-family: 'Spoqa Han Sans Neo', sans-serif;
-  font-size: 16px;
+  font-size: clamp(16px, 2vw, 18px);
   line-height: 1.5;
   color: #333;
   margin-bottom: 8px;
@@ -551,7 +539,6 @@
   .email-auth-confirm-button,
   .email-auth-action-button {
     width: 100%;
-    max-width: 320px;
   }
   
   .email-auth-logo {
