@@ -15,7 +15,7 @@
 .community-detail-cont {
     width: 100%;
     margin: 5% auto 0 auto;
-    padding-bottom: 80px; /* 댓글 입력창 높이만큼 패딩 추가 */
+    padding-bottom: 10%; /* 댓글 입력창 높이만큼 패딩 추가 */
     flex-grow: 1;
     background: #f8f8f8;
 }
@@ -38,15 +38,15 @@
 
 #cate {
     width: fit-content;
-    font-size: 9px;
+    font-size: clamp(9px, 2vw, 11px);
     color: #269962;
     border: 0.8px solid #269962;
-    padding: 2px 4px;
+    padding: clamp(2px, 2vw, 3px) clamp(4px, 2vw, 6px);
     margin: 0;
 }
 
 .title-tab h2 {
-    font-size: 13px;
+    font-size: clamp(13px, 2vw, 15px);
     font-weight: 450;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .post-meta-line p {
-    font-size: 10px;
+    font-size: clamp(10px, 2vw, 12px);
     font-weight: 400;
     color: #787878;
     margin: 0;
@@ -66,27 +66,27 @@
 #meat-ball {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: clamp(2px, 2vw, 4px);
     margin: 0;
     padding: 0;
 }
 
 #meat-ball span {
-    width: 2px;
-    height: 2px;
+    width: clamp(2px, 2vw, 4px);
+    height: clamp(2px, 2vw, 4px);
     background: #595959;
     border-radius: 50%;
 }
 
 .content-tab p {
-    font-size: 12px;
+    font-size: clamp(12px, 2vw, 14px);
     font-weight: normal;
 }
 
 #imgs {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: clamp(10px, 2vw, 12px);
 }
 
 .content-tab img {
@@ -96,22 +96,22 @@
 }
 
 #count-comment {
-    font-size: 12px;
+    font-size: clamp(12px, 2vw, 14px);
     color: #269962;
     font-weight: 400;
-    margin-top: 15px; /* 댓글 수와 첫 댓글 사이의 간격 조정 */
+    margin-top: clamp(15px, 2vw, 17px);; /* 댓글 수와 첫 댓글 사이의 간격 조정 */
 }
 
 
 /* 댓글 목록 컨테이너 */
 .comments-start-tab {
     width: 90%;
-    margin: 20px auto 0 auto;
+    margin: 5% auto 0 auto;
 }
 
 /* 댓글/답글 세트를 묶는 컨테이너 */
 .comment-group {
-    padding: 10px 0;
+    padding: 3% 0;
     background: #f8f8f8;
 }
 
@@ -123,7 +123,7 @@
 .comment-item-content {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: clamp(10px, 2vw, 12px);
     width: 100%;
 }
 
@@ -134,15 +134,15 @@
 
 /* 답글 화살표 이미지 */
 .reply-arrow {
-    width: 14px;
-    height: 14px;
-    margin-top: 10px;
+    width: clamp(14px, 2vw, 16px);
+    height: clamp(14px, 2vw, 16px);
+    margin-top: clamp(10px, 2vw, 12px);
 }
 
 /* 프로필 이미지 */
 .comment-profile-img {
-    width: 28px;
-    height: 28px;
+    width: clamp(28px, 2vw, 30px);
+    height: clamp(28px, 2vw, 30px);
     border-radius: 50%;
     background-color: #ddd;
     overflow: hidden;
@@ -170,29 +170,29 @@
     display: flex;
     flex-direction: column;
     /*align-items: center;*/
-    gap: 3px;
+    gap: clamp(3px, 2vw, 5px);
 }
 
 .comment-meta strong {
-    font-size: 13px;
+    font-size: clamp(13px, 2vw, 15px);
     font-weight: 500;
 }
 .comment-meta p {
-    font-size: 10px;
+    font-size: clamp(10px, 2vw, 12px);
     color: #787878;
     margin: 0;
 }
 .comment-text {
-    font-size: 12px;
-    margin: 5px 0 0 0;
+    font-size: clamp(12px, 2vw, 14px);
+    margin: clamp(5px, 2vw, 7px) 0 0 0;
 }
 .reply-btn {
-    font-size: 10px;
+    font-size: clamp(10px, 2vw, 12px);
     color: #269962;
     background: transparent;
     border: none;
     padding: 0;
-    margin-top: 5px;
+    margin-top: clamp(5px, 2vw, 7px);
     cursor: pointer;
     width: fit-content;
 }
@@ -218,7 +218,7 @@
     background: #fff;
     width: 100%;
     border-radius: 20px 20px 0 0;
-    padding: 16px;
+    padding: clamp(16px, 2vw, 18px);
     box-sizing: border-box;
     animation: slideUp 0.3s ease;
     z-index: 10;
@@ -227,7 +227,7 @@
 .bottom-sheet-content button {
     width: 100%;
     padding: 10px;
-    font-size: 14px;
+    font-size: clamp(14px, 2vw, 16px);
     border: none;
     background: none;
     text-align: left;
@@ -253,7 +253,7 @@
 .btn-wrap div {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: clamp(10px, 2vw, 12px);
     justify-content: center;
     align-items: center;
 }
@@ -262,20 +262,20 @@
     border: 1px solid #787878;
     border-radius: 40px;
     background: transparent;
-    font-size: 12px;
+    font-size: clamp(12px, 2vw, 14px);
     font-weight: 400;
     color: #787878;
-    padding: 6px 10px;
+    padding: clamp(6px, 2vw, 9px) clamp(10px, 2vw, 15px);
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: clamp(5px, 2vw, 7px);
 }
 
 .btn-wrap button img {
-    width: 14px;
-    height: 14px;
+    width: clamp(14px, 2vw, 16px);
+    height: clamp(14px, 2vw, 16px);
 }
 
 .like-button.liked {
@@ -308,7 +308,7 @@
     align-items: center;
     justify-content: center;
     padding-top: 10%;
-    border-radius: 16px;
+    border-radius: clamp(16px, 2vw, 18px);
     text-align: center;
 }
 
@@ -317,19 +317,19 @@
 }
 
 .modal-icon img {
-    width: 62px;
+    width: clamp(62px, 2vw, 64px);
     aspect-ratio: 1 / 1;
 }
 
 .modal-container h2 {
-    font-size: 1rem;
+    font-size: clamp(16px, 2vw, 18px);
     font-weight: 450;
     margin: 0;
 }
 
 .warning {
     color: #F62C2F;
-    font-size: 12px;
+    font-size: clamp(12px, 2vw, 14px);
     font-weight: 400;
     margin: 0;
     padding: 1% 0;
@@ -355,10 +355,10 @@
 .comment-input-area form {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: clamp(10px, 2vw, 12px);
     width: 90%;
     margin: 0 auto;
-    padding: 10px 0;
+    padding: clamp(10px, 2vw, 12px) 0;
 
     position: relative;
 }
@@ -367,8 +367,8 @@
     flex-grow: 1;
     border: 1px solid #269962;
     border-radius: 8px;
-    padding: 10px 15px;
-    font-size: 14px;
+    padding: clamp(10px, 2vw, 12px) clamp(15px, 2vw, 17px);
+    font-size: clamp(14px, 2vw, 16px);
     font-weight: 400;
     resize: none;
     overflow: hidden;
@@ -380,7 +380,7 @@
 
 .comment-input-area textarea::placeholder {
     color: #C0C0C0;
-    font-size: 12px;
+    font-size: clamp(12px, 2vw, 14px);
     font-weight: 300;
 }
 
@@ -393,18 +393,18 @@
     background: #269962;
     border: none;
     border-radius: 50%;
-    width: 22px;
-    height: 22px;
+    width: clamp(22px, 2vw, 24px);
+    height: clamp(22px, 2vw, 24px);
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
 
     position: absolute;
-    right: 10px;
+    right: clamp(10px, 2vw, 12px);
 }
 
 .comment-input-area button img {
-    width: 10px;
-    height: 10px;
+    width: clamp(10px, 2vw, 12px);
+    height: clamp(10px, 2vw, 12px);
 }

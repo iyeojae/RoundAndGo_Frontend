@@ -147,7 +147,7 @@ function CommunityBoard() {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        margin: '20px auto',
+                        margin: '3% auto',
                         width: '100%',
                     }}>
                         <div className='formcon' style={{position: 'relative', width: '90%', margin: '0 auto'}}>
@@ -160,10 +160,10 @@ function CommunityBoard() {
                                     width: '100%',
                                     boxSizing: 'border-box',
                                     height: '45px',
-                                    padding: '0 40px 0 15px',
+                                    padding: '0 12% 0 3%',
                                     borderRadius: '10px',
                                     border: '1px solid #ccc',
-                                    fontSize: '14px',
+                                    fontSize: 'clamp(14px, 2vw, 16px)',
                                     boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.25)',
                                 }}
                             />
@@ -175,8 +175,8 @@ function CommunityBoard() {
                                     right: '15px',
                                     top: '50%',
                                     transform: 'translateY(-50%)',
-                                    width: '16px',
-                                    height: '16px',
+                                    width: 'clamp(16px, 2vw, 18px)',
+                                    height: 'clamp(16px, 2vw, 18px)',
                                     pointerEvents: 'none',
                                     userSelect: 'none',
                                 }}
@@ -197,7 +197,7 @@ function CommunityBoard() {
                                 }} style={{
                                     background: 'none',
                                     border: 'none',
-                                    fontSize: '12px',
+                                    fontSize: 'clamp(12px, 2vw, 14px)',
                                     color: '#269962',
                                     cursor: 'pointer'
                                 }}>
@@ -221,7 +221,7 @@ function CommunityBoard() {
                             </ul>
                             <span style={{
                                 display: 'block',
-                                height: '2px',
+                                height: 'clamp(2px, 2vw, 4px)',
                                 width: '100%',
                                 backgroundColor: '#dfdfdf',
                                 marginTop: '3%',
@@ -240,9 +240,7 @@ function CommunityBoard() {
                         <span style={{
                             display: 'block',
                             width: '100%',
-                            maxWidth: '440px',
-                            minWidth: '375px',
-                            height: '6px',
+                            height: 'clamp(6px, 2vw, 8px)',
                             backgroundColor: '#dfdfdf',
                             margin: '0 auto',
                         }}></span>
@@ -275,11 +273,11 @@ function CommunityBoard() {
                         <span
                             style={{
                                 display: 'block',
-                                height: '2px',
+                                height: 'clamp(2px, 2vw, 4px)',
                                 width: '100%',
                                 backgroundColor: '#dfdfdf',
                                 marginTop: '10px',
-                                borderRadius: '3px',
+                                borderRadius: 'clamp(3px, 4vw, 10px)',
                             }}
                         />
                     </div>
@@ -296,7 +294,7 @@ function CommunityBoard() {
                                     <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
                                 </div>
                                 <ul className="post-list">
-                                    {postsInCategory.length === 0 && <li className="no-post">게시글이 없습니다</li>}
+                                    {postsInCategory.length === 0 && <li className="no-post">{label}이 없습니다</li>}
                                     {postsInCategory.map((post) => (
                                         <li key={post.id} className="post-item"
                                             onClick={() => goToPostDetail(post.id)}>
@@ -314,11 +312,11 @@ function CommunityBoard() {
                                     <span
                                         style={{
                                             display: 'block',
-                                            height: '2px',
+                                            height: 'clamp(2px, 2vw, 4px)',
                                             width: '100%',
                                             backgroundColor: '#dfdfdf',
-                                            marginTop: '10px',
-                                            borderRadius: '3px',
+                                            marginTop: 'clamp(10px, 2vw, 12px)',
+                                            borderRadius: 'clamp(3px, 4vw, 10px)',
                                         }}
                                     />
                                 )}

@@ -123,8 +123,8 @@ function TabButtons() {
                         height: '100%'
                     }}
                 >
-                    <img src={NoContent} alt="없음" style={{ width: '70px' }} />
-                    <p style={{ color: '#AAAAAA', fontSize: '0.65rem' }}>
+                    <img src={NoContent} alt="없음" style={{ width: 'clamp(70px, 2vw, 75px)' }} />
+                    <p style={{ color: '#AAAAAA', fontSize: 'clamp(0.65rem, 2vw, 0.85rem)' }}>
                         최근 작성하신 {activeTab === 'written' ? '글' : '댓글'}이 없습니다.
                     </p>
                 </div>
@@ -152,8 +152,8 @@ function TabButtons() {
             ),
             customPaging: i => (
                 <div style={{
-                    width: "8px",
-                    height: "8px",
+                    width: "clamp(8px, 2vw, 10px)",
+                    height: "clamp(8px, 2vw, 10px)",
                     borderRadius: "50%",
                     display: "inline-block",
                     backgroundColor: "lightgray"
@@ -170,14 +170,14 @@ function TabButtons() {
             <>
                 <p style={{
                     color: '#269962',
-                    fontSize: '10px',
+                    fontSize: 'clamp(10px, 2vw, 12px)',
                     fontWeight: '300',
                     textAlign: 'center',
-                    marginBottom: '10px'
+                    marginBottom: 'clamp(10px, 2vw, 12px)'
                 }}>
                     최근 작성한 {activeTab === 'written' ? '글' : '댓글'}이 최대 15개까지 표시됩니다.
                 </p>
-                <div style={{ padding: '0 10px' }}>
+                <div style={{ padding: '0 clamp(10px, 2vw, 12px)' }}>
                     <Slider {...settings}>
                         {chunkedPosts.map((chunk, index) => (
                             <div key={index}>
@@ -191,7 +191,7 @@ function TabButtons() {
                                             key={post.id || post.communityId}
                                             style={{
                                                 borderBottom: '1px solid #E0E0E0',
-                                                padding: '10px 0',
+                                                padding: 'clamp(10px, 2vw, 12px) 0',
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
@@ -205,15 +205,15 @@ function TabButtons() {
                                                 whiteSpace: 'nowrap',
                                                 flexGrow: 1
                                             }}>
-                                                <h4 style={{ fontSize: '13px', fontWeight: '500', margin: '0 0 5px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title || '내용 없음'}</h4>
+                                                <h4 style={{ fontSize: 'clamp(13px, 2vw, 15px)', fontWeight: '500', margin: '0 0 clamp(5px, 2vw, 7px) 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title || '내용 없음'}</h4>
                                                 {createdAt && (
-                                                    <p style={{ fontSize: '11px', fontWeight: '400', color: '#797979', margin: '0' }}>{createdAt}</p>
+                                                    <p style={{ fontSize: 'clamp(11px, 2vw, 13px)', fontWeight: '400', color: '#797979', margin: '0' }}>{createdAt}</p>
                                                 )}
                                             </div>
                                             {activeTab === 'written' && (
                                                 <div style={{ display: 'flex', alignItems: 'center', minWidth: '40px', justifyContent: 'flex-end' }}>
-                                                    <img src={comment} alt="댓글 아이콘" style={{ width: '16px', height: '16px', marginRight: '5px' }} />
-                                                    <span style={{ fontSize: '14px', color: '#555' }}>{post.commentCount || 0}</span>
+                                                    <img src={comment} alt="댓글 아이콘" style={{ width: 'clamp(16px, 2vw, 18px)', height: 'clamp(16px, 2vw, 18px)', marginRight: 'clamp(5px, 2vw, 7px)' }} />
+                                                    <span style={{ fontSize: 'clamp(14px, 2vw, 16px)', color: '#555' }}>{post.commentCount || 0}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -228,12 +228,12 @@ function TabButtons() {
     };
 
     const commonStyle = {
-        padding: '10px 20px',
+        padding: 'clamp(10px, 2vw, 12px) clamp(20px, 2vw, 22px)',
         backgroundColor: 'transparent',
         border: 'none',
         outline: 'none',
         cursor: 'pointer',
-        fontSize: '14px',
+        fontSize: 'clamp(14px, 2vw, 16px)',
         fontWeight: '500',
         color: '#aaa',
         transition: 'all 0.2s ease',
@@ -246,11 +246,11 @@ function TabButtons() {
     };
 
     const leftRounded = {
-        borderRadius: '10px 0 0 10px',
+        borderRadius: 'clamp(10px, 2vw, 12px) 0 0 clamp(10px, 2vw, 12px)',
     };
 
     const rightRounded = {
-        borderRadius: '0 10px 10px 0',
+        borderRadius: '0 clamp(10px, 2vw, 12px) clamp(10px, 2vw, 12px) 0',
     };
 
     return (
@@ -263,7 +263,7 @@ function TabButtons() {
                     borderRadius: '10px',
                     overflow: 'hidden',
                     width: '90%',
-                    margin: '20px auto'
+                    margin: '5% auto'
                 }}
             >
                 <button

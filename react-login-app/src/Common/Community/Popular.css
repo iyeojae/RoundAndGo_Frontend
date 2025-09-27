@@ -9,8 +9,8 @@
 .TabMsg {
     display: flex;
     flex-direction: row;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: clamp(10px, 2vw, 12px);
+    margin-bottom: clamp(15px, 2vw, 17px);
     /* popular-posts의 overflow:hidden으로 인해 TabMsg의 위치가 바뀔 수 있으므로,
        여기에 필요한 경우 여백을 조정할 수 있습니다. */
     /*padding-left: 5%;*/
@@ -18,7 +18,7 @@
 }
 
 .TabMsg p {
-    font-size: 18px;
+    font-size: clamp(18px, 2vw, 20px);
     font-weight: 450;
     margin: 0;
 }
@@ -37,7 +37,7 @@
     /*box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.15); !* 상단과 하단에 부드러운 그림자 추가 *!*/
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 10px;
-    padding: 15px;
+    padding: clamp(15px, 2vw, 17px);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -65,7 +65,7 @@
 }
 
 .content-container h3 {
-    font-size: 14px;
+    font-size: clamp(14px, 2vw, 16px);
     font-weight: 500;
     margin: 0;
     overflow: hidden;
@@ -75,7 +75,7 @@
 }
 
 .content-container p {
-    font-size: 11px;
+    font-size: clamp(11px, 2vw, 13px);
     font-weight: 450;
     color: #797979;
     margin: 0;
@@ -83,8 +83,8 @@
 }
 
 .content-container img {
-    width: 24px;
-    height: 24px;
+    width: clamp(24px, 2vw, 26px);
+    height: clamp(24px, 2vw, 26px);
     margin: 0;
 }
 
@@ -92,9 +92,9 @@
 .btn-container {
     display: flex;
     align-items: center;
-    font-size: 9px;
+    font-size: clamp(9px, 2vw, 11px);
     color: #797979;
-    height: 20px;
+    height: clamp(20px, 2vw, 24px);
 }
 
 .heart,
@@ -102,29 +102,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 13px;
+    margin-right: clamp(13px, 2vw, 15px);
 }
 
 .heart img,
 .watch img {
-    width: 14px;
-    height: 14px;
-    margin: 0 3px 0 0;
+    width: clamp(14px, 2vw, 16px);
+    height: clamp(14px, 2vw, 16px);
+    margin: 0 clamp(3px, 2vw, 5px) 0 0;
 }
 
 /* Swiper pagination 점(dot) 스타일 */
 .PopularSwiper .swiper-pagination-bullet {
     background: rgba(188, 188, 188, 1) !important;
-    width: 5px !important;
-    height: 5px !important;
-    margin: 0 2px !important;
+    width: clamp(5px, 2vw, 7px) !important;
+    height: clamp(5px, 2vw, 7px) !important;
+    margin: 0 clamp(2px, 2vw, 4px) !important;
     opacity: 1 !important;
 }
 
 .PopularSwiper .swiper-pagination-bullet-active {
     background: rgba(38, 153, 98, 1) !important;
-    width: 5px !important;
-    height: 5px !important;
-    margin: 0 2px !important;
+    width: clamp(5px, 2vw, 7px) !important;
+    height: clamp(5px, 2vw, 7px) !important;
+    margin: 0 clamp(2px, 2vw, 4px) !important;
     opacity: 1 !important;
 }

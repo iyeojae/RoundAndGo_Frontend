@@ -64,9 +64,9 @@ function HomePage() {
                                 width: '80%',
                                 margin: '0 auto',
                                 border: 'none',
-                                borderRadius: '27px',
+                                borderRadius: 'clamp(27px, 5vw, 54px)',
                                 backgroundColor: '#2d8779',
-                                padding: '15px',
+                                padding: '3.5%',
                                 fontSize: 'clamp(14px, 2vw, 18px)',
                                 color: '#fff'
                             }} onClick={handleEmailLogin}>로그인
@@ -75,9 +75,9 @@ function HomePage() {
                                 width: '80%',
                                 margin: '0 auto',
                                 border: 'none',
-                                borderRadius: '27px',
+                                borderRadius: 'clamp(27px, 5vw, 54px)',
                                 backgroundColor: '#fee500',
-                                padding: '8.75px 15px',
+                                padding: '2% 3.75%',
                                 display: 'flex',
                                 flexDirection: 'row',
                                 fontSize: 'clamp(14px, 2vw, 18px)',

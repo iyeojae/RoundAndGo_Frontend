@@ -166,9 +166,7 @@ function CommunityEntire() {
                         <span style={{
                             display: 'block',
                             width: '100%',
-                            maxWidth: '440px',
-                            minWidth: '375px',
-                            height: '6px',
+                            height: 'clamp(6px, 2vw, 8px)',
                             backgroundColor: '#dfdfdf',
                             margin: '0 auto',
                         }}></span>
@@ -180,18 +178,17 @@ function CommunityEntire() {
                         display: 'flex',
                         justifyContent: 'space-around',
                         alignItems: 'center',
-                        borderBottom: '1px solid #ddd',
+                        borderBottom: 'clamp(1px, 2vw, 2px) solid #ddd',
                     }}>
                         {TAB_LABELS.map(tab => (
                             <div
                                 key={tab.key}
                                 onClick={() => setActiveTab(tab.key)}
                                 style={{
-                                    padding: '10px 15px',
+                                    padding: '3% 2%',
                                     cursor: 'pointer',
-                                    // borderBottom: activeTab === tab.key ? '3px solid green' : 'none',
                                     fontWeight: '400',
-                                    fontSize: '14px',
+                                    fontSize: 'clamp(14px, 2vw, 16px)',
                                     color: activeTab === tab.key ? '#269962' : '#aaa',
                                 }}
                             >
@@ -218,9 +215,9 @@ function CommunityEntire() {
                         )}
                         {filteredPosts.map(post => (
                             <li key={post.id} className="post-item" onClick={() => goToPostDetail(post.id)} style={{
-                                margin: '12px auto 1px auto',
-                                paddingBottom: '1px',
-                                borderBottom: '0.5px solid #797979',
+                                margin: '3% auto 0.1% auto',
+                                paddingBottom: 'clamp(1px, 2vw, 3px)',
+                                borderBottom: 'clamp(0.5px, 2vw, 0.8px) solid #797979',
                                 display: 'flex',
                                 flexDirection: 'row',
                                 justifyContent: 'space-between'
@@ -228,12 +225,12 @@ function CommunityEntire() {
                                 <div className="post-left-cont" style={{
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    gap: '5px',
+                                    gap: 'clamp(5px, 2vw, 7px)',
                                     alignItems: 'flex-start',
                                 }}>
                                     <p style={{
-                                        fontSize: '9px',
-                                        border: '0.8px solid #269962',
+                                        fontSize: 'clamp(9px, 2vw, 11px)',
+                                        border: 'clamp(0.8px, 2vw, 1.2px) solid #269962',
                                         fontWeight: '400',
                                         color: '#269962',
                                         width: 'fit-content',
@@ -242,7 +239,7 @@ function CommunityEntire() {
                                     }}>{EngToKor(post.category)}</p>
 
                                     <p style={{
-                                        fontSize: '13px',
+                                        fontSize: 'clamp(13px, 2vw, 15px)',
                                         fontWeight: '450',
                                         margin: '0'
                                     }}>{post.title}</p>
@@ -252,25 +249,25 @@ function CommunityEntire() {
                                         margin: 0,
                                         display: 'flex',
                                         flexDirection: 'row',
-                                        gap: '10px'
+                                        gap: 'clamp(10px, 2vw, 12px)'
                                     }}>
-                                        <div style={{display: 'flex', flexDirection: 'row', gap: '2px'}}>
+                                        <div style={{display: 'flex', flexDirection: 'row', gap: 'clamp(2px, 2vw, 4px)'}}>
                                             <img
-                                                style={{width: '14px'}}
+                                                style={{width: 'clamp(14px, 2vw, 16px)'}}
                                                 onClick={() => ToggleLike(post.id)}
                                                 src={likedPosts[post.id] ? ActiveHeartIcon : HeartIcon}
                                                 alt="좋아요"
                                             />
                                             <p style={{
                                                 margin: 0,
-                                                fontSize: '9px',
+                                                fontSize: 'clamp(9px, 2vw, 11px)',
                                                 color: '#797979'
                                             }}>{likeCounts[post.id] ?? 0}</p>
                                         </div>
 
-                                        <div style={{display: 'flex', flexDirection: 'row', gap: '2px'}}>
-                                            <img src={WatchIcon} alt="조회수" style={{width: '14px'}}/>
-                                            <p style={{margin: 0, fontSize: '9px', color: '#797979'}}>0</p>
+                                        <div style={{display: 'flex', flexDirection: 'row', gap: 'clamp(2px, 2vw, 4px)'}}>
+                                            <img src={WatchIcon} alt="조회수" style={{width: 'clamp(14px, 2vw, 16px)'}}/>
+                                            <p style={{margin: 0, fontSize: 'clamp(9px, 2vw, 11px)', color: '#797979'}}>0</p>
                                         </div>
                                     </div>
                                 </div>
@@ -279,7 +276,7 @@ function CommunityEntire() {
                                     <img style={{margin: '0'}} src={Comment} alt='메시지아이콘'/>
                                     <p style={{
                                         margin: 0,
-                                        fontSize: '11px',
+                                        fontSize: 'clamp(11px, 2vw, 13px)',
                                         color: '#797979',
                                         textAlign: 'center'
                                     }}>0</p>

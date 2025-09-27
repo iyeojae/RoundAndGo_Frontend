@@ -12,7 +12,7 @@
 
 /* 폼 요소(input, textarea)의 기본 스타일 */
 .form-wrap div label {
-    font-size: 14px;
+    font-size: clamp(14px, 2vw, 16px);
     font-weight: 400;
     color: #9a9a9a;
     margin-bottom: 3px;
@@ -27,7 +27,7 @@
     padding: 0 3%;
     background: #fff;
     color: #9a9a9a;
-    font-size: 12px;
+    font-size: clamp(12px, 2vw, 14px);
     font-weight: 350;
     font-family: inherit;
 }
@@ -54,18 +54,18 @@
 .category-select {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: clamp(8px, 2vw, 10px);
     flex-wrap: wrap;
     justify-content: flex-start;
 }
 
 .category-select button {
-    padding: 6px 12px;
+    padding: clamp(6px, 2vw, 8px) clamp(12px, 2vw, 16px);
     border-radius: 21px;
     border: 1px solid #9A9A9A;
     color: #9a9a9a;
     background-color: white;
-    font-size: 12px;
+    font-size: clamp(12px, 2vw, 14px);
     white-space: nowrap;
     width: auto;
     flex-shrink: 0;
@@ -81,7 +81,7 @@
 /* 이미지 업로드 */
 .image-upload-container {
     display: flex;
-    gap: 5px;
+    gap: clamp(5px, 2vw, 7px);
 }
 
 .image-label {
@@ -114,7 +114,7 @@
 
 .image-preview {
     position: relative;
-    width: 100px;
+    width: clamp(100px, 2vw, 125px);
     display: flex;
     aspect-ratio: 1 / 1;
     border-radius: 8px;
@@ -135,14 +135,14 @@
 
 .remove-image-btn {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: clamp(4px, 2vw, 6px);
+    right: clamp(4px, 2vw, 6px);
     background: rgba(0,0,0,0.6);
     border: none;
     color: white;
-    font-size: 18px;
-    width: 24px;
-    height: 24px;
+    font-size: clamp(18px, 2vw, 20px);
+    width: clamp(24px, 2vw, 26px);
+    height: clamp(24px, 2vw, 26px);
     border-radius: 50%;
     cursor: pointer;
     line-height: 18px;
@@ -160,9 +160,11 @@
     border: 1px solid #9C9C9C;
     border-radius: 27px;
     color: #9C9C9C;
-    font-size: 14px;
+    font-size: clamp(14px, 2vw, 16px);
     font-weight: 400;
     padding: 3% 0;
+    box-sizing: border-box;
+    margin: 0;
 }
 
 .SubmitBtn:active {
@@ -175,11 +177,11 @@
 .image-preview-multiple {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: clamp(10px, 2vw, 12px);
 }
 
 .btn-wrap-write {
-    width: 90%;
+    width: 100%;
     position: absolute;
     bottom: 0;
     left: 50%;

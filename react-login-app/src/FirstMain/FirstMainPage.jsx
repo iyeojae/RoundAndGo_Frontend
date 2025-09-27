@@ -9,19 +9,19 @@ import Warning from '../Search/Warning.svg'; // 검색결과 없음
 import { TokenDebugging } from "./TokenCheking";
 
 const regions = [ // 위치조정 필요 %로 설정하기
-    { name: "한경면", top: "61%", left: "11%" },
-    { name: "한림읍", top: "52%", left: "17%" },
-    { name: "애월읍", top: "45%", left: "27%" },
-    { name: "제주시", top: "39%", left: "41%" },
-    { name: "조천읍", top: "36%", left: "57%" },
-    { name: "구좌읍", top: "31%", left: "71%" },
-    { name: "성산읍", top: "44%", left: "78%" },
-    { name: "표선면", top: "52%", left: "67%" },
-    { name: "남원읍", top: "60%", left: "57%" },
-    { name: "서귀포시", top: "67%", left: "46%" },
-    { name: "중문", top: "66%", left: "35%" },
-    { name: "안덕면", top: "65%", left: "23%" },
-    { name: "대정읍", top: "72%", left: "13%" }
+    { name: "한경면", top: "38%", left: "5%" },
+    { name: "한림읍", top: "29%", left: "12%" },
+    { name: "애월읍", top: "22%", left: "25%" },
+    { name: "제주시", top: "16%", left: "40%" },
+    { name: "조천읍", top: "11%", left: "57%" },
+    { name: "구좌읍", top: "8%", left: "74%" },
+    { name: "성산읍", top: "24%", left: "82%" },
+    { name: "표선면", top: "30%", left: "70%" },
+    { name: "남원읍", top: "37%", left: "58%" },
+    { name: "서귀포시", top: "42%", left: "45%" },
+    { name: "중문", top: "44%", left: "32%" },
+    { name: "안덕면", top: "40%", left: "19%" },
+    { name: "대정읍", top: "48%", left: "8%" }
 ];
 
 function FirstMainPage() {
@@ -97,7 +97,7 @@ function FirstMainPage() {
                     <span style={{fontWeight: "bold"}}>골프장</span></span>을<br/>선택해주세요</p>
                     </div>
 
-                    <div className="Map" style={{position: 'relative'}}>
+                    <div className="Map">
                         <img src={MapImage} alt="대한민국 지도"/>
                         {regions.map((region) => (
                             <button
