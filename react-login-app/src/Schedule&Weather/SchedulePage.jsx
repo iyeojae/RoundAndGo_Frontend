@@ -16,26 +16,26 @@ import {
 import { 
   getCachedWeather, 
   // getWeatherIcon
-} from '../services/weatherAPI';
+} from './services/weatherAPI';
 import { 
   isApiKeyValid, 
   getApiKeyMessage 
 } from '../config/weather';
 import WeatherLocationModal from '../WeatherLocationModal';
-import Header from '../Layout/Header';
-import Footer from '../Layout/Footer';
+import Header from '../LayoutNBanner/Header';
+import Footer from '../LayoutNBanner/Footer';
 import './SchedulePage.css';
 
 
-import sun from '../services/img/sun.svg';
-import snow from '../services/img/snow.svg';
-import suncloud from '../services/img/sunandcloud.svg';
-import cloud from '../services/img/cloud.svg';
-import rain from '../services/img/rain.svg';
-import thunder from '../services/img/thunder.svg';
-import wind from '../services/img/wind.svg';
-import moon from '../services/img/moon.svg';
-import umbrella from '../services/img/umbrella.svg';
+import sun from './services/img/sun.svg';
+import snow from './services/img/snow.svg';
+import suncloud from './services/img/sunandcloud.svg';
+import cloud from './services/img/cloud.svg';
+import rain from './services/img/rain.svg';
+import thunder from './services/img/thunder.svg';
+import wind from './services/img/wind.svg';
+import moon from './services/img/moon.svg';
+import umbrella from './services/img/umbrella.svg';
 
 // 위치 아이콘 SVG 컴포넌트
 const LocationIcon = () => (

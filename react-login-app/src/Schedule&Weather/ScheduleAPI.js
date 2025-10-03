@@ -9,7 +9,7 @@ import { API_ENDPOINTS } from '../config/api';
 // 인증 토큰 가져오기
 const getAuthToken = () => {
   // 쿠키에서 토큰 가져오기
-  const { getAuthToken: getCookieToken } = require('../utils/cookieUtils');
+  const { getAuthToken: getCookieToken } = require('../Login/utils/cookieUtils');
   const token = getCookieToken();
   
   console.log('🔑 쿠키에서 토큰 검색 결과:', token ? '토큰 발견' : '토큰 없음');

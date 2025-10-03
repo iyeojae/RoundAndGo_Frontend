@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import CourseStep1 from './Components/CourseStep1';
 import CourseStep2 from './Components/CourseStep2';
 import CourseStep3 from './Components/CourseStep3';
-import { getAuthToken } from '../utils/cookieUtils';
+import { getAuthToken } from '../Login/utils/cookieUtils';
 import './CourseMain.css';
 
 const CourseMain = () => {

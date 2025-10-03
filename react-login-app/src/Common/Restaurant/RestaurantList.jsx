@@ -1,7 +1,7 @@
 // RestaurantList.jsx
 import React, { useState, useEffect } from 'react';
-import NoImage from '../NoImage.svg';
-import arrow from '../../Main/arrow.svg';
+import NoImage from '../../assets/NoImage.svg';
+import arrow from '../../assets/arrow.svg';
 import { fetchTourData } from "../BasedOn/API.js";
 import { getRestaurantCategory } from './Category.js';
 import './RestaurantList.css';

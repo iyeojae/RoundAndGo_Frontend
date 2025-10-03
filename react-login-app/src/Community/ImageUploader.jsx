@@ -1,5 +1,5 @@
 import React from 'react';
-import Camera from '../Image/Community/camera.svg';
+import Camera from '../assets/camera.svg';
 
 const ImageUploader = ({
                            existingImages,

@@ -23,10 +23,10 @@ export const API_ENDPOINTS = {
   FIND_ID_CONFIRM: `${API_BASE_URL}/auth/find-id/confirm`,
 
   // 골프장 검색
-  GOLF_COURSES_SEARCH: `${API_BASE_URL}/golf-courses/search-by-address`,
+  GOLF_COURSES_SEARCH: `${API_BASE_URL}/golf-courses/search`,
 
   // 관광 정보
-  TOUR_INFOS_RESTAURANTS: `${API_BASE_URL}/tour-infos/restaurants`,
+  TOUR_INFOS_RESTAURANTS: `${API_BASE_URL}/tour-infos`,
 
   // 스케줄 관련
   SCHEDULES: `${API_BASE_URL}/schedules`,
@@ -36,6 +36,6 @@ export const API_ENDPOINTS = {
   COURSES_SAVED: `${API_BASE_URL}/courses/saved`,
 };
 
-// 환경 정보 로깅
-console.log(`🌍 API 환경: 프로덕션 API 사용`);
-console.log(`🔗 API Base URL: ${API_BASE_URL}`);
+// // 환경 정보 로깅
+// console.log(`🌍 API 환경: 프로덕션 API 사용`);
+// console.log(`🔗 API Base URL: ${API_BASE_URL}`);

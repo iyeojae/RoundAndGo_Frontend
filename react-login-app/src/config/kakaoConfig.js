@@ -9,9 +9,9 @@ const KAKAO_MAP_API_KEY = process.env.REACT_APP_KAKAO_MAP_API_KEY || 'ad66696f1e
 // 개발 환경에서 설정 확인
 if (process.env.NODE_ENV === 'development') {
   if (process.env.REACT_APP_KAKAO_MAP_API_KEY) {
-    console.log('✅ 환경변수에서 카카오맵 API 키를 사용합니다.');
+    // console.log('✅ 환경변수에서 카카오맵 API 키를 사용합니다.');
   } else {
-    console.log('⚠️ 기본값 카카오맵 API 키를 사용합니다. 프로덕션에서는 환경변수를 설정하세요.');
+    // console.log('⚠️ 기본값 카카오맵 API 키를 사용합니다. 프로덕션에서는 환경변수를 설정하세요.');
   }
 }
 
@@ -28,6 +28,6 @@ export const KAKAO_CONFIG = {
 
 // 개발 환경에서 설정 확인
 if (process.env.NODE_ENV === 'development') {
-  console.log('🗺️ 카카오맵 API 키:', KAKAO_MAP_API_KEY);
-  console.log('🔗 카카오맵 SDK URL:', KAKAO_CONFIG.MAP_SDK_URL);
+  // console.log('🗺️ 카카오맵 API 키:', KAKAO_MAP_API_KEY);
+  // console.log('🔗 카카오맵 SDK URL:', KAKAO_CONFIG.MAP_SDK_URL);
 }

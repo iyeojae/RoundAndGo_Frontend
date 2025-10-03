@@ -2,7 +2,7 @@
 import React from 'react';
 import '../../Community/CommunityDetail.css';
 
-import waste from '../../Community/wasteicon.svg';
+import waste from '../../assets/wasteicon.svg';
 
 function DeleteConfirmModal({ isOpen, onClose, onConfirm }) {
     if (!isOpen) return null;

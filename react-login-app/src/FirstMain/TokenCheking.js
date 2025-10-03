@@ -1,4 +1,4 @@
-import { useKakaoLoginDetector } from '../Auth';
+import { useKakaoLoginDetector } from '../Login/Auth';
 import { useEffect } from 'react';
 
 export const TokenDebugging = () => {

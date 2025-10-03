@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../Layout/Header';
-import Footer from '../../Layout/Footer';
-import { getAuthToken, isLoggedIn } from '../../utils/cookieUtils';
+import Header from '../../LayoutNBanner/Header';
+import Footer from '../../LayoutNBanner/Footer';
+import { getAuthToken, isLoggedIn } from '../../Login/utils/cookieUtils';
 import './MyCourseView.css';
-import { loadKakaoMapSDK } from '../../utils/kakaoMapLoader';
+import { loadKakaoMapSDK } from '../../Login/utils/kakaoMapLoader';
 
 const MyCourseView = ({ courseData, courseInfo }) => {
   const navigate = useNavigate();

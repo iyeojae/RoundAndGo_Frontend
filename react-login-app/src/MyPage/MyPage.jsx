@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../Layout/Header.jsx';
-import Footer from '../Layout/Footer.jsx';
+import Header from '../LayoutNBanner/Header.jsx';
+import Footer from '../LayoutNBanner/Footer.jsx';
 import './MyPage.css';
 
 import {
@@ -11,21 +11,21 @@ import {
 } from '../Common/MyPageAPI.js';
 
 // 프로필 부분
-import updateIcon from '../Community/update.svg'; // 이름수정 아이콘
-import cameraIcon from './camerabtn.svg'; // 카메라 아이콘
-import profileIcon from './profile.svg'; // 기본이미지 색상 변경 아이콘
-import selectIcon from './SelectColor.svg'; // 색상 선택 아이콘
-import test from './whiteone.svg';
+import updateIcon from '../assets/update.svg'; // 이름수정 아이콘
+import cameraIcon from '../assets/camerabtn.svg'; // 카메라 아이콘
+import profileIcon from '../assets/profile.svg'; // 기본이미지 색상 변경 아이콘
+import selectIcon from '../assets/SelectColor.svg'; // 색상 선택 아이콘
+import test from '../assets/whiteone.svg';
 
-import myIcon from './MY.svg'; // 내 코스 모음 아이콘
+import myIcon from '../assets/MY.svg'; // 내 코스 모음 아이콘
 
-import mapIcon from './map.svg'; // 골프장위치 아이콘
-import communityIcon from '../Image/Layout/Footer/ActiveCommunity.svg'; // 커뮤니티 아이콘
-import courseIcon from '../Image/Layout/Footer/ActiveAI.svg'; // 코스추천 아이콘
-import scheduleIcon from '../Image/Layout/Footer/ActiveCal.svg'; // 일정관리 아이콘
+import mapIcon from '../assets/map.svg'; // 골프장위치 아이콘
+import communityIcon from '../assets/ActiveCommunity.svg'; // 커뮤니티 아이콘
+import courseIcon from '../assets/ActiveAI.svg'; // 코스추천 아이콘
+import scheduleIcon from '../assets/ActiveCal.svg'; // 일정관리 아이콘
 
-import questionIcon from './question.svg'; // 고객지원 아이콘
-import logoutIcon from './logout.svg'; // 로그아웃 아이콘
+import questionIcon from '../assets/question.svg'; // 고객지원 아이콘
+import logoutIcon from '../assets/logout.svg'; // 로그아웃 아이콘
 
 function MyPage() {
     const navigate = useNavigate();

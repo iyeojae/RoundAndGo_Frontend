@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAuthToken } from '../../utils/cookieUtils';
+import { getAuthToken } from '../../Login/utils/cookieUtils';
 import './LocationSearchModal.css';
 
 const LocationSearchModal = ({ isOpen, onClose, onSelectLocation, dayKey }) => {

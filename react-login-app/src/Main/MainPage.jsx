@@ -1,16 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
-import './MainPage.css';
-import Header from '../Layout/Header.jsx';
-import Footer from '../Layout/Footer.jsx';
+import Header from '../LayoutNBanner/Header.jsx';
+import Footer from '../LayoutNBanner/Footer.jsx';
 
 import Accommodation from './Accommodation/Accommodation.jsx'; // 숙박시설 정보 컴포넌트
 import Restaurant from './Restaurant/Restaurant.jsx'; // 음식점 정보 컴포넌트
-import Tourism from './Tourism/Tourism.jsx'; // 관광지 컴포넌트 
+import Tourism from './Tourism/Tourism.jsx'; // 관광지 컴포넌트
 import CommunityPreview from "./Community/CommuinityPreview"; // 커뮤니티 컴포넌트
-import GoToCourse from './GoToCourse.svg';
-import IconAI from '../Common/IconAI.svg';
-import Arrow from '../Detail/BackBtn.svg';
+import GoToCourse from '../assets/GoToCourse.svg';
+import IconAI from '../assets/IconAI.svg';
+import Arrow from '../assets/BackBtn.svg';
 
 function MainPage() {
     const navigate = useNavigate();
@@ -27,18 +26,70 @@ function MainPage() {
         navigate('/course');
     };
 
-    return (
-        <div className="MainPage" style={{backgroundColor: '#F8F8F8'}}>
-            <Header/>
+    const styles = {
+        MainPage: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            boxSizing: 'border-box',
+            backgroundColor: '#F8F8F8'
+        },
+        RecommendCourse: {
+            width: '100%',
+            aspectRatio: '440 / 279',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+            backgroundImage: `linear-gradient(180deg, rgba(38, 153, 98, 0) 41.07%, #269962 75.53%), url(${GoToCourse})`
+        },
+        elementCont: {
+            width: '90%',
+            margin: '0 auto 3% auto',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+        },
+        RecommendationChildContainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '2%',
+            alignItems: 'center',
+            width: '60%'
+        },
+        RecommendationChildContainerP: {
+            fontSize: '0.75rem',
+            fontWeight: 400,
+            color: '#fff',
+            margin: '0',
+        },
+        RecommendationChildContainerPSpan: {
+            fontSize: '1rem',
+            fontWeight: 450,
+            color: '#fff',
+            marginTop: '3%'
+        },
+        ImgContainer: {
+            width: '48px',
+            height: '36px'
+        },
+    };
 
+    return (
+        // .MainPage 스타일 적용
+        <div className="MainPage" style={styles.MainPage}>
+            <Header/>
             <div className="RecommendCourse"
-                 style={{backgroundImage: `linear-gradient(180deg, rgba(38, 153, 98, 0) 41.07%, #269962 75.53%), url(${GoToCourse})`}}> {/* 코스 추천 */}
-                <div className="element-cont">
-                    <div className="RecommendationChildContainer">
-                        <div className='ImgContainer'>
+                 style={styles.RecommendCourse}> {/* 코스 추천 */}
+                <div className="element-cont" style={styles.elementCont}>
+                    <div className='RecommendationChildContainer' style={styles.RecommendationChildContainer}>
+                        <div className='ImgContainer' style={styles.ImgContainer}>
                             <img src={IconAI} alt='IconAI'/>
                         </div>
-                        <p>AI가 짜주는<br/><span>여행 코스 보러가기</span></p>
+                        <p style={styles.RecommendationChildContainerP}>
+                            AI가 짜주는<br/>
+                            <span style={styles.RecommendationChildContainerPSpan}>여행 코스 보러가기</span>
+                        </p>
                     </div>
                     <img onClick={goTo} style={{width: '36px', transform: 'scale(-1)'}} src={Arrow}
                          alt='WhiteArrow'/>

@@ -103,7 +103,7 @@
     left: 50%;
     width: clamp(16px, 2vw, 18px);
     height: clamp(16px, 2vw, 18px);
-    background-image: url('./SelectColor.svg'); /* Icon for selection */
+    background-image: url('../assets/SelectColor.svg'); /* Icon for selection */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

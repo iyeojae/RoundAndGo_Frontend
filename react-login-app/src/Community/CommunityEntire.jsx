@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../Layout/Header.jsx';
-import Footer from '../Layout/Footer.jsx';
+import Header from '../LayoutNBanner/Header.jsx';
+import Footer from '../LayoutNBanner/Footer.jsx';
 import WriteBtn from './WriteNewBoard.jsx';
 import DivContent from '../Common/Community/DivContent.jsx';
-import { checkAuth } from "../Search/IsContainToken.js";
+import { checkAuth } from "../FirstMain/IsContainToken.js";
 
 import { fetchCategories, fetchPostsLatest, fetchComments, fetchLikeCount, toggleLike } from "../Common/Community/CommunityAPI";
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS.js';
-import WatchIcon from './WatchIcon.svg';
-import ActiveHeartIcon from './ActiveHeartIcon.svg';
-import HeartIcon from './HeartIcon.svg';
-import Comment from './CommentIcon.svg';
-import NoContent from './NoContent.svg';
+import WatchIcon from '../assets/WatchIcon.svg';
+import ActiveHeartIcon from '../assets/ActiveHeartIcon.svg';
+import HeartIcon from '../assets/HeartIcon.svg';
+import Comment from '../assets/CommentIcon.svg';
+import NoContent from '../assets/NoContent.svg';
 
 function CommunityEntire() {
     const navigate = useNavigate();

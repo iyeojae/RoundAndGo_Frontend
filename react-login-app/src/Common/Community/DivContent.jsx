@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../../config/api.js';
-import NoContent from '../../Community/NoContent.svg';
-import comment from '../../Community/CommentIcon.svg';
+import NoContent from '../../assets/NoContent.svg';
+import comment from '../../assets/CommentIcon.svg';
 import axios from 'axios';
 import Slider from 'react-slick';
 import { useNavigate } from 'react-router-dom';
-import { getAuthToken } from '../../utils/cookieUtils';
+import { getAuthToken } from '../../Login/utils/cookieUtils';
 
 // react-slick CSS 파일 임포트
 import "slick-carousel/slick/slick.css";

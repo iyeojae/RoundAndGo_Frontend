@@ -1,7 +1,7 @@
 // CommunityDetail.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Header from "../Layout/Header";
+import Header from "../LayoutNBanner/Header";
 import {
     fetchPostDetail, postComment, fetchComments,
     toggleLike, fetchLikeCount, deletePost, deleteComment,
@@ -9,19 +9,19 @@ import {
 } from '../Common/Community/CommunityAPI';
 import { getUserInfo } from '../Common/MyPageAPI.js';
 
-import { checkAuth } from "../Search/IsContainToken.js";
+import { checkAuth } from "../FirstMain/IsContainToken.js";
 import DeleteConfirmModal from "../Common/Community/DeleteConfirm";
 import Toast from '../Common/Community/Toast.jsx';
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS';
 
 // import Comment from './CommentIcon.svg';
-import profile from '../MyPage/profile.svg';
-import reply from './replybtn.svg';
-import heart from './Heart.svg';
-import greenheart from './GreenHeart.svg';
-import waste from './waste-mini.svg';
-import update from './update.svg';
-import SendIcon from './ArrowTop.svg';
+import profile from '../assets/profile.svg';
+import reply from '../assets/replybtn.svg';
+import heart from '../assets/Heart.svg';
+import greenheart from '../assets/GreenHeart.svg';
+import waste from '../assets/waste-mini.svg';
+import update from '../assets/update.svg';
+import SendIcon from '../assets/ArrowTop.svg';
 
 import './CommunityDetail.css';
 

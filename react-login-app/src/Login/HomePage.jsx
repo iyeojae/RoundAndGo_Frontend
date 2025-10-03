@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
 import React from "react";
-import { oauth2KakaoApi } from '../Auth/oauth2KakaoConfig.js';
-import { markKakaoLoginAttempt } from '../Auth/useKakaoLoginDetector.js';
+import { oauth2KakaoApi } from './Auth/oauth2KakaoConfig.js';
+import { markKakaoLoginAttempt } from './Auth/useKakaoLoginDetector.js';
 
 
-import bgIcon from './backIcon.svg';
-import kakao from './kakao.svg';
+import bgIcon from '../assets/backIcon.svg';
+import kakao from '../assets/kakao.svg';
 
 function HomePage() {
     const navigate = useNavigate();

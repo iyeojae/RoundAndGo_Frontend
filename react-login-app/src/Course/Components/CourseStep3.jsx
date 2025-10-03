@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../Layout/Header';
-import Footer from '../../Layout/Footer';
-import { loadKakaoMapSDK, isKakaoMapReady } from '../../utils/kakaoMapLoader';
+import Header from '../../LayoutNBanner/Header';
+import Footer from '../../LayoutNBanner/Footer';
+import { loadKakaoMapSDK, isKakaoMapReady } from '../../Login/utils/kakaoMapLoader';
 import { API_ENDPOINTS } from '../../config/api';
-import { getAuthToken } from '../../utils/cookieUtils';
+import { getAuthToken } from '../../Login/utils/cookieUtils';
 import LocationSearchModal from './LocationSearchModal';
 import './CourseStep3.css';
 

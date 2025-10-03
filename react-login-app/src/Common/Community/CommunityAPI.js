@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAuthToken } from '../../utils/cookieUtils';
+import { getAuthToken } from '../../Login/utils/cookieUtils';
 
 
 // axios 기본 설정 - 쿠키 포함

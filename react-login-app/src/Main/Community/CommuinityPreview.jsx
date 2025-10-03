@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { fetchPostsLatest, fetchComments } from "../../Common/Community/CommunityAPI";
 import { TAB_LABELS } from "../../Common/Community/Community_TAB_LABELS.js";
-import './preview.css';
-import arrow from "../arrow.svg";
-import heart from '../../Community/HeartIcon.svg';
-import view from '../../Community/WatchIcon.svg';
-import comment from '../../Community/CommentIcon.svg';
+import arrow from "../../assets/arrow.svg";
+import heart from '../../assets/HeartIcon.svg';
+import view from '../../assets/WatchIcon.svg';
+import comment from '../../assets/CommentIcon.svg';
 
 function CommunityPreview() {
     const navigate = useNavigate();
@@ -53,6 +52,67 @@ function CommunityPreview() {
         fetchPreviewData();
     }, []);
 
+    // CSS 스타일을 JavaScript 객체로 정의
+    const styles = {
+        CommunityContent: {
+            width: '90%',
+            margin: '5% auto 10% auto',
+            borderRadius: '10px',
+            background: '#fff',
+            boxShadow: '0 0 8px rgba(0, 0, 0, 0.25)',
+            padding: '15px'
+        },
+        previewPost: {
+            padding: '10px 0',
+            borderBottom: '1px solid #797979',
+            cursor: 'pointer'
+        },
+        previewPostLastChild: { // 마지막 요소 스타일 (인라인에서는 별도로 적용 필요)
+            padding: '10px 0',
+            cursor: 'pointer',
+            borderBottom: 'none'
+        },
+        postHeader: {
+            display: 'flex',
+            flexDirection: 'column', // 세로 정렬
+            gap: '4px',
+            marginBottom: '6px' // 필요 시 유지
+        },
+        category: {
+            fontSize: '9px',
+            fontWeight: 500,
+            color: '#269962',
+            border: '0.8px solid #269962',
+            padding: '2px 6px',
+            width: 'fit-content'
+        },
+        title: {
+            fontSize: '13px',
+            fontWeight: 500,
+            color: '#000',
+            flex: 1
+        },
+        postMeta: { // 이전에 인라인으로 적용된 스타일과 병합됨
+            display: 'flex',
+            gap: '10px',
+            marginTop: '8px',
+            fontSize: '12px',
+            color: '#555'
+        },
+        postMetaIcon: {
+            width: '12px', // 아이콘의 크기를 명시적으로 지정 (원본에는 없었으나 폰트 사이즈 대비 적절히 추정)
+            height: '12px',
+            verticalAlign: 'middle', // 텍스트와 이미지 중앙 정렬
+            marginRight: '3px' // 텍스트와의 간격
+        },
+        commentIcon: {
+            width: '10px',
+            height: '10px',
+            verticalAlign: 'middle',
+            marginRight: '3px'
+        }
+    };
+
     return (
         <>
             <div style={{
@@ -70,26 +130,39 @@ function CommunityPreview() {
                 </div>
             </div>
 
-            <div className="CommunityContent">
-                {previewPosts.map(post => (
-                    <div className="preview-post" key={post.id} onClick={() => goToDetail(post.id)}>
-                        <div className="post-header" style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
-                    <span className="category">
-                        {getCategoryLabel(post.category)}
-                    </span>
-                            <span className="title">
-                        {post.title}
-                    </span>
+            {/* .CommunityContent 스타일 적용 */}
+            <div className="CommunityContent" style={styles.CommunityContent}>
+                {previewPosts.map((post, index) => {
+                    const isLast = index === previewPosts.length - 1;
+                    return (
+                        // .preview-post 및 :last-child 스타일 적용
+                        <div
+                            className="preview-post"
+                            key={post.id}
+                            onClick={() => goToDetail(post.id)}
+                            style={isLast ? styles.previewPostLastChild : styles.previewPost}
+                        >
+                            {/* .post-header 스타일 적용 */}
+                            <div className="post-header" style={styles.postHeader}>
+                                {/* .category 스타일 적용 */}
+                                <span className="category" style={styles.category}>
+                                    {getCategoryLabel(post.category)}
+                                </span>
+                                {/* .title 스타일 적용 */}
+                                <span className="title" style={styles.title}>
+                                    {post.title}
+                                </span>
+                            </div>
+                            {/* .post-meta 스타일 적용 */}
+                            <div className="post-meta" style={styles.postMeta}>
+                                <span><img style={styles.postMetaIcon} src={heart} alt='좋아요'/> {post.likeCount || 0}</span>
+                                <span><img style={styles.postMetaIcon} src={view} alt='조회수'/> {post.viewCount || 0}</span>
+                                <span><img style={styles.commentIcon} src={comment}
+                                           alt='댓글'/> {post.commentCount}</span>
+                            </div>
                         </div>
-                        <div className="post-meta"
-                             style={{fontSize: '12px', color: '#555', marginTop: '8px', display: 'flex', gap: '10px'}}>
-                            <span><img src={heart} alt='좋아요'/> {post.likeCount || 0}</span>
-                            <span><img src={view} alt='조회수'/> {post.viewCount || 0}</span>
-                            <span><img style={{width: '10px', height: '10px'}} src={comment}
-                                       alt='댓글'/> {post.commentCount}</span>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
                 {previewPosts.length === 0 && <p style={{padding: '20px'}}>게시글이 없습니다</p>}
             </div>
         </>

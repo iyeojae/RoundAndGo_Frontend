@@ -1,22 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './utils/cleanupLocalStorage'; // 쿠키 기반 인증으로 전환하면서 로컬스토리지 정리
+import './Login/utils/cleanupLocalStorage'; // 쿠키 기반 인증으로 전환하면서 로컬스토리지 정리
 
-import LeftContent from './Banner/LeftContent.jsx'; // 왼쪽 콘텐츠
+import LeftContent from './LayoutNBanner/LeftContent.jsx'; // 왼쪽 콘텐츠
 
 import './App.css';
-import EmailLoginPage from './EmailAuth/EmailLoginPage';
-import SignupPage from './EmailAuth/SignupPage';
-import FindAccountPage from './EmailAuth/FindAccountPage';
+import EmailLoginPage from './Login/EmailAuth/EmailLoginPage';
+import SignupPage from './Login/EmailAuth/SignupPage';
+import FindAccountPage from './Login/EmailAuth/FindAccountPage';
 import SchedulePage from './Schedule&Weather/SchedulePage';
 import JejuLocationPage from './Schedule&Weather/JejuLocationPage';
 import HomePage from "./Login/HomePage";
-import OAuth2Callback from "./OAuth2Callback";
+import OAuth2Callback from "./Login/OAuth2Callback";
 
 import FirstMainPage from "./FirstMain/FirstMainPage"; // 첫 메인
 import MainPage from "./Main/MainPage"; // 메인
-import DetailMainPage from './Detail/DetailMain.jsx'; // 메인 더보기
-import DetailMorePage from './Detail/Accommodation/MoreAccommodation.jsx'; // 더보기 -> 숙박 상세
+import DetailMainPage from './Main/Detail/DetailMain.jsx'; // 메인 더보기
+import DetailMorePage from './Main/Detail/AccommodationD/MoreAccommodation.jsx'; // 더보기 -> 숙박 상세
 import CommunityMainPage from './Community/Community.jsx'; // 커뮤니티
 import CommunityEntirePage from './Community/CommunityEntire.jsx'; // 커뮤니티 전체보기
 import CommunityWritePage from './Community/CommunityWrite.jsx'; // 커뮤니티 쓰기

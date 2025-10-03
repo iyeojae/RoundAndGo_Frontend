@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Header from "../Layout/Header";
+import Header from "../LayoutNBanner/Header";
 import { fetchPostDetail, updatePostWithImages } from "../Common/Community/CommunityAPI";
-import { checkAuth } from "../Search/IsContainToken";
-import { getAuthToken } from '../utils/cookieUtils';
+import { checkAuth } from "../FirstMain/IsContainToken";
+import { getAuthToken } from '../Login/utils/cookieUtils';
 import CategorySelector from './CategorySelector';
 import ImageUploader from './ImageUploader';
 import InputField from './InputField';

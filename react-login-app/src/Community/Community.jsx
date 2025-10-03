@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Header from '../Layout/Header.jsx';
-import Footer from '../Layout/Footer.jsx';
+import Header from '../LayoutNBanner/Header.jsx';
+import Footer from '../LayoutNBanner/Footer.jsx';
 import DivContent from '../Common/Community/DivContent.jsx';
 import'./Community.css';
 
-import BlackArrow from './BlackArrow.svg';
-import Comment from './CommentIcon.svg';
-import NewBoard from './NewBoardIcon.svg';
+import BlackArrow from '../assets/BlackArrow.svg';
+import Comment from '../assets/CommentIcon.svg';
+import NewBoard from '../assets/NewBoardIcon.svg';
 import { fetchCategories, fetchPostsLatest, fetchComments, searchPosts } from "../Common/Community/CommunityAPI";
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS.js';
 import Popular from "../Common/Community/Popular";
 import WriteNewBoard from './WriteNewBoard.jsx';
 import Toast from '../Common/Community/Toast.jsx';
 
-import search from '../Community/search.svg';
+import search from '../assets/search.svg';
 
 function CommunityBoard() {
     const navigate = useNavigate();

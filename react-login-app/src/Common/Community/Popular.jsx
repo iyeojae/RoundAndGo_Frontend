@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { fetchPopularPosts, fetchComments, fetchLikeCount, toggleLike } from './CommunityAPI.js';
-import { checkAuth } from "../../Search/IsContainToken.js";
+import { checkAuth } from "../../FirstMain/IsContainToken.js";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
@@ -9,11 +9,11 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import './Popular.css';
-import fire from '../../Community/PopularFire.svg';
-import CommentIcon from '../../Community/CommentIcon.svg';
-import HeartIcon from '../../Community/HeartIcon.svg';
-import ActiveHeartIcon from '../../Community/ActiveHeartIcon.svg';
-import WatchIcon from '../../Community/WatchIcon.svg';
+import fire from '../../assets/PopularFire.svg';
+import CommentIcon from '../../assets/CommentIcon.svg';
+import HeartIcon from '../../assets/HeartIcon.svg';
+import ActiveHeartIcon from '../../assets/ActiveHeartIcon.svg';
+import WatchIcon from '../../assets/WatchIcon.svg';
 
 
 

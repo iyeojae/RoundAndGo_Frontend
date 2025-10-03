@@ -1,6 +1,6 @@
 // MyPageAPI.js
 import axios from 'axios';
-import { getAuthToken } from '../utils/cookieUtils';
+import { getAuthToken } from '../Login/utils/cookieUtils';
 
 const BASE_URL = 'https://api.roundandgo.com/api';
 

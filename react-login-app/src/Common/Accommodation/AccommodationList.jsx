@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import NoImage from '../NoImage.svg';
+import NoImage from '../../assets/NoImage.svg';
 import { getAccommodationTags } from './Category';
-import arrow from '../../Main/arrow.svg';
+import arrow from '../../assets/arrow.svg';
 import './AccommodationList.css';
 
 const AccommodationList = ({

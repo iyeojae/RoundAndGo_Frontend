@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
 import {useNavigate} from 'react-router-dom';
-import Header from "../Layout/Header";
+import Header from "../LayoutNBanner/Header";
 import { TAB_LABELS } from "../Common/Community/Community_TAB_LABELS";
-import Camera from '../Image/Community/camera.svg';
+import Camera from '../assets/camera.svg';
 import {PostingBoard} from "../Common/Community/CommunityAPI";
 
-import { checkAuth } from "../Search/IsContainToken";
+import { checkAuth } from "../FirstMain/IsContainToken";
 
 import './CommunityWrite.css';
 
