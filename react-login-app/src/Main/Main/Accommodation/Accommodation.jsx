@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AccommodationList from '../../Common/Accommodation/AccommodationList.jsx';
-import { fetchTourData } from '../../Common/BasedOn/API.js';
-import { getAccommodationCategory } from '../../Common/Accommodation/Category';
+import AccommodationList from '../../../Common/Accommodation/AccommodationList.jsx';
+import { fetchTourData } from '../../../Common/BasedOn/API.js';
+import { getAccommodationCategory } from '../../../Common/Accommodation/Category';
 
 function Accommodation({ golfCourseId }) {
     const [accommodations, setAccommodations] = useState([]);

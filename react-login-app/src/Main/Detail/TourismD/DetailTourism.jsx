@@ -1,6 +1,6 @@
 // DetailTourism.jsx
 import React, { useState, useEffect } from 'react';
-import TourismMain from '../../Tourism/Tourism.jsx';
+import TourismMain from '../../Main/Tourism/Tourism.jsx';
 import { fetchTourData } from "../../../Common/BasedOn/API.js";
 import NoImage from '../../../assets/NoImage.svg';
 

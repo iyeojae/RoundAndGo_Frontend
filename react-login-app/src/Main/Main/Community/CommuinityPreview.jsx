@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { fetchPostsLatest, fetchComments } from "../../Common/Community/CommunityAPI";
-import { TAB_LABELS } from "../../Common/Community/Community_TAB_LABELS.js";
-import arrow from "../../assets/arrow.svg";
-import heart from '../../assets/HeartIcon.svg';
-import view from '../../assets/WatchIcon.svg';
-import comment from '../../assets/CommentIcon.svg';
+import { fetchPostsLatest, fetchComments } from "../../../Common/Community/CommunityAPI";
+import { TAB_LABELS } from "../../../Common/Community/Community_TAB_LABELS.js";
+import arrow from "../../../assets/arrow.svg";
+import heart from '../../../assets/HeartIcon.svg';
+import view from '../../../assets/WatchIcon.svg';
+import comment from '../../../assets/CommentIcon.svg';
 
 function CommunityPreview() {
     const navigate = useNavigate();

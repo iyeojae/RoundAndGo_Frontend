@@ -14,7 +14,7 @@ import HomePage from "./Login/HomePage";
 import OAuth2Callback from "./Login/OAuth2Callback";
 
 import FirstMainPage from "./FirstMain/FirstMainPage"; // 첫 메인
-import MainPage from "./Main/MainPage"; // 메인
+import MainPage from "./Main/Main/MainPage"; // 메인
 import DetailMainPage from './Main/Detail/DetailMain.jsx'; // 메인 더보기
 import DetailMorePage from './Main/Detail/AccommodationD/MoreAccommodation.jsx'; // 더보기 -> 숙박 상세
 import CommunityMainPage from './Community/Community.jsx'; // 커뮤니티

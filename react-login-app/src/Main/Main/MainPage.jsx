@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
-import Header from '../LayoutNBanner/Header.jsx';
-import Footer from '../LayoutNBanner/Footer.jsx';
+import Header from '../../LayoutNBanner/Header.jsx';
+import Footer from '../../LayoutNBanner/Footer.jsx';
 
 import Accommodation from './Accommodation/Accommodation.jsx'; // 숙박시설 정보 컴포넌트
 import Restaurant from './Restaurant/Restaurant.jsx'; // 음식점 정보 컴포넌트
 import Tourism from './Tourism/Tourism.jsx'; // 관광지 컴포넌트
 import CommunityPreview from "./Community/CommuinityPreview"; // 커뮤니티 컴포넌트
-import GoToCourse from '../assets/GoToCourse.svg';
-import IconAI from '../assets/IconAI.svg';
-import Arrow from '../assets/BackBtn.svg';
+import GoToCourse from '../../assets/GoToCourse.svg';
+import IconAI from '../../assets/IconAI.svg';
+import Arrow from '../../assets/BackBtn.svg';
 
 function MainPage() {
     const navigate = useNavigate();

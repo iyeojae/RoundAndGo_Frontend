@@ -1,8 +1,8 @@
 // AccommodationAPI.js
 
 // 제목, 숙소소개, 주소
+const serviceKey = process.env.API_SERVICE_KEY;
 export const getAccommodationDetail = async (contentId) => {
-    const serviceKey = "dmj1aeFL89HQ0GVwfE20cQLijlRcbirbnlDmKWuQUs99iV7Qb3ivcbAG1Zq6Hi7mKh1yYaD5ntYPhZcqwAyfmg%3D%3D";
     const url = `https://apis.data.go.kr/B551011/KorService2/detailCommon2?ServiceKey=${serviceKey}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&_type=xml`;
 
     try {
@@ -30,7 +30,6 @@ export const getAccommodationDetail = async (contentId) => {
 
 // 숙소 추가 이미지
 export const getAccommodationImages = async (contentId) => {
-    const serviceKey = "dmj1aeFL89HQ0GVwfE20cQLijlRcbirbnlDmKWuQUs99iV7Qb3ivcbAG1Zq6Hi7mKh1yYaD5ntYPhZcqwAyfmg%3D%3D";
     const url = `https://apis.data.go.kr/B551011/KorService2/detailImage2?ServiceKey=${serviceKey}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&imageYN=Y&numOfRows=10&_type=xml`;
 
     try {
@@ -54,7 +53,6 @@ export const getAccommodationImages = async (contentId) => {
 
 // 숙소 부대시설 및 서비스 정보 조회
 export const getAccommodationInfo = async (contentId) => {
-    const serviceKey = "dmj1aeFL89HQ0GVwfE20cQLijlRcbirbnlDmKWuQUs99iV7Qb3ivcbAG1Zq6Hi7mKh1yYaD5ntYPhZcqwAyfmg%3D%3D";
     const contentTypeId = 32;
 
     const url = `https://apis.data.go.kr/B551011/KorService2/detailInfo2?ServiceKey=${serviceKey}&contentTypeId=${contentTypeId}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&_type=xml`;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import NoImage from '../../assets/NoImage.svg';
-import { fetchTourData } from "../../Common/BasedOn/API.js";
+import NoImage from '../../../assets/NoImage.svg';
+import { fetchTourData } from "../../../Common/BasedOn/API.js";
 
 function Tourism({
                      title = '제주도 인기 관광지 모음',

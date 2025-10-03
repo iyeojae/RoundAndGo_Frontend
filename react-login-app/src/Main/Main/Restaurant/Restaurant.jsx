@@ -1,7 +1,7 @@
 // Restaurant.jsx
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import RestaurantList from '../../Common/Restaurant/RestaurantList.jsx';
+import RestaurantList from '../../../Common/Restaurant/RestaurantList.jsx';
 
 function Restaurant() {
     const navigate = useNavigate();
