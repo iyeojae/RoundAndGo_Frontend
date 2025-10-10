@@ -1,12 +1,124 @@
-import styled from "styled-components";
-import {useNavigate} from "react-router-dom";
+import styled, { keyframes } from 'styled-components';
+import { useNavigate } from "react-router-dom";
 import React from "react";
 import { oauth2KakaoApi } from './Auth/oauth2KakaoConfig.js';
 import { markKakaoLoginAttempt } from './Auth/useKakaoLoginDetector.js';
 
-
 import bgIcon from '../assets/backIcon.svg';
 import kakao from '../assets/kakao.svg';
+
+const bounce = keyframes`
+  0%, 100% {
+    transform: scale(1.01);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+`;
+
+const ButtonWithBounce = styled.button`
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      animation: ${bounce} 0.6s ease forwards;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+  }
+`;
+
+const GradientContainer = styled.div`
+    background: linear-gradient(180deg, #269962 0%, #FFFFFF 100%);
+`;
+
+const BackgroundWrapper = styled.div`
+    overflow-y: hidden;
+    background-image: url(${props => props.$bgIcon}); 
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left top, left bottom;
+`;
+
+const ButtonsArea = styled.div`
+    position: absolute;
+    bottom: 10%;
+    z-index: 3;
+    width: 100%;
+`;
+
+const ButtonGroup = styled.div`
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`;
+
+const BaseButton = styled.button`
+    width: 80%;
+    margin: 0 auto;
+    border: none;
+    border-radius: clamp(27px, 5vw, 54px);
+    font-size: clamp(14px, 2vw, 18px);
+    cursor: pointer;
+`;
+
+const EmailLoginButton = styled(BaseButton)`
+    background-color: #2d8779;
+    padding: 3.5%;
+    color: #fff;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            animation: ${bounce} 0.6s ease forwards;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+    }
+`;
+
+const KakaoLoginButton = styled(BaseButton)`
+    background-color: #fee500;
+    padding: 2% 3.75%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            animation: ${bounce} 0.6s ease forwards;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+    }
+`;
+
+const KakaoLogo = styled.img`
+    margin-right: auto;
+    width: auto;
+`;
+
+const KakaoText = styled.p`
+    padding-right: 7%;
+    margin: 0 auto 0 0;
+`;
+
+const SignUpText = styled.p`
+    width: 85%;
+    color: #2d8779;
+    font-size: clamp(14px, 2vw, 18px);
+    text-align: right;
+    margin: 0 0 0 3%;
+    cursor: pointer;
+`;
+
 
 function HomePage() {
     const navigate = useNavigate();
@@ -41,63 +153,24 @@ function HomePage() {
     return (
 
         <>
-            <div style={{background: 'linear-gradient(180deg, #269962 0%, #FFFFFF 100%)'}}>
-                <div style={{
-                    overflowY: 'hidden',
-                    backgroundImage: `url(${bgIcon})`,
-                    position: 'relative',
-                    width: '100%',
-                    minHeight: '100vh',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat, no-repeat',
-                    backgroundPosition: 'left top, left bottom',
-                }}>
-                    <div className='buttons' style={{position: 'absolute', bottom: '10%', zIndex: 3, width: '100%'}}>
-                        <div style={{
-                            width: '90%',
-                            margin: '0 auto',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '15px'
-                        }}>
-                            <button style={{
-                                width: '80%',
-                                margin: '0 auto',
-                                border: 'none',
-                                borderRadius: 'clamp(27px, 5vw, 54px)',
-                                backgroundColor: '#2d8779',
-                                padding: '3.5%',
-                                fontSize: 'clamp(14px, 2vw, 18px)',
-                                color: '#fff'
-                            }} onClick={handleEmailLogin}>로그인
-                            </button>
-                            <button onClick={handleKakaoLogin} style={{
-                                width: '80%',
-                                margin: '0 auto',
-                                border: 'none',
-                                borderRadius: 'clamp(27px, 5vw, 54px)',
-                                backgroundColor: '#fee500',
-                                padding: '2% 3.75%',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                fontSize: 'clamp(14px, 2vw, 18px)',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}>
-                                <img style={{marginRight: 'auto', width: ''}} src={kakao} alt='카카오 로고'/>
-                                <p style={{paddingRight: '7%', margin: '0 auto 0 0'}}>카카오로 시작하기</p>
-                            </button>
-                            <p onClick={handleSignUp} style={{
-                                width: '85%',
-                                color: '#2d8779',
-                                fontSize: 'clamp(14px, 2vw, 18px)',
-                                textAlign: 'right',
-                                margin: '0 0 0 3%'
-                            }}>회원가입</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <GradientContainer>
+                <BackgroundWrapper $bgIcon={bgIcon}>
+                    <ButtonsArea className='buttons'>
+                        <ButtonGroup>
+                            <EmailLoginButton onClick={handleEmailLogin}>
+                                로그인
+                            </EmailLoginButton>
+
+                            <KakaoLoginButton onClick={handleKakaoLogin}>
+                                <KakaoLogo src={kakao} alt='카카오 로고'/>
+                                <KakaoText>카카오로 시작하기</KakaoText>
+                            </KakaoLoginButton>
+
+                            <SignUpText onClick={handleSignUp}>회원가입</SignUpText>
+                        </ButtonGroup>
+                    </ButtonsArea>
+                </BackgroundWrapper>
+            </GradientContainer>
         </>
     );
 }

@@ -1,6 +1,6 @@
 // MyPageAPI.js
 import axios from 'axios';
-import { getAuthToken } from '../Login/utils/cookieUtils';
+import { getCookie } from '../Login/utils/cookieUtils';
 import {API_BASE_URL} from "../config/api";
 
 
@@ -9,7 +9,7 @@ axios.defaults.withCredentials = true;
 
 // GET 사용자 정보
 export const getUserInfo = async () => {
-    const token = getAuthToken();
+    const token = getCookie('accessToken');
     const res = await axios.get(`${API_BASE_URL}/auth/user`, {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -19,39 +19,50 @@ export const getUserInfo = async () => {
 };
 
 export const getProfileImage = async () => {
-    const token = getAuthToken();
+    const token = getCookie('accessToken');
     const res = await axios.get(`${API_BASE_URL}/profile/image`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     });
     console.log('API 응답:', res.data);
-    const { nickname, profileImageUrl } = res.data.data;
-    console.log(nickname, profileImageUrl);
-    return { nickname, profileImageUrl };
+    const { nickname, url, profileColor } = res.data.data;
+    console.log(nickname, url, profileColor);
+    return { nickname, url, profileColor };
 };
 
-export const uploadProfileImage = async (file, nickname, imageUrl) => {
+export const uploadProfileImage = async (file, nickname, colorLabel) => {
     const formData = new FormData();
-    if (file) {
-        formData.append('url', file);  // 새 이미지 파일이 있을 경우
-    } else {
-        formData.append('url', imageUrl); // 기존 이미지
-    }
-    formData.append('nickname', nickname);  // 닉네임은 항상 전송
 
-    const token = getAuthToken();
-    const res = await axios.post(`${API_BASE_URL}/profile/image/upload`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-        },
-    });
+    // 이미지 파일이 있는 경우에만 첨부
+    if (file) {
+        formData.append('file', file);
+    }
+
+    formData.append('nickname', nickname);
+
+    if (colorLabel) {
+        formData.append('profileColor', colorLabel);
+    }
+
+    const token = getCookie('accessToken');
+
+    const res = await axios.post(
+        `${API_BASE_URL}/profile/image`,
+        formData,
+        {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+        }
+    );
+
     return res.data.result; // { url }
 };
 
 export const deleteProfileImage = async () => {
-    const token = getAuthToken();
+    const token = getCookie('accessToken');
     const res = await axios.delete(`${API_BASE_URL}/profile/image`, {
         headers: {
             'Authorization': `Bearer ${token}`

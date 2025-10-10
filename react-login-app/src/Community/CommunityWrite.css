@@ -172,6 +172,10 @@
     color: white;
 }
 
+.btn-write-submit {
+    padding: 15% 0 5% 0;
+}
+
 /* 유틸리티 및 애니메이션 */
 .row-cont,
 .image-preview-multiple {

@@ -74,10 +74,9 @@
 }
 
 .email-auth-logo {
-  width: 117px;
-  aspect-ratio: 117 / 121;
+  width: 115px;
   object-fit: cover;
-  margin: 0 auto;
+  margin: 0 auto 4% auto;
 }
 
 .email-auth-title {

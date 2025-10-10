@@ -1,29 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components'; // keyframes와 css를 import 합니다.
 import MapImage from '../assets/map_jeju.svg';
 import GolfSearch from './Search.jsx';
 import NoImage from '../assets/NoImage.svg';
 import Warning from '../assets/Warning.svg'; // 검색결과 없음
 
 import { TokenDebugging } from "./TokenCheking";
+import { API_BASE_URL } from "../config/api";
 
 import './FirstMainPage.css';
 
 const regions = [
-    { name: "한경면", top: "38%", left: "5%" },
-    { name: "한림읍", top: "29%", left: "12%" },
-    { name: "애월읍", top: "22%", left: "25%" },
-    { name: "제주시", top: "16%", left: "40%" },
-    { name: "조천읍", top: "11%", left: "57%" },
-    { name: "구좌읍", top: "8%", left: "74%" },
-    { name: "성산읍", top: "24%", left: "82%" },
-    { name: "표선면", top: "30%", left: "70%" },
-    { name: "남원읍", top: "37%", left: "58%" },
-    { name: "서귀포시", top: "42%", left: "45%" },
-    { name: "중문", top: "44%", left: "32%" },
-    { name: "안덕면", top: "40%", left: "19%" },
-    { name: "대정읍", top: "48%", left: "8%" }
+    { name: "한경면", top: "48%", left: "5%" },
+    { name: "한림읍", top: "39%", left: "12%" },
+    { name: "애월읍", top: "32%", left: "25%" },
+    { name: "제주시", top: "26%", left: "40%" },
+    { name: "조천읍", top: "21%", left: "57%" },
+    { name: "구좌읍", top: "18%", left: "74%" },
+    { name: "성산읍", top: "34%", left: "82%" },
+    { name: "표선면", top: "40%", left: "70%" },
+    { name: "남원읍", top: "47%", left: "58%" },
+    { name: "서귀포시", top: "52%", left: "45%" },
+    { name: "중문", top: "54%", left: "32%" },
+    { name: "안덕면", top: "50%", left: "19%" },
+    { name: "대정읍", top: "58%", left: "8%" }
 ];
+
+const fadeIn = keyframes`
+    from { opacity: 0; }
+    to { opacity: 1; }
+`;
+
+const fadeInSlideUp = keyframes`
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
 
 const FirstMainPageWrapper = styled.div`
     background-image: linear-gradient(0.02deg, #269962 41.09%, #8BD3BA 57.62%, #2C8C7D 86.54%);
@@ -51,6 +68,8 @@ const FirstText = styled.p`
     color: white;
     margin-bottom: 20px;
 
+    animation: ${fadeInSlideUp} 0.8s ease-out forwards;
+
     span {
         margin: 0;
         padding: 0;
@@ -63,7 +82,7 @@ const FirstText = styled.p`
 const Map = styled.div`
     position: relative;
     max-width: 90%;
-    margin: 13% auto;
+    margin: 12% auto;
     box-sizing: content-box;
 
     img {
@@ -85,16 +104,21 @@ const MapRegionButton = styled.button`
     justify-content: center;
     align-items: center;
     color: #2C8C7D;
-    font-size: 8px;
+    font-size: clamp(8px, 2vw, 12px);
     font-weight: bold;
     text-align: center;
     z-index: 10;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    transition: opacity 0.2s ease, background-color 0.2s ease, transform 0.1s ease;
+    transition: opacity 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
     cursor: pointer;
 
     &:hover {
         opacity: 0.8;
+    }
+
+    &:active {
+        transform: scale(0.95);
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
     }
 
     &.selected {
@@ -108,15 +132,13 @@ const MapRegionButton = styled.button`
 
 const Top3ForRegion = styled.div`
     width: 90%;
-    max-width: 380px;
     transition: all 0.3s ease-in-out;
-    margin: 0 auto;
+    margin: 0 auto ${props => (props.active ? '50px' : '0')} auto;
     padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-bottom: ${props => (props.active ? '50px' : '0')};
     gap: ${props => (props.active ? '15px' : '0')};
     height: ${props => (props.active ? 'auto' : '0')};
     overflow: ${props => (props.active ? 'visible' : 'hidden')};
@@ -125,6 +147,9 @@ const Top3ForRegion = styled.div`
 const Subcomment = styled.div`
     margin: 10px auto;
     text-align: center;
+
+    animation: ${fadeInSlideUp} 0.5s ease-out 0.2s forwards;
+    opacity: 0;
 
     p {
         color: #fff;
@@ -139,6 +164,9 @@ const GolfList = styled.div`
     align-items: center;
     gap: 13px;
     width: 100%;
+
+    animation: ${fadeIn} 0.5s ease-out 0.7s forwards;
+    opacity: 0;
 `;
 
 const GolfCourseImageWrapper = styled.div`
@@ -152,7 +180,7 @@ const GolfCourseImage = styled.img`
     height: 140px;
     aspect-ratio: ${props => props.aspectRatio};
     object-fit: cover;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.7s ease-in-out;
     cursor: pointer;
     position: relative;
     z-index: 1;
@@ -168,7 +196,7 @@ const ImageOverlay = styled.div`
     background: ${props => (props.visible ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.6) 23.56%, rgba(0, 0, 0, 0) 65.38%)' : 'none')};
     z-index: 2;
     pointer-events: none;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.5s ease-in-out;
 `;
 
 const ImageLabel = styled.div`
@@ -176,10 +204,88 @@ const ImageLabel = styled.div`
     top: 5%;
     left: 5%;
     color: #fff;
-    font-size: 0.6rem;
+    font-size: clamp(0.6rem, 2vw, 0.85rem);
     font-weight: 400;
     z-index: 3;
 `;
+
+const NoResultsMessage = styled.div`
+    text-align: center;
+    color: #2C8C7D;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    animation: ${fadeIn} 0.5s ease-out 0.4s forwards;
+    opacity: 0;
+
+    img {
+        width: 70px;
+        height: 70px;
+    }
+
+    p {
+        color: #fff;
+        margin-top: 10%;
+        font-size: 0.75rem;
+        font-weight: 450;
+    }
+`;
+
+const AnimatedTop3 = ({ selectedRegionInfo, golfCourses, handleImageClick, selectedImageIndex }) => {
+    const active = !!selectedRegionInfo;
+
+    if (!selectedRegionInfo) return null;
+
+    return (
+        <Top3ForRegion active={active}>
+            <Subcomment>
+                <p>{selectedRegionInfo.name}의 골프장, 이곳인가요?</p>
+            </Subcomment>
+
+            {golfCourses.length === 0 ? (
+                <NoResultsMessage>
+                    <img src={Warning} alt='경고 이미지'/>
+                    <p>해당 지역에 골프장이 없어요</p>
+                </NoResultsMessage>
+            ) : (
+                <GolfList>
+                    {golfCourses.map((course, index) => {
+                        const isSelected = (index === selectedImageIndex) || (golfCourses.length === 0);
+                        const listSize = golfCourses.length;
+
+                        const aspectRatio = (listSize === 1 || listSize === 0)
+                            ? '400 / 140'
+                            : (isSelected
+                                ? '234 / 140'
+                                : (listSize === 2 ? '153 / 140' : '70 / 140'));
+
+                        return (
+                            <GolfCourseImageWrapper key={index}>
+                                <GolfCourseImage
+                                    src={course.imageUrl || NoImage}
+                                    alt={course.name}
+                                    aspectRatio={aspectRatio}
+                                    onClick={() => handleImageClick(index, course)}
+                                />
+
+                                {(isSelected || listSize === 1 || listSize === 0) && (
+                                    <>
+                                        <ImageOverlay visible={isSelected} />
+                                        <ImageLabel>{course.name}</ImageLabel>
+                                    </>
+                                )}
+                            </GolfCourseImageWrapper>
+                        );
+                    })}
+                </GolfList>
+            )}
+        </Top3ForRegion>
+    );
+};
+
 
 function FirstMainPage() {
     const [selectedRegionName, setSelectedRegionName] = useState(null); // 선택된 지역 이름
@@ -217,7 +323,7 @@ function FirstMainPage() {
         if (selectedRegionInfo) {
             const fetchGolfCourses = async () => {
                 try {
-                    const res = await fetch(`https://api.roundandgo.com/api/golf-courses/search-by-address?address=${selectedRegionInfo.name}`);
+                    const res = await fetch(`${API_BASE_URL}/golf-courses/search-by-address?address=${selectedRegionInfo.name}`);
                     const result = await res.json();
 
                     if (Array.isArray(result.data)) {
@@ -243,8 +349,10 @@ function FirstMainPage() {
         }
     }, [golfCourses]);
 
+    const animationKey = selectedRegionName || 'initial';
+
     return (
-        <main>
+        <>
             <FirstMainPageWrapper>
                 <TokenDebugging/>
                 <Content>
@@ -266,72 +374,19 @@ function FirstMainPage() {
                         ))}
                     </Map>
 
-                    <Top3ForRegion active={!!selectedRegionInfo}>
-                        {selectedRegionInfo ? (
-                            <>
-                                <Subcomment>
-                                    <p>{selectedRegionInfo.name}의 골프장, 이곳인가요?</p>
-                                </Subcomment>
-
-                                {golfCourses.length === 0 ? (
-                                    <div style={{
-                                        textAlign: 'center',
-                                        color: '#2C8C7D',
-                                        marginTop: '20px',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'center',
-                                        alignItems: 'center'
-                                    }}>
-                                        <img style={{width: '70px', height: '70px'}} src={Warning} alt='경고 이미지'/>
-                                        <p style={{
-                                            color: '#fff',
-                                            marginTop: '10%',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '450'
-                                        }}>해당 지역에 골프장이 없어요</p>
-                                    </div>
-                                ) : (
-                                    <GolfList>
-                                        {golfCourses.map((course, index) => {
-                                            const isSelected = (index === selectedImageIndex) || (golfCourses.length === 0);
-                                            const listSize = golfCourses.length;
-
-                                            const aspectRatio = (listSize === 1 || listSize === 0)
-                                                ? '400 / 140'
-                                                : (isSelected
-                                                    ? '234 / 140'
-                                                    : (listSize === 2 ? '153 / 140' : '70 / 140'));
-
-                                            return (
-                                                <GolfCourseImageWrapper key={index}>
-                                                    <GolfCourseImage
-                                                        src={course.imageUrl || NoImage}
-                                                        alt={course.name}
-                                                        aspectRatio={aspectRatio}
-                                                        onClick={() => handleImageClick(index, course)}
-                                                    />
-
-                                                    {(isSelected || listSize === 1 || listSize === 0) && (
-                                                        <>
-                                                            <ImageOverlay visible={isSelected} />
-                                                            <ImageLabel>{course.name}</ImageLabel>
-                                                        </>
-                                                    )}
-                                                </GolfCourseImageWrapper>
-                                            );
-                                        })}
-                                    </GolfList>
-                                )}
-                            </>
-                        ) : null}
-                    </Top3ForRegion>
+                    <AnimatedTop3
+                        key={animationKey}
+                        selectedRegionInfo={selectedRegionInfo}
+                        golfCourses={golfCourses}
+                        handleImageClick={handleImageClick}
+                        selectedImageIndex={selectedImageIndex}
+                    />
 
                     {/* 골프장 예약 내역 검색 컴포넌트 ( 분리 ) */}
                     <GolfSearch/>
                 </Content>
             </FirstMainPageWrapper>
-        </main>
+        </>
     );
 }
 

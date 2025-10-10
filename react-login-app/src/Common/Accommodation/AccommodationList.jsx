@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
+import styled from 'styled-components';
 import NoImage from '../../assets/NoImage.svg';
 import { getAccommodationTags } from './Category';
 import arrow from '../../assets/arrow.svg';
 import './AccommodationList.css';
+
+import { ScreenSizeContext } from '../ScreenSizeContext';
 
 const AccommodationList = ({
                                title,
@@ -16,6 +19,7 @@ const AccommodationList = ({
                                imageClassName = 'AccommoImg',
                                eachofhouseClassName = 'AccommoHouse',
                            }) => {
+    const { isTablet } = useContext(ScreenSizeContext);
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('전체');
 
     const filteredAccommodations = accommodations.filter(acc =>
@@ -37,75 +41,39 @@ const AccommodationList = ({
     };
 
     return (
-        <div className="AccommodationList" style={{ width: '90%', margin: '10% auto 0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3%' }}>
-                <p className="IntroMent" style={{ fontSize: '18px', fontWeight: '500', color: '#000', margin: '0', padding: '0' }}>
-                    {title}
-                </p>
+        <Container className="AccommodationList">
+            <Header>
+                <Title isTablet={isTablet} className="IntroMent">{title}</Title>
                 {showMoreButton && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <p
-                            onClick={onMoreClick}
-                            style={{ fontSize: '10px', color: '#797979', marginRight: '5px', cursor: 'pointer' }}
-                        >
-                            더보기
-                        </p>
-                        <img style={{ width: '4px', height: '10px' }} src={arrow} alt="더보기" />
-                    </div>
+                    <MoreButton>
+                        <MoreText isTablet={isTablet} onClick={onMoreClick}>더보기</MoreText>
+                        <MoreIcon src={arrow} alt="더보기" />
+                    </MoreButton>
                 )}
-            </div>
+            </Header>
 
             {showFilterButtons && (
-                <div
-                    style={{
-                        marginBottom: '10px',
-                        overflowX: 'auto',
-                        whiteSpace: 'nowrap',
-                        scrollbarWidth: 'none',
-                        msOverflowStyle: 'none',
-                    }}
-                    className="scroll-hidden"
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                            overflowX: 'auto',
-                            columnGap: '10px',
-                            scrollbarWidth: 'none',
-                            WebkitOverflowScrolling: 'touch',
-                            MsOverflowStyle: 'none',
-                            padding: '3px 0',
-                        }}
-                    >
-                        {['전체', '프리미엄', '가성비', '감성'].map((cat) => (
-                            <button
+                <FilterWrapper className="scroll-hidden">
+                    <FilterButtons>
+                        {['전체', '프리미엄', '가성비', '감성'].map(cat => (
+                            <FilterButton
+                                isTablet={isTablet}
                                 key={cat}
+                                selected={selectedCategoryFilter === cat}
                                 onClick={() => setSelectedCategoryFilter(cat)}
-                                style={{
-                                    backgroundColor: selectedCategoryFilter === cat ? '#269962' : '#DFDFDF',
-                                    color: selectedCategoryFilter === cat ? '#fff' : '#ffffff',
-                                    padding: '5px 12px',
-                                    border: 'none',
-                                    borderRadius: '47px',
-                                    cursor: 'pointer',
-                                    transition: '0.3s ease-in-out',
-                                    whiteSpace: 'nowrap',
-                                    flexShrink: 0,
-                                    fontSize: '12px'
-                                }}
                             >
                                 {cat}
-                            </button>
+                            </FilterButton>
                         ))}
-                    </div>
-                </div>
+                    </FilterButtons>
+                </FilterWrapper>
             )}
 
             {previewAccommodations.length === 0 ? (
-                <p style={{ textAlign: 'center', color: '#aaa', fontSize: '0.8rem' }}>해당 카테고리의 숙소가 없습니다.</p>
+                <NoDataText isTablet={isTablet}>해당 카테고리의 숙소가 없습니다.</NoDataText>
             ) : (
                 <div className={`${gridClassName}`}>
-                    {previewAccommodations.map((acc) => {
+                    {previewAccommodations.map(acc => {
                         const imageUrl = acc.firstimage || NoImage;
                         const tags = getAccommodationTags(acc);
 
@@ -113,45 +81,168 @@ const AccommodationList = ({
                             <div
                                 key={acc.contentid}
                                 className={`${eachofhouseClassName}`}
-                                onClick={() => handleAccommodationClick(acc.contentid, tags, acc.mapx, acc.mapy)}
+                                onClick={() =>
+                                    handleAccommodationClick(acc.contentid, tags, acc.mapx, acc.mapy)
+                                }
                             >
                                 {imageUrl && (
                                     <img
                                         src={imageUrl}
                                         alt={acc.title || '숙소 이미지'}
                                         className={`${imageClassName}`}
-                                        onError={(e) => { e.target.src = NoImage; }}
+                                        onError={e => {
+                                            e.target.src = NoImage;
+                                        }}
                                     />
                                 )}
                                 <div style={{ marginTop: '3px' }}>
-                                    <h3 style={{ fontSize: '0.75rem', fontWeight: '400', margin: '0' }}>
-                                        {acc.title || '제목 없음'}
-                                    </h3>
-                                    <p style={{ fontSize: '0.65rem', color: '#797979', margin: '0', fontWeight: '450' }}>
-                                        {acc.city || '지역 정보 없음'}
-                                    </p>
-                                    <div
-                                        style={{
-                                            marginTop: '3px',
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            gap: '4px',
-                                        }}
-                                    >
+                                    <CardTitle isTablet={isTablet}>{acc.title || '제목 없음'}</CardTitle>
+                                    <CityText isTablet={isTablet}>{acc.city || '지역 정보 없음'}</CityText>
+                                    <TagWrapper isTablet={isTablet}>
                                         {tags.map((tag, idx) => (
-                                            <span key={idx} style={{ fontSize: '0.65rem', color: '#269962', fontWeight: '500' }}>
-                                                {tag}
-                                            </span>
+                                            <Tag key={idx}>{tag}</Tag>
                                         ))}
-                                    </div>
+                                    </TagWrapper>
                                 </div>
                             </div>
                         );
                     })}
                 </div>
             )}
-        </div>
+        </Container>
     );
 };
 
 export default AccommodationList;
+
+
+const Container = styled.div`
+  width: 100%;
+  margin: 10% 0 0 0;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3%;
+  width: 100%;
+`;
+
+const Title = styled.p`
+    font-size: ${({ isTablet }) =>
+            isTablet
+                    ? 'clamp(20px, 3vw, 28px)'
+                    : 'clamp(18px, 3vw, 20px)'};
+  font-weight: 500;
+  color: #000;
+  margin: 0;
+  padding: 0;
+`;
+
+const MoreButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MoreText = styled.p`
+    font-size: ${({ isTablet }) =>
+            isTablet
+                    ? 'clamp(13px, 2vw, 18px)'
+                    : 'clamp(10px, 2vw, 14px)'};
+  color: #797979;
+  margin: 0 5px 0 0;
+  cursor: pointer;
+`;
+
+const MoreIcon = styled.img`
+    width: 4px;
+    height: 10px;
+`;
+
+const FilterWrapper = styled.div`
+  margin-bottom: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const FilterButtons = styled.div`
+  display: flex;
+  overflow-x: auto;
+  column-gap: 10px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  padding: 1.5% 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const FilterButton = styled.button`
+  background-color: ${({ selected }) => (selected ? '#269962' : '#DFDFDF')};
+  color: ${({ selected }) => (selected ? '#fff' : '#ffffff')};
+  padding: 1.5% 4%;
+  border: none;
+  border-radius: 47px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  white-space: nowrap;
+  flex-shrink: 0;
+    font-size: ${({ isTablet }) =>
+            isTablet
+                    ? 'clamp(16px, 2vw, 20px)'
+                    : 'clamp(12px, 2vw, 14px)'};
+`;
+
+const NoDataText = styled.p`
+  text-align: center;
+  color: #aaa;
+    font-size: ${({ isTablet }) =>
+            isTablet
+                    ? 'clamp(0.9rem, 2vw, 1.1rem)'
+                    : 'clamp(0.8rem, 2vw, 0.9rem)'};
+`;
+
+const CardTitle = styled.h3`
+    font-size: ${({ isTablet }) =>
+            isTablet
+                    ? 'clamp(0.9rem, 2vw, 1.1rem)'
+                    : 'clamp(0.75rem, 2vw, 0.9rem)'};
+  font-weight: 400;
+  margin: 0;
+`;
+
+const CityText = styled.p`
+    font-size: ${({ isTablet }) =>
+            isTablet
+                    ? 'clamp(0.8rem, 2vw, 1rem)'
+                    : 'clamp(0.65rem, 2vw, 0.8rem)'};
+  color: #797979;
+  margin: 0;
+  font-weight: 450;
+`;
+
+const TagWrapper = styled.div`
+  margin-top: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+`;
+
+const Tag = styled.span`
+    font-size: ${({ isTablet }) =>
+            isTablet
+                    ? 'clamp(0.8rem, 2vw, 1rem)'
+                    : 'clamp(0.65rem, 2vw, 0.75rem)'};
+  color: #269962;
+  font-weight: 500;
+`;

@@ -4,7 +4,6 @@
 const serviceKey = process.env.API_SERVICE_KEY;
 export const getAccommodationDetail = async (contentId) => {
     const url = `https://apis.data.go.kr/B551011/KorService2/detailCommon2?ServiceKey=${serviceKey}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&_type=xml`;
-
     try {
         const response = await fetch(url);
         const xmlText = await response.text();

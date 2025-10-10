@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signupWithEmail } from '../Auth/authUtils';
 import './EmailAuth.css';
+import Toast from '../../Common/Community/Toast';
+import logo from '../../assets/greenlogo.svg';
 
 import HomePage from '../HomePage.jsx';
 
@@ -19,6 +21,8 @@ function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [signupCompleted, setSignupCompleted] = useState(false);
+
+  const [toastMessage, setToastMessage] = useState(null);
 
   // 입력 검증 함수들
   const validateNickname = (nickname) => {
@@ -78,32 +82,36 @@ function SignupPage() {
     setErrors(newErrors);
   };
 
+  const showToast = (message) => {
+    setToastMessage(message);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // 최종 검증
     if (!formData.email || !formData.password || !formData.confirmPassword || !formData.nickname) {
-      alert('모든 필드를 입력해주세요.');
+      showToast('모든 필수 항목을 입력해 주세요.');
       return;
     }
 
     if (!validateNickname(formData.nickname)) {
-      alert('닉네임은 2자 이상 입력해주세요.');
+      showToast('닉네임은 2자 이상 입력해 주세요.');
       return;
     }
 
     if (!validatePassword(formData.password)) {
-      alert('비밀번호는 영문, 숫자, 특수문자가 모두 포함된 8자 이상이어야 합니다.');
+      showToast('비밀번호는 영문, 숫자, 특수문자 포함 8자 이상이어야 합니다.');
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
-      return;
+        showToast('비밀번호가 일치하지 않습니다.');
+        return;
     }
 
     if (!validateEmail(formData.email)) {
-      alert('올바른 이메일 주소를 입력해주세요.');
+      showToast('올바른 이메일 주소를 입력해 주세요.');
       return;
     }
 
@@ -114,13 +122,15 @@ function SignupPage() {
       
       if (result.success) {
         setSignupCompleted(true);
-        alert('회원가입이 완료되었습니다!');
+        showToast('회원가입이 완료되었습니다! 👏');
       } else {
-        alert('회원가입 실패: ' + result.error);
+        const errorMessage = result.message || '회원가입 중 알 수 없는 오류가 발생했습니다.';
+        showToast(errorMessage);
       }
       
     } catch (error) {
-      alert('회원가입 중 오류가 발생했습니다.');
+      console.error('Signup Error:', error);
+      showToast('네트워크 오류가 발생했거나 서버 접속에 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -144,28 +154,28 @@ function SignupPage() {
   if (signupCompleted) {
     return (
       // <div className="email-auth-container">
-      //   {/*<div className="email-auth-content">*/}
-      //   {/*  /!* 로고 및 서비스명 *!/*/}
-      //   {/*  <div className="email-auth-logo-container">*/}
-      //   {/*    <img src="/images/logo-280a0a.png" alt="ROUND & GO Logo" className="email-auth-logo" />*/}
-      //   {/*    <h1 className="email-auth-title">ROUND & GO</h1>*/}
-      //   {/*  </div>*/}
+      //   <div className="email-auth-content">
+      //     {/* 로고 및 서비스명 */}
+      //     <div className="email-auth-logo-container">
+      //       <img src="/images/logo-280a0a.png" alt="ROUND & GO Logo" className="email-auth-logo" />
+      //       <h1 className="email-auth-title">ROUND & GO</h1>
+      //     </div>
       //
-      //   {/*  /!* 회원가입 완료 메시지 *!/*/}
-      //   {/*  <div className="email-auth-result-container">*/}
-      //   {/*    <div className="email-auth-result-icon">✓</div>*/}
-      //   {/*    <h2 className="email-auth-result-title">회원가입 완료!</h2>*/}
-      //   {/*    <p className="email-auth-result-message">*/}
-      //   {/*      환영합니다! 이제 로그인하여 서비스를 이용하실 수 있습니다.*/}
-      //   {/*    </p>*/}
-      //   {/*    <button*/}
-      //   {/*      className="email-auth-submit-button"*/}
-      //   {/*      onClick={() => navigate('/email-login')}*/}
-      //   {/*    >*/}
-      //   {/*      로그인 하러가기*/}
-      //   {/*    </button>*/}
-      //   {/*  </div>*/}
-      //   {/*</div>*/}
+      //     {/* 회원가입 완료 메시지 */}
+      //     <div className="email-auth-result-container">
+      //       <div className="email-auth-result-icon">✓</div>
+      //       <h2 className="email-auth-result-title">회원가입 완료!</h2>
+      //       <p className="email-auth-result-message">
+      //         환영합니다! 이제 로그인하여 서비스를 이용하실 수 있습니다.
+      //       </p>
+      //       <button
+      //         className="email-auth-submit-button"
+      //         onClick={() => navigate('/email-login')}
+      //       >
+      //         로그인 하러가기
+      //       </button>
+      //     </div>
+      //   </div>
       // </div>
         <HomePage/>
     );
@@ -181,7 +191,7 @@ function SignupPage() {
         
         {/* 로고 및 서비스명 */}
         <div className="email-auth-logo-container">
-          <img src="/images/logo-280a0a.png" alt="ROUND & GO Logo" className="email-auth-logo" />
+          <img src={logo} alt="ROUND & GO Logo" className="email-auth-logo" />
           <h1 className="email-auth-title">ROUND & GO</h1>
         </div>
 
@@ -324,6 +334,14 @@ function SignupPage() {
           </form>
         </div>
       </div>
+
+      {toastMessage && (
+          <Toast
+              message={toastMessage}
+              duration={3000} // 3초간 띄우기
+              onClose={() => setToastMessage(null)} // 토스트가 닫힐 때 상태를 초기화
+          />
+      )}
     </div>
   );
 }

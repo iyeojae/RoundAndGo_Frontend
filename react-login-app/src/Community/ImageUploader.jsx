@@ -52,16 +52,20 @@ const ImageUploader = ({
                 />
 
                 <div className="image-preview-multiple">
-                    {existingImages.map((img) => (
-                        <div key={img.id} className="image-preview">
-                            <button className="remove-image-btn" onClick={() => handleExistingRemove(img.id)}>×</button>
-                            <img src={img.url} alt={img.originalFilename} />
-                        </div>
-                    ))}
+                    {existingImages.map((img) => {
+                        const imgUrl = img.url.replace(/^https:/, 'http:');
+                        return (
+                            <div key={img.id} className="image-preview">
+                                <button className="remove-image-btn" onClick={() => handleExistingRemove(img.id)}>×
+                                </button>
+                                <img src={imgUrl} alt={img.originalFilename}/>
+                            </div>
+                        );
+                    })}
                     {previewUrls.map((url, idx) => (
                         <div key={idx} className="image-preview">
                             <button className="remove-image-btn" onClick={() => handleNewRemove(idx)}>×</button>
-                            <img src={url} alt={`미리보기-${idx}`} />
+                            <img src={url} alt={`미리보기-${idx}`}/>
                         </div>
                     ))}
                 </div>

@@ -40,12 +40,12 @@ export const TokenDebugging = () => {
             if (emailAccessToken && emailAccessToken !== 'undefined') {
                 // localStorage에서 이메일 로그인 토큰 발견
 
-                // 이메일 로그인 토큰을 카카오 로그인용 키로도 저장 (useKakaoLoginDetector에서 사용)
-                localStorage.setItem('accessToken', emailAccessToken);
-                const emailRefreshToken = localStorage.getItem('emailRefreshToken');
-                if (emailRefreshToken && emailRefreshToken !== 'undefined') {
-                    localStorage.setItem('refreshToken', emailRefreshToken);
-                }
+                // // 이메일 로그인 토큰을 카카오 로그인용 키로도 저장 (useKakaoLoginDetector에서 사용)
+                // localStorage.setItem('accessToken', emailAccessToken);
+                // const emailRefreshToken = localStorage.getItem('emailRefreshToken');
+                // if (emailRefreshToken && emailRefreshToken !== 'undefined') {
+                //     localStorage.setItem('refreshToken', emailRefreshToken);
+                // }
 
                 // 이메일 로그인 토큰을 카카오 로그인용 키로 복사 완료
 

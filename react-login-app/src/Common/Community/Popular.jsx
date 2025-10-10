@@ -139,7 +139,7 @@ function Popular() {
             </div>
 
             <Swiper
-                spaceBetween={20}
+                spaceBetween={0}
                 slidesPerView={1}
                 loop={false}
                 pagination={{ clickable: true }}

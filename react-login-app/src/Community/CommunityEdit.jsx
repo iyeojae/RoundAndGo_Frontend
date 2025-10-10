@@ -90,7 +90,7 @@ function CommunityEdit() {
     if (loading) return <div>로딩 중...</div>;
 
     return (
-        <main style={{backgroundColor: '#f8f8f8'}}>
+        <div style={{backgroundColor: '#f8f8f8'}}>
             <Header versionClassName='ArrowVer' showLogo={false} showArrow={true} TitleText='글 수정' />
             <div className="form-wrap">
                 <InputField label="제목" value={title} setValue={setTitle} ref={titleRef} error={errors.title} />
@@ -121,7 +121,7 @@ function CommunityEdit() {
                     <button onClick={handleSubmit} className='SubmitBtn'>수정 완료</button>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }
 

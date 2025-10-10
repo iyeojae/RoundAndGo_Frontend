@@ -27,6 +27,8 @@ import CourseMain from './Course/CourseMain'; // 코스 추천 메인
 import MyCourseView from './Course/Components/MyCourseView.jsx'; // 내 코스 보기
 import MyPage from './MyPage/MyPage.jsx'; // 마이페이지
 
+import { ScreenSizeProvider } from './Common/ScreenSizeContext';
+
 function App() {
     return (
         <Router>
@@ -35,6 +37,7 @@ function App() {
                     <LeftContent />
                 </div>
                 <div className="right-content">
+                    <ScreenSizeProvider>
                     <main>
                         <Routes>
                             <Route path="/" element={<HomePage />} />
@@ -60,6 +63,7 @@ function App() {
                             <Route path="/mypage" element={<MyPage />} /> {/* 마이 페이지 */}
                         </Routes>
                     </main>
+                    </ScreenSizeProvider>
                 </div>
             </div>
         </Router>

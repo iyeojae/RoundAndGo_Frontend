@@ -169,7 +169,7 @@
     padding: 10px 25px;
     border: 1px solid #ccc;
     border-radius: 54px;
-    font-size: 12px;
+    font-size: clamp(12px, 2vw, 14px);
     box-sizing: border-box;
 }
 
@@ -191,7 +191,7 @@
     padding: 0;
     text-align: right;
     color: #fff;
-    font-size: 0.7rem;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
     font-weight: bold;
 }
 
@@ -208,12 +208,12 @@
 
 .NoResponse p {
     text-align: center;
-    font-size: 0.75rem;
+    font-size: clamp(0.75rem, 2vw, 0.95rem);
     font-weight: 450;
 }
 
 .NoResponse p span {
-    font-size: 0.6rem;
+    font-size: clamp(0.6rem, 2vw, 0.8rem);
     font-weight: 350;
 }
 
@@ -243,7 +243,7 @@
 
 .msg-cont strong {
     color: #000;
-    font-size: 0.75rem;
+    font-size: clamp(0.75rem, 2vw, 0.95rem);
     font-weight: 450;
     display: flex;
     justify-content: space-between;
@@ -255,7 +255,7 @@
 
 .msg-cont p {
     color: #797979;
-    font-size: 0.65rem;
+    font-size: clamp(0.65rem, 2vw, 0.85rem);
     font-weight: 450;
     margin: 2.5% auto;
 }
@@ -264,7 +264,7 @@
     width: fit-content;
     border: 1px solid #2d8779;
     border-radius: 50px;
-    font-size: 0.65rem;
+    font-size: clamp(0.65rem, 2vw, 0.85rem);
     padding: 1% 5%;
     font-weight: 450;
 }

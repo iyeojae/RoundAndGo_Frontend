@@ -14,7 +14,6 @@ import DeleteConfirmModal from "../Common/Community/DeleteConfirm";
 import Toast from '../Common/Community/Toast.jsx';
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS';
 
-// import Comment from './CommentIcon.svg';
 import profile from '../assets/profile.svg';
 import reply from '../assets/replybtn.svg';
 import heart from '../assets/Heart.svg';
@@ -148,7 +147,7 @@ function CommunityDetail() {
             return;
         }
         try {
-            await postComment(postId, content, accessToken, replyTargetId);
+            await postComment(postId, content, replyTargetId);
             setContent('');
             setReplyTargetId(null);
             await loadPostData();
@@ -200,6 +199,28 @@ function CommunityDetail() {
         setShowOptions(false);
     };
 
+    const convertToHttp = (url) => {
+        if (!url) return '';
+        if (url.startsWith('https://')) {
+            return url.replace('https://', 'http://');
+        }
+        return url;
+    };
+
+    const profileColors = [
+        { color: '#F97316', label: 'ORANGE' },
+        { color: '#EC4899', label: 'PINK' },
+        { color: '#A855F7', label: 'PURPLE' },
+        { color: '#6366F1', label: 'BLUE' },
+        { color: '#14B8A6', label: 'MINT' },
+        { color: '#22C55E', label: 'GREEN' },
+    ];
+
+    const getBackgroundColor = (profileColor) => {
+        const colorObj = profileColors.find(c => c.label === profileColor);
+        return colorObj ? colorObj.color : '#ccc'; // 기본 색상 지정 가능
+    };
+
     const renderComments = (commentList, depth = 0) => {
         return commentList.map(comment => {
             const isParent = depth === 0;
@@ -210,8 +231,21 @@ function CommunityDetail() {
                     <div className='comment-item-wrap'>
                         <div className={`comment-item-content ${!isParent ? 'reply-content' : ''}`}>
                             {!isParent && <img src={reply} alt="reply" className="reply-arrow" />}
-                            <div className="comment-profile-img">
-                                <img src={profile} alt='profile' />
+                            <div className="comment-profile-img"
+                                 style={{ backgroundColor: !comment.profileImage ? getBackgroundColor(comment.profileColor) : 'transparent', }}>
+                                {comment.profileImage ? (
+                                    <img
+                                        src={convertToHttp(comment.profileImage)}
+                                        alt="profile"
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                ) : (
+                                    <img
+                                        src={profile}
+                                        alt="profile"
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                )}
                             </div>
                             <div className="comment-body">
                                 <div className='comment-meta'>
@@ -354,14 +388,17 @@ function CommunityDetail() {
                         <div className='content-tab'>
                             <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
                             <div id='imgs'>
-                                {Array.isArray(post.images) && post.images.map((img, i) => (
-                                    <img
-                                        key={i}
-                                        src={`/api${new URL(img.url).pathname}`}
-                                        alt={img.originalFilename || `img-${i}`}
-                                        onClick={() => setSelectedImage(img.url)}
-                                    />
-                                ))}
+                                {Array.isArray(post.images) && post.images.map((img, i) => {
+                                    const imgUrl = img.url.replace(/^https:/, 'http:');
+                                    return (
+                                        <img
+                                            key={i}
+                                            src={imgUrl}
+                                            alt={img.originalFilename || `img-${i}`}
+                                            onClick={() => setSelectedImage(imgUrl)}
+                                        />
+                                    );
+                                })}
                             </div>
                         </div>
 

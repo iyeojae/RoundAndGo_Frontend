@@ -24,6 +24,7 @@ function DetailRestaurant() {
                 eachofrestaurantClassName={'DetailRestrestaurant'}
                 commentClassName={'DetailRestcomment'}
                 imageClassName={'DetailRestImg'}
+                isDetail={true}
             />
         </div>
     );

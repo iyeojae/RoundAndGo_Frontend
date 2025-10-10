@@ -7,6 +7,9 @@ import {
   getErrorMessage 
 } from './findAccountApi';
 
+import logo from '../../assets/greenlogo.svg';
+import Toast from '../../Common/Community/Toast';
+
 function FindAccountPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState('input');
@@ -27,6 +30,8 @@ function FindAccountPage() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
+  const [toastMessage, setToastMessage] = useState(null);
 
 
   const validatePassword = (password) => {
@@ -80,18 +85,22 @@ function FindAccountPage() {
     setErrors(newErrors);
   };
 
+  const showToast = (message) => {
+    setToastMessage(message);
+  };
+
   const handleSendVerification = async () => {
     try {
       if (!formData.email) {
-        alert('이메일 주소를 입력해주세요.');
+        showToast('이메일 주소를 입력해주세요.');
         return;
       }
       if (!validateEmail(formData.email)) {
-        alert('올바른 이메일 주소 형식을 입력해주세요.');
+        showToast('올바른 이메일 주소 형식을 입력해주세요.');
         return;
       }
       const result = await sendEmailVerificationForPassword(formData.email);
-      alert(`${formData.email}로 인증메일이 발송되었습니다.`);
+      showToast(`${formData.email}로 인증메일이 발송되었습니다.`);
       setStep('emailSent');
     } catch (error) {
       let errorMessage = '이메일 인증 요청에 실패했습니다.';
@@ -105,8 +114,8 @@ function FindAccountPage() {
       } else if (error.message.includes('401')) {
         errorMessage = '인증이 필요합니다.';
       }
-      
-      alert(errorMessage);
+
+      showToast(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -118,31 +127,31 @@ function FindAccountPage() {
 
   const handlePasswordChange = async () => {
     if (formData.newPassword !== formData.confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
+      showToast('비밀번호가 일치하지 않습니다.');
       return;
     }
 
     if (!validatePassword(formData.newPassword)) {
-      alert('비밀번호는 영문, 숫자, 특수문자가 모두 포함된 8자 이상이어야 합니다.');
+      showToast('비밀번호는 영문, 숫자, 특수문자가 모두 포함된 8자 이상이어야 합니다.');
       return;
     }
 
     setLoading(true);
     try {
       await resetPasswordByEmail(formData.email, formData.newPassword);
-      alert('비밀번호가 성공적으로 변경되었습니다.');
+      showToast('비밀번호가 성공적으로 변경되었습니다.');
       navigate('/email-login');
     } catch (error) {
       // 백엔드에서 인증 상태를 검증하므로, 인증되지 않은 경우 에러 메시지 표시
       if (error.message.includes('401') || error.message.includes('403')) {
-        alert('이메일 인증이 완료되지 않았습니다.\n\n메일함에서 인증 링크를 클릭하여 인증을 완료해주세요.');
+        showToast('이메일 인증이 완료되지 않았습니다.\n\n메일함에서 인증 링크를 클릭하여 인증을 완료해주세요.');
         // 인증되지 않은 경우 입력 단계로 돌아가기
         setStep('input');
       } else if (error.message.includes('404')) {
-        alert('인증 정보를 찾을 수 없습니다.\n\n다시 이메일 인증을 요청해주세요.');
+        showToast('인증 정보를 찾을 수 없습니다.\n\n다시 이메일 인증을 요청해주세요.');
         setStep('input');
       } else {
-        alert(getErrorMessage(error));
+        showToast(getErrorMessage(error));
       }
     } finally {
       setLoading(false);
@@ -328,7 +337,7 @@ function FindAccountPage() {
 
           <div className="email-auth-logo-container">
             <img
-                src="/images/logo-280a0a.png"
+                src={logo}
                 alt="RoundAndGo Logo"
                 className="email-auth-logo"
             />
@@ -350,6 +359,14 @@ function FindAccountPage() {
             {step === 'passwordChange' && renderPasswordChangeStep()}
           </div>
         </div>
+
+        {toastMessage && (
+            <Toast
+                message={toastMessage}
+                duration={3000} // 3초간 띄우기
+                onClose={() => setToastMessage(null)} // 토스트가 닫힐 때 상태를 초기화
+            />
+        )}
       </div>
   );
 }

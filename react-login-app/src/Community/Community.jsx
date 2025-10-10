@@ -147,10 +147,10 @@ function CommunityBoard() {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        margin: '3% auto',
+                        padding: '3% auto',
                         width: '100%',
                     }}>
-                        <div className='formcon' style={{position: 'relative', width: '90%', margin: '0 auto'}}>
+                        <div className='formcon' style={{position: 'relative', width: '90%', margin: '3% auto 0 auto'}}>
                             <input
                                 type="text"
                                 placeholder="보고싶은 게시글을 검색하세요"
@@ -247,7 +247,7 @@ function CommunityBoard() {
                     </div>
                 </div>
 
-                <div className="CommunityContainer" style={{paddingBottom: '5%'}}>
+                <div className="CommunityContainer" style={{paddingBottom: '5%', position: 'relative'}}>
                     {/* 최신글 섹션 */}
                     <div className="community-section">
                         <div className="section-header-comm-main">

@@ -134,7 +134,7 @@ function GolfSearch() {
                         <>
                             <Swiper
                                 modules={[Pagination]}
-                                spaceBetween={30}
+                                spaceBetween={0}
                                 slidesPerView={1}
                                 pagination={{ clickable: true }}
                                 onSlideChange={(swiper) => updateState({ currentPage: swiper.activeIndex })} // 현재 페이지 상태 업데이트
@@ -168,7 +168,11 @@ function GolfSearch() {
                                                                                 선택
                                                                             </button>
                                                                         </div>
-                                                                        <img src={course.imageUrl ? course.imageUrl : NoImage} alt={course.name}/>
+                                                                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                                                            <img
+                                                                                src={course.imageUrl ? course.imageUrl : NoImage}
+                                                                                alt={course.name}/>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </li>

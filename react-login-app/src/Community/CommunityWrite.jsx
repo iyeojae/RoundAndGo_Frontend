@@ -98,16 +98,15 @@ function CommunityWrite() {
         } catch (error) {
             console.error('게시 실패:', error);
             alert('게시글 작성이 완료되지 않았습니다. 다시 시도해 주세요')
-            navigate('/community');
         }
     };
 
     return (
-        <main>
+        <>
             <div>
                 <Header versionClassName={'ArrowVer'} showLogo={false} showArrow={true} TitleText={'글쓰기'} />
                 <div style={{ backgroundColor: '#F8F8F8', width: '100%' }}>
-                    <div className="form-wrap" style={{height: '100vh', position: 'relative'}}>
+                    <div className="form-wrap" style={{height: '100%', position: 'relative'}}>
                         <div id='section-cont'>
                             <label>제목</label>
                             <input
@@ -180,13 +179,13 @@ function CommunityWrite() {
                             </div>
                         </div>
 
-                        <div className='btn-wrap-write'>
+                        <div className='btn-write-submit'>
                             <button onClick={handleSubmit} className='SubmitBtn'>작성</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </>
     );
 }
 

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {API_BASE_URL} from "../../config/api";
-import { getAuthToken } from '../../Login/utils/cookieUtils';
-
+import { getCookie } from '../../Login/utils/cookieUtils';
 
 // axios 기본 설정 - 쿠키 포함
 axios.defaults.withCredentials = true;
@@ -86,86 +85,99 @@ export const fetchPostDetail = async (postId) => {
 
 // POST 게시글 작성
 export const PostingBoard = async (title, content, category, images) => {
+    const token = getCookie('accessToken');
+    const formData = new FormData();
     try {
-        const formData = new FormData();
-        // 이미지가 있을 때 개별적으로 추가
-        if (images && images.length > 0) {
-            images.forEach((image) => {
-                formData.append('images', image); // f iles
+        console.log('이미지 확인:', images);
+        if (images) {
+            const imageList = Array.isArray(images) ? images : [images];
+            imageList.forEach((image) => {
+                formData.append('images', image);
             });
         }
-        // 텍스트 묶음
+
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}:`, pair[1]);
+        }
         const textData = {
-            title: title,
-            content: content,
-            category: category,
+            title,
+            content,
+            category,
         };
-        formData.append('post', JSON.stringify(textData)); // post라는 이름의 data로 하나로 보내
+        formData.append('post', JSON.stringify(textData));
+
         const response = await axios.post(
             `${API_BASE_URL}/posts`,
             formData,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Authorization': `Bearer ${token}`,  // 쿠키에서 읽은 토큰 사용
                 },
+                withCredentials: true, // 쿠키가 있다면 자동으로 전송
             }
         );
 
-        return response.data.data;
+        return response.data;
     } catch (error) {
         console.error('게시글 작성 실패:', error);
-        console.error('서버 응답:', error.response?.data.data);
+        console.error('서버 응답:', error.response?.data?.data);
         throw new Error('게시글 작성에 실패했습니다.');
     }
 };
 
 // DELETE 게시글 삭제 API
 export const deletePost = async (postId) => {
+    const token = getCookie('accessToken');
     try {
-        const token = getAuthToken();
         const response = await axios.delete(
             `${API_BASE_URL}/posts/${postId}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
             }
         );
+
         return response.data;
     } catch (error) {
         console.error('게시글 삭제 실패:', error);
-        // 에러를 던져 상위 컴포넌트에서 catch하도록 함
         throw error;
     }
 };
 
 // PUT 게시글 수정 (이미지 포함)
 export const updatePostWithImages = async (postId, title, content, category, images) => {
+    const token = getCookie('accessToken');
+    const formData = new FormData();
     try {
-        const formData = new FormData();
-
-        // 이미지가 있을 때 개별적으로 추가
-        if (images && images.length > 0) {
-            images.forEach((image) => {
-                formData.append('images', image); // f iles
+        if (images) {
+            // images가 배열인지 확인 후, 배열이 아니면 배열로 변환
+            const imageList = Array.isArray(images) ? images : [images];
+            imageList.forEach((image) => {
+                formData.append('images', image);  // 이미지 각각을 formData에 append
             });
         }
 
-        // 텍스트 데이터 추가
-        const textData = {
-            title: title,
-            content: content,
-            category: category,
-        };
+        const textData = { title, content, category };
+        formData.append('post', JSON.stringify(textData));
 
-        formData.append("post", JSON.stringify(textData)); // "post"라는 이름으로 묶어서 보냄
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}:`, pair[1]);
+        }
 
         const response = await axios.put(
-            `${API_BASE_URL}/posts/${postId}`,
-            formData
+            `${API_BASE_URL}/posts/${postId}`,  // 게시글 수정 API 엔드포인트
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,  // 토큰 인증 헤더
+                },
+                withCredentials: true,  // 쿠키가 있다면 자동으로 전송
+            }
         );
 
-        return response.data;  // 수정된 데이터 반환
+        return response.data;  // 서버 응답 데이터 반환
     } catch (error) {
         console.error('게시글 수정 실패:', error);
         console.error('서버 응답:', error.response?.data);
@@ -194,8 +206,8 @@ export const fetchLikeCount = async (postId) => {
 
 // POST 좋아요 버튼
 export const toggleLike = async (postId) => {
+    const token = getCookie('accessToken');
     try {
-        const token = getAuthToken();
         const response = await axios.post(
             `${API_BASE_URL}/posts/${postId}/like`,
             null,
@@ -240,12 +252,12 @@ export const fetchComments = async (communityId) => {
 
 // POST 댓글 작성 api
 export const postComment = async (communityId, content, parentCommentId = null)  => {
+    const token = getCookie('accessToken');
     try {
-        const token = getAuthToken();
         const response = await axios.post(
             `${API_BASE_URL}/comments`, // 댓글 작성 API 경로
             {
-                content,           // 댓글 내용
+                content: content,           // 댓글 내용
                 communityId: communityId, // 게시글 ID
                 parentCommentId: parentCommentId, // 부모 댓글 ID (없으면 null, 답글일 경우 부모 댓글 ID)
             },
@@ -261,12 +273,14 @@ export const postComment = async (communityId, content, parentCommentId = null) 
         return response.data;
     } catch (error) {
         console.error('댓글 작성 실패:', error);
+        console.error('서버 응답:', error.response?.data);
         throw new Error('댓글 작성에 실패했습니다.');
     }
 };
 
 // PUT 댓글 수정 API
 export const updateComment = async (commentId, content, communityId, parentCommentId = null) => {
+    const token = getCookie('accessToken');
     try {
         const response = await axios.put(
             `${API_BASE_URL}/comments/${commentId}`,
@@ -278,7 +292,7 @@ export const updateComment = async (commentId, content, communityId, parentComme
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getAuthToken()}`
+                    'Authorization': `Bearer ${token}`
                 },
             }
         );
@@ -291,8 +305,8 @@ export const updateComment = async (commentId, content, communityId, parentComme
 
 // DELETE 댓글 삭제 API
 export const deleteComment = async (commentId) => {
+    const token = getCookie('accessToken');
     try {
-        const token = getAuthToken();
         const response = await axios.delete(
             `${API_BASE_URL}/comments/${commentId}`,
             {

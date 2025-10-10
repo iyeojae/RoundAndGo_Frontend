@@ -155,7 +155,7 @@ function CommunityEntire() {
 
 
     return (
-        <main>
+        <>
             <div className="community">
                 <Header />
                 <div style={{backgroundColor: '#F8F8F8', width: '100%',}}>
@@ -290,7 +290,7 @@ function CommunityEntire() {
                     <Footer/>
                 </div>
             </div>
-        </main>
+        </>
     );
 }
 

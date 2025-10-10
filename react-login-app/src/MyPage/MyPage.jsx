@@ -5,12 +5,12 @@ import Footer from '../LayoutNBanner/Footer.jsx';
 import './MyPage.css';
 
 import {
+    getUserInfo,
     getProfileImage,
     uploadProfileImage,
-    deleteProfileImage, // 이미지 삭제 함수 추가
+    deleteProfileImage,
 } from '../Common/MyPageAPI.js';
 
-// 프로필 부분
 import updateIcon from '../assets/update.svg'; // 이름수정 아이콘
 import cameraIcon from '../assets/camerabtn.svg'; // 카메라 아이콘
 import profileIcon from '../assets/profile.svg'; // 기본이미지 색상 변경 아이콘
@@ -18,12 +18,10 @@ import selectIcon from '../assets/SelectColor.svg'; // 색상 선택 아이콘
 import test from '../assets/whiteone.svg';
 
 import myIcon from '../assets/MY.svg'; // 내 코스 모음 아이콘
-
 import mapIcon from '../assets/map.svg'; // 골프장위치 아이콘
 import communityIcon from '../assets/ActiveCommunity.svg'; // 커뮤니티 아이콘
 import courseIcon from '../assets/ActiveAI.svg'; // 코스추천 아이콘
 import scheduleIcon from '../assets/ActiveCal.svg'; // 일정관리 아이콘
-
 import questionIcon from '../assets/question.svg'; // 고객지원 아이콘
 import logoutIcon from '../assets/logout.svg'; // 로그아웃 아이콘
 
@@ -31,22 +29,30 @@ function MyPage() {
     const navigate = useNavigate();
     const goTo = (path) => navigate(path);
 
-    const profileColors = ['#F97316', '#EC4899', '#A855F7', '#6366F1', '#14B8A6', '#22C55E'];
-    const [selectedColor, setSelectedColor] = useState('#EC4899');  // Default color
+    const profileColors = [
+        { color: '#F97316', label: 'ORANGE' },
+        { color: '#EC4899', label: 'PINK' },
+        { color: '#A855F7', label: 'PURPLE' },
+        { color: '#6366F1', label: 'BLUE' },
+        { color: '#14B8A6', label: 'MINT' },
+        { color: '#22C55E', label: 'GREEN' },
+    ];
 
+    const [selectedColor, setSelectedColor] = useState('#EC4899'); // Default color
     const [nickname, setNickname] = useState('');
     const [newNickname, setNewNickname] = useState('');
     const [isEditingNickname, setIsEditingNickname] = useState(false);
 
-    const [profileImageUrl, setProfileImageUrl] = useState(null);
+    const [url, setProfileImageUrl] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
     const [showSaveButton, setShowSaveButton] = useState(false);
-    const [deleteImageMode, setDeleteImageMode] = useState(false); // 삭제 모드인지 여부
+    const [deleteImageMode, setDeleteImageMode] = useState(false);
 
     const fileInputRef = useRef();
 
     const handleColorClick = (color) => {
         setSelectedColor(color);
+        setShowSaveButton(true); // 색상 변경 시 저장 버튼 보이게
     };
 
     const handleCameraClick = () => {
@@ -85,16 +91,22 @@ function MyPage() {
     const handleSaveProfile = async () => {
         const file = fileInputRef.current.files[0];
         const updatedNickname = isEditingNickname ? newNickname : nickname;
+        const selectedColorLabel = profileColors.find(c => c.color === selectedColor)?.label;
 
         try {
             if (deleteImageMode) {
+                // 이미지 삭제 요청
                 await deleteProfileImage();
                 setProfileImageUrl(null);
             } else {
-                const res = await uploadProfileImage(file || null, updatedNickname, profileImageUrl);
-                setProfileImageUrl(res.url || profileImageUrl);
+                // 이미지가 없더라도 nickname + colorLabel 전달
+                const res = await uploadProfileImage(file || null, updatedNickname, selectedColorLabel);
+                if (res?.url) {
+                    setProfileImageUrl(res.url);
+                }
             }
 
+            // 공통 처리
             setNickname(updatedNickname);
             setIsEditingNickname(false);
             setNewNickname('');
@@ -106,12 +118,24 @@ function MyPage() {
         }
     };
 
+
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const { nickname, profileImageUrl } = await getProfileImage();
+                const { nickname, url, profileColor } = await getProfileImage();
                 setNickname(nickname || '사용자');
-                setProfileImageUrl(profileImageUrl || null);
+
+                if (url) {
+                    const adjustedUrl = url.replace(/^https:/, 'http:');
+                    setProfileImageUrl(adjustedUrl);
+                } else {
+                    setProfileImageUrl(null);
+                }
+
+                const matchedColor = profileColors.find(c => c.label === profileColor);
+                if (matchedColor) {
+                    setSelectedColor(matchedColor.color);
+                }
             } catch (err) {
                 console.error('프로필 정보 불러오기 실패:', err);
             }
@@ -120,15 +144,16 @@ function MyPage() {
         fetchProfileData();
     }, []);
 
+
     return (
-        <main className="mypage">
+        <div className="mypage">
             <Header />
             <div className="mypage-container">
                 {/* 프로필 섹션 */}
                 <section className="profile-section">
-                    <div className="profile-avatar" style={{backgroundColor: selectedColor}}>
+                    <div className="profile-avatar" style={{ backgroundColor: selectedColor }}>
                         <img
-                            src={previewImage || profileImageUrl || profileIcon}
+                            src={previewImage || url || profileIcon}
                             alt="프로필 이미지"
                             className="profile-image"
                         />
@@ -146,7 +171,7 @@ function MyPage() {
                         <input
                             type="file"
                             accept="image/*"
-                            style={{display: 'none'}}
+                            style={{ display: 'none' }}
                             ref={fileInputRef}
                             onChange={handleImageChange}
                         />
@@ -154,23 +179,23 @@ function MyPage() {
 
                     {/* 색상 선택 아이콘들 */}
                     <div className="color-con">
-                        {profileColors.map((color, idx) => (
+                        {profileColors.map((colorObj, idx) => (
                             <div
                                 key={idx}
                                 className="color-item"
-                                onClick={() => handleColorClick(color)}
+                                onClick={() => handleColorClick(colorObj.color)}
                             >
                                 <div
                                     className="color-box"
                                     style={{
-                                        backgroundColor: color,
+                                        backgroundColor: colorObj.color,
                                         width: '34px',
                                         height: '34px',
                                         borderRadius: '50%',
                                     }}
                                 >
                                     <img
-                                        src={selectedColor === color ? selectIcon : test} // 클릭되면 selectIcon, 아니면 test 아이콘
+                                        src={selectedColor === colorObj.color ? selectIcon : test}
                                         alt={`icon ${idx}`}
                                         className="test-icon"
                                     />
@@ -178,7 +203,6 @@ function MyPage() {
                             </div>
                         ))}
                     </div>
-
 
                     <div className="profile-name-wrapper">
                         <span className="profile-name">
@@ -190,7 +214,6 @@ function MyPage() {
                                         setNewNickname(e.target.value);
                                         setShowSaveButton(true);
                                     }}
-                                    onBlur={() => setIsEditingNickname(false)}
                                     autoFocus
                                     className="nickname-input"
                                 />
@@ -199,7 +222,6 @@ function MyPage() {
                             )}
                         </span>
 
-                        {/* 수정 아이콘은 isEditingNickname이 true면 숨김 */}
                         {!isEditingNickname && (
                             <img
                                 src={updateIcon}
@@ -217,46 +239,30 @@ function MyPage() {
                     </div>
                 </section>
 
-                {/* 마이 섹션 */}
-                <section className="my-section">
-                    <MenuItem
-                        icon={myIcon}
-                        label={(
-                            <>
-                                내 코스 모음
-                                <br/>
-                                <span>내가 추천받은 코스를 볼 수 있어요.</span>
-                            </>
-                        )}
-                        onClick={() => goTo('/course/my')}
-                    />
-
-                </section>
-
                 {/* 메뉴 섹션 */}
                 <section className="page-section">
-                    <MenuItem icon={scheduleIcon} label="일정관리" onClick={() => goTo('/course/my')}/>
-                    <MenuItem icon={courseIcon} label="코스 추천" onClick={() => goTo('/course')}/>
-                    <MenuItem icon={communityIcon} label="커뮤니티" onClick={() => goTo('/community')}/>
-                    <MenuItem icon={mapIcon} label="골프장 위치 재설정" onClick={() => goTo('/first-main')}/>
+                    <MenuItem icon={scheduleIcon} label="일정관리" onClick={() => goTo('/course/my')} />
+                    <MenuItem icon={courseIcon} label="코스 추천" onClick={() => goTo('/course')} />
+                    <MenuItem icon={communityIcon} label="커뮤니티" onClick={() => goTo('/community')} />
+                    <MenuItem icon={mapIcon} label="골프장 위치 재설정" onClick={() => goTo('/first-main')} />
                 </section>
 
                 {/* 고객지원/로그아웃 */}
                 <section className="login-section">
-                    <MenuItem icon={questionIcon} label="고객지원"/>
-                    <MenuItem icon={logoutIcon} label="로그아웃" onClick={() => goTo('/')} isLogout/>
+                    <MenuItem icon={questionIcon} label="고객지원" />
+                    <MenuItem icon={logoutIcon} label="로그아웃" onClick={() => goTo('/')} isLogout />
                 </section>
-                <Footer/>
+                <Footer />
             </div>
-        </main>
+        </div>
     );
 }
 
-function MenuItem({icon, label, onClick, isLogout = false}) {
+function MenuItem({ icon, label, onClick, isLogout = false }) {
     return (
         <div className={`menu-item ${isLogout ? 'logout' : ''}`} onClick={onClick}>
             <div id="icon-btn">
-                <img src={icon} alt={label} className="menu-icon"/>
+                <img src={icon} alt={label} className="menu-icon" />
             </div>
             <span className="menu-label">{label}</span>
         </div>
