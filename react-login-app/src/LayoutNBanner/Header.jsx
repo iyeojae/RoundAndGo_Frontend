@@ -1,5 +1,4 @@
-// Header.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -7,7 +6,57 @@ import Logo from '../assets/logo.svg'; // logo
 import GreenLogo from '../assets/greenlogo.svg';
 import ArrowBtn from '../assets/WhiteArrow.svg';
 
-// 헤더 스타일링
+import { ScreenSizeContext } from '../Common/ScreenSizeContext';
+
+function Header({
+                    NoActLogo = Logo,
+                    ActLogo = GreenLogo,
+                    TitleText = "ROUND & GO",
+                    versionClassName = 'LogoVer', // 'ArrowVer' 가능
+                    WhiteArrow = ArrowBtn,
+                    showLogo = true,
+                    showArrow = false,
+                    isScrolled,
+                    onArrowClick,
+                }) {
+    const navigate = useNavigate();
+    const { isTablet } = useContext(ScreenSizeContext);
+
+    const goTo = (path) => {
+        navigate(path);
+    };
+
+    return (
+        <StyledHeader isScrolled={isScrolled}>
+            <HeaderLogoWrapper>
+                <VersionWrapper className={versionClassName} isTablet={isTablet}>
+                    {showArrow && (
+                        <ArrowImg
+                            isTablet={isTablet}
+                            onClick={onArrowClick ? onArrowClick : () => navigate(-1)}
+                            src={WhiteArrow}
+                            alt='arrow'
+                        />
+                    )}
+                    {showLogo && (
+                        <LogoImg
+                            isTablet={isTablet}
+                            onClick={() => goTo('/main')}
+                            src={isScrolled ? ActLogo : NoActLogo}
+                            alt="logo"
+                        />
+                    )}
+                    <div className='text'>
+                        <p isTablet={isTablet}>{TitleText}</p>
+                    </div>
+                </VersionWrapper>
+            </HeaderLogoWrapper>
+        </StyledHeader>
+    );
+}
+
+export default Header;
+
 const StyledHeader = styled.header`
     position: sticky;
     top: 0;
@@ -23,7 +72,7 @@ const StyledHeader = styled.header`
                     ? 'linear-gradient(180deg, rgba(51, 188, 123, 0.79) 3%, rgba(104, 194, 151, 0.490385) 40%, rgba(255, 255, 255, 0) 100%)'
                     : '#269962'};
     color: ${({ isScrolled }) => (isScrolled ? '#2C8C7D' : '#fff')};
-    transition: background 0.5s, color 0.5s;
+    transition: background 0.8s, color 0.8s;
 `;
 
 const HeaderLogoWrapper = styled.div`
@@ -56,12 +105,14 @@ const VersionWrapper = styled.div`
     }
 
     &.ArrowVer p {
-        font-size: 14px;
+        font-size: ${({ isTablet }) =>
+                isTablet ? 'clamp(18px, 3vw, 20px)' : 'clamp(14px, 2.5vw, 16px)'};
         font-weight: 550;
     }
 
     &.LogoVer p {
-        font-size: 10px;
+        font-size: ${({ isTablet }) =>
+                isTablet ? 'clamp(14px, 3vw, 18px)' : 'clamp(10px, 2.5vw, 13px)'};
         font-weight: 500;
     }
 
@@ -77,7 +128,8 @@ const ArrowImg = styled.img`
     margin: 0;
     padding: 0;
     transform: scaleX(-1);
-    width: 16px;
+    width: ${({ isTablet }) =>
+            isTablet ? 'clamp(20px, 3vw, 24px)' : 'clamp(16px, 2.5vw, 20px)'};
     height: auto;
     cursor: pointer;
 `;
@@ -86,52 +138,8 @@ const LogoImg = styled.img`
     display: block;
     margin: 0;
     padding: 0;
-    width: 26px;
+    width: ${({ isTablet }) =>
+            isTablet ? 'clamp(30px, 3vw, 34px)' : 'clamp(26px, 2.5vw, 30px)'};
     height: auto;
     cursor: pointer;
 `;
-
-function Header({
-                    NoActLogo = Logo,
-                    ActLogo = GreenLogo,
-                    TitleText = "ROUND & GO",
-                    versionClassName = 'LogoVer', // 'ArrowVer' 가능
-                    WhiteArrow = ArrowBtn,
-                    showLogo = true,
-                    showArrow = false,
-                }) {
-    const navigate = useNavigate();
-    const [isScrolled, setIsScrolled] = useState(false);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 0);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    const goTo = (path) => {
-        navigate(path);
-    };
-
-    return (
-        <StyledHeader isScrolled={isScrolled}>
-            <HeaderLogoWrapper>
-                <VersionWrapper className={versionClassName}>
-                    {showArrow && (
-                        <ArrowImg onClick={() => navigate(-1)} src={WhiteArrow} alt='arrow' />
-                    )}
-                    {showLogo && (
-                        <LogoImg onClick={() => goTo('/main')} src={isScrolled ? ActLogo : NoActLogo} alt="logo" />
-                    )}
-                    <div className='text'>
-                        <p>{TitleText}</p>
-                    </div>
-                </VersionWrapper>
-            </HeaderLogoWrapper>
-        </StyledHeader>
-    );
-}
-
-export default Header;

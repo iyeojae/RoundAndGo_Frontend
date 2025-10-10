@@ -1,7 +1,7 @@
 // Footer.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 import {
     ActiveAI, NonActiveAI,
@@ -10,6 +10,17 @@ import {
     ActiveHome, NonActiveHome,
     ActiveMy, NonActiveMy,
 } from "../assets/FooterImg";
+
+// 아이콘 클릭 시 푸딩처럼 좌우로 흔들리는 애니메이션 정의
+const jellyAnimation = keyframes`
+    0% { transform: scale(1, 1); }
+    15% { transform: scale(1.25, 0.75); }
+    30% { transform: scale(0.75, 1.25); }
+    45% { transform: scale(1.15, 0.85); }
+    60% { transform: scale(0.95, 1.05); }
+    75% { transform: scale(1.05, 0.95); }
+    100% { transform: scale(1, 1); }
+`;
 
 const FooterWrapper = styled.div`
     position: sticky;
@@ -42,11 +53,16 @@ const MenuButton = styled.button`
     align-items: center;
     justify-content: center;
     width: auto;
-    transition: ease-in 0.2s;
+    transition: ease-in 0.3s;
 
     img {
         margin-bottom: 0.5rem;
         transition: 0.5s;
+
+        // 푸딩 애니메이션
+        ${({ active }) => active && css`
+            animation: ${jellyAnimation} 1s ease;
+        `}
     }
 
     p {
@@ -94,6 +110,8 @@ function Footer() {
                         active={activeMenu === item.name}
                     >
                         <img
+                            // key 변경을 통해 애니메이션 재실행 트리거
+                            key={activeMenu === item.name ? `${item.name}-active` : `${item.name}-inactive`}
                             src={activeMenu === item.name ? item.imgAct : item.img}
                             alt={item.name}
                         />
