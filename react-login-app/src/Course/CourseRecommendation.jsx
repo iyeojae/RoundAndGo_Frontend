@@ -186,7 +186,7 @@ const CourseRecommendation = () => {
       {/* 헤더 */}
       <div className="course-header">
         <div className="course-logo">
-          <span className="logo-text">GROUND & GO</span>
+          <span className="logo-text">ROUND & GO</span>
         </div>
         <div className="course-type-badge">
           <span className="course-type-icon">{courseTypeDisplay.icon}</span>

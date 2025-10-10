@@ -7,6 +7,7 @@ function Tourism({
                      subtitle = '',
                      mentClassName = 'IntroMent',
                      golfCourseId = null,
+                     useDummy = true,  // 더미데이터 사용 여부
                  }) {
     const [tourismList, setTourismList] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -15,20 +16,94 @@ function Tourism({
     const [maxScroll, setMaxScroll] = useState(0);
     const scrollContainerRef = useRef(null);
 
+    // 더미데이터 10개
+    const dummyTourismList = [
+        {
+            title: '성산 일출봉',
+            imageUrl: 'https://via.placeholder.com/211x246?text=성산+일출봉',
+            addr1: '서귀포시 성산읍 일출로 284-12',
+            category: '자연',
+        },
+        {
+            title: '한라산 국립공원',
+            imageUrl: 'https://via.placeholder.com/211x246?text=한라산',
+            addr1: '제주시 1100로 2070-61',
+            category: '자연',
+        },
+        {
+            title: '섭지코지',
+            imageUrl: 'https://via.placeholder.com/211x246?text=섭지코지',
+            addr1: '서귀포시 성산읍 섭지코지로',
+            category: '자연',
+        },
+        {
+            title: '천지연 폭포',
+            imageUrl: 'https://via.placeholder.com/211x246?text=천지연+폭포',
+            addr1: '서귀포시 천지연로 132',
+            category: '자연',
+        },
+        {
+            title: '제주 민속촌',
+            imageUrl: 'https://via.placeholder.com/211x246?text=제주+민속촌',
+            addr1: '제주시 조천읍 교래리 542',
+            category: '문화',
+        },
+        {
+            title: '우도',
+            imageUrl: 'https://via.placeholder.com/211x246?text=우도',
+            addr1: '제주시 우도면 우도리',
+            category: '자연',
+        },
+        {
+            title: '용두암',
+            imageUrl: 'https://via.placeholder.com/211x246?text=용두암',
+            addr1: '제주시 용담이동 2171-1',
+            category: '자연',
+        },
+        {
+            title: '중문 관광단지',
+            imageUrl: 'https://via.placeholder.com/211x246?text=중문+관광단지',
+            addr1: '서귀포시 중문동',
+            category: '관광단지',
+        },
+        {
+            title: '비자림',
+            imageUrl: 'https://via.placeholder.com/211x246?text=비자림',
+            addr1: '제주시 구좌읍 평대리 1446',
+            category: '자연',
+        },
+        {
+            title: '협재 해수욕장',
+            imageUrl: 'https://via.placeholder.com/211x246?text=협재+해수욕장',
+            addr1: '제주시 한림읍 협재리',
+            category: '해변',
+        },
+    ];
+
     useEffect(() => {
         const loadTourismData = async () => {
             setLoading(true);
-            try {
-                const savedId = localStorage.getItem("selectedGolfCourseId");
-                const currentGolfCourseId = savedId ? parseInt(savedId, 10) : golfCourseId;
+            setError(null);
 
-                const data = await fetchTourData('attractions', currentGolfCourseId);
+            try {
+                let data;
+
+                if (useDummy) {
+                    data = dummyTourismList;
+                } else {
+                    const savedId = localStorage.getItem("selectedGolfCourseId");
+                    const currentGolfCourseId = savedId ? parseInt(savedId, 10) : golfCourseId;
+                    data = await fetchTourData('attractions', currentGolfCourseId);
+                }
+
+                // API 데이터 형태에 따라 mapping (dummy는 이미 형태 맞춤)
                 const mapped = data.map(item => ({
                     title: item.title,
-                    imageUrl: item.firstimage,
-                    address: item.addr2 ? `${item.addr1} ${item.addr2}` : item.addr1,
-                    category: item.cat1 || '기타'
+                    imageUrl: item.firstimage || item.imageUrl || NoImage,
+                    address: item.addr2 ? `${item.addr1} ${item.addr2}` : item.addr1 || '',
+                    category: item.cat1 || item.category || '기타',
                 })).slice(0, 30);
+
                 setTourismList(mapped);
             } catch (err) {
                 setError('관광지 정보를 불러오는 데 실패했습니다.');
@@ -39,7 +114,7 @@ function Tourism({
         };
 
         loadTourismData();
-    }, [golfCourseId]);
+    }, [golfCourseId, useDummy]);
 
     const handleScroll = () => {
         if (scrollContainerRef.current) {
@@ -68,7 +143,7 @@ function Tourism({
             margin: '0 auto'
         },
         IntroMent: {
-            fontSize: '18px',
+            fontSize: 'clamp(18px, 2vw, 20px)',
             fontWeight: 500,
             color: '#fff',
             textAlign: 'center',
@@ -76,7 +151,7 @@ function Tourism({
             paddingTop: '20px',
         },
         IntroMentDetail: {
-            fontSize: '14px',
+            fontSize: 'clamp(14px, 2vw, 16px)',
             fontWeight: 400,
             color: '#fff',
             textAlign: 'center',
@@ -84,7 +159,7 @@ function Tourism({
             paddingTop: '20px'
         },
         IntroMentSub: {
-            fontSize: '18px',
+            fontSize: 'clamp(18px, 2vw, 20px)',
             fontWeight: 500,
             color: '#fff',
             textAlign: 'center',
@@ -234,37 +309,35 @@ function Tourism({
                     >
                         {tourismList.map((item, index) => (
                             <div
-                                key={index}
                                 className="TourismCardWrapper"
-                                onClick={() => {
-                                    const query = encodeURIComponent(item.title);
-                                    const url = `https://map.naver.com/v5/search/${query}`;
-                                    window.open(url, '_blank');
-                                }}
                                 style={styles.TourismCardWrapper}
+                                key={`tourism-${index}`}
                             >
-                                <div className="TourImgCont" style={styles.TourImgCont}>
-                                    <img src={item.imageUrl || NoImage} alt={item.title} style={styles.TourImgContImg}/>
+                                <div style={styles.TourImgCont}>
+                                    <img
+                                        src={item.imageUrl || NoImage}
+                                        alt={item.title}
+                                        style={styles.TourImgContImg}
+                                        loading="lazy"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = NoImage;
+                                        }}
+                                    />
                                 </div>
-                                <div className="TourismCard" style={styles.TourismCard}>
-                                    <h3 className="Tourism-Title" style={styles.TourismTitle}>{item.title}</h3>
-                                    <p className="Tourism-Address" style={styles.TourismAddress}>{item.address}</p>
+                                <div style={styles.TourismCard}>
+                                    <span style={styles.TourismTitle}>{item.title}</span>
+                                    <span style={styles.TourismAddress}>{item.address}</span>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {maxScroll > 0 && (
-                    <>
-                        <div className="ScrollbarContainer" style={styles.ScrollbarContainer}>
-                            <div className="ScrollbarIndicator" style={styles.ScrollbarIndicator}></div>
-                        </div>
-                        <div className="ScrollNumber" style={styles.ScrollNumber}>
-                            {currentCardIndex}/{tourismList.length}
-                        </div>
-                    </>
-                )}
+                <div className="ScrollbarContainer" style={styles.ScrollbarContainer}>
+                    <div className="ScrollbarIndicator" style={styles.ScrollbarIndicator}></div>
+                    <div className="ScrollNumber">{currentCardIndex} / {tourismList.length}</div>
+                </div>
             </div>
         </div>
     );

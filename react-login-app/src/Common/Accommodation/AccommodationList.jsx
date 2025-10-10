@@ -117,8 +117,8 @@ export default AccommodationList;
 
 
 const Container = styled.div`
-  width: 100%;
-  margin: 10% 0 0 0;
+  width: 90%;
+  margin: 10% auto 0 auto;
 `;
 
 const Header = styled.div`
