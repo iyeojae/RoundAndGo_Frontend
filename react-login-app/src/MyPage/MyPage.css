@@ -213,14 +213,14 @@
 /* 프로필 이미지 위 x 버튼 */
 .remove-image-button {
     position: absolute;
-    top: clamp(-6px, 2vw, -4px);
-    right: clamp(-6px, 2vw, -4px);
+    bottom: 0;
+    right: 0;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 50%;
-    width: clamp(20px, 2vw, 22px);
-    height: clamp(20px, 2vw, 22px);
-    font-size: clamp(14px, 2vw, 16px);
+    width: clamp(35px, 2vw, 37px);
+    aspect-ratio: 1 / 1;
+    font-size: clamp(16px, 2vw, 18px);
     font-weight: bold;
     line-height: 18px;
     text-align: center;

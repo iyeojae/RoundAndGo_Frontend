@@ -4,6 +4,8 @@ import Header from '../LayoutNBanner/Header.jsx';
 import Footer from '../LayoutNBanner/Footer.jsx';
 import './MyPage.css';
 
+import Toast from '../Common/Community/Toast';
+
 import {
     getUserInfo,
     getProfileImage,
@@ -43,6 +45,8 @@ function MyPage() {
     const [newNickname, setNewNickname] = useState('');
     const [isEditingNickname, setIsEditingNickname] = useState(false);
 
+    const [showToast, setShowToast] = useState(false);
+
     const [url, setProfileImageUrl] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
     const [showSaveButton, setShowSaveButton] = useState(false);
@@ -50,9 +54,27 @@ function MyPage() {
 
     const fileInputRef = useRef();
 
-    const handleColorClick = (color) => {
+    const handleColorClick = async (color) => {
         setSelectedColor(color);
-        setShowSaveButton(true); // 색상 변경 시 저장 버튼 보이게
+        const selectedColorLabel = profileColors.find(c => c.color === color)?.label;
+
+        try {
+
+            const res = await uploadProfileImage(
+                fileInputRef.current?.files?.[0] || null,
+                nickname,
+                selectedColorLabel
+            );
+
+            if (res?.url) {
+                setProfileImageUrl(res.url);
+            }
+
+            setShowToast(true);
+            setTimeout(() => navigate('/mypage'), 1000);
+        } catch (err) {
+            console.error('프로필 색상 업데이트 실패:', err);
+        }
     };
 
     const handleCameraClick = () => {
@@ -75,11 +97,18 @@ function MyPage() {
         setShowSaveButton(false);
     };
 
-    const handleDeleteImageClick = () => {
-        setPreviewImage(null);
-        setProfileImageUrl(null);
-        setDeleteImageMode(true);
-        setShowSaveButton(true);
+    const handleDeleteImageClick = async () => {
+        console.log('handleDeleteImageClick 실행');
+        try {
+            const res = await deleteProfileImage();
+            console.log('deleteProfileImage 응답:', res);
+            setProfileImageUrl(null);
+
+            setShowToast(true);
+            setTimeout(() => navigate('/mypage'), 1000);
+        } catch (error) {
+            console.error('이미지 삭제 실패:', error);
+        }
     };
 
     const handleEditNicknameClick = () => {
@@ -89,30 +118,35 @@ function MyPage() {
     };
 
     const handleSaveProfile = async () => {
-        const file = fileInputRef.current.files[0];
+        const file = fileInputRef.current?.files?.[0];
         const updatedNickname = isEditingNickname ? newNickname : nickname;
         const selectedColorLabel = profileColors.find(c => c.color === selectedColor)?.label;
 
         try {
             if (deleteImageMode) {
-                // 이미지 삭제 요청
                 await deleteProfileImage();
                 setProfileImageUrl(null);
-            } else {
-                // 이미지가 없더라도 nickname + colorLabel 전달
-                const res = await uploadProfileImage(file || null, updatedNickname, selectedColorLabel);
-                if (res?.url) {
-                    setProfileImageUrl(res.url);
-                }
             }
 
-            // 공통 처리
+            const res = await uploadProfileImage(
+                file || null,
+                updatedNickname,
+                selectedColorLabel || ''
+            );
+
+            if (res?.url) {
+                setProfileImageUrl(res.url);
+            }
+
             setNickname(updatedNickname);
             setIsEditingNickname(false);
             setNewNickname('');
             setPreviewImage(null);
             setShowSaveButton(false);
             setDeleteImageMode(false);
+
+            setShowToast(true);
+            setTimeout(() => navigate('/mypage'), 1000);
         } catch (err) {
             console.error('프로필 저장 실패:', err);
         }
@@ -151,39 +185,51 @@ function MyPage() {
             <div className="mypage-container">
                 {/* 프로필 섹션 */}
                 <section className="profile-section">
-                    <div className="profile-avatar" style={{ backgroundColor: selectedColor }}>
+                    <div className="profile-avatar" style={{backgroundColor: selectedColor}}>
                         <img
                             src={previewImage || url || profileIcon}
                             alt="프로필 이미지"
                             className="profile-image"
                         />
                         <div className="camera-wrapper">
-                            <img
-                                src={cameraIcon}
-                                alt="카메라 아이콘"
-                                className="camera-icon"
-                                onClick={handleCameraClick}
-                            />
-                            {previewImage && (
-                                <button className="remove-image-button" onClick={handleRemoveImage}>x</button>
+                            {url ? (
+                                // 이미지가 있는 경우 => X 버튼
+                                <button
+                                    className="remove-image-button"
+                                    onClick={handleDeleteImageClick}
+                                >
+                                    x
+                                </button>
+                            ) : (
+                                // 이미지가 없는 경우 => 카메라 아이콘
+                                <img
+                                    src={cameraIcon}
+                                    alt="카메라 아이콘"
+                                    className="camera-icon"
+                                    onClick={handleCameraClick}
+                                />
                             )}
-                        </div>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            ref={fileInputRef}
-                            onChange={handleImageChange}
-                        />
-                    </div>
 
-                    {/* 색상 선택 아이콘들 */}
-                    <div className="color-con">
-                        {profileColors.map((colorObj, idx) => (
-                            <div
-                                key={idx}
-                                className="color-item"
-                                onClick={() => handleColorClick(colorObj.color)}
+                        {previewImage && (
+                            <button className="remove-image-button" onClick={handleRemoveImage}>x</button>
+                        )}
+                    </div>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        style={{display: 'none'}}
+                        ref={fileInputRef}
+                        onChange={handleImageChange}
+                    />
+            </div>
+
+            {/* 색상 선택 아이콘들 */}
+            <div className="color-con">
+                {profileColors.map((colorObj, idx) => (
+                    <div
+                        key={idx}
+                        className="color-item"
+                        onClick={() => handleColorClick(colorObj.color)}
                             >
                                 <div
                                     className="color-box"
@@ -254,6 +300,14 @@ function MyPage() {
                 </section>
                 <Footer />
             </div>
+
+            {showToast && (
+                <Toast
+                    message="성공적으로 저장되었습니다."
+                    duration={1000}
+                    onClose={() => setShowToast(false)}
+                />
+            )}
         </div>
     );
 }

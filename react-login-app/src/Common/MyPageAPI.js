@@ -27,22 +27,18 @@ export const getProfileImage = async () => {
     });
     console.log('API 응답:', res.data);
     const { nickname, url, profileColor } = res.data.data;
-    console.log(nickname, url, profileColor);
     return { nickname, url, profileColor };
 };
 
 export const uploadProfileImage = async (file, nickname, colorLabel) => {
     const formData = new FormData();
 
-    // 이미지 파일이 있는 경우에만 첨부
+    formData.append('nickname', nickname || '');
+
+    formData.append('profileColor', colorLabel || '');
+
     if (file) {
         formData.append('file', file);
-    }
-
-    formData.append('nickname', nickname);
-
-    if (colorLabel) {
-        formData.append('profileColor', colorLabel);
     }
 
     const token = getCookie('accessToken');
@@ -53,13 +49,15 @@ export const uploadProfileImage = async (file, nickname, colorLabel) => {
         {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data',
             },
+            withCredentials: true,
         }
     );
 
-    return res.data.result; // { url }
+    return res.data.result;
 };
+
+
 
 export const deleteProfileImage = async () => {
     const token = getCookie('accessToken');

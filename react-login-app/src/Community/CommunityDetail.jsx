@@ -8,8 +8,8 @@ import {
     updateComment
 } from '../Common/Community/CommunityAPI';
 import { getUserInfo } from '../Common/MyPageAPI.js';
+import { getCookie } from '../Login/utils/cookieUtils';
 
-import { checkAuth } from "../FirstMain/IsContainToken.js";
 import DeleteConfirmModal from "../Common/Community/DeleteConfirm";
 import Toast from '../Common/Community/Toast.jsx';
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS';
@@ -27,7 +27,7 @@ import './CommunityDetail.css';
 function CommunityDetail() {
     const { postId } = useParams();
     const navigate = useNavigate();
-    const { isAuthenticated, accessToken } = checkAuth();
+    const token = getCookie('accessToken');
 
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
@@ -76,9 +76,9 @@ function CommunityDetail() {
     };
 
     const loadUserInfo = async () => {
-        if (!isAuthenticated || !accessToken) return;
+        if (!token) return;
         try {
-            const userInfo = await getUserInfo(accessToken);
+            const userInfo = await getUserInfo();
             setCurrentUserId(userInfo?.id);
             setCurrentUserNickname(userInfo?.nickname);  // 닉네임 저장
         } catch (err) {
@@ -92,13 +92,13 @@ function CommunityDetail() {
     }, [postId]);
 
     const handleToggleLike = async () => {
-        if (!isAuthenticated || !accessToken) {
+        if (!token) {
             showToastWithMessage('로그인이 필요합니다.');
             navigate('/email-login');
             return;
         }
         try {
-            await toggleLike(post.id, accessToken);
+            await toggleLike(post.id);
             await loadPostData();
         } catch (error) {
             showToastWithMessage('좋아요 처리에 실패했습니다.');
@@ -119,13 +119,13 @@ function CommunityDetail() {
     const handleDelete = async () => {
         try {
             if (selectedType === 'comment') {
-                await deleteComment(selectedComment.id, accessToken);
+                await deleteComment(selectedComment.id);
                 showToastWithMessage('댓글이 삭제되었습니다.');
                 setEditingCommentId(null);
                 setShowOptions(false);
                 await loadPostData();
             } else if (selectedType === 'post') {
-                await deletePost(selectedComment.id, accessToken);
+                await deletePost(selectedComment.id);
                 showToastWithMessage('게시글이 삭제되었습니다.');
                 setShowOptions(false);
                 navigate('/community');
@@ -141,7 +141,7 @@ function CommunityDetail() {
             showToastWithMessage('댓글 내용을 입력하세요.');
             return;
         }
-        if (!isAuthenticated || !accessToken) {
+        if (!token) {
             showToastWithMessage('로그인이 필요합니다.');
             navigate('/email-login');
             return;
@@ -300,7 +300,6 @@ function CommunityDetail() {
                                                         editingCommentId,
                                                         editContent,
                                                         post.id,
-                                                        accessToken,
                                                         comment.parentCommentId || null
                                                     );
                                                     showToastWithMessage('댓글이 수정되었습니다.');
@@ -472,7 +471,7 @@ function CommunityDetail() {
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={async () => {
                     try {
-                        await deletePost(post.id, accessToken);
+                        await deletePost(post.id);
                         setShowDeleteModal(false);
                         navigate('/community', {state: {deleted: true}});
                     } catch {

@@ -6,14 +6,16 @@ import { getCookie } from '../../Login/utils/cookieUtils';
 axios.defaults.withCredentials = true;
 
 // // GET 사용자 정보
-// export const getUserInfo = async () => {
-//     const res = await axios.get(`${BASE_URL}/auth/user`, {
-//         headers: {
-//             Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-//         },
-//     });
-//     return res.data.data;// { id, email, nickname, loginType, role }
-// };
+export const getUserInfo = async () => {
+    const token = getCookie('accessToken');
+
+    const res = await axios.get(`${API_BASE_URL}/auth/user`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+    return res.data.data;// { id, email, nickname, loginType, role }
+};
 
 // GET 게시글 검색
 export const searchPosts = async (keyword) => {
@@ -194,6 +196,7 @@ export const fetchLikeCount = async (postId) => {
         const response = await axios.get(`${API_BASE_URL}/posts/likeCount/${postId}`);
         // 응답이 성공적일 경우
         if (response.status === 200) {
+            console.log('likecount ', response.data);
             return response.data;
         } else {
             throw new Error("좋아요 수를 불러오는데 실패했습니다.");
@@ -218,6 +221,7 @@ export const toggleLike = async (postId) => {
             }
         );
         // 응답이 성공적일 경우
+        console.log('post like ', response.data);
         return response.data;
     } catch (error) {
         console.error('좋아요 토글 실패:', error);
