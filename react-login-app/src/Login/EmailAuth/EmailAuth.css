@@ -1,5 +1,18 @@
 /* EmailAuth 모듈 통합 CSS */
 
+/* ===== input 애니메이션 keyframes ===== */
+@keyframes inputZoomIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
 /* ===== 공통 컨테이너 스타일 ===== */
 .email-auth-container {
   width: 100%;
@@ -134,6 +147,7 @@
 .email-auth-input-group {
   margin-bottom: 5%;
   width: 100%;
+  position: relative;
 }
 
 .email-auth-password-confirm-group {
@@ -167,6 +181,22 @@
   transition: all 0.3s ease;
 
   backdrop-filter: blur(10px);
+
+
+  /* 애니메이션 적용 */
+  animation: inputZoomIn 0.5s ease forwards;
+  transform-origin: left top;
+
+  @keyframes inputZoomIn {
+    0% {
+      opacity: 0;
+      transform: translateY(10px) scale(0.7);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
 }
 
 .email-auth-input:focus {
@@ -533,18 +563,18 @@
 @media (max-width: 480px) {
   .email-auth-content {
   }
-  
+
   .email-auth-submit-button,
   .email-auth-confirm-button,
   .email-auth-action-button {
     width: 100%;
   }
-  
+
   .email-auth-logo {
     width: 120px;
     height: 120px;
   }
-  
+
   .email-auth-title {
     font-size: 20px;
   }

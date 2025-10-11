@@ -31,8 +31,10 @@ const ImageUploader = ({
     };
 
     const handleNewRemove = (index) => {
-        setImages(images.filter((_, i) => i !== index));
-        setPreviewUrls(previewUrls.filter((_, i) => i !== index));
+        const newImageFiles = images.filter((_, i) => i !== index);
+        const newPreviews = previewUrls.filter((_, i) => i !== index);
+        setImages(newImageFiles);
+        setPreviewUrls(newPreviews);
     };
 
     return (
@@ -53,19 +55,18 @@ const ImageUploader = ({
 
                 <div className="image-preview-multiple">
                     {existingImages.map((img) => {
-                        const imgUrl = img.url.replace(/^https:/, 'http:');
+                        const imgUrl = img.url.replace(/^https:/, 'http:'); // HTTP 변환
                         return (
                             <div key={img.id} className="image-preview">
-                                <button className="remove-image-btn" onClick={() => handleExistingRemove(img.id)}>×
-                                </button>
-                                <img src={imgUrl} alt={img.originalFilename}/>
+                                <button className="remove-image-btn" onClick={() => handleExistingRemove(img.id)}>×</button>
+                                <img src={imgUrl} alt={img.originalFilename} />
                             </div>
                         );
                     })}
                     {previewUrls.map((url, idx) => (
                         <div key={idx} className="image-preview">
                             <button className="remove-image-btn" onClick={() => handleNewRemove(idx)}>×</button>
-                            <img src={url} alt={`미리보기-${idx}`}/>
+                            <img src={url} alt={`미리보기-${idx}`} />
                         </div>
                     ))}
                 </div>

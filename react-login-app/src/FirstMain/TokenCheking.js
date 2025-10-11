@@ -1,6 +1,8 @@
 import { useKakaoLoginDetector } from '../Login/Auth';
 import { useEffect } from 'react';
 
+import { getCookie } from '../Login/utils/cookieUtils';
+
 export const TokenDebugging = () => {
     // 🎯 백그라운드에서 카카오 로그인 성공 자동 감지 (UI 영향 없음)
     useKakaoLoginDetector();

@@ -50,7 +50,7 @@ const FirstMainPageWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-bottom: 20px;
+    padding-bottom: 3%;
     box-sizing: border-box;
     margin: 0 auto;
 `;
@@ -66,7 +66,7 @@ const FirstText = styled.p`
     font-size: clamp(1.3rem, 2vw, 1.5rem);
     line-height: 1.2;
     color: white;
-    margin-bottom: 20px;
+    margin-bottom: 5%;
 
     animation: ${fadeInSlideUp} 0.8s ease-out forwards;
 
@@ -98,7 +98,7 @@ const MapRegionButton = styled.button`
     position: absolute;
     width: fit-content;
     background-color: white;
-    border-radius: 25px;
+    border-radius: clamp(25px, 2vw, 50px);
     border: none;
     display: flex;
     justify-content: center;
@@ -133,25 +133,26 @@ const MapRegionButton = styled.button`
 const Top3ForRegion = styled.div`
     width: 90%;
     transition: all 0.3s ease-in-out;
-    margin: 0 auto ${props => (props.active ? '50px' : '0')} auto;
+    margin: 0 auto ${props => (props.active ? '8%' : '0')} auto;
     padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: ${props => (props.active ? '15px' : '0')};
+    gap: ${props => (props.active ? '3%' : '0')};
     height: ${props => (props.active ? 'auto' : '0')};
     overflow: ${props => (props.active ? 'visible' : 'hidden')};
 `;
 
 const Subcomment = styled.div`
-    margin: 10px auto;
+    margin: 3% auto;
     text-align: center;
 
     animation: ${fadeInSlideUp} 0.5s ease-out 0.2s forwards;
     opacity: 0;
 
     p {
+        font-size: clamp(1rem, 2vw, 1.3rem);
         color: #fff;
         font-weight: 700;
     }
@@ -162,7 +163,7 @@ const GolfList = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 13px;
+    gap: 3%;
     width: 100%;
 
     animation: ${fadeIn} 0.5s ease-out 0.7s forwards;
@@ -177,7 +178,8 @@ const GolfCourseImageWrapper = styled.div`
 
 const GolfCourseImage = styled.img`
     width: 100%;
-    height: 140px;
+    min-height: 140px;
+    max-height: 240px;
     aspect-ratio: ${props => props.aspectRatio};
     object-fit: cover;
     transition: all 0.7s ease-in-out;
@@ -212,7 +214,7 @@ const ImageLabel = styled.div`
 const NoResultsMessage = styled.div`
     text-align: center;
     color: #2C8C7D;
-    margin-top: 20px;
+    margin-top: 5%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -222,14 +224,14 @@ const NoResultsMessage = styled.div`
     opacity: 0;
 
     img {
-        width: 70px;
-        height: 70px;
+        min-width: 70px;
+        max-width: 100px;
     }
 
     p {
         color: #fff;
         margin-top: 10%;
-        font-size: 0.75rem;
+        font-size: clamp(0.75rem, 2vw, 0.95rem);
         font-weight: 450;
     }
 `;

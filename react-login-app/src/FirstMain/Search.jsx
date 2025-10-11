@@ -22,6 +22,11 @@ function GolfSearch() {
         currentPage: 0,         // swiper 페이지
     });
 
+    const [inputFocused, setInputFocused] = useState(false);
+
+    const handleInputFocus = () => setInputFocused(true);
+    const handleInputBlur = () => setInputFocused(false);
+
     const { // useState 통합
         searchTerm,
         filteredGolfCourses,
@@ -112,9 +117,15 @@ function GolfSearch() {
                     value={searchTerm}
                     onChange={handleSearchChange}
                     onKeyDown={handleKeyPress}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
                 />
                 <img
-                    className="SearchBtnImg"
+                    className={`SearchBtnImg ${
+                        inputFocused
+                            ? (searchTerm ? 'slideIn' : 'hidden')  // 포커스 있을 때 입력값 있으면 slideIn / 없으면 hidden
+                            : 'slideIn' // 포커스 없을 때는 항상 버튼 보임
+                    }`}
                     src={searchBtn}
                     alt="검색버튼"
                     onClick={handleSearch}

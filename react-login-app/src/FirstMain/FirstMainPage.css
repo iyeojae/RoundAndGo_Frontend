@@ -1,135 +1,3 @@
-/*!* FirstMainPage.css *!*/
-
-/*.FirstMainPage {*/
-/*    background-image: linear-gradient(0.02deg, #269962 41.09%, #8BD3BA 57.62%, #2C8C7D 86.54%);*/
-/*    display: flex;*/
-/*    width: 100%;*/
-/*    min-height: 100vh;*/
-/*    flex-direction: column;*/
-/*    align-items: center;*/
-/*    justify-content: flex-start;*/
-/*    padding-bottom: 20px;*/
-/*    box-sizing: border-box;*/
-/*    margin: 0 auto;*/
-/*}*/
-
-/*.content {*/
-/*    text-align: center;*/
-/*    width: 100%;*/
-/*    box-sizing: border-box;*/
-/*}*/
-
-/*.First p {*/
-/*    padding-top: 15%;*/
-/*    font-size: clamp(1.3rem, 2vw, 1.5rem);*/
-/*    line-height: 1.2;*/
-/*    color: white;*/
-/*    margin-bottom: 20px;*/
-/*}*/
-
-/*.Map {*/
-/*    position: relative;*/
-/*    max-width: 90%;*/
-/*    margin: 13% auto;*/
-/*    box-sizing: content-box;*/
-/*}*/
-
-/*.Map img {*/
-/*    position: relative;*/
-/*    width: 100%;*/
-/*    height: auto;*/
-/*    display: block;*/
-/*    z-index: 1;*/
-/*}*/
-
-/*.map-region-button {*/
-/*    position: absolute;*/
-/*    width: fit-content;*/
-/*    !*min-width: 39px;*!*/
-/*    !*max-width: 42px;*!*/
-
-/*    background-color: white;*/
-
-/*    border-radius: 25px;*/
-/*    border: none;*/
-
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-
-/*    color: #2C8C7D;*/
-/*    font-size: 8px;*/
-/*    font-weight: bold;*/
-/*    text-align: center;*/
-
-/*    z-index: 10;*/
-
-/*    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);*/
-/*    transition: opacity 0.2s ease, background-color 0.2s ease, transform 0.1s ease;*/
-/*}*/
-
-/*!* 선택된 버튼 *!*/
-/*.map-region-button.selected {*/
-/*    background-color: #FFE500;*/
-/*}*/
-
-/*!* 선택된 버튼 색상이 유지 *!*/
-/*.map-region-button.selected:hover {*/
-/*    background-color: #FFE500;*/
-/*}*/
-
-/*!* 기본 최소 높이 *!*/
-/*.Top3ForRegion {*/
-/*    width: 90%;*/
-/*    max-width: 380px;*/
-/*    transition: all 0.3s ease-in-out;*/
-/*    margin: 0 auto;*/
-/*    padding: 0;*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*}*/
-
-/*!* 아무 지역도 선택 안 했을 때 *!*/
-/*.Top3ForRegion.inactive {*/
-/*    height: 0;*/
-/*    overflow: hidden;*/
-/*    margin-bottom: 0;*/
-/*}*/
-
-/*!* 지역 선택 시 활성화 상태 *!*/
-/*.Top3ForRegion.active {*/
-/*    height: auto;*/
-/*    margin-bottom: 50px;*/
-/*    gap: 15px;*/
-/*}*/
-
-
-/*.subcomment {*/
-/*    margin: 10px auto;*/
-/*    text-align: center;*/
-/*}*/
-
-/*.subcomment p {*/
-/*    color: #fff;*/
-/*    font-weight: 700;*/
-/*}*/
-
-/*.GolfList {*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    justify-content: center;*/
-/*    align-items: center;*/
-/*    gap: 13px;*/
-/*    width: 100%;*/
-/*}*/
-
-
-
-
-
-
 /* 여기서부터 Search.jsx에 대한 스타일링 */
 .Search&Response {
     width: 100%;
@@ -289,3 +157,40 @@
     background: #CAFEE5 !important;
     opacity: 1 !important;
 }
+
+/* 검색 버튼 기본 스타일 */
+.SearchBtnImg {
+    position: absolute;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    padding: 7px;
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.4s ease;
+}
+
+/* 숨김 상태 */
+.SearchBtnImg.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(0);
+}
+
+/* 좌측에서 슬쩍 나타나는 애니메이션 */
+@keyframes slideInFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 슬라이드 인 상태 */
+.SearchBtnImg.slideIn {
+    animation: slideInFromLeft 0.7s forwards;
+    pointer-events: auto;
+}
+

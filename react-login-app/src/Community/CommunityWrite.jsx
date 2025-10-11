@@ -5,7 +5,7 @@ import { TAB_LABELS } from "../Common/Community/Community_TAB_LABELS";
 import Camera from '../assets/camera.svg';
 import {PostingBoard} from "../Common/Community/CommunityAPI";
 
-import { checkAuth } from "../FirstMain/IsContainToken";
+import { getCookie } from '../Login/utils/cookieUtils';
 
 import './CommunityWrite.css';
 
@@ -75,10 +75,10 @@ function CommunityWrite() {
             return;
         }
 
-        const { accessToken } = checkAuth();
-        // Access Token 확인
+        const token = getCookie('accessToken');
+        // token 확인
 
-        if (!accessToken) {
+        if (!token) {
             console.error('토큰이 없습니다. 로그인 상태를 확인해주세요.');
             return;
         }

@@ -20,10 +20,6 @@ function DetailRestaurant() {
                 golfCourseId={golfCourseId}
                 showMoreButton={false}
                 showCity={false}
-                gridClassName={'DetailRestGrid'}
-                eachofrestaurantClassName={'DetailRestrestaurant'}
-                commentClassName={'DetailRestcomment'}
-                imageClassName={'DetailRestImg'}
                 isDetail={true}
             />
         </div>

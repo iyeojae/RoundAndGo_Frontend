@@ -18,10 +18,6 @@ function RestaurantList({
                             showTitle = true,
                             showCity = true,
                             showAddress = true,
-                            gridClassName = 'RestGrid',
-                            eachofrestaurantClassName = 'Restrestaurant',
-                            commentClassName = 'Restcomment',
-                            imageClassName = 'RestImg',
                             golfCourseId = null,
                             isDetail = false,
                         }) {
@@ -37,49 +33,14 @@ function RestaurantList({
             setError(null);
 
             try {
-                // const data = await fetchTourData('restaurants', golfCourseId);
-                // const mapped = data.map(item => ({
-                //     ...item,
-                //     city: item.city || '',
-                //     category: getRestaurantCategory(item.cat3),
-                // }));
-                //
-                // setRestaurants(mapped);
+                const data = await fetchTourData('restaurants', golfCourseId);
+                const mapped = data.map(item => ({
+                    ...item,
+                    city: item.city || '',
+                    category: getRestaurantCategory(item.cat3),
+                }));
 
-                const dummyData = [
-                    {
-                        contentid: '1',
-                        title: '제주 흑돼지 맛집',
-                        city: '제주시',
-                        addr1: '제주특별자치도 제주시 구좌읍',
-                        addr2: '',
-                        firstimage: '',
-                        cat3: 'A05020100',
-                        category: '한식',
-                    },
-                    {
-                        contentid: '1',
-                        title: '제주 흑돼지 맛집',
-                        city: '제주시',
-                        addr1: '제주특별자치도 제주시 구좌읍',
-                        addr2: '',
-                        firstimage: '',
-                        cat3: 'A05020100',
-                        category: '한식',
-                    },
-                    {
-                        contentid: '1',
-                        title: '제주 흑돼지 맛집',
-                        city: '제주시',
-                        addr1: '제주특별자치도 제주시 구좌읍',
-                        addr2: '',
-                        firstimage: '',
-                        cat3: 'A05020100',
-                        category: '한식',
-                    },
-                ];
-
-                setRestaurants(dummyData);
+                setRestaurants(mapped);
             } catch (err) {
                 console.error(err);
                 setError('음식점 정보를 불러오는 데 실패했습니다.');

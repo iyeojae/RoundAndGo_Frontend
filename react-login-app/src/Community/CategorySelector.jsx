@@ -12,8 +12,8 @@ const CategorySelector = ({ selectedCategory, setSelectedCategory, error }) => {
                         <button
                             key={tab.key}
                             type="button"
-                            className={selectedCategory === tab.label ? 'active' : ''}
-                            onClick={() => setSelectedCategory(tab.label)}  // 한글 값으로 저장
+                            className={selectedCategory === tab.key ? 'active' : ''}
+                            onClick={() => setSelectedCategory(tab.key)}  // key 저장
                         >
                             {tab.label}
                         </button>

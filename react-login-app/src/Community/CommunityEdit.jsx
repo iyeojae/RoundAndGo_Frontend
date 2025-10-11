@@ -6,6 +6,7 @@ import { getCookie } from '../Login/utils/cookieUtils';
 import CategorySelector from './CategorySelector';
 import ImageUploader from './ImageUploader';
 import InputField from './InputField';
+import { TAB_LABELS } from "../Common/Community/Community_TAB_LABELS";
 import './CommunityWrite.css';
 
 function CommunityEdit() {
@@ -30,9 +31,14 @@ function CommunityEdit() {
             try {
                 const res = await fetchPostDetail(postId);
                 const data = res.data;
+                console.log('가져온 정보 : ', data);
+
                 setTitle(data.title);
                 setContent(data.content);
+
+                // 서버에서 받은 key 그대로 사용
                 setSelectedCategory(data.category);
+
                 setExistingImages(data.images || []);
                 setKeepImageIds(data.images?.map(img => img.id) || []);
             } catch (err) {
@@ -69,28 +75,31 @@ function CommunityEdit() {
         if (!validate()) return;
 
         const token = getCookie('accessToken');
-
         if (!token) {
             alert("로그인이 필요합니다.");
             return navigate('/email-login');
         }
 
+        const selectedCategoryLabel = TAB_LABELS.find(tab => tab.key === selectedCategory)?.label;
+        if (!selectedCategoryLabel) {
+            alert("유효하지 않은 카테고리입니다.");
+            return;
+        }
+
         try {
-            // 콘솔 로그 추가
-            console.log('🔼 수정 요청 데이터:', {
+            await updatePostWithImages(
                 postId,
                 title,
                 content,
-                selectedCategory,
+                selectedCategoryLabel,
                 keepImageIds,
-                images,
-            });
+                images
+            );
 
-            await updatePostWithImages(postId, title, content, selectedCategory, keepImageIds, images);
             alert("게시글이 수정되었습니다.");
             navigate(`/community/detail/${postId}`);
         } catch (err) {
-            console.error(err);
+            console.error('수정 실패:', err);
             alert("수정 실패. 다시 시도해주세요.");
         }
     };
@@ -98,15 +107,11 @@ function CommunityEdit() {
     if (loading) return <div>로딩 중...</div>;
 
     return (
-        <div style={{backgroundColor: '#f8f8f8'}}>
+        <div style={{ backgroundColor: '#f8f8f8' }}>
             <Header versionClassName='ArrowVer' showLogo={false} showArrow={true} TitleText='글 수정' />
             <div className="form-wrap">
                 <InputField label="제목" value={title} setValue={setTitle} ref={titleRef} error={errors.title} />
-                <CategorySelector
-                    selectedCategory={selectedCategory}
-                    setSelectedCategory={setSelectedCategory}
-                    error={errors.category}
-                />
+                <CategorySelector selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} error={errors.category} />
                 <InputField
                     label="내용"
                     type="textarea"

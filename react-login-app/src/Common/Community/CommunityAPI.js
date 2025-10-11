@@ -90,6 +90,7 @@ export const fetchPostDetail = async (postId) => {
 export const PostingBoard = async (title, content, category, images) => {
     const token = getCookie('accessToken');
     const formData = new FormData();
+
     try {
         console.log('이미지 확인:', images);
         if (images) {
@@ -149,41 +150,53 @@ export const deletePost = async (postId) => {
     }
 };
 
-// PUT 게시글 수정 (이미지 포함)
-export const updatePostWithImages = async (postId, title, content, category, keepImageIds, images) => {
+// PUT 게시글 수정 API
+export const updatePostWithImages = async (
+    postId,
+    title,
+    content,
+    category,
+    images         // 새로 추가된 이미지 파일 배열
+) => {
     const token = getCookie('accessToken');
     const formData = new FormData();
 
-    // 기존 이미지 유지할 아이디 추가
-    if (keepImageIds && keepImageIds.length > 0) {
-        keepImageIds.forEach((id) => {
-            formData.append('keepImageIds', id);
-        });
-    }
-
-    // 새 이미지 추가
+    // 새로 추가된 이미지 먼저 추가 (작성 API도 이미지 먼저 추가)
     if (images && images.length > 0) {
-        images.forEach((image) => {
-            formData.append('images', image);
+        images.forEach(file => {
+            formData.append('images', file);
         });
     }
 
-    // 텍스트 데이터 추가
-    const textData = { title, content, category };
-    formData.append('post', JSON.stringify(textData));
+    // // 기존 이미지 유지할 id 배열을 JSON 문자열로 만들어서 한 번에 추가
+    // // (서버가 이걸 어떻게 받는지 명확히 확인 필요. 보통 JSON.stringify로 보냄)
+    // if (keepImageIds && keepImageIds.length > 0) {
+    //     formData.append('keepImageIds', JSON.stringify(keepImageIds));
+    // } else {
+    //     // 유지 이미지 없으면 빈 배열로 보내거나 아예 안보낼 수 있음
+    //     formData.append('keepImageIds', JSON.stringify([]));
+    // }
 
-    // 디버깅용 찍는 콘솔
-    for (let pair of formData.entries()) {
-        console.log(`${pair[0]}:`, pair[1]);
-    }
+    // 텍스트 데이터 (작성 API와 동일하게 'post' 키로 JSON 문자열)
+    const postData = { title, content, category };
+    formData.append('post', JSON.stringify(postData));
 
-    const response = await axios.put(`${API_BASE_URL}/posts/${postId}`, formData, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        },
-        withCredentials: true
-    });
+    // // 디버그용 formData 출력
+    // for (const pair of formData.entries()) {
+    //     console.log(`[formData] ${pair[0]}:`, pair[1]);
+    // }
+    const response = await axios.put(
+        `${API_BASE_URL}/posts/${postId}`,
+        formData,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+        }
+    );
 
+    console.log('서버로 보낸 데이터 형식과 내용 : ', response.data);
     return response.data;
 };
 

@@ -8,23 +8,23 @@ import bgIcon from '../assets/backIcon.svg';
 import kakao from '../assets/kakao.svg';
 
 const bounce = keyframes`
-  0%, 100% {
-    transform: scale(1.01);
-  }
-  50% {
-    transform: scale(1.02);
-  }
+    0%, 100% {
+        transform: scale(1.01);
+    }
+    50% {
+        transform: scale(1.02);
+    }
 `;
 
 const ButtonWithBounce = styled.button`
-  transition: transform 0.5s ease, box-shadow 0.5s ease;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
 
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      animation: ${bounce} 0.6s ease forwards;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            animation: ${bounce} 0.6s ease forwards;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
     }
-  }
 `;
 
 const GradientContainer = styled.div`
@@ -33,7 +33,7 @@ const GradientContainer = styled.div`
 
 const BackgroundWrapper = styled.div`
     overflow-y: hidden;
-    background-image: url(${props => props.$bgIcon}); 
+    background-image: url(${props => props.$bgIcon});
     position: relative;
     width: 100%;
     min-height: 100vh;
