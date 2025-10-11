@@ -45,6 +45,7 @@ function MyPage() {
     const [newNickname, setNewNickname] = useState('');
     const [isEditingNickname, setIsEditingNickname] = useState(false);
 
+    const [toastMessage, setToastMessage] = useState('');
     const [showToast, setShowToast] = useState(false);
 
     const [url, setProfileImageUrl] = useState(null);
@@ -70,8 +71,11 @@ function MyPage() {
                 setProfileImageUrl(res.url);
             }
 
+            setToastMessage('성공적으로 저장되었습니다.');
             setShowToast(true);
-            setTimeout(() => navigate('/mypage'), 1000);
+            setTimeout(() => {
+                window.location.href = '/mypage';
+            }, 1000);
         } catch (err) {
             console.error('프로필 색상 업데이트 실패:', err);
         }
@@ -104,8 +108,11 @@ function MyPage() {
             console.log('deleteProfileImage 응답:', res);
             setProfileImageUrl(null);
 
+            setToastMessage('성공적으로 삭제되었습니다.');
             setShowToast(true);
-            setTimeout(() => navigate('/mypage'), 1000);
+            setTimeout(() => {
+                window.location.href = '/mypage';
+            }, 1000);
         } catch (error) {
             console.error('이미지 삭제 실패:', error);
         }
@@ -145,8 +152,11 @@ function MyPage() {
             setShowSaveButton(false);
             setDeleteImageMode(false);
 
+            setToastMessage('성공적으로 저장되었습니다.');
             setShowToast(true);
-            setTimeout(() => navigate('/mypage'), 1000);
+            setTimeout(() => {
+                window.location.href = '/mypage';
+            }, 1000);
         } catch (err) {
             console.error('프로필 저장 실패:', err);
         }
@@ -188,6 +198,7 @@ function MyPage() {
                     <div className="profile-avatar" style={{backgroundColor: selectedColor}}>
                         <img
                             src={previewImage || url || profileIcon}
+                            key={previewImage || url || profileIcon}
                             alt="프로필 이미지"
                             className="profile-image"
                         />
@@ -303,7 +314,7 @@ function MyPage() {
 
             {showToast && (
                 <Toast
-                    message="성공적으로 저장되었습니다."
+                    message={toastMessage}
                     duration={1000}
                     onClose={() => setShowToast(false)}
                 />

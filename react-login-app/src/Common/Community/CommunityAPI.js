@@ -14,6 +14,7 @@ export const getUserInfo = async () => {
             'Authorization': `Bearer ${token}`,
         },
     });
+    console.log('사용자 정보 : ', res.data.data);
     return res.data.data;// { id, email, nickname, loginType, role }
 };
 
@@ -149,44 +150,42 @@ export const deletePost = async (postId) => {
 };
 
 // PUT 게시글 수정 (이미지 포함)
-export const updatePostWithImages = async (postId, title, content, category, images) => {
+export const updatePostWithImages = async (postId, title, content, category, keepImageIds, images) => {
     const token = getCookie('accessToken');
     const formData = new FormData();
-    try {
-        if (images) {
-            // images가 배열인지 확인 후, 배열이 아니면 배열로 변환
-            const imageList = Array.isArray(images) ? images : [images];
-            imageList.forEach((image) => {
-                formData.append('images', image);  // 이미지 각각을 formData에 append
-            });
-        }
 
-        const textData = { title, content, category };
-        formData.append('post', JSON.stringify(textData));
-
-        for (let pair of formData.entries()) {
-            console.log(`${pair[0]}:`, pair[1]);
-        }
-
-        const response = await axios.put(
-            `${API_BASE_URL}/posts/${postId}`,  // 게시글 수정 API 엔드포인트
-            formData,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,  // 토큰 인증 헤더
-                },
-                withCredentials: true,  // 쿠키가 있다면 자동으로 전송
-            }
-        );
-
-        return response.data;  // 서버 응답 데이터 반환
-    } catch (error) {
-        console.error('게시글 수정 실패:', error);
-        console.error('서버 응답:', error.response?.data);
-        throw new Error('게시글 수정에 실패했습니다.');
+    // 기존 이미지 유지할 아이디 추가
+    if (keepImageIds && keepImageIds.length > 0) {
+        keepImageIds.forEach((id) => {
+            formData.append('keepImageIds', id);
+        });
     }
-};
 
+    // 새 이미지 추가
+    if (images && images.length > 0) {
+        images.forEach((image) => {
+            formData.append('images', image);
+        });
+    }
+
+    // 텍스트 데이터 추가
+    const textData = { title, content, category };
+    formData.append('post', JSON.stringify(textData));
+
+    // 디버깅용 찍는 콘솔
+    for (let pair of formData.entries()) {
+        console.log(`${pair[0]}:`, pair[1]);
+    }
+
+    const response = await axios.put(`${API_BASE_URL}/posts/${postId}`, formData, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        withCredentials: true
+    });
+
+    return response.data;
+};
 
 // ----------------------------------------------------------------------
 

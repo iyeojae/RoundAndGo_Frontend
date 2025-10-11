@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from "../LayoutNBanner/Header";
 import { fetchPostDetail, updatePostWithImages } from "../Common/Community/CommunityAPI";
-import { checkAuth } from "../FirstMain/IsContainToken";
-import { getAuthToken } from '../Login/utils/cookieUtils';
+import { getCookie } from '../Login/utils/cookieUtils';
 import CategorySelector from './CategorySelector';
 import ImageUploader from './ImageUploader';
 import InputField from './InputField';
@@ -12,7 +11,6 @@ import './CommunityWrite.css';
 function CommunityEdit() {
     const { postId } = useParams();
     const navigate = useNavigate();
-    const { accessToken } = checkAuth();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -70,15 +68,25 @@ function CommunityEdit() {
     const handleSubmit = async () => {
         if (!validate()) return;
 
-        const authToken = getAuthToken();
+        const token = getCookie('accessToken');
 
-        if (!accessToken) {
+        if (!token) {
             alert("로그인이 필요합니다.");
             return navigate('/email-login');
         }
 
         try {
-            await updatePostWithImages(accessToken, postId, title, content, selectedCategory, keepImageIds, images, authToken);
+            // 콘솔 로그 추가
+            console.log('🔼 수정 요청 데이터:', {
+                postId,
+                title,
+                content,
+                selectedCategory,
+                keepImageIds,
+                images,
+            });
+
+            await updatePostWithImages(postId, title, content, selectedCategory, keepImageIds, images);
             alert("게시글이 수정되었습니다.");
             navigate(`/community/detail/${postId}`);
         } catch (err) {

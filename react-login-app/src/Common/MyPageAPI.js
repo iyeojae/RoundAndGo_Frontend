@@ -3,6 +3,12 @@ import axios from 'axios';
 import { getCookie } from '../Login/utils/cookieUtils';
 import {API_BASE_URL} from "../config/api";
 
+const getDefaultImageBlob = async () => {
+    const response = await fetch('/default-profile.png'); // public 폴더 등에 위치
+    const blob = await response.blob();
+    return new File([blob], 'default-profile.png', { type: blob.type });
+};
+
 
 // axios 기본 설정 - 쿠키 포함
 axios.defaults.withCredentials = true;
@@ -34,14 +40,19 @@ export const uploadProfileImage = async (file, nickname, colorLabel) => {
     const formData = new FormData();
 
     formData.append('nickname', nickname || '');
-
     formData.append('profileColor', colorLabel || '');
 
-    if (file) {
-        formData.append('file', file);
+    const token = getCookie('accessToken');
+
+    let finalFile = file;
+    let isDummyFileUsed = false;
+
+    if (!file) {
+        finalFile = await getDefaultImageBlob(); // 기본 이미지
+        isDummyFileUsed = true;
     }
 
-    const token = getCookie('accessToken');
+    formData.append('file', finalFile);
 
     const res = await axios.post(
         `${API_BASE_URL}/profile/image`,
@@ -54,9 +65,13 @@ export const uploadProfileImage = async (file, nickname, colorLabel) => {
         }
     );
 
+    // 기본 이미지 -> 업로드 직후 삭제 요청
+    if (isDummyFileUsed) {
+        await deleteProfileImage(); // 아래에 함수 정의
+    }
+
     return res.data.result;
 };
-
 
 
 export const deleteProfileImage = async () => {

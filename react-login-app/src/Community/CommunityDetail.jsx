@@ -5,9 +5,8 @@ import Header from "../LayoutNBanner/Header";
 import {
     fetchPostDetail, postComment, fetchComments,
     toggleLike, fetchLikeCount, deletePost, deleteComment,
-    updateComment
+    updateComment, getUserInfo
 } from '../Common/Community/CommunityAPI';
-import { getUserInfo } from '../Common/MyPageAPI.js';
 import { getCookie } from '../Login/utils/cookieUtils';
 
 import DeleteConfirmModal from "../Common/Community/DeleteConfirm";
