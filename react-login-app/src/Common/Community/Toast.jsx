@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../Community/Community.css';
 
-function Toast({ message, duration = 1000, onClose }) {
+function Toast({ style, message, duration = 1000, onClose }) {
     const [visible, setVisible] = useState(true);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ function Toast({ message, duration = 1000, onClose }) {
     if (!visible) return null;
 
     return (
-        <div className="toast">
+        <div className="toast" style={style}>
             {message}
         </div>
     );

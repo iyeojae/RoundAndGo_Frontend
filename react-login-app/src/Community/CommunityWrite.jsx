@@ -106,7 +106,7 @@ function CommunityWrite() {
             <div>
                 <Header versionClassName={'ArrowVer'} showLogo={false} showArrow={true} TitleText={'글쓰기'} />
                 <div style={{ backgroundColor: '#F8F8F8', width: '100%' }}>
-                    <div className="form-wrap" style={{ height: '100%', position: 'relative' }}>
+                    <div className="form-wrap">
                         <div id='section-cont'>
                             <label>제목</label>
                             <input
@@ -176,20 +176,21 @@ function CommunityWrite() {
                             </div>
                         </div>
 
+                        {toastMessage && (
+                            <Toast
+                                style={{width: '75%'}}
+                                message={toastMessage}
+                                duration={1000}
+                                onClose={() => setToastMessage('')}
+                            />
+                        )}
+
                         <div className='btn-write-submit'>
                             <button onClick={handleSubmit} className='SubmitBtn'>작성</button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {toastMessage && (
-                <Toast
-                    message={toastMessage}
-                    duration={1000}
-                    onClose={() => setToastMessage('')}
-                />
-            )}
         </>
     );
 }

@@ -140,18 +140,20 @@ function CommunityEdit() {
                     previewUrls={previewUrls}
                     setPreviewUrls={setPreviewUrls}
                 />
+
+                {toastMessage && (
+                    <Toast
+                        style={{width: '75%'}}
+                        message={toastMessage}
+                        duration={1000}
+                        onClose={() => setToastMessage('')}
+                    />
+                )}
+
                 <div className='btn-wrap'>
                     <button onClick={handleSubmit} className='SubmitBtn'>수정 완료</button>
                 </div>
             </div>
-
-            {toastMessage && (
-                <Toast
-                    message={toastMessage}
-                    duration={1000}
-                    onClose={() => setToastMessage('')}
-                />
-            )}
         </div>
     );
 }

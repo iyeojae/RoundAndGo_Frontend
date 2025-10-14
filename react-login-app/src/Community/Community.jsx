@@ -329,14 +329,6 @@ function CommunityBoard() {
                             </div>
                         );
                     })}
-
-                    {/*{showToast && (*/}
-                    {/*    <Toast*/}
-                    {/*        message="게시글이 정상적으로 삭제되었습니다."*/}
-                    {/*        duration={3000}*/}
-                    {/*        onClose={() => setShowToast(false)}*/}
-                    {/*    />*/}
-                    {/*)}*/}
                     <WriteNewBoard/>
                 </div>
                 <Footer/>

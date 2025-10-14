@@ -455,6 +455,10 @@ function CommunityDetail() {
                         <button type="submit"><img src={SendIcon} alt="send" /></button>
                     </form>
                 </div>
+
+                {showToast && (
+                    <Toast style={{width: '60%'}} message={toastMessage} onClose={() => setShowToast(false)} />
+                )}
             </div>
 
             {/* 바텀시트 */}
@@ -495,18 +499,13 @@ function CommunityDetail() {
 
                         setTimeout(() => {
                             navigate('/community', { state: { deleted: true } });
-                        }, 300);
+                        }, 500);
 
                     } catch {
                         showToastWithMessage('삭제에 실패했습니다.');
                     }
                 }}
             />
-
-
-            {showToast && (
-                <Toast message={toastMessage} onClose={() => setShowToast(false)} />
-            )}
         </div>
     );
 }
