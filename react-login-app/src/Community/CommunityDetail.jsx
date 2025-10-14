@@ -460,6 +460,8 @@ function CommunityDetail() {
                     </form>
                 </div>
 
+                {/*----------------------------------------------------------------------------------------*/}
+
                 {/* 바텀시트 */}
                 {showOptions && (
                     <div className="bottom-sheet" onClick={() => setShowOptions(false)}>
@@ -507,14 +509,14 @@ function CommunityDetail() {
                         onClose={() => setShowToast(false)}
                     />
                 )}
-            </div>
 
-            {/* 이미지 확대 모달 */}
-            {selectedImage && (
-                <div className="image-modal" onClick={() => setSelectedImage(null)}>
-                    <img src={selectedImage} alt="확대 이미지"/>
-                </div>
-            )}
+                {/* 이미지 확대 모달 */}
+                {selectedImage && (
+                    <div className="image-modal" onClick={() => setSelectedImage(null)}>
+                        <img src={selectedImage} alt="확대 이미지"/>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
