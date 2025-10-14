@@ -90,6 +90,10 @@
     gap: clamp(10px, 2vw, 12px);
 }
 
+.content-tab {
+    margin: 3% 0;
+}
+
 .content-tab img {
     width: 100px;
     aspect-ratio: 1 / 1;
@@ -100,19 +104,20 @@
     font-size: clamp(12px, 2vw, 14px);
     color: #269962;
     font-weight: 400;
-    margin-top: clamp(15px, 2vw, 17px);; /* 댓글 수와 첫 댓글 사이의 간격 조정 */
+    margin-top: clamp(15px, 2vw, 17px);
+    padding: 0 5%;
 }
 
 
 /* 댓글 목록 컨테이너 */
 .comments-start-tab {
-    width: 90%;
-    margin: 5% auto 0 auto;
+    width: 100%;
+    margin-top: 5%;
 }
 
 /* 댓글/답글 세트를 묶는 컨테이너 */
 .comment-group {
-    padding: 3% 0;
+    padding: 3% 5%;
     background: #f8f8f8;
 }
 

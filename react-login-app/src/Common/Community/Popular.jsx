@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { fetchPopularPosts, fetchComments, fetchLikeCount, toggleLike } from './CommunityAPI.js';
-import { checkAuth } from "../../FirstMain/IsContainToken.js";
-
+import {fetchPopularPosts, fetchComments, fetchLikeCount, getUserInfo} from './CommunityAPI.js';
+import { getCookie } from '../../Login/utils/cookieUtils';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -28,62 +27,34 @@ function Popular() {
     const [error, setError] = useState(null);
     const [commentCounts, setCommentCounts] = useState({});
     const [likeCounts, setLikeCounts] = useState({});
+    const [currentUserId, setCurrentUserId] = useState(null);
     const [likedPosts, setLikedPosts] = useState({});
+
+    const loadUserInfo = async () => {
+        const token = getCookie('accessToken');
+        if (!token) return;  // 토큰 없으면 종료
+
+        try {
+            const userInfo = await getUserInfo();
+            setCurrentUserId(userInfo?.id);
+        } catch (err) {
+            console.error('사용자 정보 가져오기 실패:', err);
+        }
+    };
 
 
     useEffect(() => {
-        const loadLikeData = async () => {
-            const counts = {};
-            const liked = {};
+        // 로컬스토리지에서 좋아요 상태 불러오기
+        const storedLikes = JSON.parse(localStorage.getItem(`likes_${currentUserId}`)) || {};
 
-            await Promise.all(
-                posts.map(async (post) => {
-                    try {
-                        const likeCount = await fetchLikeCount(post.id);
-                        counts[post.id] = likeCount.count;
-                        liked[post.id] = likeCount.liked;
-                    } catch (error) {
-                        console.error(`좋아요 데이터 로딩 실패 (postId: ${post.id})`, error);
-                        counts[post.id] = 0;
-                        liked[post.id] = false;
-                    }
-                })
-            );
+        // posts가 변경될 때마다 해당 post.id 기준으로 상태 세팅
+        const liked = {};
+        posts.forEach(post => {
+            liked[post.id] = storedLikes[post.id] || false;
+        });
 
-            setLikeCounts(counts);
-            setLikedPosts(liked);
-        };
-
-        if (posts.length > 0) {
-            loadLikeData();
-        }
+        setLikedPosts(liked);
     }, [posts]);
-
-    const handleLikeToggle = async (postId) => {
-        const accessToken = checkAuth();
-
-        if (!accessToken) {
-            alert('로그인이 필요합니다.');
-            return;
-        }
-
-        try {
-            await toggleLike(postId, accessToken);
-
-            setLikedPosts(prev => ({
-                ...prev,
-                [postId]: !prev[postId],
-            }));
-
-            setLikeCounts(prev => ({
-                ...prev,
-                [postId]: prev[postId] + (likedPosts[postId] ? -1 : 1),
-            }));
-        } catch (error) {
-            console.error('좋아요 토글 중 오류:', error);
-            alert('좋아요 처리에 실패했습니다.');
-        }
-    };
 
     const fetchCommentCount = async (postId) => {
         try {
@@ -157,7 +128,7 @@ function Popular() {
                             </div>
                         </div>
                         <div className='btn-container'>
-                            <div className='heart' onClick={() => handleLikeToggle(post.id)}>
+                            <div className='heart'>
                                 <img
                                     src={likedPosts[post.id] ? ActiveHeartIcon : HeartIcon}
                                     alt="하트 아이콘"

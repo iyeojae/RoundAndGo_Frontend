@@ -33,6 +33,7 @@ function CommunityDetail() {
     const [comments, setComments] = useState([]);
     const [likeCount, setLikeCount] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
+    const [likeLoading, setLikeLoading] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
     const [currentUserNickname, setCurrentUserNickname] = useState(null);
 
@@ -64,13 +65,13 @@ function CommunityDetail() {
             const commentData = await fetchComments(postId);
             setComments(commentData?.comments || []);
 
+            // 초기 좋아요 수
             const likeData = await fetchLikeCount(postId);
-            setLikeCount(likeData.count || 0);
+            setLikeCount(likeData.data || 0);
 
-            // 로컬스토리지에서 사용자별 좋아요 상태 불러오기
+            // 좋아요 여부는 로컬스토리지에서 확인
             const userLikes = JSON.parse(localStorage.getItem(`likes_${currentUserId}`)) || {};
             setIsLiked(userLikes[postId] || false);
-
         } catch (error) {
             console.error('게시글 불러오기 실패:', error);
             showToastWithMessage('게시글을 불러오는데 문제가 발생했습니다.');
@@ -91,14 +92,20 @@ function CommunityDetail() {
     };
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchUser = async () => {
             await loadUserInfo();
-            await loadPostData();
         };
+        fetchUser();
+    }, []);
 
-        fetchData();
-    }, [postId]);
+    useEffect(() => {
+        if (currentUserId) {
+            loadPostData();
+        }
+    }, [postId, currentUserId]);
 
+
+    // 좋아요 토글 처리
     const handleToggleLike = async () => {
         if (!token) {
             showToastWithMessage('로그인이 필요합니다.');
@@ -107,13 +114,14 @@ function CommunityDetail() {
         }
 
         try {
-            const res = await toggleLike(post.id);  // 좋아요 토글 API 호출
-            const liked = res?.liked || false;
+            const res = await toggleLike(post.id);  // 서버에 토글 요청
+            const liked = res?.liked ?? !isLiked;   // 응답이 없을 경우 이전 상태 기준 반전
 
-            setIsLiked(liked);
+            // 좋아요 수 수동 증감
             setLikeCount(prev => liked ? prev + 1 : prev - 1);
+            setIsLiked(liked);
 
-            // 로컬스토리지에 사용자별 좋아요 저장
+            // 로컬스토리지에 상태 저장
             const userLikes = JSON.parse(localStorage.getItem(`likes_${currentUserId}`)) || {};
             userLikes[post.id] = liked;
             localStorage.setItem(`likes_${currentUserId}`, JSON.stringify(userLikes));
@@ -246,25 +254,30 @@ function CommunityDetail() {
         return commentList.map(comment => {
             const isParent = depth === 0;
             const canEdit = comment.author === currentUserNickname;
+            const isReplyTarget = replyTargetId === comment.id;
 
             return (
-                <div key={comment.id} className={`comment-group ${isParent ? 'parent-group' : ''}`}>
+                <div
+                    key={comment.id}
+                    className={`comment-group ${isParent ? 'parent-group' : ''}`}
+                    style={isReplyTarget ? {backgroundColor: '#ededed'} : {}}
+                >
                     <div className='comment-item-wrap'>
                         <div className={`comment-item-content ${!isParent ? 'reply-content' : ''}`}>
-                            {!isParent && <img src={reply} alt="reply" className="reply-arrow" />}
+                            {!isParent && <img src={reply} alt="reply" className="reply-arrow"/>}
                             <div className="comment-profile-img"
-                                 style={{ backgroundColor: !comment.profileImage ? getBackgroundColor(comment.profileColor) : 'transparent', }}>
+                                 style={{backgroundColor: !comment.profileImage ? getBackgroundColor(comment.profileColor) : 'transparent',}}>
                                 {comment.profileImage ? (
                                     <img
                                         src={convertToHttp(comment.profileImage)}
                                         alt="profile"
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        style={{width: '100%', height: '100%', objectFit: 'cover'}}
                                     />
                                 ) : (
                                     <img
                                         src={profile}
                                         alt="profile"
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        style={{width: '100%', height: '100%', objectFit: 'cover'}}
                                     />
                                 )}
                             </div>
@@ -287,7 +300,7 @@ function CommunityDetail() {
                                 {editingCommentId === comment.id ? (
                                     <div
                                         className="edit-comment-area"
-                                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                                        style={{display: 'flex', alignItems: 'center', gap: '8px'}}
                                     >
                                     <textarea
                                         value={editContent}
@@ -362,11 +375,17 @@ function CommunityDetail() {
                                         </button>
                                     </div>
                                 ) : (
-                                    <p className="comment-text" style={{ whiteSpace: 'pre-wrap' }}>{comment.content}</p>
+                                    <p className="comment-text" style={{whiteSpace: 'pre-wrap'}}>{comment.content}</p>
                                 )}
 
                                 {editingCommentId !== comment.id && (
-                                    <button className='reply-btn' onClick={() => setReplyTargetId(comment.id)}>답글쓰기</button>
+                                    <button className='reply-btn'
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // 상위로 클릭 이벤트 전파 차단
+                                                setReplyTargetId(prev => (prev === comment.id ? null : comment.id));
+                                            }}>
+                                        답글쓰기
+                                    </button>
                                 )}
                             </div>
                         </div>
@@ -385,7 +404,7 @@ function CommunityDetail() {
     const isAuthor = post.author === currentUserNickname;
 
     return (
-        <div id='main'>
+        <div id='main' onClick={() => {setReplyTargetId(null);}}>
             <Header versionClassName={'ArrowVer'} showLogo={false} showArrow={true} TitleText={'커뮤니티'} />
             <div className="community-content-wrapper">
                 <div className="community-detail-cont">
@@ -448,15 +467,14 @@ function CommunityDetail() {
                 </div>
 
                 {/* 댓글 입력창 */}
-                <div className='comment-input-area'>
+                <div className='comment-input-area' onClick={(e) => e.stopPropagation()}>
                     <form onSubmit={handleCommentSubmit}>
                     <textarea
                         value={content}
-                        onChange={(e) => setContent(e.target.value)}
                         placeholder={replyTargetId ? '답글을 입력해주세요' : '댓글을 입력해주세요'}
                         rows="1"
                     />
-                        <button type="submit"><img src={SendIcon} alt="send" /></button>
+                        <button type="submit"><img src={SendIcon} alt="send"/></button>
                     </form>
                 </div>
 
