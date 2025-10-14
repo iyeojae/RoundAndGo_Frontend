@@ -8,6 +8,7 @@ import ImageUploader from './ImageUploader';
 import InputField from './InputField';
 import { TAB_LABELS } from "../Common/Community/Community_TAB_LABELS";
 import './CommunityWrite.css';
+import Toast from '../Common/Community/Toast';
 
 function CommunityEdit() {
     const { postId } = useParams();
@@ -19,28 +20,24 @@ function CommunityEdit() {
     const [images, setImages] = useState([]);
     const [previewUrls, setPreviewUrls] = useState([]);
     const [existingImages, setExistingImages] = useState([]);
-    const [keepImageIds, setKeepImageIds] = useState([]);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(true);
+    const [toastMessage, setToastMessage] = useState('');
 
     const titleRef = useRef(null);
     const contentRef = useRef(null);
 
+    // 기존 게시글 데이터 로드
     useEffect(() => {
         const loadData = async () => {
             try {
                 const res = await fetchPostDetail(postId);
                 const data = res.data;
-                console.log('가져온 정보 : ', data);
 
                 setTitle(data.title);
                 setContent(data.content);
-
-                // 서버에서 받은 key 그대로 사용
                 setSelectedCategory(data.category);
-
                 setExistingImages(data.images || []);
-                setKeepImageIds(data.images?.map(img => img.id) || []);
             } catch (err) {
                 alert("게시글 로드 실패");
                 navigate('/community');
@@ -51,6 +48,7 @@ function CommunityEdit() {
         loadData();
     }, [postId, navigate]);
 
+    // 필드 흔들기 효과
     const triggerShake = (ref) => {
         if (!ref.current) return;
         ref.current.classList.remove('shake');
@@ -59,6 +57,7 @@ function CommunityEdit() {
         setTimeout(() => ref.current.classList.remove('shake'), 500);
     };
 
+    // 입력값 검증
     const validate = () => {
         const errs = {
             title: title.trim() === '',
@@ -71,18 +70,21 @@ function CommunityEdit() {
         return !Object.values(errs).includes(true);
     };
 
+    // 게시글 수정 제출
     const handleSubmit = async () => {
         if (!validate()) return;
 
         const token = getCookie('accessToken');
         if (!token) {
-            alert("로그인이 필요합니다.");
-            return navigate('/email-login');
+            setToastMessage("로그인이 필요합니다.");
+            setTimeout(() => navigate('/email-login'), 1000);
+            return;
         }
 
         const selectedCategoryLabel = TAB_LABELS.find(tab => tab.key === selectedCategory)?.label;
         if (!selectedCategoryLabel) {
-            alert("유효하지 않은 카테고리입니다.");
+            setToastMessage("유효하지 않은 카테고리입니다.");
+            setTimeout(() => navigate(`/community/detail/${postId}`), 1000);
             return;
         }
 
@@ -92,26 +94,36 @@ function CommunityEdit() {
                 title,
                 content,
                 selectedCategoryLabel,
-                keepImageIds,
                 images
             );
 
-            alert("게시글이 수정되었습니다.");
-            navigate(`/community/detail/${postId}`);
+            setToastMessage("게시글이 수정되었습니다.");
+            setTimeout(() => navigate(`/community/detail/${postId}`), 1000);
         } catch (err) {
             console.error('수정 실패:', err);
-            alert("수정 실패. 다시 시도해주세요.");
+            setToastMessage("수정 실패. 다시 시도해 주세요.");
+            setTimeout(() => navigate(`/community/detail/${postId}`), 1000);
         }
     };
 
     if (loading) return <div>로딩 중...</div>;
 
     return (
-        <div style={{ backgroundColor: '#f8f8f8' }}>
+        <div style={{ backgroundColor: '#f8f8f8', minHeight: '100%' }}>
             <Header versionClassName='ArrowVer' showLogo={false} showArrow={true} TitleText='글 수정' />
             <div className="form-wrap">
-                <InputField label="제목" value={title} setValue={setTitle} ref={titleRef} error={errors.title} />
-                <CategorySelector selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} error={errors.category} />
+                <InputField
+                    label="제목"
+                    value={title}
+                    setValue={setTitle}
+                    ref={titleRef}
+                    error={errors.title}
+                />
+                <CategorySelector
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
+                    error={errors.category}
+                />
                 <InputField
                     label="내용"
                     type="textarea"
@@ -123,8 +135,6 @@ function CommunityEdit() {
                 <ImageUploader
                     existingImages={existingImages}
                     setExistingImages={setExistingImages}
-                    keepImageIds={keepImageIds}
-                    setKeepImageIds={setKeepImageIds}
                     images={images}
                     setImages={setImages}
                     previewUrls={previewUrls}
@@ -134,6 +144,14 @@ function CommunityEdit() {
                     <button onClick={handleSubmit} className='SubmitBtn'>수정 완료</button>
                 </div>
             </div>
+
+            {toastMessage && (
+                <Toast
+                    message={toastMessage}
+                    duration={1000}
+                    onClose={() => setToastMessage('')}
+                />
+            )}
         </div>
     );
 }

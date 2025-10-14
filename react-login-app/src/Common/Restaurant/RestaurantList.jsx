@@ -189,6 +189,7 @@ const CategoryButton = styled.button`
     border-radius: 47px;
     cursor: pointer;
     white-space: nowrap;
+    transition: 0.3s ease-in-out;
     flex-shrink: 0;
 `;
 

@@ -65,7 +65,11 @@ function CommunityDetail() {
 
             const likeData = await fetchLikeCount(postId);
             setLikeCount(likeData.count || 0);
-            setIsLiked(likeData.liked || false);
+
+            // 로컬스토리지에서 사용자별 좋아요 상태 불러오기
+            const userLikes = JSON.parse(localStorage.getItem(`likes_${currentUserId}`)) || {};
+            setIsLiked(userLikes[postId] || false);
+
         } catch (error) {
             console.error('게시글 불러오기 실패:', error);
             showToastWithMessage('게시글을 불러오는데 문제가 발생했습니다.');
@@ -86,8 +90,12 @@ function CommunityDetail() {
     };
 
     useEffect(() => {
-        loadUserInfo();
-        loadPostData();
+        const fetchData = async () => {
+            await loadUserInfo();
+            await loadPostData();
+        };
+
+        fetchData();
     }, [postId]);
 
     const handleToggleLike = async () => {
@@ -96,9 +104,19 @@ function CommunityDetail() {
             navigate('/email-login');
             return;
         }
+
         try {
-            await toggleLike(post.id);
-            await loadPostData();
+            const res = await toggleLike(post.id);  // 좋아요 토글 API 호출
+            const liked = res?.liked || false;
+
+            setIsLiked(liked);
+            setLikeCount(prev => liked ? prev + 1 : prev - 1);
+
+            // 로컬스토리지에 사용자별 좋아요 저장
+            const userLikes = JSON.parse(localStorage.getItem(`likes_${currentUserId}`)) || {};
+            userLikes[post.id] = liked;
+            localStorage.setItem(`likes_${currentUserId}`, JSON.stringify(userLikes));
+
         } catch (error) {
             showToastWithMessage('좋아요 처리에 실패했습니다.');
         }
@@ -402,7 +420,8 @@ function CommunityDetail() {
 
                         <div className='btn-wrap'>
                             <button onClick={handleToggleLike}>
-                                <img src={isLiked ? greenheart : heart} alt='like' /> {likeCount}
+                                <img src={isLiked ? greenheart : heart} alt='like' />
+                                <p style={{margin: 0}}>{likeCount}</p>
                             </button>
 
                             {isAuthor && (
@@ -472,12 +491,18 @@ function CommunityDetail() {
                     try {
                         await deletePost(post.id);
                         setShowDeleteModal(false);
-                        navigate('/community', {state: {deleted: true}});
+                        showToastWithMessage('게시글이 삭제되었습니다.');
+
+                        setTimeout(() => {
+                            navigate('/community', { state: { deleted: true } });
+                        }, 300);
+
                     } catch {
                         showToastWithMessage('삭제에 실패했습니다.');
                     }
                 }}
             />
+
 
             {showToast && (
                 <Toast message={toastMessage} onClose={() => setShowToast(false)} />

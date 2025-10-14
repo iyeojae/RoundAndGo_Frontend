@@ -1,12 +1,11 @@
 import React, { useState, useRef } from 'react';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Header from "../LayoutNBanner/Header";
 import { TAB_LABELS } from "../Common/Community/Community_TAB_LABELS";
 import Camera from '../assets/camera.svg';
-import {PostingBoard} from "../Common/Community/CommunityAPI";
-
+import { PostingBoard } from "../Common/Community/CommunityAPI";
 import { getCookie } from '../Login/utils/cookieUtils';
-
+import Toast from '../Common/Community/Toast';
 import './CommunityWrite.css';
 
 function CommunityWrite() {
@@ -15,6 +14,7 @@ function CommunityWrite() {
     const [content, setContent] = useState('');
     const [images, setImages] = useState([]);
     const [previewUrls, setPreviewUrls] = useState([]);
+    const [toastMessage, setToastMessage] = useState('');
 
     const navigate = useNavigate();
 
@@ -71,33 +71,33 @@ function CommunityWrite() {
 
         const selectedCategoryLabel = TAB_LABELS.find(tab => tab.key === selectedCategory)?.label;
         if (!selectedCategoryLabel) {
-            console.error('선택한 카테고리가 유효하지 않습니다.');
+            setToastMessage('선택한 카테고리가 유효하지 않습니다.');
             return;
         }
 
         const token = getCookie('accessToken');
-        // token 확인
-
         if (!token) {
-            console.error('토큰이 없습니다. 로그인 상태를 확인해주세요.');
+            setToastMessage("로그인이 필요합니다.");
+            setTimeout(() => navigate('/email-login'), 1000);
             return;
         }
 
         try {
             const response = await PostingBoard(title, content, selectedCategoryLabel, images);
-            // 게시 성공
-
             const postId = response?.data?.id;
 
-            if (postId) {
-                navigate(`/community/detail/${postId}`);
-            } else {
-                console.warn('응답에 게시글 ID가 없습니다. 이동 실패');
-            }
+            setToastMessage("게시글이 생성되었습니다.");
+            setTimeout(() => {
+                if (postId) {
+                    navigate(`/community/detail/${postId}`);
+                } else {
+                    navigate('/community');
+                }
+            }, 1000);
 
         } catch (error) {
             console.error('게시 실패:', error);
-            alert('게시글 작성이 완료되지 않았습니다. 다시 시도해 주세요')
+            setToastMessage("작성 실패. 다시 시도해주세요.");
         }
     };
 
@@ -106,7 +106,7 @@ function CommunityWrite() {
             <div>
                 <Header versionClassName={'ArrowVer'} showLogo={false} showArrow={true} TitleText={'글쓰기'} />
                 <div style={{ backgroundColor: '#F8F8F8', width: '100%' }}>
-                    <div className="form-wrap" style={{height: '100%', position: 'relative'}}>
+                    <div className="form-wrap" style={{ height: '100%', position: 'relative' }}>
                         <div id='section-cont'>
                             <label>제목</label>
                             <input
@@ -150,18 +150,15 @@ function CommunityWrite() {
                             <label>사진</label>
                             <div className="image-upload-container">
                                 <label htmlFor="imageUpload" className="image-label">
-                                    <img src={Camera} alt="카메라"/>
+                                    <img src={Camera} alt="카메라" />
                                 </label>
-                                <div style={{display: 'flex', flexDirection: 'row', gap: '5px'}}>
-                                    <input
-                                        type="file"
-                                        id="imageUpload"
-                                        accept="image/*"
-                                        style={{display: 'none'}}
-                                        onChange={handleImageChange}
-                                    />
-                                </div>
-
+                                <input
+                                    type="file"
+                                    id="imageUpload"
+                                    accept="image/*"
+                                    style={{ display: 'none' }}
+                                    onChange={handleImageChange}
+                                />
                                 <div className="image-preview-multiple">
                                     {previewUrls.map((url, index) => (
                                         <div key={index} className="image-preview">
@@ -172,7 +169,7 @@ function CommunityWrite() {
                                             >
                                                 ×
                                             </button>
-                                            <img src={url} alt={`미리보기-${index}`}/>
+                                            <img src={url} alt={`미리보기-${index}`} />
                                         </div>
                                     ))}
                                 </div>
@@ -185,6 +182,14 @@ function CommunityWrite() {
                     </div>
                 </div>
             </div>
+
+            {toastMessage && (
+                <Toast
+                    message={toastMessage}
+                    duration={1000}
+                    onClose={() => setToastMessage('')}
+                />
+            )}
         </>
     );
 }

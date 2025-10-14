@@ -161,30 +161,16 @@ export const updatePostWithImages = async (
     const token = getCookie('accessToken');
     const formData = new FormData();
 
-    // 새로 추가된 이미지 먼저 추가 (작성 API도 이미지 먼저 추가)
+    // 새로 추가된 이미지 먼저 추가
     if (images && images.length > 0) {
         images.forEach(file => {
             formData.append('images', file);
         });
     }
 
-    // // 기존 이미지 유지할 id 배열을 JSON 문자열로 만들어서 한 번에 추가
-    // // (서버가 이걸 어떻게 받는지 명확히 확인 필요. 보통 JSON.stringify로 보냄)
-    // if (keepImageIds && keepImageIds.length > 0) {
-    //     formData.append('keepImageIds', JSON.stringify(keepImageIds));
-    // } else {
-    //     // 유지 이미지 없으면 빈 배열로 보내거나 아예 안보낼 수 있음
-    //     formData.append('keepImageIds', JSON.stringify([]));
-    // }
-
-    // 텍스트 데이터 (작성 API와 동일하게 'post' 키로 JSON 문자열)
     const postData = { title, content, category };
     formData.append('post', JSON.stringify(postData));
 
-    // // 디버그용 formData 출력
-    // for (const pair of formData.entries()) {
-    //     console.log(`[formData] ${pair[0]}:`, pair[1]);
-    // }
     const response = await axios.put(
         `${API_BASE_URL}/posts/${postId}`,
         formData,

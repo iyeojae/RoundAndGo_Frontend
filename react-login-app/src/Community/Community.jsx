@@ -51,9 +51,15 @@ function CommunityBoard() {
             setShowToast(true);
 
             // 브라우저 히스토리 초기화
-            window.history.replaceState({}, document.title);
+            const timeout = setTimeout(() => {
+                window.history.replaceState({}, document.title);
+            }, 1000);
+
+            // 클린업: 컴포넌트 언마운트 시 타이머 제거
+            return () => clearTimeout(timeout);
         }
     }, [location.state]);
+
 
 
     // 댓글 수 || 댓글 목록
@@ -324,13 +330,13 @@ function CommunityBoard() {
                         );
                     })}
 
-                    {showToast && (
-                        <Toast
-                            message="게시글이 정상적으로 삭제되었습니다."
-                            duration={3000}
-                            onClose={() => setShowToast(false)}
-                        />
-                    )}
+                    {/*{showToast && (*/}
+                    {/*    <Toast*/}
+                    {/*        message="게시글이 정상적으로 삭제되었습니다."*/}
+                    {/*        duration={3000}*/}
+                    {/*        onClose={() => setShowToast(false)}*/}
+                    {/*    />*/}
+                    {/*)}*/}
                     <WriteNewBoard/>
                 </div>
                 <Footer/>
