@@ -10,6 +10,7 @@ import {
 import { getCookie } from '../Login/utils/cookieUtils';
 
 import DeleteConfirmModal from "../Common/Community/DeleteConfirm";
+import BottomSheet from './BottomSheet';
 import Toast from '../Common/Community/Toast.jsx';
 import { TAB_LABELS } from '../Common/Community/Community_TAB_LABELS';
 
@@ -143,9 +144,12 @@ function CommunityDetail() {
                 await loadPostData();
             } else if (selectedType === 'post') {
                 await deletePost(selectedComment.id);
-                showToastWithMessage('게시글이 삭제되었습니다.');
                 setShowOptions(false);
-                navigate('/community');
+
+                showToastWithMessage('게시글이 삭제되었습니다.');
+                setTimeout(() => {
+                    navigate('/community', { state: { deleted: true } });
+                }, 300); // UX를 위한 짧은 지연
             }
         } catch (error) {
             showToastWithMessage('삭제에 실패했습니다.');
@@ -383,7 +387,7 @@ function CommunityDetail() {
     return (
         <div id='main'>
             <Header versionClassName={'ArrowVer'} showLogo={false} showArrow={true} TitleText={'커뮤니티'} />
-            <div className="community-content-wrapper"  style={{height: '100vh'}}>
+            <div className="community-content-wrapper">
                 <div className="community-detail-cont">
                     <div className='board-cont'>
                         <div className='title-tab'>
@@ -456,29 +460,54 @@ function CommunityDetail() {
                     </form>
                 </div>
 
+                {/* 바텀시트 */}
+                {showOptions && (
+                    <div className="bottom-sheet" onClick={() => setShowOptions(false)}>
+                        <div className="bottom-sheet-content" onClick={e => e.stopPropagation()}>
+                            {selectedComment?.author === currentUserNickname ? (
+                                <>
+                                    <button onClick={handleEdit} style={{color: '#2563EB'}}>수정하기</button>
+                                    <button onClick={handleDelete} style={{color: '#F62C2F'}}>삭제하기</button>
+                                </>
+                            ) : (
+                                <>
+                                    <button onClick={handleReport} style={{color: '#F62C2F'}}>신고하기</button>
+                                    <button onClick={handleShare}>공유하기</button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* 삭제 확인 모달 */}
+                <DeleteConfirmModal
+                    isOpen={showDeleteModal}
+                    onClose={() => setShowDeleteModal(false)}
+                    onConfirm={async () => {
+                        try {
+                            await deletePost(post.id);
+                            setShowDeleteModal(false);
+                            showToastWithMessage('게시글이 삭제되었습니다.');
+
+                            setTimeout(() => {
+                                navigate('/community', { state: { deleted: true } });
+                            }, 500);
+
+                        } catch {
+                            showToastWithMessage('삭제에 실패했습니다.');
+                        }
+                    }}
+                />
+
+                {/* 토스트 모달 */}
                 {showToast && (
-                    <Toast style={{width: '60%'}} message={toastMessage} onClose={() => setShowToast(false)} />
+                    <Toast
+                        style={{ width: '60%' }}
+                        message={toastMessage}
+                        onClose={() => setShowToast(false)}
+                    />
                 )}
             </div>
-
-            {/* 바텀시트 */}
-            {showOptions && (
-                <div className="bottom-sheet" onClick={() => setShowOptions(false)}>
-                    <div className="bottom-sheet-content" onClick={e => e.stopPropagation()}>
-                        {selectedComment?.author === currentUserNickname ? (
-                            <>
-                                <button onClick={handleEdit} style={{color: '#2563EB'}}>수정하기</button>
-                                <button onClick={handleDelete} style={{color: '#F62C2F'}}>삭제하기</button>
-                            </>
-                        ) : (
-                            <>
-                                <button onClick={handleReport} style={{color: '#F62C2F'}}>신고하기</button>
-                                <button onClick={handleShare}>공유하기</button>
-                            </>
-                        )}
-                    </div>
-                </div>
-            )}
 
             {/* 이미지 확대 모달 */}
             {selectedImage && (
@@ -486,26 +515,6 @@ function CommunityDetail() {
                     <img src={selectedImage} alt="확대 이미지"/>
                 </div>
             )}
-
-            {/* 삭제 확인 모달 */}
-            <DeleteConfirmModal
-                isOpen={showDeleteModal}
-                onClose={() => setShowDeleteModal(false)}
-                onConfirm={async () => {
-                    try {
-                        await deletePost(post.id);
-                        setShowDeleteModal(false);
-                        showToastWithMessage('게시글이 삭제되었습니다.');
-
-                        setTimeout(() => {
-                            navigate('/community', { state: { deleted: true } });
-                        }, 500);
-
-                    } catch {
-                        showToastWithMessage('삭제에 실패했습니다.');
-                    }
-                }}
-            />
         </div>
     );
 }

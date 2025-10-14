@@ -1,9 +1,9 @@
 /* 전체 컨테이너를 최소 화면 높이로 설정하여 꽉 채우게 함 */
 #main {
-    height: fit-content;
     display: flex;
     flex-direction: column;
     background: #f8f8f8;
+    min-height: 100%;
 }
 
 .community-content-wrapper {
@@ -286,7 +286,9 @@
 
 /*삭제할거냐고 뜨는 모달*/
 .modal-overlay {
-    position: fixed;
+    position: absolute;
+    width: 100%;
+    height: 100%;
     top: 0;
     left: 0;
     right: 0;
@@ -336,14 +338,22 @@
     padding: 1% 0;
 }
 
-.confirm-btn {
+.delete-board-confirm-btn {
     width: 80%;
+    margin: 10% auto;
     color: #9C9C9C;
     border: 1px solid #9c9c9c;
     background: transparent;
     padding: 3% 0;
-    border-radius: 27px;
-    margin: 10%;
+    border-radius: 30px;
+}
+
+.delete-board-confirm-btn:hover,
+.delete-board-confirm-btn:active {
+    color: #fff;
+    border: 1px solid #269962;
+    background: #269962;
+    transition: 0.2s ease-in;
 }
 
 /* 댓글 입력창 스타일 */
