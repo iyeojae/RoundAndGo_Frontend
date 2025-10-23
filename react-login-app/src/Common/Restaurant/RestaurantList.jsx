@@ -33,7 +33,13 @@ function RestaurantList({
             setError(null);
 
             try {
-                const data = await fetchTourData('restaurants', golfCourseId);
+                const savedId = localStorage.getItem("selectedGolfCourseId");
+                const currentGolfCourseId = savedId ? parseInt(savedId, 10) : golfCourseId;
+
+                console.log("현재 불러온 골프장 ID:", currentGolfCourseId);
+
+                const data = await fetchTourData('restaurants', currentGolfCourseId);
+
                 const mapped = data.map(item => ({
                     ...item,
                     city: item.city || '',
@@ -51,6 +57,7 @@ function RestaurantList({
 
         fetchRestaurants();
     }, [golfCourseId]);
+
 
     const filteredRestaurants = restaurants.filter(
         r => selectedCategoryFilter === '전체' || r.category === selectedCategoryFilter

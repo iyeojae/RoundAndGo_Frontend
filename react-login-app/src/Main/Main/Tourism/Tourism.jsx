@@ -15,70 +15,6 @@ function Tourism({
     const [scrollPosition, setScrollPosition] = useState(0);
     const [maxScroll, setMaxScroll] = useState(0);
     const scrollContainerRef = useRef(null);
-    //
-    // // 더미데이터 10개
-    // const dummyTourismList = [
-    //     {
-    //         title: '성산 일출봉',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=성산+일출봉',
-    //         addr1: '서귀포시 성산읍 일출로 284-12',
-    //         category: '자연',
-    //     },
-    //     {
-    //         title: '한라산 국립공원',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=한라산',
-    //         addr1: '제주시 1100로 2070-61',
-    //         category: '자연',
-    //     },
-    //     {
-    //         title: '섭지코지',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=섭지코지',
-    //         addr1: '서귀포시 성산읍 섭지코지로',
-    //         category: '자연',
-    //     },
-    //     {
-    //         title: '천지연 폭포',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=천지연+폭포',
-    //         addr1: '서귀포시 천지연로 132',
-    //         category: '자연',
-    //     },
-    //     {
-    //         title: '제주 민속촌',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=제주+민속촌',
-    //         addr1: '제주시 조천읍 교래리 542',
-    //         category: '문화',
-    //     },
-    //     {
-    //         title: '우도',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=우도',
-    //         addr1: '제주시 우도면 우도리',
-    //         category: '자연',
-    //     },
-    //     {
-    //         title: '용두암',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=용두암',
-    //         addr1: '제주시 용담이동 2171-1',
-    //         category: '자연',
-    //     },
-    //     {
-    //         title: '중문 관광단지',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=중문+관광단지',
-    //         addr1: '서귀포시 중문동',
-    //         category: '관광단지',
-    //     },
-    //     {
-    //         title: '비자림',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=비자림',
-    //         addr1: '제주시 구좌읍 평대리 1446',
-    //         category: '자연',
-    //     },
-    //     {
-    //         title: '협재 해수욕장',
-    //         imageUrl: 'https://via.placeholder.com/211x246?text=협재+해수욕장',
-    //         addr1: '제주시 한림읍 협재리',
-    //         category: '해변',
-    //     },
-    // ];
 
     useEffect(() => {
         const loadTourismData = async () => {
@@ -88,18 +24,10 @@ function Tourism({
             try {
                 let data;
 
-                // if (useDummy) {
-                //     data = dummyTourismList;
-                // } else {
-                //     const savedId = localStorage.getItem("selectedGolfCourseId");
-                //     const currentGolfCourseId = savedId ? parseInt(savedId, 10) : golfCourseId;
-                //     data = await fetchTourData('attractions', currentGolfCourseId);
-                // }
                 const savedId = localStorage.getItem("selectedGolfCourseId");
                 const currentGolfCourseId = savedId ? parseInt(savedId, 10) : golfCourseId;
                 data = await fetchTourData('attractions', currentGolfCourseId);
 
-                // API 데이터 형태에 따라 mapping (dummy는 이미 형태 맞춤)
                 const mapped = data.map(item => ({
                     title: item.title,
                     imageUrl: item.firstimage || item.imageUrl || NoImage,

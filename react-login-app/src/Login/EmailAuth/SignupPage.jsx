@@ -122,7 +122,7 @@ function SignupPage() {
       
       if (result.success) {
         setSignupCompleted(true);
-        showToast('회원가입이 완료되었습니다! 👏');
+        showToast('회원가입이 완료되었습니다!');
       } else {
         const errorMessage = result.message || '회원가입 중 알 수 없는 오류가 발생했습니다.';
         showToast(errorMessage);
