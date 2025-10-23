@@ -1,5 +1,5 @@
 // GolfSearch.jsx
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react'; // 검색결과 슬라이드
 import 'swiper/css';
@@ -12,6 +12,10 @@ import Warning from '../assets/Warning.svg'; // 검색결과 없음
 import { API_ENDPOINTS } from '../config/api.js';
 
 function GolfSearch() {
+    useEffect(() => {
+        localStorage.removeItem('selectedGolfCourseId');
+    }, []);
+
     const [state, setState] = useState({ // useState 통합
         searchTerm: '',
         filteredGolfCourses: [],
