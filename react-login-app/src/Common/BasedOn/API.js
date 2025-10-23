@@ -1,11 +1,11 @@
 import { API_ENDPOINTS } from "../../config/api";
 
-const TOUR_INFOS_RESTAURANTS = API_ENDPOINTS;
+const TOUR_INFOS_RESTAURANTS = API_ENDPOINTS.TOUR_INFOS_RESTAURANTS;
 
 export const fetchTourData = async (type, golfCourseId = null) => {
     if (golfCourseId && !isNaN(Number(golfCourseId))) {
         // 골프장 기반 요청
-        const url = `${TOUR_INFOS_RESTAURANTS}/tour-infos/by-golf-course/${type}?golfCourseId=${golfCourseId}`;
+        const url = `${TOUR_INFOS_RESTAURANTS}/by-golf-course/${type}?golfCourseId=${golfCourseId}`;
         console.log("fetchTourData 호출됨", { type, golfCourseId });
         try {
             const res = await fetch(url);
@@ -22,7 +22,7 @@ export const fetchTourData = async (type, golfCourseId = null) => {
         try {
             const results = await Promise.all(
                 cities.map(city =>
-                    fetch(`${TOUR_INFOS_RESTAURANTS}/tour-infos/${type}?province=제주특별자치도&city=${city}`)
+                    fetch(`${TOUR_INFOS_RESTAURANTS}/${type}?province=제주특별자치도&city=${city}`)
                         .then(res => res.ok ? res.json() : [])
                 )
             );
