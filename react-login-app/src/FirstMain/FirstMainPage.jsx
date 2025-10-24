@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import MapImage from '../assets/map_jeju.svg';
 import GolfSearch from './Search.jsx';
-import NoImage from '../assets/NoImage.svg';
+import NoImage from '../assets/NoImageL.svg';
 import Warning from '../assets/Warning.svg'; // 검색결과 없음
 
 import { TokenDebugging } from "./TokenCheking";
@@ -180,7 +180,9 @@ const GolfCourseImageWrapper = styled.div`
 const GolfCourseImage = styled.img`
     width: 100%;
     min-height: 140px;
-    max-height: 240px;
+    max-height: 180px;
+    border-radius: 5px;
+    
     aspect-ratio: ${(props) => props.$aspectRatio};
     object-fit: cover;
     transition: all 0.7s ease-in-out;
@@ -189,31 +191,33 @@ const GolfCourseImage = styled.img`
     z-index: 1;
 `;
 
-const ImageOverlay = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: ${(props) => (props.$visible ? 0.34 : 0)};
-    background: ${(props) =>
-            props.$visible
-                    ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.6) 23.56%, rgba(0, 0, 0, 0) 65.38%)'
-                    : 'none'};
-    z-index: 2;
-    pointer-events: none;
-    transition: all 0.5s ease-in-out;
-`;
-
-const ImageLabel = styled.div`
-    position: absolute;
-    top: 5%;
-    left: 5%;
-    color: #fff;
-    font-size: clamp(0.6rem, 2vw, 0.85rem);
-    font-weight: 400;
-    z-index: 3;
-`;
+// const ImageOverlay = styled.div`
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     border-radius: 5px;
+//
+//     opacity: ${(props) => (props.$visible ? 0.34 : 0)};
+//     background: ${(props) =>
+//             props.$visible
+//                     ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.6) 23.56%, rgba(0, 0, 0, 0) 65.38%)'
+//                     : 'none'};
+//     z-index: 2;
+//     pointer-events: none;
+//     transition: all 0.5s ease-in-out;
+// `;
+//
+// const ImageLabel = styled.div`
+//     position: absolute;
+//     top: 5%;
+//     left: 5%;
+//     color: #fff;
+//     font-size: clamp(0.6rem, 2vw, 0.85rem);
+//     font-weight: 400;
+//     z-index: 3;
+// `;
 
 const NoResultsMessage = styled.div`
     text-align: center;
@@ -240,6 +244,60 @@ const NoResultsMessage = styled.div`
     }
 `;
 
+// 반응형 overlay
+const ResponsiveOverlay = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    z-index: 2;
+    pointer-events: none;
+    transition: all 0.4s ease-in-out;
+    opacity: ${(props) => (props.$visible ? 0.34 : 0)};
+    background: ${(props) =>
+            props.$visible
+                    ? 'linear-gradient(180deg, rgba(0,0,0,0.6) 23%, rgba(0,0,0,0) 65%)'
+                    : 'none'};
+
+    /* 모바일 */
+    @media (max-width: 768px) {
+        opacity: ${(props) => (props.$visible ? 0.34 : 0.2)};
+        background: linear-gradient(
+                180deg,
+                rgb(0, 0, 0, 0.6) 23%,
+                rgba(0, 0, 0, 0) 65%
+        );
+    }
+`;
+
+// 반응형 label
+const ResponsiveLabel = styled.div`
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    color: #fff;
+    font-size: clamp(0.55rem, 2vw, 0.85rem);
+    font-weight: 400;
+    text-align: left;
+    z-index: 3;
+    width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.3s ease-in-out;
+
+    /* 기본 */
+    opacity: ${(props) => (props.$isSelected ? 1 : 0)};
+
+    /* 모바일 */
+    @media (max-width: 768px) {
+        opacity: ${(props) => (props.$isSelected ? 1 : 0.7)};
+    }
+`;
+
+
 const AnimatedTop3 = ({ selectedRegionInfo, golfCourses, handleImageClick, selectedImageIndex }) => {
     const active = !!selectedRegionInfo;
 
@@ -263,7 +321,7 @@ const AnimatedTop3 = ({ selectedRegionInfo, golfCourses, handleImageClick, selec
                         const listSize = golfCourses.length;
 
                         const aspectRatio = (listSize === 1 || listSize === 0)
-                            ? '400 / 140'
+                            ? '234 / 140'
                             : (isSelected
                                 ? '234 / 140'
                                 : (listSize === 2 ? '153 / 140' : '70 / 140'));
@@ -277,12 +335,18 @@ const AnimatedTop3 = ({ selectedRegionInfo, golfCourses, handleImageClick, selec
                                     onClick={() => handleImageClick(index, course)}
                                 />
 
-                                {(isSelected || listSize === 1 || listSize === 0) && (
-                                    <>
-                                        <ImageOverlay $visible={isSelected} /> {/* transient prop 적용 */}
-                                        <ImageLabel>{course.name}</ImageLabel>
-                                    </>
-                                )}
+                                {/*{(isSelected || listSize === 1 || listSize === 0) ? (*/}
+                                {/*    <>*/}
+                                {/*        <ImageOverlay $visible={isSelected} />*/}
+                                {/*        <ImageLabel>{course.name}</ImageLabel>*/}
+                                {/*    </>*/}
+                                {/*) : (*/}
+                                {/*    <MobileLabel>{course.name}</MobileLabel> // 모바일 전용 Label 추가*/}
+                                {/*)}*/}
+                                <ResponsiveOverlay $visible={isSelected} />
+                                <ResponsiveLabel $isSelected={isSelected}>
+                                    {course.name}
+                                </ResponsiveLabel>
                             </GolfCourseImageWrapper>
                         );
                     })}
