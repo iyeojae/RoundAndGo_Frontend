@@ -56,7 +56,7 @@ function CommunityPreview() {
     const styles = {
         CommunityContent: {
             width: '90%',
-            margin: '5% auto 10% auto',
+            margin: '3% auto 10% auto',
             borderRadius: '10px',
             background: '#fff',
             boxShadow: '0 0 8px rgba(0, 0, 0, 0.25)',
@@ -118,7 +118,8 @@ function CommunityPreview() {
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                marginTop: '7%'
             }}>
                 <p className="IntroMent"
                    style={{fontSize: '18px', fontWeight: '500', color: '#000', padding: '0', margin: '0'}}>
