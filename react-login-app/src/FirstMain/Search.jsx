@@ -98,23 +98,23 @@ function GolfSearch() {
         navigateAfterCheck('/main');
     }
 
-    const Reserve = (index) => { // 예약했을 경우, '클릭' 버튼 터치 시 -> 해당 정보 기반 주변 음식점, 놀거리, 숙박시설만 보여주기
-        const selectedCourse = filteredGolfCourses[index];
-
+    const Reserve = (selectedCourse) => { // 예약했을 경우, '클릭' 버튼 터치 시 -> 해당 정보 기반 주변 음식점, 놀거리, 숙박시설만 보여주기
         console.log("선택된 골프장 데이터:", selectedCourse);
-        console.log("filteredGolfCourses 전체 목록:", filteredGolfCourses);
+        console.log("selectedCourse:", selectedCourse);
+        console.log("selectedCourse.id:", selectedCourse.id);
+
 
         if (selectedCourse && selectedCourse.id) {
             localStorage.setItem('selectedGolfCourseId', selectedCourse.id); // 로컬 스토리지에 저장
             // 불러올 때 const 변수명 = localStorage.getItem('selectedGolfCourseId'); 이렇게 불러오면 됨
         } // console.log('골프장 아이디: ', selectedCourse.id);
 
-        updateState({ clickedIndex: index });
-
+        updateState({ clickedIndex: selectedCourse.id }); // 클릭 색상 구분용
         setTimeout(() => {
             navigateAfterCheck('/main');
         }, 300); // 버튼 색상이 변한 후 이동 - delay
     };
+
 
 
     return (
@@ -180,10 +180,8 @@ function GolfSearch() {
                                                                             <p>{course.address}</p>
                                                                             <button
                                                                                 onClick={() => Reserve(course)}
-                                                                                style={{
-                                                                                    backgroundColor: clickedIndex === index ? '#2d8779' : 'transparent',
-                                                                                    color: clickedIndex === index ? 'white' : '#2d8779',
-                                                                                }}
+                                                                                style={{ backgroundColor: clickedIndex === course.id ? '#2d8779' : 'transparent',
+                                                                                    color: clickedIndex === course.id ? 'white' : '#2d8779' }}
                                                                             >
                                                                                 선택
                                                                             </button>

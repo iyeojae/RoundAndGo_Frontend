@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes, css } from 'styled-components'; // keyframes와 css를 import 합니다.
+import styled, { keyframes } from 'styled-components';
 import MapImage from '../assets/map_jeju.svg';
 import GolfSearch from './Search.jsx';
 import NoImage from '../assets/NoImage.svg';
@@ -7,6 +7,7 @@ import Warning from '../assets/Warning.svg'; // 검색결과 없음
 
 import { TokenDebugging } from "./TokenCheking";
 import { API_BASE_URL } from "../config/api";
+import { useNavigate } from 'react-router-dom';
 
 import './FirstMainPage.css';
 
@@ -133,15 +134,15 @@ const MapRegionButton = styled.button`
 const Top3ForRegion = styled.div`
     width: 90%;
     transition: all 0.3s ease-in-out;
-    margin: 0 auto ${props => (props.active ? '8%' : '0')} auto;
+    margin: 0 auto ${(props) => (props.$active ? '8%' : '0')} auto;
     padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: ${props => (props.active ? '3%' : '0')};
-    height: ${props => (props.active ? 'auto' : '0')};
-    overflow: ${props => (props.active ? 'visible' : 'hidden')};
+    gap: ${(props) => (props.$active ? '3%' : '0')};
+    height: ${(props) => (props.$active ? 'auto' : '0')};
+    overflow: ${(props) => (props.$active ? 'visible' : 'hidden')};
 `;
 
 const Subcomment = styled.div`
@@ -180,7 +181,7 @@ const GolfCourseImage = styled.img`
     width: 100%;
     min-height: 140px;
     max-height: 240px;
-    aspect-ratio: ${props => props.aspectRatio};
+    aspect-ratio: ${(props) => props.$aspectRatio};
     object-fit: cover;
     transition: all 0.7s ease-in-out;
     cursor: pointer;
@@ -194,8 +195,11 @@ const ImageOverlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: ${props => (props.visible ? 0.34 : 0)};
-    background: ${props => (props.visible ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.6) 23.56%, rgba(0, 0, 0, 0) 65.38%)' : 'none')};
+    opacity: ${(props) => (props.$visible ? 0.34 : 0)};
+    background: ${(props) =>
+            props.$visible
+                    ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.6) 23.56%, rgba(0, 0, 0, 0) 65.38%)'
+                    : 'none'};
     z-index: 2;
     pointer-events: none;
     transition: all 0.5s ease-in-out;
@@ -242,7 +246,7 @@ const AnimatedTop3 = ({ selectedRegionInfo, golfCourses, handleImageClick, selec
     if (!selectedRegionInfo) return null;
 
     return (
-        <Top3ForRegion active={active}>
+        <Top3ForRegion $active={active}> {/* transient prop 적용 */}
             <Subcomment>
                 <p>{selectedRegionInfo.name}의 골프장, 이곳인가요?</p>
             </Subcomment>
@@ -269,13 +273,13 @@ const AnimatedTop3 = ({ selectedRegionInfo, golfCourses, handleImageClick, selec
                                 <GolfCourseImage
                                     src={course.imageUrl || NoImage}
                                     alt={course.name}
-                                    aspectRatio={aspectRatio}
+                                    $aspectRatio={aspectRatio} // transient prop 적용
                                     onClick={() => handleImageClick(index, course)}
                                 />
 
                                 {(isSelected || listSize === 1 || listSize === 0) && (
                                     <>
-                                        <ImageOverlay visible={isSelected} />
+                                        <ImageOverlay $visible={isSelected} /> {/* transient prop 적용 */}
                                         <ImageLabel>{course.name}</ImageLabel>
                                     </>
                                 )}
@@ -290,17 +294,25 @@ const AnimatedTop3 = ({ selectedRegionInfo, golfCourses, handleImageClick, selec
 
 
 function FirstMainPage() {
+    useEffect(() => {
+        localStorage.removeItem('selectedGolfCourseId');
+    }, []);
+
     const [selectedRegionName, setSelectedRegionName] = useState(null); // 선택된 지역 이름
     const [selectedRegionInfo, setSelectedRegionInfo] = useState(null); // 선택된 지역의 전체 정보
     const [golfCourses, setGolfCourses] = useState([]); // 해당 지역의 골프장 목록
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const navigate = useNavigate(); // 페이지 리로드 없이 이동하기 위한 Hook
 
     const handleImageClick = (index, course) => {
         if (selectedImageIndex === index) {
             // 2번 클릭 -> 이동 및 id 저장
             console.log("저장된 골프장 ID:", course.id);
             localStorage.setItem("selectedGolfCourseId", course.id);
-            window.location.href = '/main';
+
+            setTimeout(() => {
+                navigate('/main');
+            }, 200);
         } else {
             // 1번 클릭 -> 선택만
             setSelectedImageIndex(index);
@@ -326,6 +338,7 @@ function FirstMainPage() {
             const fetchGolfCourses = async () => {
                 try {
                     const res = await fetch(`${API_BASE_URL}/golf-courses/search-by-address?address=${selectedRegionInfo.name}`);
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`); // 에러 처리 추가
                     const result = await res.json();
 
                     if (Array.isArray(result.data)) {
