@@ -24,6 +24,7 @@ export const getUserInfo = async () => {
     return res.data.data;// { id, email, nickname, loginType, role }
 };
 
+// 프로필 정보 가져오기
 export const getProfileImage = async () => {
     const token = getCookie('accessToken');
     const res = await axios.get(`${API_BASE_URL}/profile/image`, {
@@ -36,6 +37,7 @@ export const getProfileImage = async () => {
     return { nickname, url, profileColor };
 };
 
+// 프로필 업로드
 export const uploadProfileImage = async (file, nickname, colorLabel) => {
     const formData = new FormData();
 
@@ -73,7 +75,7 @@ export const uploadProfileImage = async (file, nickname, colorLabel) => {
     return res.data.result;
 };
 
-
+// 프로필 삭제
 export const deleteProfileImage = async () => {
     const token = getCookie('accessToken');
     const res = await axios.delete(`${API_BASE_URL}/profile/image`, {
