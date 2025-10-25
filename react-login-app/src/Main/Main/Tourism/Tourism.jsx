@@ -72,7 +72,7 @@ function Tourism({
     const styles = {
         Tourism: {
             width: '100%',
-            margin: '0 auto'
+            margin: '0 auto',
         },
         IntroMent: {
             fontSize: 'clamp(18px, 2vw, 20px)',
