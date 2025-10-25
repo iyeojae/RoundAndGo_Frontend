@@ -329,7 +329,7 @@ const CourseStep1 = () => {
   };
 
   return (
-    <main className="main-container">
+    <div className="main-container">
       <Header />
       
       <div className="course-step1-page">
@@ -676,7 +676,7 @@ const CourseStep1 = () => {
       )}
       
       <Footer />
-    </main>
+    </div>
   );
 };
 

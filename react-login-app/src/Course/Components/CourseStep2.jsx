@@ -316,7 +316,7 @@ const CourseStep2 = () => {
   // 로딩 화면
   if (isLoading) {
     return (
-      <main className="main-container">
+      <div className="main-container">
         <Header />
         <div className="course-step2-page">
           <div className="loading-container">
@@ -326,12 +326,12 @@ const CourseStep2 = () => {
           </div>
         </div>
         <Footer />
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="main-container">
+    <div className="main-container">
       <Header />
       
       <div className="course-step2-page">
@@ -439,7 +439,7 @@ const CourseStep2 = () => {
       </div>
       
       <Footer />
-    </main>
+    </div>
   );
 };
 

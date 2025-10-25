@@ -241,7 +241,7 @@ const MyCourseView = ({ courseData, courseInfo }) => {
   const travelInfo = getTravelInfo();
 
   return (
-    <main>
+    <>
       <div className="my-course-page">
         <Header />
         
@@ -375,7 +375,7 @@ const MyCourseView = ({ courseData, courseInfo }) => {
       </div>
       
       <Footer />
-    </main>
+    </>
   );
 };
 
