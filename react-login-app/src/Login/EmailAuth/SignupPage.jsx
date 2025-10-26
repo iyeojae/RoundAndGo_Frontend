@@ -124,13 +124,22 @@ function SignupPage() {
         setSignupCompleted(true);
         showToast('회원가입이 완료되었습니다!');
       } else {
-        const errorMessage = result.message || '회원가입 중 알 수 없는 오류가 발생했습니다.';
+        // 구체적인 오류 메시지 표시
+        const errorMessage = result.message || result.error || '회원가입 중 알 수 없는 오류가 발생했습니다.';
         showToast(errorMessage);
       }
       
     } catch (error) {
       console.error('Signup Error:', error);
-      showToast('네트워크 오류가 발생했거나 서버 접속에 실패했습니다.');
+      
+      // 네트워크 오류 구분
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        showToast('네트워크 연결을 확인해주세요.');
+      } else if (error.message.includes('timeout')) {
+        showToast('요청 시간이 초과되었습니다. 다시 시도해주세요.');
+      } else {
+        showToast('서버 접속에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      }
     } finally {
       setLoading(false);
     }
