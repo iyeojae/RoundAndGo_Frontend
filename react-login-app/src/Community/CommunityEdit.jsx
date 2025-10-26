@@ -27,6 +27,30 @@ function CommunityEdit() {
     const titleRef = useRef(null);
     const contentRef = useRef(null);
 
+    const [keepImageIds, setKeepImageIds] = useState([]);
+
+    // 게시글 불러올 때 기존 이미지 id를 keep 목록에 저장
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const res = await fetchPostDetail(postId);
+                const data = res.data;
+
+                setTitle(data.title);
+                setContent(data.content);
+                setSelectedCategory(data.category);
+                setExistingImages(data.images || []);
+                setKeepImageIds(data.images?.map(img => img.id) || []);
+            } catch (err) {
+                alert("게시글 로드 실패");
+                navigate('/community');
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadData();
+    }, [postId, navigate]);
+
     // 기존 게시글 데이터 로드
     useEffect(() => {
         const loadData = async () => {
@@ -94,7 +118,8 @@ function CommunityEdit() {
                 title,
                 content,
                 selectedCategoryLabel,
-                images
+                images,
+                existingImages
             );
 
             setToastMessage("게시글이 수정되었습니다.");
@@ -135,6 +160,8 @@ function CommunityEdit() {
                 <ImageUploader
                     existingImages={existingImages}
                     setExistingImages={setExistingImages}
+                    keepImageIds={keepImageIds}
+                    setKeepImageIds={setKeepImageIds}
                     images={images}
                     setImages={setImages}
                     previewUrls={previewUrls}

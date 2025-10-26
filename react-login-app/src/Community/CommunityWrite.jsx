@@ -18,6 +18,8 @@ function CommunityWrite() {
 
     const navigate = useNavigate();
 
+    const containerRef = useRef(null);
+
     const [errors, setErrors] = useState({
         title: false,
         category: false,
@@ -49,6 +51,14 @@ function CommunityWrite() {
 
         setImages(newImages);
         setPreviewUrls(newPreviews);
+
+        // 자동 스크롤
+        setTimeout(() => {
+            containerRef.current?.scrollTo({
+                left: containerRef.current.scrollWidth,
+                behavior: 'smooth',
+            });
+        }, 50);
     };
 
     const handleImageRemove = (indexToRemove) => {

@@ -97,6 +97,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .image-label::before {
@@ -107,17 +108,32 @@
     border-radius: 8px;
     pointer-events: none;
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .image-preview-multiple {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    overflow-x: auto;      /* 수평 스크롤 허용 */
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    flex-grow: 1;
+}
+
+/* 스크롤바 숨기기 */
+.image-preview-multiple::-webkit-scrollbar {
+    display: none;         /* Chrome, Safari */
+}
+.image-preview-multiple {
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none;    /* Firefox */
 }
 
 .image-preview {
     position: relative;
     width: clamp(100px, 2vw, 125px);
+    flex-shrink: 0;          /* 크기 줄어들지 않게 고정 */
     display: flex;
     aspect-ratio: 1 / 1;
     border-radius: 8px;

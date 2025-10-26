@@ -156,16 +156,28 @@ export const updatePostWithImages = async (
     title,
     content,
     category,
-    images         // 새로 추가된 이미지 파일 배열
+    images,       // 새로 추가된 이미지 파일 배열
+    keepImageIds
 ) => {
     const token = getCookie('accessToken');
     const formData = new FormData();
 
+    // 유지할 기존 이미지 id 목록 전송
+    if (keepImageIds && keepImageIds.length > 0) {
+        keepImageIds.forEach(id => formData.append('keepImageIds', id));
+    }
+
     // 새로 추가된 이미지 먼저 추가
     if (images && images.length > 0) {
-        images.forEach(file => {
+        images.forEach((file, index) => {
             formData.append('images', file);
+            console.log(`이미지 추가 ${index + 1}:`, file.name);
         });
+
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}:`, pair[1]);
+        }
+
     }
 
     const postData = { title, content, category };

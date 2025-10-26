@@ -209,7 +209,7 @@ function MyPage() {
                             key={previewImage || url || profileIcon}
                             alt="프로필 이미지"
                             className="profile-image"
-                        />.
+                        />
                         <div className="camera-wrapper">
                             {url ? (
                                 // 이미지가 있는 경우 => X 버튼
