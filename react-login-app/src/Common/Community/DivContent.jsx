@@ -253,6 +253,11 @@ function TabButtons() {
         borderRadius: '0 clamp(10px, 2vw, 12px) clamp(10px, 2vw, 12px) 0',
     };
 
+    // 탭 토글 추가
+    const handleTabClick = (tab) => {
+        setActiveTab(prev => (prev === tab ? '' : tab)); // 동일 탭 클릭 시 닫기
+    };
+
     return (
         <div style={{ marginBottom: '5%' }}>
             {/* Tabs */}
@@ -267,7 +272,7 @@ function TabButtons() {
                 }}
             >
                 <button
-                    onClick={() => setActiveTab('written')}
+                    onClick={() => handleTabClick('written')}
                     style={{
                         ...commonStyle,
                         ...(activeTab === 'written' ? activeStyle : {}),
@@ -278,7 +283,7 @@ function TabButtons() {
                     내가 쓴 글
                 </button>
                 <button
-                    onClick={() => setActiveTab('commented')}
+                    onClick={() => handleTabClick('commented')}
                     style={{
                         ...commonStyle,
                         ...(activeTab === 'commented' ? activeStyle : {}),
