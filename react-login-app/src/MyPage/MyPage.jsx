@@ -55,6 +55,15 @@ function MyPage() {
 
     const fileInputRef = useRef();
 
+    const [activeMenu, setActiveMenu] = useState(null);
+
+    const handleMenuClick = (label, path) => {
+        setActiveMenu(label);  // 클릭된 메뉴 상태 저장
+        setTimeout(() => {
+            goTo(path);
+        }, 300); // 0.3s delay
+    };
+
     const handleColorClick = async (color) => {
         setSelectedColor(color);
         const selectedColorLabel = profileColors.find(c => c.color === color)?.label;
@@ -188,7 +197,6 @@ function MyPage() {
         fetchProfileData();
     }, []);
 
-
     return (
         <div className="mypage">
             <Header />
@@ -298,16 +306,47 @@ function MyPage() {
 
                 {/* 메뉴 섹션 */}
                 <section className="page-section">
-                    <MenuItem icon={scheduleIcon} label="일정관리" onClick={() => goTo('/schedule')} />
-                    <MenuItem icon={courseIcon} label="코스 추천" onClick={() => goTo('/course')} />
-                    <MenuItem icon={communityIcon} label="커뮤니티" onClick={() => goTo('/community')} />
-                    <MenuItem icon={mapIcon} label="골프장 위치 재설정" onClick={() => goTo('/first-main')} />
+                    <MenuItem
+                        icon={scheduleIcon}
+                        label="일정관리"
+                        activeMenu={activeMenu}
+                        onClick={() => handleMenuClick("일정관리", "/schedule")}
+                    />
+                    <MenuItem
+                        icon={courseIcon}
+                        label="코스 추천"
+                        activeMenu={activeMenu}
+                        onClick={() => handleMenuClick("코스 추천", "/course")}
+                    />
+                    <MenuItem
+                        icon={communityIcon}
+                        label="커뮤니티"
+                        activeMenu={activeMenu}
+                        onClick={() => handleMenuClick("커뮤니티", "/community")}
+                    />
+                    <MenuItem
+                        icon={mapIcon}
+                        label="골프장 위치 재설정"
+                        activeMenu={activeMenu}
+                        onClick={() => handleMenuClick("골프장 위치 재설정", "/first-main")}
+                    />
                 </section>
 
                 {/* 고객지원/로그아웃 */}
                 <section className="login-section">
-                    <MenuItem icon={questionIcon} label="고객지원" />
-                    <MenuItem icon={logoutIcon} label="로그아웃" onClick={() => goTo('/')} isLogout />
+                    <MenuItem
+                        icon={questionIcon}
+                        label="고객지원"
+                        activeMenu={activeMenu}
+                        onClick={() => setActiveMenu("고객지원")}
+                    />
+                    <MenuItem
+                        icon={logoutIcon}
+                        label="로그아웃"
+                        activeMenu={activeMenu}
+                        onClick={() => handleMenuClick("로그아웃", "/")}
+                        isLogout
+                    />
                 </section>
                 <Footer />
             </div>
@@ -323,11 +362,16 @@ function MyPage() {
     );
 }
 
-function MenuItem({ icon, label, onClick, isLogout = false }) {
+function MenuItem({ icon, label, onClick, isLogout = false, activeMenu }) {
+    const isActive = activeMenu === label;
+
     return (
-        <div className={`menu-item ${isLogout ? 'logout' : ''}`} onClick={onClick}>
+        <div
+            className={`menu-item ${isLogout ? 'logout' : ''} ${isActive ? 'active' : ''}`}
+            onClick={onClick}
+        >
             <div id="icon-btn">
-                <img src={icon} alt={label} className="menu-icon" />
+                <img src={icon} alt={label} className="menu-icon"/>
             </div>
             <span className="menu-label">{label}</span>
         </div>

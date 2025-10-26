@@ -87,15 +87,17 @@ function Tourism({
             fontWeight: 400,
             color: '#fff',
             textAlign: 'center',
-            marginBottom: '10px',
-            paddingTop: '20px'
+            paddingTop: '10px',
+            marginTop: '10%',
+            marginBottom: '5px'
         },
         IntroMentSub: {
             fontSize: 'clamp(18px, 2vw, 20px)',
             fontWeight: 500,
             color: '#fff',
             textAlign: 'center',
-            marginBottom: '20px'
+            marginBottom: '30px',
+            marginTop: 0
         },
         // TourismScrollWrapper: {
         //     marginTop: '-56%',
