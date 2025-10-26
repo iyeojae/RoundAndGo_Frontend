@@ -66,7 +66,7 @@ function Accommodation({ golfCourseId }) {
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
     return (
-        <div className="Accommodation" style={{width: '90%', margin: '0 auto'}}>
+        <div className="Accommodation">
             {!loading && !error && (
                 <AccommodationList
                     title="제주도의 인기 숙소를 만나보세요"

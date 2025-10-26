@@ -41,6 +41,7 @@ function Header({
                             isTablet={isTablet}
                             onClick={() => goTo('/main')}
                             src={isScrolled ? ActLogo : NoActLogo}
+                            style={{ transition: '0.5s ease-in-out' }}
                             alt="logo"
                         />
                     )}
@@ -86,7 +87,7 @@ const StyledHeader = styled.header`
   align-items: center;
   justify-content: space-between;
   color: ${({ isScrolled }) => (isScrolled ? '#2C8C7D' : '#fff')};
-  transition: background 0.8s ease-in-out, color 0.8s ease-in-out;
+  transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
   background: ${({ isScrolled }) =>
     isScrolled
         ? 'linear-gradient(180deg, rgba(51,188,123,0.79) 3%, rgba(104,194,151,0.490385) 40%, rgba(255,255,255,0.15) 100%)'
