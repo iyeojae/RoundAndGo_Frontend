@@ -258,17 +258,44 @@ export const signupWithEmail = async (signupData) => {
       return { success: true, data };
     } else {
       const errorData = await response.json().catch(() => ({}));
-      const errorMessage = errorData.message || `회원가입 실패: ${response.status}`;
+      
+      // 구체적인 오류 메시지 처리
+      let errorMessage = '';
+      
+      if (response.status === 400) {
+        if (errorData.message && errorData.message.includes('이미')) {
+          errorMessage = '이미 가입된 이메일입니다. 다른 이메일을 사용해주세요.';
+        } else if (errorData.message && errorData.message.includes('닉네임')) {
+          errorMessage = '이미 사용 중인 닉네임입니다. 다른 닉네임을 사용해주세요.';
+        } else if (errorData.message && errorData.message.includes('형식')) {
+          errorMessage = '입력하신 정보의 형식이 올바르지 않습니다.';
+        } else {
+          errorMessage = errorData.message || '입력하신 정보를 다시 확인해주세요.';
+        }
+      } else if (response.status === 409) {
+        errorMessage = '이미 가입된 계정입니다. 로그인을 시도해보세요.';
+      } else if (response.status === 500) {
+        errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      } else {
+        errorMessage = errorData.message || `회원가입 실패: ${response.status}`;
+      }
+      
       // console.log(`❌ 회원가입 실패 - 상태: ${response.status}`);
       // console.log(`❌ 에러 메시지: ${errorMessage}`);
       // console.log(`❌ 에러 데이터:`, errorData);
 
-      return { success: false, error: errorMessage };
+      return { success: false, message: errorMessage };
     }
   } catch (error) {
     // console.error('💥 회원가입 API 호출 오류:', error);
     // console.error('💥 오류 타입:', error.name);
     // console.error('💥 오류 메시지:', error.message);
-    return { success: false, error: error.message };
+    
+    // 네트워크 오류 처리
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      return { success: false, message: '네트워크 연결을 확인해주세요.' };
+    }
+    
+    return { success: false, message: '회원가입 중 오류가 발생했습니다. 다시 시도해주세요.' };
   }
 };

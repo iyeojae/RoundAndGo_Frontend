@@ -49,12 +49,38 @@ function EmailLoginPage() {
       if (result.success) {
         navigate('/first-main');
       } else {
-        newErrors.password = '이메일 또는 비밀번호를 확인해주세요';
+        // 구체적인 오류 메시지 처리
+        let errorMessage = '이메일 또는 비밀번호를 확인해주세요';
+        
+        if (result.error) {
+          if (result.error.includes('존재하지') || result.error.includes('없는')) {
+            errorMessage = '가입되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요.';
+          } else if (result.error.includes('비밀번호') || result.error.includes('틀렸')) {
+            errorMessage = '비밀번호가 올바르지 않습니다. 다시 확인해주세요.';
+          } else if (result.error.includes('계정') && result.error.includes('잠금')) {
+            errorMessage = '계정이 잠겼습니다. 관리자에게 문의해주세요.';
+          } else if (result.error.includes('만료')) {
+            errorMessage = '계정이 만료되었습니다. 관리자에게 문의해주세요.';
+          } else {
+            errorMessage = result.error;
+          }
+        }
+        
+        newErrors.password = errorMessage;
         setErrors(newErrors);
         console.log('로그인 실패: ' + result.error);
       }
     } catch (error) {
-      newErrors.password = '오류가 발생했어요, 잠시후 다시 시도해주세요';
+      console.error('로그인 오류:', error);
+      
+      // 네트워크 오류 구분
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        newErrors.password = '네트워크 연결을 확인해주세요.';
+      } else if (error.message.includes('timeout')) {
+        newErrors.password = '요청 시간이 초과되었습니다. 다시 시도해주세요.';
+      } else {
+        newErrors.password = '서버 접속에 실패했습니다. 잠시 후 다시 시도해주세요.';
+      }
       setErrors(newErrors);
     } finally {
       setLoading(false);
