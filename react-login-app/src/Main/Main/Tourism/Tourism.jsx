@@ -227,6 +227,11 @@ function Tourism({
                             className="TourismCardWrapper"
                             style={styles.TourismCardWrapper}
                             key={`tourism-${index}`}
+                            onClick={() => {
+                                const query = encodeURIComponent(item.title);
+                                const url = `https://map.naver.com/v5/search/${query}`;
+                                window.open(url, '_blank');
+                            }}
                         >
                             <div style={styles.TourImgCont}>
                                 <img
