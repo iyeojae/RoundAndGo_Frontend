@@ -414,7 +414,7 @@ function CommunityDetail() {
     if (loading) return <div>로딩 중...</div>;
     if (!post) return <div>게시글을 찾을 수 없습니다.</div>;
 
-    const isAuthor = post.author === currentUserNickname;
+    const isAuthor = String(post.authorId) === String(currentUserId);
 
     return (
         <div id='main' onClick={() => {setReplyTargetId(null);}}>
@@ -426,7 +426,11 @@ function CommunityDetail() {
                             <p id='cate'>{getCategoryLabel(post.category)}</p>
                             <h2>{post.title}</h2>
                             <div className='post-meta-line'>
-                                <p>{formatDate(post.createdAt)} | {post.author}</p>
+                                <p>
+                                    {formatDate(post.createdAt)} |{' '}
+                                    {/* authorId와 현재 로그인한 사용자 ID가 같다면 현재 닉네임으로 표시 */}
+                                    {post.authorId === currentUserId ? currentUserNickname : post.author}
+                                </p>
                                 <div id='meat-ball' onClick={() => {
                                     setSelectedComment(post);
                                     setSelectedType('post');
@@ -438,7 +442,7 @@ function CommunityDetail() {
                         </div>
 
                         <div className='content-tab'>
-                            <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
+                            <p style={{whiteSpace: 'pre-wrap'}}>{post.content}</p>
                             <div id='imgs'>
                                 {Array.isArray(post.images) && post.images.map((img, i) => {
                                     const imgUrl = img.url.replace(/^https:/, 'http:');
