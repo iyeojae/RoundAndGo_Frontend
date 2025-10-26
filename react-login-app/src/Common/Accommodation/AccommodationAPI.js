@@ -1,25 +1,21 @@
 // AccommodationAPI.js
 
+import {API_BASE_URL} from "../../config/api";
+
 // 제목, 숙소소개, 주소
 const serviceKey = process.env.REACT_APP_API_SERVICE_KEY;
 export const getAccommodationDetail = async (contentId) => {
-    const url = `https://apis.data.go.kr/B551011/KorService2/detailCommon2?ServiceKey=${serviceKey}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&_type=xml`;
+    const url = `${API_BASE_URL}/accommodation/detail/${contentId}`;
+    // https://apis.data.go.kr/B551011/KorService2/detailCommon2?ServiceKey=${serviceKey}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&_type=json
     try {
         const response = await fetch(url);
-        const xmlText = await response.text();
-
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(xmlText, "text/xml");
-
-        const item = xml.getElementsByTagName("item")[0];
-
-        if (!item) return null;
+        const json = await response.json();
 
         return {
-            title: item.getElementsByTagName("title")[0]?.textContent || "",
-            overview: item.getElementsByTagName("overview")[0]?.textContent || "",
-            addr1: item.getElementsByTagName("addr1")[0]?.textContent || "",
-            firstimage: item.getElementsByTagName("firstimage")[0]?.textContent || "",
+            title: json.title || "",
+            overview: json.overview || "",
+            addr1: json.addr1 || "",
+            firstimage: json.firstimage || "",
         };
     } catch (error) {
         console.error("숙소 상세 정보 조회 실패:", error);
@@ -29,21 +25,19 @@ export const getAccommodationDetail = async (contentId) => {
 
 // 숙소 추가 이미지
 export const getAccommodationImages = async (contentId) => {
-    const url = `https://apis.data.go.kr/B551011/KorService2/detailImage2?ServiceKey=${serviceKey}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&imageYN=Y&numOfRows=10&_type=xml`;
+    const url = `${API_BASE_URL}/accommodation/images/${contentId}`;
+    // https://apis.data.go.kr/B551011/KorService2/detailImage2?ServiceKey=${serviceKey}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&imageYN=Y&numOfRows=10&_type=json
 
     try {
         const response = await fetch(url);
-        const xmlText = await response.text();
+        const json = await response.json();
 
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(xmlText, "text/xml");
+        const items = Array.isArray(json) ? json : (json.response?.body?.items?.item || []);
 
-        const items = Array.from(xml.getElementsByTagName("item")).map((item) => ({
-            originimgurl: item.getElementsByTagName("originimgurl")[0]?.textContent || "",
-            smallimageurl: item.getElementsByTagName("smallimageurl")[0]?.textContent || "",
+        return items.map((item) => ({
+            originimgurl: item.originimgurl || "",
+            smallimageurl: item.smallimageurl || "",
         }));
-
-        return items;
     } catch (error) {
         console.error("숙소 이미지 조회 실패:", error);
         throw new Error("숙소 이미지를 불러오는 데 실패했습니다.");
@@ -53,41 +47,38 @@ export const getAccommodationImages = async (contentId) => {
 // 숙소 부대시설 및 서비스 정보 조회
 export const getAccommodationInfo = async (contentId) => {
     const contentTypeId = 32;
-
-    const url = `https://apis.data.go.kr/B551011/KorService2/detailInfo2?ServiceKey=${serviceKey}&contentTypeId=${contentTypeId}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&_type=xml`;
+    const url = `${API_BASE_URL}/accommodation/info/${contentId}`;
+    // https://apis.data.go.kr/B551011/KorService2/detailInfo2?ServiceKey=${serviceKey}&contentTypeId=${contentTypeId}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&_type=json
 
     try {
         const response = await fetch(url);
-        const xmlText = await response.text();
+        const json = await response.json();
 
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(xmlText, "text/xml");
+        const items = Array.isArray(json)
+            ? json
+            : (json.response?.body?.items?.item || []);
 
-        const items = Array.from(xml.getElementsByTagName("item")).map((item) => ({
-            roomtitle: item.getElementsByTagName("roomtitle")[0]?.textContent || "",
-            subfacility: item.getElementsByTagName("subfacility")[0]?.textContent || "",
-            roomtype: item.getElementsByTagName("roomtype")[0]?.textContent || "",
-            refundregulation: item.getElementsByTagName("refundregulation")[0]?.textContent || "",
+
+        return items.map((item) => ({
+            roomtitle: item.roomtitle || "",
+            subfacility: item.subfacility || "",
+            roomtype: item.roomtype || "",
+            refundregulation: item.refundregulation || "",
             facilities: {
-                tv: item.getElementsByTagName("roomtv")[0]?.textContent === 'Y',
-                pc: item.getElementsByTagName("roompc")[0]?.textContent === 'Y',
-                internet: item.getElementsByTagName("roominternet")[0]?.textContent === 'Y',
-                refrigerator: item.getElementsByTagName("roomrefrigerator")[0]?.textContent === 'Y',
-                sofa: item.getElementsByTagName("roomsofa")[0]?.textContent === 'Y',
-                table: item.getElementsByTagName("roomtable")[0]?.textContent === 'Y',
-                hairdryer: item.getElementsByTagName("roomhairdryer")[0]?.textContent === 'Y',
-                bath: item.getElementsByTagName("roombath")[0]?.textContent === 'Y',
-                bathfacility: item.getElementsByTagName("roombathfacility")[0]?.textContent === 'Y',
-                aircondition: item.getElementsByTagName("roomaircondition")[0]?.textContent === 'Y',
+                tv: item.facilities?.tv ?? (item.roomtv === 'Y'),
+                pc: item.facilities?.pc ?? (item.roompc === 'Y'),
+                internet: item.facilities?.internet ?? (item.roominternet === 'Y'),
+                refrigerator: item.facilities?.refrigerator ?? (item.roomrefrigerator === 'Y'),
+                sofa: item.facilities?.sofa ?? (item.roomsofa === 'Y'),
+                table: item.facilities?.table ?? (item.roomtable === 'Y'),
+                hairdryer: item.facilities?.hairdryer ?? (item.roomhairdryer === 'Y'),
+                bath: item.facilities?.bath ?? (item.roombath === 'Y'),
+                bathfacility: item.facilities?.bathfacility ?? (item.roombathfacility === 'Y'),
+                aircondition: item.facilities?.aircondition ?? (item.roomaircondition === 'Y'),
             }
         }));
-
-        return items;
     } catch (error) {
         console.error("숙소 부대시설 정보 조회 실패:", error);
         throw new Error("숙소 부대시설 정보를 불러오는 데 실패했습니다.");
     }
 };
-
-
-
