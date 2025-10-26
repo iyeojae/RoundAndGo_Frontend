@@ -29,23 +29,37 @@ import MyPage from './MyPage/MyPage.jsx'; // 마이페이지
 
 import { ScreenSizeProvider } from './Common/ScreenSizeContext';
 import { ScrollProvider, ScrollContext } from './Common/ScrollContext';
+import { LoadingProvider, LoadingContext } from './Loading/LoadingContext'
+import LoadingPage from './Loading/LoadingPage';
 
 function App() {
     return (
         <Router>
-            <div className="app-container">
-                <div className="left-content-wrapper">
-                    <LeftContent />
-                </div>
-                <div className="right-content">
-                    <ScreenSizeProvider>
-                        <ScrollProvider>
-                            <ScrollMain />
-                        </ScrollProvider>
-                    </ScreenSizeProvider>
-                </div>
-            </div>
+            <LoadingProvider>
+                <AppContent />
+            </LoadingProvider>
         </Router>
+    );
+}
+
+function AppContent() {
+    const { loading, message } = useContext(LoadingContext);
+
+    return (
+        <div className="app-container">
+            <div className="left-content-wrapper">
+                <LeftContent />
+            </div>
+            <div className="right-content">
+                <ScreenSizeProvider>
+                    <ScrollProvider>
+                        <ScrollMain />
+                    </ScrollProvider>
+                </ScreenSizeProvider>
+            </div>
+
+            {loading && <LoadingPage message={message} />}
+        </div>
     );
 }
 

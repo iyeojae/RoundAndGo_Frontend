@@ -287,7 +287,7 @@ function CommunityEntire() {
                                         fontSize: 'clamp(11px, 2vw, 13px)',
                                         color: '#797979',
                                         textAlign: 'center'
-                                    }}>0</p>
+                                    }}>{commentCounts[post.id] ?? 0}</p>
                                 </div>
                             </li>
                         ))}

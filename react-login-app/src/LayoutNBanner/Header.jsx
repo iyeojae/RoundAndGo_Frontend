@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Logo from '../assets/logo.svg';
@@ -18,9 +18,21 @@ function Header({
                     showArrow = false,
                     onArrowClick,
                 }) {
+    const location = useLocation();
     const navigate = useNavigate();
     const { isTablet } = useContext(ScreenSizeContext);
     const { isScrolled } = useContext(ScrollContext);
+
+    const queryParams = new URLSearchParams(location.search);
+    const fromParam = queryParams.get('from');
+
+    const handleSafeBack = () => {
+        if (fromParam === 'write' || fromParam === 'edit') {
+            navigate('/community'); // 커뮤니티로 이동
+        } else {
+            navigate(-1); // 일반 뒤로가기
+        }
+    };
 
     const goTo = (path) => navigate(path);
 
@@ -31,7 +43,7 @@ function Header({
                     {showArrow && (
                         <ArrowImg
                             isTablet={isTablet}
-                            onClick={onArrowClick ? onArrowClick : () => navigate(-1)}
+                            onClick={onArrowClick ? onArrowClick : handleSafeBack}
                             src={WhiteArrow}
                             alt='arrow'
                         />

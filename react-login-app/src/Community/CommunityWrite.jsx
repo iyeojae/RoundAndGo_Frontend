@@ -99,7 +99,7 @@ function CommunityWrite() {
             setToastMessage("게시글이 생성되었습니다.");
             setTimeout(() => {
                 if (postId) {
-                    navigate(`/community/detail/${postId}`);
+                    navigate(`/community/detail/${postId}?from=write`);
                 } else {
                     navigate('/community');
                 }

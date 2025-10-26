@@ -63,7 +63,7 @@ const CourseStep1 = () => {
         }
       } else {
         // localStorage에 기본 골프장 ID가 없으면 기본값으로 설정
-        const defaultGolfCourse = await fetchGolfCourseById(1); // 기본 골프장 ID: 1
+        const defaultGolfCourse = await fetchGolfCourseById(219); // 기본 골프장 ID: 1
         if (defaultGolfCourse) {
           setSelectedGolfCourses([defaultGolfCourse]);
         }

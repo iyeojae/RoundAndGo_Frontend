@@ -1,6 +1,6 @@
 // CommunityDetail.jsx
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Header from "../LayoutNBanner/Header";
 import {
     fetchPostDetail, postComment, fetchComments,
@@ -58,6 +58,17 @@ function CommunityDetail() {
         setToastMessage(message);
         setShowToast(true);
     }, []);
+
+    const location = useLocation();
+
+    useEffect(() => {
+        // 글쓰기 또는 수정에서 온 경우
+        if (location.state?.from === 'write' || location.state?.from === 'edit') {
+            sessionStorage.setItem('fromCommunityEditor', 'true');
+        } else {
+            sessionStorage.removeItem('fromCommunityEditor');
+        }
+    }, [location.state]);
 
     const loadPostData = async () => {
         try {

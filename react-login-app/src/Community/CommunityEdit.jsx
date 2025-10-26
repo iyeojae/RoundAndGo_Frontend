@@ -123,7 +123,7 @@ function CommunityEdit() {
             );
 
             setToastMessage("게시글이 수정되었습니다.");
-            setTimeout(() => navigate(`/community/detail/${postId}`), 1000);
+            setTimeout(() => navigate(`/community/detail/${postId}?from=edit`), 1000);
         } catch (err) {
             console.error('수정 실패:', err);
             setToastMessage("수정 실패. 다시 시도해 주세요.");

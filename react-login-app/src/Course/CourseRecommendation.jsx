@@ -18,7 +18,7 @@ const CourseRecommendation = () => {
     if (!accessToken) {
       console.log('❌ 토큰이 없어서 로그인 페이지로 이동');
       alert('로그인이 필요합니다. 다시 로그인해주세요.');
-      navigate('/email-login');
+      navigate('/');
       return;
     }
   }, [navigate]);
@@ -52,12 +52,12 @@ const CourseRecommendation = () => {
 
   // 골프장은 기본값, 나머지는 빈 값으로 설정
   const localGolfCourses = getLocalGolfCourseData();
-  const golfCourseId = localGolfCourses.length > 0 ? localGolfCourses[0].id : '1';
+  const golfCourseId = localGolfCourses.length > 0 ? localGolfCourses[0].id : '219';
   const teeOffTime = ''; // 빈 티오프 시간
   const courseType = ''; // 빈 코스 타입
   const travelDays = ''; // 빈 여행 기간
   const startDate = ''; // 빈 날짜
-  const userPreferences = ''; // 빈 선호도
+  const userPreferences = ''; // 빈 선호도a
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

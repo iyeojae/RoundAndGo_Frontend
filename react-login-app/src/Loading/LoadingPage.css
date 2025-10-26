@@ -1,0 +1,248 @@
+.loading-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+.loading-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(44, 140, 125, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 70% 80%, rgba(76, 175, 80, 0.06) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(200, 230, 201, 0.04) 0%, transparent 60%);
+  animation: backgroundShift 12s ease-in-out infinite;
+}
+
+.loading-content {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.wave-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+
+.wave-logo {
+  width: 300px;
+  height: 100px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.wave-bg {
+  fill: #f0f0f0;
+  opacity: 0.3;
+}
+
+.wave-fill {
+  fill: url(#waveGradient);
+  opacity: 0.8;
+  animation: waveFill 4s ease-in-out infinite;
+}
+
+.wave {
+  animation: waveMove 2.5s infinite linear;
+}
+
+.wave-1 {
+  animation-delay: 0s;
+}
+
+.wave-2 {
+  animation-delay: 0.5s;
+}
+
+.wave-3 {
+  animation-delay: 1s;
+}
+
+.loading-text {
+  font-size: 20px;
+  color: #495057;
+  margin-bottom: 30px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: none;
+  animation: textFade 4s ease-in-out infinite;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  gap: 8px;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2C8C7D 0%, #4CAF50 100%);
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.progress-bar {
+  width: 240px;
+  height: 3px;
+  background: rgba(73, 80, 87, 0.15);
+  border-radius: 2px;
+  margin: 40px auto 0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2C8C7D 0%, #4CAF50 50%, #66BB6A 100%);
+  border-radius: 2px;
+  animation: progressFill 4s ease-in-out infinite;
+  box-shadow: 0 1px 3px rgba(44, 140, 125, 0.3);
+}
+
+@keyframes backgroundShift {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes waveFill {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  }
+  20% {
+    opacity: 0.6;
+    transform: translateY(80%);
+    clip-path: polygon(0 100%, 100% 100%, 100% 90%, 0 85%);
+  }
+  40% {
+    opacity: 0.7;
+    transform: translateY(60%);
+    clip-path: polygon(0 100%, 100% 100%, 100% 80%, 0 75%);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(40%);
+    clip-path: polygon(0 100%, 100% 100%, 100% 70%, 0 65%);
+  }
+  80% {
+    opacity: 0.9;
+    transform: translateY(20%);
+    clip-path: polygon(0 100%, 100% 100%, 100% 60%, 0 55%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+    clip-path: polygon(0 100%, 100% 100%, 100% 0%, 0 0%);
+  }
+}
+
+@keyframes waveMove {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-60px);
+  }
+}
+
+@keyframes textFade {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes progressFill {
+  0% {
+    width: 0%;
+    transform: translateX(-100%);
+  }
+  50% {
+    width: 100%;
+    transform: translateX(0%);
+  }
+  100% {
+    width: 100%;
+    transform: translateX(0%);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .wave-logo {
+    width: 250px;
+    height: 80px;
+  }
+  
+  .loading-text {
+    font-size: 18px;
+  }
+  
+  .progress-bar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wave-logo {
+    width: 200px;
+    height: 60px;
+  }
+  
+  .loading-text {
+    font-size: 16px;
+  }
+  
+  .progress-bar {
+    width: 180px;
+  }
+}

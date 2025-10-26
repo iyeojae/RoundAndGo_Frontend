@@ -1205,7 +1205,7 @@ const CourseStep3 = () => {
 
   if (loading) {
     return (
-      <main>
+      <>
       <div className="course-step3-page">
         <Header />
         <div className="loading-container">
@@ -1214,14 +1214,14 @@ const CourseStep3 = () => {
           <p>AI가 당신만의 맞춤 코스를 추천하고 있습니다...</p>
         </div>
       </div>
-      </main>
+      </>
     );
   }
 
   // 에러 상태일 때의 처리
   if (error) {
   return (
-      <main>
+      <>
         <div className="course-step3-page">
           <Header />
           <div className="error-container">
@@ -1244,7 +1244,7 @@ const CourseStep3 = () => {
             </div>
           </div>
         </div>
-      </main>
+      </>
     );
   }
 

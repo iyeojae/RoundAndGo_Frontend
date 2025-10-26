@@ -266,7 +266,7 @@ const MyCourseView = ({ courseData, courseInfo }) => {
         </div>
         
         <div className="my-course-view">
-          <main className="my-course-main">
+          <div className="my-course-main">
         {/* 코스 정보 헤더 */}
         <div className="course-info-header">
           <h2 className="course-title">{travelInfo.title}</h2>
@@ -370,11 +370,10 @@ const MyCourseView = ({ courseData, courseInfo }) => {
           </div>
         )}
       </div>
-          </main>
+          </div>
         </div>
+        <Footer />
       </div>
-      
-      <Footer />
     </>
   );
 };
