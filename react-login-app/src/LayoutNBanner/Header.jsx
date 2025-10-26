@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 import Logo from '../assets/logo.svg'; // logo
 import GreenLogo from '../assets/greenlogo.svg';
@@ -26,8 +26,18 @@ function Header({
         navigate(path);
     };
 
+    const [animateOnce, setAnimateOnce] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setAnimateOnce(false);
+        }, 1500); // 애니메이션 종료 후 원래 스타일로 전환
+
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
-        <StyledHeader isScrolled={isScrolled}>
+        <StyledHeader isScrolled={isScrolled} animateOnce={animateOnce}>
             <HeaderLogoWrapper>
                 <VersionWrapper className={versionClassName} isTablet={isTablet}>
                     {showArrow && (
@@ -64,16 +74,23 @@ const StyledHeader = styled.header`
     width: 100%;
     aspect-ratio: 440 / 63;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    color: ${({ isScrolled }) => (isScrolled ? '#2C8C7D' : '#fff')};
+    transition: background 0.8s, color 0.8s;
+
     background: ${({ isScrolled }) =>
             isScrolled
                     ? 'linear-gradient(180deg, rgba(51, 188, 123, 0.79) 3%, rgba(104, 194, 151, 0.490385) 40%, rgba(255, 255, 255, 0) 100%)'
                     : '#269962'};
-    color: ${({ isScrolled }) => (isScrolled ? '#2C8C7D' : '#fff')};
-    transition: background 0.8s, color 0.8s;
+
+    ${({ animateOnce }) =>
+            animateOnce &&
+            css`
+                animation: ${shineAnimation} 2.5s ease-in-out forwards;
+            `}
 `;
+
 
 const HeaderLogoWrapper = styled.div`
     width: 100%;
@@ -142,4 +159,22 @@ const LogoImg = styled.img`
             isTablet ? 'clamp(30px, 3vw, 34px)' : 'clamp(26px, 2.5vw, 30px)'};
     height: auto;
     cursor: pointer;
+`;
+
+const shineAnimation = keyframes`
+    0% {
+        background: linear-gradient(90deg, #0D3321 0%, #269962 100%);
+        background-size: 200% 100%;
+        background-position: 100% 0;
+    }
+    50% {
+        background: linear-gradient(90deg, #0D3321 0%, #90ffc9 50%, #269962 100%);
+        background-size: 200% 100%;
+        background-position: 0 0;
+    }
+    100% {
+        background: linear-gradient(90deg, #269962 0%, #269962 100%);
+        background-size: 200% 100%;
+        background-position: 0 0;
+    }
 `;

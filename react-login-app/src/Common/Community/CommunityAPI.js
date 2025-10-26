@@ -124,7 +124,7 @@ export const PostingBoard = async (title, content, category, images) => {
         return response.data;
     } catch (error) {
         console.error('게시글 작성 실패:', error);
-        console.error('서버 응답:', error.response?.data?.data);
+        console.error('서버 응답:', error.response?.data);
         throw new Error('게시글 작성에 실패했습니다.');
     }
 };

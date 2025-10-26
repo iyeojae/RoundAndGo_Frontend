@@ -19,7 +19,7 @@ function DetailMain() {
     }, [searchParams]);
 
     return (
-        <div className="DetailMain" style={{ width: '100%', height: '100%', backgroundColor: '#F8F8F8', position: 'relative' }}>
+        <div className="DetailMain" style={{ width: '100%', minHeight: '100vh', height: 'auto', backgroundColor: '#F8F8F8', position: 'relative' }}>
             <Header />
             <DetailNavbar activeTab={activeTab} onTabChange={setActiveTab} />
 

@@ -1,7 +1,7 @@
 // AccommodationAPI.js
 
 // 제목, 숙소소개, 주소
-const serviceKey = process.env.API_SERVICE_KEY;
+const serviceKey = process.env.REACT_APP_API_SERVICE_KEY;
 export const getAccommodationDetail = async (contentId) => {
     const url = `https://apis.data.go.kr/B551011/KorService2/detailCommon2?ServiceKey=${serviceKey}&contentId=${contentId}&MobileOS=ETC&MobileApp=AppTest&_type=xml`;
     try {

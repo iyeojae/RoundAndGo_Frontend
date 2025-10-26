@@ -154,7 +154,7 @@ function MainPage() {
             <Restaurant golfCourseId={golfCourseId} /> {/* 음식점 컴포넌트 */}
             <Tourism golfCourseId={golfCourseId} /> {/* 관광지 컴포넌트 */}
 
-            <div className="Community" style={{width: '90%', margin: '0 auto'}}>
+            <div className="Community" style={{width: '90%', margin: '0 auto'}}> {/* 커뮤니티 미리보기 컴포넌트 */}
                 <CommunityPreview/>
             </div>
             <Footer/>

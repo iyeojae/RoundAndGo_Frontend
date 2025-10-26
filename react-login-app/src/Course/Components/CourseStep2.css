@@ -1,8 +1,6 @@
 /* CourseStep2 스타일 */
 .main-container {
   width: 100%;
-  min-width: 375px;
-  max-width: 440px;
   margin: 0 auto;
   min-height: 100vh;
   background-color: #f8f9fa;

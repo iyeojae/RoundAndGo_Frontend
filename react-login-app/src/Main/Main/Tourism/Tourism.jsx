@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import NoImage from '../../../assets/NoImage.svg';
 import { fetchTourData } from "../../../Common/BasedOn/API.js";
+import styled from "styled-components";
 
 function Tourism({
                      title = '제주도 인기 관광지 모음',
                      subtitle = '',
                      mentClassName = 'IntroMent',
                      golfCourseId = null,
-                     //useDummy = true,  // 더미데이터 사용 여부
                  }) {
     const [tourismList, setTourismList] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -64,14 +64,15 @@ function Tourism({
     if (loading) return <p>불러오는 중입니다...</p>;
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
-    const scrollIndicatorWidth = maxScroll > 0 ? (scrollPosition / maxScroll) * 100 : 0;
-    const currentCardIndex = tourismList.length > 0 ? Math.round(scrollPosition / 227) + 1 : 0;
+    const scrollRatio = maxScroll > 0 ? scrollPosition / maxScroll : 0;
+    const currentCardIndex =
+        tourismList.length > 0 ? Math.min(tourismList.length, Math.floor(scrollRatio * tourismList.length) + 1) : 0;
 
     // CSS 스타일을 JavaScript 객체로 정의
     const styles = {
         Tourism: {
             width: '100%',
-            margin: '0 auto'
+            margin: '0 auto',
         },
         IntroMent: {
             fontSize: 'clamp(18px, 2vw, 20px)',
@@ -86,42 +87,44 @@ function Tourism({
             fontWeight: 400,
             color: '#fff',
             textAlign: 'center',
-            marginBottom: '10px',
-            paddingTop: '20px'
+            paddingTop: '10px',
+            marginTop: '10%',
+            marginBottom: '5px'
         },
         IntroMentSub: {
             fontSize: 'clamp(18px, 2vw, 20px)',
             fontWeight: 500,
             color: '#fff',
             textAlign: 'center',
-            marginBottom: '20px'
+            marginBottom: '30px',
+            marginTop: 0
         },
-        TourismScrollWrapper: {
-            marginTop: '-56%',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            overflowY: 'hidden',
-            overflowX: 'scroll',
-
-            // 스크롤바 커스텀 스타일
-            scrollbarWidth: 'thin',          // Firefox
-            msOverflowStyle: 'none',         // IE/Edge
-            msScrollbarTrackColor: '#DEDEDE',
-            scrollbarColor: '#2C8C7D',
-            '&::-webkit-scrollbar': {
-                height: '5px',                // 수평 스크롤바 높이
-            },
-            '&::-webkit-scrollbar-track': {
-                background: '#DEDEDE',        // 트랙 배경
-            },
-            '&::-webkit-scrollbar-thumb': {
-                background: '#2C8C7D',        // 스크롤바 썸
-            },
-
-            padding: 0,
-            gap: '16px',
-        },
+        // TourismScrollWrapper: {
+        //     marginTop: '-56%',
+        //     position: 'relative',
+        //     display: 'flex',
+        //     flexDirection: 'column',
+        //     overflowY: 'hidden',
+        //     overflowX: 'scroll',
+        //
+        //     // 스크롤바 커스텀 스타일
+        //     scrollbarWidth: 'thin',          // Firefox
+        //     msOverflowStyle: 'none',         // IE/Edge
+        //     msScrollbarTrackColor: '#DEDEDE',
+        //     scrollbarColor: '#2C8C7D',
+        //     '&::WebkitScrollbar': {
+        //         height: '5px',                // 수평 스크롤바 높이
+        //     },
+        //     '&::WebkitScrollbarTrack': {
+        //         backgroundColor: '#DEDEDE',        // 트랙 배경
+        //     },
+        //     '&::WebkitScrollbarThumb': {
+        //         backgroundColor: '#2C8C7D',        // 스크롤바 썸
+        //     },
+        //
+        //     padding: 0,
+        //     gap: '16px',
+        // },
         TourismScrollArea: {
             whiteSpace: 'nowrap',
             width: '100%',
@@ -132,7 +135,7 @@ function Tourism({
         },
         ListOfTourismImg: {
             display: 'flex',
-            overflowX: 'Scroll',
+            overflowX: 'scroll',
             overflowY: 'hidden',
             columnGap: '16px',
             padding: '0 5%',
@@ -194,8 +197,6 @@ function Tourism({
     const applyWebkitStyle = (element) => {
         if (element) {
             element.style.setProperty('-webkit-overflow-scrolling', 'touch');
-            element.style.setProperty('scrollbar-width', 'none');
-            element.style.setProperty('-ms-overflow-style', 'none');
         }
     };
 
@@ -213,46 +214,105 @@ function Tourism({
                 <p className="IntroMent-sub" style={styles.IntroMentSub}>{subtitle}</p>
             </div>
 
-            <div className="TourismScrollWrapper" style={styles.TourismScrollWrapper}>
-                <div className="TourismScrollArea" style={styles.TourismScrollArea}>
-                    <div
-                        className="ListOfTourismImg"
-                        ref={(el) => {
-                            scrollContainerRef.current = el;
-                            applyWebkitStyle(el);
-                        }}
-                        onScroll={handleScroll}
-                        style={styles.ListOfTourismImg}
-                    >
-                        {tourismList.map((item, index) => (
-                            <div
-                                className="TourismCardWrapper"
-                                style={styles.TourismCardWrapper}
-                                key={`tourism-${index}`}
-                            >
-                                <div style={styles.TourImgCont}>
-                                    <img
-                                        src={item.imageUrl || NoImage}
-                                        alt={item.title}
-                                        style={styles.TourImgContImg}
-                                        loading="lazy"
-                                        onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = NoImage;
-                                        }}
-                                    />
-                                </div>
-                                <div style={styles.TourismCard}>
-                                    <span style={styles.TourismTitle}>{item.title}</span>
-                                    <span style={styles.TourismAddress}>{item.address}</span>
-                                </div>
+            <TourismScrollWrapper>
+                <ScrollableArea
+                    ref={(el) => {
+                        scrollContainerRef.current = el;
+                        applyWebkitStyle(el);
+                    }}
+                    onScroll={handleScroll}
+                >
+                    {tourismList.map((item, index) => (
+                        <div
+                            className="TourismCardWrapper"
+                            style={styles.TourismCardWrapper}
+                            key={`tourism-${index}`}
+                        >
+                            <div style={styles.TourImgCont}>
+                                <img
+                                    src={item.imageUrl || NoImage}
+                                    alt={item.title}
+                                    style={styles.TourImgContImg}
+                                    loading="lazy"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = NoImage;
+                                    }}
+                                />
                             </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+                            <div style={styles.TourismCard}>
+                                <span style={styles.TourismTitle}>{item.title}</span>
+                                <span style={styles.TourismAddress}>{item.address}</span>
+                            </div>
+                        </div>
+                    ))}
+                </ScrollableArea>
+
+                {/* 페이지 표시 */}
+                <PageIndicator>
+                    {String(currentCardIndex).padStart(2, '0')} / {String(tourismList.length).padStart(2, '0')}
+                </PageIndicator>
+            </TourismScrollWrapper>
         </div>
     );
 }
 
 export default Tourism;
+
+/* 스크롤바 영역 컨테이너 */
+const TourismScrollWrapper = styled.div`
+    margin-top: -60%;
+    position: relative;
+    width: 100%;
+`;
+
+/* 실제 스크롤 가능한 영역 */
+const ScrollableArea = styled.div`
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+    padding: 0 3% 20px 3%;
+    scroll-behavior: smooth;
+
+    /* 스크롤바 스타일 */
+    scrollbar-width: thin;
+    scrollbar-color: #2C8C7D #DEDEDE;
+
+    &::-webkit-scrollbar {
+        height: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #DEDEDE;
+        border-radius: 50px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #2C8C7D;
+        border-radius: 50px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: #1e6b59;
+    }
+
+    &::-webkit-scrollbar-button {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+`;
+
+/* 페이지네이션? 느낌 */
+const PageIndicator = styled.p`
+    position: absolute;
+    right: 4%;
+    bottom: 0;
+
+    color: #2C8C7D;
+    font-size: clamp(10px, 2vw, 13px);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+`;
