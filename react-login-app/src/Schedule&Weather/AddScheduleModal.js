@@ -101,6 +101,16 @@ export const ModalOverlay = styled.div`
       background: rgba(0, 0, 0, 0.55);
     }
   }
+
+  @media (min-width: 1024px) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto; /* 부모 아래까지 차지하지 않도록 */
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  }
 `;
 
 export const ModalContent = styled.div`
@@ -156,22 +166,21 @@ export const CloseButton = styled.button`
 
 export const ModalWindow = styled.div`
   padding: 20px;
-  height: calc(75vh - 250px);
+  height: auto; /* 기본은 내용에 맞게 */
+  max-height: calc(90vh - 180px);
   overflow-y: auto;
 
-  /* 웹킷 기반 브라우저 스크롤바 숨기기 */
   &::-webkit-scrollbar {
     display: none;
   }
 
-  /* Firefox 스크롤바 숨기기 */
   scrollbar-width: none;
 
-  @media (max-width: 480px) {
-    padding: 15px;
-    height: calc(75vh - 230px);
+  @media (max-width: 768px) {
+    height: calc(75vh - 230px); /* 모바일에서는 원래처럼 */
   }
 `;
+
 
 
 export const ModalTitle = styled.h2`
