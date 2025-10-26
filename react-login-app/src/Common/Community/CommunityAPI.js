@@ -239,6 +239,34 @@ export const toggleLike = async (postId) => {
     }
 };
 
+// GET 좋아요 여부 확인 (현재 로그인한 사용자가 눌렀는지)
+export const checkIsLiked = async (postId) => {
+    const token = getCookie('accessToken');
+
+    if (!token) {
+        console.warn('checkIsLiked 호출: 토큰이 없습니다.');
+        return false;
+    }
+
+    try {
+        const response = await axios.get(`${API_BASE_URL}/posts/${postId}/isLiked`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            withCredentials: true, // 쿠키 포함 요청
+        });
+
+        // 서버 응답 로그 찍기
+        console.log('좋아요 여부 응답:', response.data);
+        return response.data;
+
+    } catch (error) {
+        console.error('좋아요 여부 확인 실패:', error);
+        return false;
+    }
+};
+
+
 // ----------------------------------------------------------------------
 
 // GET 댓글 목록을 가져오는 함수

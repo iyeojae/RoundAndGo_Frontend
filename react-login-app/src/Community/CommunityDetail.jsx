@@ -5,7 +5,7 @@ import Header from "../LayoutNBanner/Header";
 import {
     fetchPostDetail, postComment, fetchComments,
     toggleLike, fetchLikeCount, deletePost, deleteComment,
-    updateComment, getUserInfo
+    updateComment, getUserInfo, checkIsLiked
 } from '../Common/Community/CommunityAPI';
 import { getCookie } from '../Login/utils/cookieUtils';
 
@@ -71,9 +71,16 @@ function CommunityDetail() {
             const likeData = await fetchLikeCount(postId);
             setLikeCount(likeData.data || 0);
 
-            // 좋아요 여부는 로컬스토리지에서 확인
-            const userLikes = JSON.parse(localStorage.getItem(`likes_${currentUserId}`)) || {};
-            setIsLiked(userLikes[postId] || false);
+            // 좋아요 여부
+            if (token) {
+                const likedStatus = await checkIsLiked(postId);
+                console.log("좋아요 여부 상태:", likedStatus); // 디버깅용
+                // 서버 응답 구조가 { data: true } 형태이므로 아래처럼 반영
+                setIsLiked(likedStatus?.data === true);
+            } else {
+                setIsLiked(false);
+            }
+
         } catch (error) {
             console.error('게시글 불러오기 실패:', error);
             showToastWithMessage('게시글을 불러오는데 문제가 발생했습니다.');
@@ -119,16 +126,15 @@ function CommunityDetail() {
             const res = await toggleLike(post.id);  // 서버에 토글 요청
             const liked = res?.liked ?? !isLiked;   // 응답이 없을 경우 이전 상태 기준 반전
 
-            // 좋아요 수 수동 증감
-            setLikeCount(prev => liked ? prev + 1 : prev - 1);
+            // 서버 응답에 따라 상태 갱신
             setIsLiked(liked);
 
-            // 로컬스토리지에 상태 저장
-            const userLikes = JSON.parse(localStorage.getItem(`likes_${currentUserId}`)) || {};
-            userLikes[post.id] = liked;
-            localStorage.setItem(`likes_${currentUserId}`, JSON.stringify(userLikes));
+            // 좋아요 수
+            const likeData = await fetchLikeCount(post.id);
+            setLikeCount(likeData.data || 0);
 
         } catch (error) {
+            console.error('좋아요 토글 실패:', error);
             showToastWithMessage('좋아요 처리에 실패했습니다.');
         }
     };
@@ -255,7 +261,7 @@ function CommunityDetail() {
     const renderComments = (commentList, depth = 0) => {
         return commentList.map(comment => {
             const isParent = depth === 0;
-            const canEdit = comment.author === currentUserNickname;
+            const canEdit = comment.authorId === currentUserId;
             const isReplyTarget = replyTargetId === comment.id;
 
             return (
@@ -288,7 +294,11 @@ function CommunityDetail() {
                             <div className="comment-body">
                                 <div className='comment-meta'>
                                     <div className='comment-author-info'>
-                                        <strong>{comment.author || '익명'}</strong>
+                                        <strong>
+                                            {comment.authorId === currentUserId
+                                                ? currentUserNickname
+                                                : (comment.author || '익명')}
+                                        </strong>
                                         <p>{formatDate(comment.createdAt)}</p>
                                     </div>
                                     <div id='meat-ball' onClick={() => {
@@ -460,17 +470,17 @@ function CommunityDetail() {
 
                         <div className='btn-wrap'>
                             <button onClick={handleToggleLike}>
-                                <img src={isLiked ? greenheart : heart} alt='like' />
+                                <img src={isLiked ? greenheart : heart} alt='like'/>
                                 <p style={{margin: 0}}>{likeCount}</p>
                             </button>
 
                             {isAuthor && (
                                 <div className='post-action-buttons'>
                                     <button onClick={() => navigate(`/community/edit/${post.id}`)}>
-                                        <img src={update} alt='수정' /> 수정하기
+                                        <img src={update} alt='수정'/> 수정하기
                                     </button>
                                     <button onClick={() => setShowDeleteModal(true)}>
-                                        <img src={waste} alt='삭제' /> 삭제하기
+                                        <img src={waste} alt='삭제'/> 삭제하기
                                     </button>
                                 </div>
                             )}
@@ -509,7 +519,7 @@ function CommunityDetail() {
                 {showOptions && (
                     <div className="bottom-sheet" onClick={() => setShowOptions(false)}>
                         <div className="bottom-sheet-content" onClick={e => e.stopPropagation()}>
-                            {selectedComment?.author === currentUserNickname ? (
+                            {selectedComment?.authorId === currentUserId ? (
                                 <>
                                     <button onClick={handleEdit} style={{color: '#2563EB'}}>수정하기</button>
                                     <button onClick={handleDelete} style={{color: '#F62C2F'}}>삭제하기</button>
