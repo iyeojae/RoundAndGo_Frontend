@@ -79,39 +79,39 @@ const GlobalDatePickerStyle = createGlobalStyle`
   }
 `;
 
-export const ModalOverlay = styled.div` // 스타일 컴포넌트들
-  position: absolute;
+//
+export const ModalOverlay = styled.div`
+  position: fixed; /* absolute → fixed */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.6s ease-out;
-  
+  z-index: 2000;
+  animation: fadeIn 0.4s ease-out;
+
   @keyframes fadeIn {
     from {
       background: rgba(0, 0, 0, 0);
     }
     to {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.55);
     }
   }
 `;
 
 export const ModalContent = styled.div`
   width: 100%;
-  //height: auto;
   aspect-ratio: 440 / 600;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 20px 20px 0 0;
   overflow: hidden;
   position: relative;
   animation: slideUp 0.6s ease-out;
-  
+
   @keyframes slideUp {
     from {
       transform: translateY(100%);
@@ -120,11 +120,9 @@ export const ModalContent = styled.div`
       transform: translateY(0);
     }
   }
-  
+
   @media (max-width: 480px) {
-    width: calc(100% - 60px);
     height: 75vh;
-    border-radius: 20px 20px 0 0;
   }
 `;
 
@@ -620,15 +618,52 @@ const AddScheduleModal = ({ onClose, onAdd, schedule, setSchedule, selectedDate 
   const [selectedCategory, setSelectedCategory] = useState('골프');
   const [isAllDay, setIsAllDay] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [timePickerType, setTimePickerType] = useState('start'); // 'start' or 'end'
+  const [timePickerType, setTimePickerType] = useState('start');
   const [tempTime, setTempTime] = useState({ period: '오전', hour: '09', minute: '00' });
   const [showLocationSelect, setShowLocationSelect] = useState(false);
 
-  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('ko-KR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  }));
+  const [currentTime, setCurrentTime] = useState(
+      new Date().toLocaleTimeString('ko-KR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+  );
+
+  // ✅ 🔒 모달이 열릴 때 body 스크롤 완전 차단
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = '0';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, []);
+
+  // ✅ 시계 실시간 업데이트 (기존 로직 유지)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(
+          new Date().toLocaleTimeString('ko-KR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+      );
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const updateTime = () => {
     setCurrentTime(new Date().toLocaleTimeString('ko-KR', {

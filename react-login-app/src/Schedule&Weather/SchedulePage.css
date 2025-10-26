@@ -786,13 +786,13 @@
     gap: 10px;
   }
   
-  .schedule-page .schedule-calendar-section,
-  .schedule-page .schedule-section {
-    margin: 0 auto 15px auto !important;
-    width: calc(100% - 60px);
-    max-width: calc(100% - 60px);
-    min-width: 280px;
-  }
+  /*.schedule-page .schedule-calendar-section,*/
+  /*.schedule-page .schedule-section {*/
+  /*  margin: 0 auto 15px auto !important;*/
+  /*  width: 90%;*/
+  /*  max-width: calc(100% - 60px);*/
+  /*  min-width: 280px;*/
+  /*}*/
 }
 
 @media (max-width: 480px) {
