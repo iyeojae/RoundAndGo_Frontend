@@ -116,9 +116,13 @@
 }
 
 /* 댓글/답글 세트를 묶는 컨테이너 */
-.comment-group {
+.comment-group.parent-group {
     padding: 3% 5%;
     background: #f8f8f8;
+}
+
+.comment-group {
+    padding: 3% 0;
 }
 
 .comment-group.parent-group:not(:last-child) {

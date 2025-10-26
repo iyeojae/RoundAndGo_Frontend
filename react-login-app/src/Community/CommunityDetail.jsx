@@ -471,6 +471,7 @@ function CommunityDetail() {
                     <form onSubmit={handleCommentSubmit}>
                     <textarea
                         value={content}
+                        onChange={(e) => setContent(e.target.value)}
                         placeholder={replyTargetId ? '답글을 입력해주세요' : '댓글을 입력해주세요'}
                         rows="1"
                     />

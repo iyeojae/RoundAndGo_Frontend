@@ -83,28 +83,43 @@
 
 .WriteBtnContainer {
     position: fixed;
-    left: 64.2%;
-    bottom: 15%;
+    left: 68%;
+    bottom: 17%;
     transform: translateX(-50%);
     z-index: 10;
     width: 100%;
     pointer-events: none;
-} /* TODO : 위치 조정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .write-button {
     pointer-events: auto;
-    width: fit-content;
+    width: auto;
     color: #fff;
     display: flex;
     flex-direction: row;
     gap: clamp(3px, 2vw, 5px);
-    padding: 0.1% 2%;
+    padding: 0.2% 3%;
     justify-content: center;
     align-items: center;
     border: none;
     background-color: #269962;
     border-radius: clamp(38px, 5vw, 76px);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+/* 1024px 이하 */
+@media screen and (max-width: 1024px) {
+    .WriteBtnContainer {
+        left: 50%;
+        bottom: 15%;
+    }
+
+    .write-button {
+        padding: 0.5% 7%;
+    }
 }
 
 
