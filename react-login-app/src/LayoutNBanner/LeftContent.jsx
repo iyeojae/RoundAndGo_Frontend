@@ -59,7 +59,7 @@ const LeftWrapper = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: 2rem;
+    //padding: 2rem;
     color: #000;
     z-index: 1;
 `;

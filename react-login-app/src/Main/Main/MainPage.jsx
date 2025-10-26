@@ -60,7 +60,7 @@ function MainPage() {
             alignItems: 'center',
             justifyContent: 'flex-start',
             boxSizing: 'border-box',
-            backgroundColor: '#F8F8F8'
+            backgroundColor: '#F8F8F8',
         },
         RecommendCourse: {
             width: '100%',
