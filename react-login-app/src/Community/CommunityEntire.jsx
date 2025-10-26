@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../LayoutNBanner/Header.jsx';
 import Footer from '../LayoutNBanner/Footer.jsx';
 import WriteBtn from './WriteNewBoard.jsx';
@@ -23,7 +23,15 @@ function CommunityEntire() {
     const [posts, setPosts] = useState([]);
     const [latestPosts, setLatestPosts] = useState([]);
     const [categorizedPosts, setCategorizedPosts] = useState({});
+
+    const location = useLocation();
     const [activeTab, setActiveTab] = useState('LATEST');
+
+    useEffect(() => {
+        if (location.state?.activeTab) {
+            setActiveTab(location.state.activeTab);
+        }
+    }, [location.state]);
 
     // 오늘 날짜와 비교해서 최신글 필터링
     const isToday = (createdAt) => {

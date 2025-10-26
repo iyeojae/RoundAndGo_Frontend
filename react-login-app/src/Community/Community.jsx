@@ -258,7 +258,11 @@ function CommunityBoard() {
                     <div className="community-section">
                         <div className="section-header-comm-main">
                             <h4>최신글</h4>
-                            <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
+                            <img
+                                onClick={() => navigate('/community/entire', {state: {activeTab: 'LATEST'}})}
+                                src={BlackArrow}
+                                alt='더보기'
+                            />
                         </div>
                         <ul className="post-list">
                             {latestPosts.length === 0 && <li className="no-post">최신글이 없습니다</li>}
@@ -290,14 +294,18 @@ function CommunityBoard() {
 
                     {/* 카테고리별 게시글 섹션 */}
                     {categorizedPosts.length > 0 && categorizedPosts.map((categoryPosts, idx) => {
-                        const {label} = TAB_LABELS[idx + 1];  // '최신글' 제외
+                        const { label, key } = TAB_LABELS[idx + 1];  // '최신글' 제외
                         const postsInCategory = categoryPosts.slice(0, 3); // 최대 3개
 
                         return (
                             <div key={label} className="community-section">
                                 <div className="section-header-comm-main">
                                     <h4>{label}</h4>
-                                    <img onClick={() => goTo('/community/entire')} src={BlackArrow} alt='더보기'/>
+                                    <img
+                                        onClick={() => navigate('/community/entire', {state: {activeTab: key}})}
+                                        src={BlackArrow}
+                                        alt='더보기'
+                                    />
                                 </div>
                                 <ul className="post-list">
                                     {postsInCategory.length === 0 && <li className="no-post">{label}이 없습니다</li>}
