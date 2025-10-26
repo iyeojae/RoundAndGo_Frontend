@@ -91,6 +91,28 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
   };
 
   useEffect(() => {
+    const scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval); // 컴포넌트가 unmount 될 때 interval 해제
   }, []);
@@ -469,7 +491,6 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
         </BottomButtonSection>
       </ModalContent>
 
-      {/* 시간 선택 팝업 (AddScheduleModal과 동일) */}
       {/* 시간 선택 팝업 */}
       {showTimePicker && (
           <TimePickerOverlay onClick={closeTimePicker}>
@@ -544,29 +565,39 @@ const EditScheduleModal = ({ onClose, onUpdate, onDelete, schedule }) => {
   );
 };
 
-// 스타일 컴포넌트들 (AddScheduleModal과 동일하지만 일부 수정)
-const ModalOverlay = styled.div`
-  position: absolute;
+export const ModalOverlay = styled.div`
+  position: fixed; 
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.6s ease-out;
-  
+  z-index: 2000;
+  animation: fadeIn 0.4s ease-out;
+
   @keyframes fadeIn {
     from {
       background: rgba(0, 0, 0, 0);
     }
     to {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.55);
     }
   }
+
+  @media (min-width: 1024px) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto; /* 부모 아래까지 차지하지 않도록 */
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  }
 `;
+
 
 const ModalContent = styled.div`
   width: 100%;
@@ -576,6 +607,7 @@ const ModalContent = styled.div`
   overflow: hidden;
   position: relative;
   animation: slideUp 0.6s ease-out;
+  height: 85vh;
   
   @keyframes slideUp {
     from {
@@ -587,9 +619,7 @@ const ModalContent = styled.div`
   }
   
   @media (max-width: 480px) {
-    width: calc(100% - 60px);
     height: 75vh;
-    border-radius: 20px 20px 0px 0px;
   }
 `;
 
@@ -621,22 +651,20 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const ModalWindow = styled.div`
+export const ModalWindow = styled.div`
   padding: 20px;
-  height: calc(75vh - 250px);
+  height: auto; /* 기본은 내용에 맞게 */
+  max-height: calc(80vh - 180px);
   overflow-y: auto;
-  
-  /* 웹킷 기반 브라우저 스크롤바 숨기기 */
+
   &::-webkit-scrollbar {
     display: none;
   }
 
-  /* Firefox 스크롤바 숨기기 */
   scrollbar-width: none;
 
-  @media (max-width: 480px) {
-    padding: 15px;
-    height: calc(75vh - 230px);
+  @media (max-width: 768px) {
+    height: calc(75vh - 230px); /* 모바일에서는 원래처럼 */
   }
 `;
 
@@ -909,7 +937,7 @@ const LocationIcon = styled.div`
 
 const BottomButtonSection = styled.div`
   position: absolute;
-  bottom: 0;
+  bottom: 5%;
   left: 0;
   right: 0;
   width: 90%;
@@ -938,6 +966,9 @@ const DeleteButton = styled.button`
     background: #EF4444;
     color: #FFFFFF;
   }
+  @media (max-width: 768px) {
+    padding: 7px 15px;
+  }
 `;
 
 const UpdateButton = styled.button`
@@ -962,6 +993,9 @@ const UpdateButton = styled.button`
     background: #9C9C9C;
     border-color: #9C9C9C;
     cursor: not-allowed;
+  }
+  @media (max-width: 768px) {
+    padding: 7px 15px;
   }
 `;
 

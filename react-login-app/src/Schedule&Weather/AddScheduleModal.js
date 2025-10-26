@@ -81,7 +81,7 @@ const GlobalDatePickerStyle = createGlobalStyle`
 
 //
 export const ModalOverlay = styled.div`
-  position: fixed; /* absolute → fixed */
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -121,6 +121,7 @@ export const ModalContent = styled.div`
   overflow: hidden;
   position: relative;
   animation: slideUp 0.6s ease-out;
+  height: 85vh;
 
   @keyframes slideUp {
     from {
@@ -167,7 +168,7 @@ export const CloseButton = styled.button`
 export const ModalWindow = styled.div`
   padding: 20px;
   height: auto; /* 기본은 내용에 맞게 */
-  max-height: calc(90vh - 180px);
+  max-height: calc(80vh - 180px);
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -451,10 +452,11 @@ const LocationIcon = styled.div`
 
 const BottomButtonSection = styled.div`
   position: absolute;
-  bottom: 0;
+  width: 90%;
+  margin: 0 auto;
+  bottom: 5%;
   left: 0;
   right: 0;
-  padding: 20px;
   background: #FFFFFF;
 `;
 
@@ -481,6 +483,9 @@ const AddButton = styled.button`
     color: #9c9c9c;
     border-color: #9C9C9C;
     cursor: not-allowed;
+  }
+  @media (max-width: 768px) {
+    padding: 7px 15px;
   }
 `;
 

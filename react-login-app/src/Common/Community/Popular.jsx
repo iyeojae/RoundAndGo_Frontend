@@ -135,10 +135,6 @@ function Popular() {
                                 />
                                 <span>{likeCounts[post.id] ?? 0}</span>
                             </div>
-                            <div className='watch'>
-                                <img src={WatchIcon} alt="조회수 아이콘" />
-                                <span>16</span>
-                            </div>
                         </div>
                     </SwiperSlide>
                 ))}

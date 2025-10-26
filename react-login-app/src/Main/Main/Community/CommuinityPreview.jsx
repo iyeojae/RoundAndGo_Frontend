@@ -157,7 +157,6 @@ function CommunityPreview() {
                             {/* .post-meta 스타일 적용 */}
                             <div className="post-meta" style={styles.postMeta}>
                                 <span><img style={styles.postMetaIcon} src={heart} alt='좋아요'/> {post.likeCount || 0}</span>
-                                <span><img style={styles.postMetaIcon} src={view} alt='조회수'/> {post.viewCount || 0}</span>
                                 <span><img style={styles.commentIcon} src={comment}
                                            alt='댓글'/> {post.commentCount}</span>
                             </div>
