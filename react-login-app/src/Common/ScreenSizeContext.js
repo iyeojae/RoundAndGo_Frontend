@@ -1,5 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
-
+import React, { createContext, useState, useEffect, useRef } from 'react';
 export const ScreenSizeContext = createContext();
 
 export function ScreenSizeProvider({ children }) {
@@ -24,3 +23,5 @@ export function ScreenSizeProvider({ children }) {
         </ScreenSizeContext.Provider>
     );
 }
+
+// src/Common/ScrollContext.js

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './Login/utils/cleanupLocalStorage'; // 쿠키 기반 인증으로 전환하면서 로컬스토리지 정리
 
@@ -20,14 +20,15 @@ import DetailMorePage from './Main/Detail/AccommodationD/MoreAccommodation.jsx';
 import CommunityMainPage from './Community/Community.jsx'; // 커뮤니티
 import CommunityEntirePage from './Community/CommunityEntire.jsx'; // 커뮤니티 전체보기
 import CommunityWritePage from './Community/CommunityWrite.jsx'; // 커뮤니티 쓰기
-import CommunityDetailPage from './Community/CommunityDetail.jsx' // 커뮤니티 상세
-import CommunityEditPage from './Community/CommunityEdit.jsx' // 커뮤니티 편집
+import CommunityDetailPage from './Community/CommunityDetail.jsx'; // 커뮤니티 상세
+import CommunityEditPage from './Community/CommunityEdit.jsx'; // 커뮤니티 편집
 import CourseRecommendation from './Course/CourseRecommendation'; // 코스 추천
 import CourseMain from './Course/CourseMain'; // 코스 추천 메인
 import MyCourseView from './Course/Components/MyCourseView.jsx'; // 내 코스 보기
 import MyPage from './MyPage/MyPage.jsx'; // 마이페이지
 
 import { ScreenSizeProvider } from './Common/ScreenSizeContext';
+import { ScrollProvider, ScrollContext } from './Common/ScrollContext';
 
 function App() {
     return (
@@ -38,31 +39,9 @@ function App() {
                 </div>
                 <div className="right-content">
                     <ScreenSizeProvider>
-                    <main>
-                        <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/email-login" element={<EmailLoginPage />} />
-                            <Route path="/signup" element={<SignupPage />} />
-                            <Route path="/find-account" element={<FindAccountPage />} />
-                            <Route path="/schedule" element={<SchedulePage />} />
-                            <Route path="/jeju-location" element={<JejuLocationPage />} />
-                            <Route path="/login/oauth2/code/kakao" element={<OAuth2Callback />} />
-
-                            <Route path="/first-main" element={<FirstMainPage/>}/> {/* 첫 메인 페이지 */}
-                            <Route path="/main" element={<MainPage/>}/> {/* 메인 페이지 */}
-                            <Route path="/detail/main" element={<DetailMainPage/>}/> {/* 상세 페이지 */}
-                            <Route path="/detail/main/more" element={<DetailMorePage/>}/> {/*상세페이지 더보기 - 숙박 */}
-                            <Route path="/community" element={<CommunityMainPage/>}/> {/* 커뮤니티 - 메인 */}
-                            <Route path="/community/entire" element={<CommunityEntirePage/>}/> {/* 커뮤니티 - 전체 */}
-                            <Route path="/community/detail/:postId" element={<CommunityDetailPage/>}/> {/* 커뮤니티 - 상세 */}
-                            <Route path="/community/write" element={<CommunityWritePage/>}/> {/* 커뮤니티 - 글쓰기 */}
-                            <Route path="/community/edit/:postId" element={<CommunityEditPage />} /> {/* 커뮤니티 - 수정 */}
-                            {/*<Route path="/course/recommendation" element={<CourseRecommendation/>}/> /!* 코스 추천 *!/*/}
-                            <Route path="/course/my" element={<MyCourseView/>}/> {/* 내 코스보기 */}
-                            <Route path="/course/*" element={<CourseMain/>}/> {/* 코스 추천 3단계 */}
-                            <Route path="/mypage" element={<MyPage />} /> {/* 마이 페이지 */}
-                        </Routes>
-                    </main>
+                        <ScrollProvider>
+                            <ScrollMain />
+                        </ScrollProvider>
                     </ScreenSizeProvider>
                 </div>
             </div>
@@ -70,6 +49,36 @@ function App() {
     );
 }
 
+function ScrollMain() {
+    const { mainRef } = useContext(ScrollContext);
+
+    return (
+        <main ref={mainRef} style={{ overflowY: 'auto', height: '100vh' }}>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/email-login" element={<EmailLoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/find-account" element={<FindAccountPage />} />
+                <Route path="/schedule" element={<SchedulePage />} />
+                <Route path="/jeju-location" element={<JejuLocationPage />} />
+                <Route path="/login/oauth2/code/kakao" element={<OAuth2Callback />} />
+
+                <Route path="/first-main" element={<FirstMainPage />} /> {/* 첫 메인 페이지 */}
+                <Route path="/main" element={<MainPage />} /> {/* 메인 페이지 */}
+                <Route path="/detail/main" element={<DetailMainPage />} /> {/* 상세 페이지 */}
+                <Route path="/detail/main/more" element={<DetailMorePage />} /> {/*상세페이지 더보기 - 숙박 */}
+                <Route path="/community" element={<CommunityMainPage />} /> {/* 커뮤니티 - 메인 */}
+                <Route path="/community/entire" element={<CommunityEntirePage />} /> {/* 커뮤니티 - 전체 */}
+                <Route path="/community/detail/:postId" element={<CommunityDetailPage />} /> {/* 커뮤니티 - 상세 */}
+                <Route path="/community/write" element={<CommunityWritePage />} /> {/* 커뮤니티 - 글쓰기 */}
+                <Route path="/community/edit/:postId" element={<CommunityEditPage />} /> {/* 커뮤니티 - 수정 */}
+                {/*<Route path="/course/recommendation" element={<CourseRecommendation/>}/> /!* 코스 추천 *!/*/}
+                <Route path="/course/my" element={<MyCourseView />} /> {/* 내 코스보기 */}
+                <Route path="/course/*" element={<CourseMain />} /> {/* 코스 추천 3단계 */}
+                <Route path="/mypage" element={<MyPage />} /> {/* 마이 페이지 */}
+            </Routes>
+        </main>
+    );
+}
+
 export default App;
-
-
