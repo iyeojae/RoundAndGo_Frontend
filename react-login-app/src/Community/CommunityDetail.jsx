@@ -1,5 +1,5 @@
 // CommunityDetail.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from "../LayoutNBanner/Header";
 import {
@@ -51,6 +51,8 @@ function CommunityDetail() {
 
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editContent, setEditContent] = useState('');
+
+    const commentInputRef = useRef(null);
 
     const showToastWithMessage = useCallback((message) => {
         setToastMessage(message);
@@ -260,11 +262,13 @@ function CommunityDetail() {
                 <div
                     key={comment.id}
                     className={`comment-group ${isParent ? 'parent-group' : ''}`}
-                    style={isReplyTarget ? {backgroundColor: '#ededed'} : {}}
                 >
-                    <div className='comment-item-wrap'>
+                    <div
+                        className='comment-item-wrap'
+                        style={isReplyTarget ? { backgroundColor: '#ededed' } : {}}
+                    >
                         <div className={`comment-item-content ${!isParent ? 'reply-content' : ''}`}>
-                            {!isParent && <img src={reply} alt="reply" className="reply-arrow"/>}
+                            {!isParent && <img src={reply} alt="reply" className="reply-arrow" />}
                             <div className="comment-profile-img"
                                  style={{backgroundColor: !comment.profileImage ? getBackgroundColor(comment.profileColor) : 'transparent',}}>
                                 {comment.profileImage ? (
@@ -379,11 +383,20 @@ function CommunityDetail() {
                                 )}
 
                                 {editingCommentId !== comment.id && (
-                                    <button className='reply-btn'
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // 상위로 클릭 이벤트 전파 차단
-                                                setReplyTargetId(prev => (prev === comment.id ? null : comment.id));
-                                            }}>
+                                    <button
+                                        className='reply-btn'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setReplyTargetId(prev => {
+                                                const newTarget = prev === comment.id ? null : comment.id;
+                                                // 답글 대상 설정 후 input 포커스
+                                                setTimeout(() => {
+                                                    commentInputRef.current?.focus();
+                                                }, 0);
+                                                return newTarget;
+                                            });
+                                        }}
+                                    >
                                         답글쓰기
                                     </button>
                                 )}
@@ -470,10 +483,17 @@ function CommunityDetail() {
                 <div className='comment-input-area' onClick={(e) => e.stopPropagation()}>
                     <form onSubmit={handleCommentSubmit}>
                     <textarea
+                        ref={commentInputRef}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder={replyTargetId ? '답글을 입력해주세요' : '댓글을 입력해주세요'}
                         rows="1"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault(); // 줄바꿈 방지
+                                handleCommentSubmit(e); // 댓글 전송
+                            }
+                        }}
                     />
                         <button type="submit"><img src={SendIcon} alt="send"/></button>
                     </form>
