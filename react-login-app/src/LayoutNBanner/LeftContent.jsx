@@ -31,8 +31,9 @@ function LeftContent() {
 
                 <Title>AI가 찾아주는 여행코스</Title>
                 <Description>당신의 골프여행이 더욱 특별해집니다!</Description>
-                <StyledLink onClick={handleLinkClick}>
-                    AI 추천 코스 보러가기 &gt;
+                <StyledLink>
+                    모바일에서 보면 훨씬 깔끔하고 편리해요! 📱 
+                    지금 휴대폰으로 접속해 보세요.;
                 </StyledLink>
                 <WarningText show={showWarning}>로그인 먼저 해주세요.</WarningText>
 
