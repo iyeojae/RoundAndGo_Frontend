@@ -143,11 +143,12 @@ function HomePage() {
     const handleKakaoLogin = () => {
         // console.log('OAuth2 카카오로 시작하기 클릭됨');
         // console.log('🔄 현재 창에서 카카오 로그인 페이지로 이동');
-        markKakaoLoginAttempt(); // 🎯 카카오 로그인 시도 기록 (성공 감지용)
+        // markKakaoLoginAttempt(); // 🎯 카카오 로그인 시도 기록 (성공 감지용)
 
         // 현재 창에서 직접 카카오 로그인으로 이동
         // 로그인 완료 후 백엔드에서 /oauth/kakao 콜백으로 리다이렉트됨
-        oauth2KakaoApi.startLogin();
+        // oauth2KakaoApi.startLogin();
+        alert('⛳️ 현재 카카오 로그인 점검 중이에요. 빠르게 다시 돌아올게요! 그동안은 이메일 로그인으로 라운드앤고를 이용해 주세요 😊');
     };
 
     return (
@@ -161,10 +162,10 @@ function HomePage() {
                                 로그인
                             </EmailLoginButton>
 
-                            {/* <KakaoLoginButton onClick={handleKakaoLogin}>
+                            <KakaoLoginButton onClick={handleKakaoLogin}>
                                 <KakaoLogo src={kakao} alt='카카오 로고'/>
                                 <KakaoText>카카오로 시작하기</KakaoText>
-                            </KakaoLoginButton> */}
+                            </KakaoLoginButton>
 
                             <SignUpText onClick={handleSignUp}>회원가입</SignUpText>
                         </ButtonGroup>
