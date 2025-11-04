@@ -161,10 +161,10 @@ function HomePage() {
                                 로그인
                             </EmailLoginButton>
 
-                            <KakaoLoginButton onClick={handleKakaoLogin}>
+                            {/* <KakaoLoginButton onClick={handleKakaoLogin}>
                                 <KakaoLogo src={kakao} alt='카카오 로고'/>
                                 <KakaoText>카카오로 시작하기</KakaoText>
-                            </KakaoLoginButton>
+                            </KakaoLoginButton> */}
 
                             <SignUpText onClick={handleSignUp}>회원가입</SignUpText>
                         </ButtonGroup>
